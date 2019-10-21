@@ -1,0 +1,38 @@
+
+//Simple
+enchantment.uniquee.berserk=Berserker
+enchantment.uniquee.berserk.desc=The lower your Health, the higher your Damage
+enchantment.uniquee.damage.all=Advanced Sharpness
+enchantment.uniquee.damage.all.desc=An Advanced Version of Sharpness
+enchantment.uniquee.damage.undead=Advanced Smite
+enchantment.uniquee.damage.undead.desc=An Advanced Version of Smite
+enchantment.uniquee.damage.arthropods=Advanced Bane of Arthropod
+enchantment.uniquee.damage.arthropods.desc=An Advanced Version of Bane of Arthropod
+enchantment.uniquee.vitae=Vitae
+enchantment.uniquee.vitae.desc=Grants you more Health
+enchantment.uniquee.swift=Swift
+enchantment.uniquee.swift.desc=Grants you more Movement Speed
+
+//Complex
+enchantment.uniquee.swiftblade=Swift Blade
+enchantment.uniquee.swiftblade.desc=More Attack Speed grants you more Damage
+enchantment.uniquee.spartanweapon=Spartan Weapon
+enchantment.uniquee.spartanweapon.desc=You deal bonus pierce damage when wielding a Shield
+enchantment.uniquee.perpetualstrike=Perpetual Strike
+enchantment.uniquee.perpetualstrike.desc=Your damage increases with every consecutive hit on the same Target
+
+//Unique
+enchantment.uniquee.warriorsgrace=Warrior's Grace
+enchantment.uniquee.warriorsgrace.desc=Killing an Entity will replenish Durability scaling with the Max HP of the Entity
+enchantment.uniquee.naturesgrace=Nature's Grace
+enchantment.uniquee.naturesgrace.desc=Standing near Flowers or Leaves and not receiving damage for 15 seconds, will grant you regen
+enchantment.uniquee.fastfood=Fast Food
+enchantment.uniquee.fastfood.desc=Living Animals/Passives wont drop anything but therefore replenish Hunger
+enchantment.uniquee.endermarksmen=Enders Markmen
+enchantment.uniquee.endermarksmen.desc=Hitting a target with a Bow, will replenish Durability and grant your Arrow back
+enchantment.uniquee.cloudwalker=Cloud Walker
+enchantment.uniquee.cloudwalker.desc=The Player is able sneak mid-air. Fall Damage will go through
+enchantment.uniquee.aresblessing=Ares Blessing
+enchantment.uniquee.aresblessing.desc=Lethal Damage will be converted into Durability Loss of the Armor, yet Fall & Magic Damage will still go through
+enchantment.uniquee.alchemistsgrace=Alchemist's Grace
+enchantment.uniquee.alchemistsgrace.desc=Hitting an Enemy will grant you Potion Effects

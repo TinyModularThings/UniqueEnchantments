@@ -1,0 +1,16 @@
+[
+{
+  "modid": "unique_enchantments",
+  "name": "Unique Enchantments",
+  "description": "A Set of Unique Enchantments",
+  "version": "1.0",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Xaikii", "Speiger"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
