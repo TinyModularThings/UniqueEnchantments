@@ -10,7 +10,7 @@ import uniquee.enchantments.UniqueEnchantment;
 
 public class EnchantmentEnderMarksmen extends UniqueEnchantment
 {
-	public static double SCALAR = 3D;
+	public static double SCALAR = 2D;
 	
 	public EnchantmentEnderMarksmen()
 	{
@@ -26,12 +26,12 @@ public class EnchantmentEnderMarksmen extends UniqueEnchantment
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{
-		return ench instanceof EnchantmentMending || ench instanceof EnchantmentArrowInfinite ? false : super.canApplyTogether(ench);
+		return ench instanceof EnchantmentMending || ench instanceof EnchantmentArrowInfinite || ench instanceof EnchantmentEcological ? false : super.canApplyTogether(ench);
 	}
 
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 3D).getDouble();
+		SCALAR = config.get(getConfigName(), "scalar", 2D).getDouble();
 	}
 }

@@ -24,24 +24,29 @@ import net.minecraft.entity.projectile.EntityArrow.PickupStatus;
 import net.minecraft.entity.projectile.EntitySpectralArrow;
 import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
+import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -52,11 +57,14 @@ import uniquee.enchantments.complex.EnchantmentPerpetualStrike;
 import uniquee.enchantments.complex.EnchantmentSpartanWeapon;
 import uniquee.enchantments.complex.EnchantmentSwiftBlade;
 import uniquee.enchantments.simple.EnchantmentBerserk;
+import uniquee.enchantments.simple.EnchantmentSagesBlessing;
 import uniquee.enchantments.simple.EnchantmentSwift;
 import uniquee.enchantments.simple.EnchantmentVitae;
 import uniquee.enchantments.unique.EnchantmentAlchemistsGrace;
 import uniquee.enchantments.unique.EnchantmentAresBlessing;
+import uniquee.enchantments.unique.EnchantmentClimateTranquility;
 import uniquee.enchantments.unique.EnchantmentCloudwalker;
+import uniquee.enchantments.unique.EnchantmentEcological;
 import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
 import uniquee.enchantments.unique.EnchantmentFastFood;
 import uniquee.enchantments.unique.EnchantmentNaturesGrace;
@@ -84,6 +92,10 @@ public class EntityEvents
 					player.heal((float)(1D * EnchantmentNaturesGrace.SCALAR));
 				}
 			}
+			if(player.world.getTotalWorldTime() % 30 == 0)
+			{
+				EnchantmentClimateTranquility.onClimate(player);
+			}
 		}
 		ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 		int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.CLOUD_WALKER, stack);
@@ -105,6 +117,32 @@ public class EntityEvents
 			{
 				setInt(stack, "cloud", EnchantmentCloudwalker.TICKS * level);
 			}
+		}
+		Boolean cache = null;
+		for(ItemStack equipStack : UniqueEnchantments.ECOLOGICAL.getEntityEquipment(player))
+		{
+			level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.ECOLOGICAL, equipStack);
+			if(level > 0 && equipStack.isItemDamaged() && player.world.getTotalWorldTime() % Math.min(1, (int)(EnchantmentEcological.SPEED / Math.sqrt(level / EnchantmentEcological.SCALE))) == 0)
+			{
+				if((cache == null ? cache = hasBlockCount(player.world, player.getPosition(), 1, EnchantmentEcological.STATES) : cache.booleanValue()))
+				{
+					equipStack.damageItem(-1, player);
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onBlockBreak(BreakEvent event)
+	{
+		if(event.getPlayer() == null)
+		{
+			return;
+		}
+		int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.SAGES_BLESSING, event.getPlayer().getHeldItemMainhand());
+		if(level > 0)
+		{
+			event.setExpToDrop((int)(event.getExpToDrop() + event.getExpToDrop() * (level * EnchantmentSagesBlessing.XP_BOOST)));
 		}
 	}
 	
@@ -148,7 +186,21 @@ public class EntityEvents
 				}
 				event.setAmount((float)(event.getAmount() * (1F + (level * count * EnchantmentPerpetualStrike.SCALAR))));
 				setInt(held, "strikes", count+1);
-				
+			}
+			level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.CLIMATE_TRANQUILITY, EnchantmentHelper.getEnchantedItem(UniqueEnchantments.CLIMATE_TRANQUILITY, base));
+			if(level > 0)
+			{
+				Set<BiomeDictionary.Type> effects = BiomeDictionary.getTypes(base.world.getBiome(base.getPosition()));
+				boolean hasHot = effects.contains(BiomeDictionary.Type.HOT) || effects.contains(BiomeDictionary.Type.NETHER);
+				boolean hasCold = effects.contains(BiomeDictionary.Type.COLD);
+				if(hasHot && !hasCold)
+				{
+					event.getEntityLiving().addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, EnchantmentClimateTranquility.SLOW_TIME * level, level));
+				}
+				else if(hasCold && !hasHot)
+				{
+					event.getEntityLiving().setFire(level * EnchantmentClimateTranquility.BURN_TIME);
+				}
 			}
 		}
 	}
@@ -199,6 +251,16 @@ public class EntityEvents
 					stack.damageItem(-amount, base);
 				}
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onXPDrop(LivingExperienceDropEvent event)
+	{
+		int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.SAGES_BLESSING, EnchantmentHelper.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, event.getAttackingPlayer()));
+		if(level > 0)
+		{
+			event.setDroppedExperience((int)(event.getDroppedExperience() + event.getDroppedExperience() * (level * EnchantmentSagesBlessing.XP_BOOST)));
 		}
 	}
 	

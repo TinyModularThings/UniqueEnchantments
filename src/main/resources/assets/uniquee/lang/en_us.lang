@@ -2,16 +2,18 @@
 //Simple
 enchantment.uniquee.berserk=Berserker
 enchantment.uniquee.berserk.desc=The lower your Health, the higher your Damage
-enchantment.uniquee.damage.all=Advanced Sharpness
+enchantment.uniquee.damage.all=Ameliorated Sharpness
 enchantment.uniquee.damage.all.desc=An Advanced Version of Sharpness
-enchantment.uniquee.damage.undead=Advanced Smite
+enchantment.uniquee.damage.undead=Ameliorated Smite
 enchantment.uniquee.damage.undead.desc=An Advanced Version of Smite
-enchantment.uniquee.damage.arthropods=Advanced Bane of Arthropod
+enchantment.uniquee.damage.arthropods=Ameliorated Bane of Arthropod
 enchantment.uniquee.damage.arthropods.desc=An Advanced Version of Bane of Arthropod
 enchantment.uniquee.vitae=Vitae
 enchantment.uniquee.vitae.desc=Grants you more Health
 enchantment.uniquee.swift=Swift
 enchantment.uniquee.swift.desc=Grants you more Movement Speed
+enchantment.uniquee.sages_blessing=Sage's Blessing
+enchantment.uniquee.sages_blessing.desc=Increases XP Loot per level
 
 //Complex
 enchantment.uniquee.swiftblade=Swift Blade
@@ -20,6 +22,8 @@ enchantment.uniquee.spartanweapon=Spartan Weapon
 enchantment.uniquee.spartanweapon.desc=You deal bonus pierce damage when wielding a Shield
 enchantment.uniquee.perpetualstrike=Perpetual Strike
 enchantment.uniquee.perpetualstrike.desc=Your damage increases with every consecutive hit on the same Target
+enchantment.uniquee.climate_tranquility=Climate Tranquility
+enchantment.uniquee.climate_tranquility.desc=Weapons will react to temperature and and receive effects of the counterpart.
 
 //Unique
 enchantment.uniquee.warriorsgrace=Warrior's Grace
@@ -36,3 +40,5 @@ enchantment.uniquee.aresblessing=Ares Blessing
 enchantment.uniquee.aresblessing.desc=Lethal Damage will be converted into Durability Loss of the Armor, yet Fall & Magic Damage will still go through
 enchantment.uniquee.alchemistsgrace=Alchemist's Grace
 enchantment.uniquee.alchemistsgrace.desc=Hitting an Enemy will grant you Potion Effects
+enchantment.uniquee.ecological=Ecological
+enchantment.uniquee.ecological.desc=Standing near Wood(Logs) & Leaves, will recover slowly the durability of your tool.

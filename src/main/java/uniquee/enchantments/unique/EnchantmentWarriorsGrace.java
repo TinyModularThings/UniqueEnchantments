@@ -26,15 +26,15 @@ public class EnchantmentWarriorsGrace extends UniqueEnchantment
 	}
 	
 	@Override
-	public boolean canApply(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof ItemAxe ? true : super.canApply(stack);
+		return stack.getItem() instanceof ItemAxe;
 	}
 	
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{
-		return ench instanceof EnchantmentDurability || ench instanceof EnchantmentMending || ench instanceof EnchantmentAlchemistsGrace || ench instanceof EnchantmentNaturesGrace ? false : super.canApplyTogether(ench);
+		return ench instanceof EnchantmentDurability || ench instanceof EnchantmentMending || ench instanceof EnchantmentAlchemistsGrace || ench instanceof EnchantmentNaturesGrace || ench instanceof EnchantmentEcological ? false : super.canApplyTogether(ench);
 	}
 
 	@Override

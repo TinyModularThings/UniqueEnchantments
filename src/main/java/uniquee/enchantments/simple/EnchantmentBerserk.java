@@ -26,9 +26,9 @@ public class EnchantmentBerserk extends UniqueEnchantment
 	}
 	
 	@Override
-	public boolean canApply(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-        return stack.getItem() instanceof ItemAxe ? true : super.canApply(stack);
+        return stack.getItem() instanceof ItemAxe;
 	}
 	
 	@Override

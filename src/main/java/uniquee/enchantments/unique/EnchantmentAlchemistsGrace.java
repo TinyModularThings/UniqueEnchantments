@@ -37,9 +37,9 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment
 	}
 	
 	@Override
-	public boolean canApply(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof ItemAxe || EnumEnchantmentType.BOW.canEnchantItem(stack.getItem()) ? true : super.canApply(stack);
+		return stack.getItem() instanceof ItemAxe || EnumEnchantmentType.BOW.canEnchantItem(stack.getItem());
 	}
 		
 	@Override
