@@ -1,10 +1,11 @@
 package uniquee.handler;
 
+import java.util.function.Predicate;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockFlower;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -74,7 +75,7 @@ public class EntityEvents
 			if(player.world.getTotalWorldTime() % 200 == 0 && player.getHealth() < player.getMaxHealth())
 			{
 				int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.NATURES_GRACE, player.getItemStackFromSlot(EntityEquipmentSlot.CHEST));
-				if(level > 0 && player.getCombatTracker().getBestAttacker() == null && hasFlowerCount(player.world, player.getPosition(), 4))
+				if(level > 0 && player.getCombatTracker().getBestAttacker() == null && hasBlockCount(player.world, player.getPosition(), 4, EnchantmentNaturesGrace.FLOWERS))
 				{
 					player.heal((float)(1D * EnchantmentNaturesGrace.SCALAR));
 				}
@@ -316,7 +317,7 @@ public class EntityEvents
 		return ItemStack.EMPTY;
 	}
 	
-	public static boolean hasFlowerCount(World world, BlockPos pos, int limit)
+	public static boolean hasBlockCount(World world, BlockPos pos, int limit, Predicate<IBlockState> validator)
 	{
 		MutableBlockPos newPos = new MutableBlockPos();
 		int found = 0;
@@ -327,8 +328,7 @@ public class EntityEvents
 				for(int z = -4;z<=4;z++)
 				{
 					newPos.setPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-					Block block = world.getBlockState(newPos).getBlock();
-					if(block instanceof BlockFlower)
+					if(validator.test(world.getBlockState(newPos)))
 					{
 						found++;
 						if(found >= limit)
