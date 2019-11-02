@@ -12,25 +12,13 @@ public class EnchantmentPerpetualStrike extends UniqueEnchantment
 
 	public EnchantmentPerpetualStrike()
 	{
-		super("perpetualstrike", Rarity.VERY_RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("perpetualstrike", Rarity.VERY_RARE, false, 26, 2, 30), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override
 	public int getMaxLevel()
 	{
 		return 3;
-	}
-	
-	@Override
-	public int getMinEnchantability(int enchantmentLevel)
-	{
-		return 24 * (enchantmentLevel * 2);
-	}
-	
-	@Override
-	public int getMaxEnchantability(int enchantmentLevel)
-	{
-		return getMinEnchantability(enchantmentLevel) + 30;
 	}
 	
 	@Override

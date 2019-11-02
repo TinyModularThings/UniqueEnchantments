@@ -16,31 +16,13 @@ public class EnchantmentWarriorsGrace extends UniqueEnchantment
 
 	public EnchantmentWarriorsGrace()
 	{
-		super("warriorsgrace", Rarity.VERY_RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("warriorsgrace", Rarity.VERY_RARE, true, 22, 2, 30), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override
 	public int getMaxLevel()
 	{
 		return 1;
-	}
-	
-	@Override
-	public int getMinEnchantability(int enchantmentLevel)
-	{
-		return 20 + (enchantmentLevel * 2);
-	}
-	
-	@Override
-	public int getMaxEnchantability(int enchantmentLevel)
-	{
-		return getMinEnchantability(enchantmentLevel) + 30;
-	}
-	
-	@Override
-	public boolean isTreasureEnchantment()
-	{
-		return true;
 	}
 	
 	@Override

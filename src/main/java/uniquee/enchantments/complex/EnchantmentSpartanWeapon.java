@@ -16,7 +16,7 @@ public class EnchantmentSpartanWeapon extends UniqueEnchantment
 
 	public EnchantmentSpartanWeapon()
 	{
-		super("spartanweapon", Rarity.RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("spartanweapon", Rarity.RARE, true, 11, 3, 10), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
 	
 	@Override
@@ -29,24 +29,6 @@ public class EnchantmentSpartanWeapon extends UniqueEnchantment
 	public int getMaxLevel()
 	{
 		return 5;
-	}
-	
-	@Override
-	public boolean isTreasureEnchantment()
-	{
-		return true;
-	}
-	
-	@Override
-	public int getMinEnchantability(int enchantmentLevel)
-	{
-		return 8 + (enchantmentLevel * 3);
-	}
-	
-	@Override
-	public int getMaxEnchantability(int enchantmentLevel)
-	{
-		return getMinEnchantability(enchantmentLevel) + 10;
 	}
 	
 	@Override

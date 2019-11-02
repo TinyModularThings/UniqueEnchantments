@@ -13,7 +13,7 @@ public class EnchantmentSwiftBlade extends UniqueEnchantment
 
 	public EnchantmentSwiftBlade()
 	{
-		super("swiftblade", Rarity.VERY_RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("swiftblade", Rarity.VERY_RARE, false, 26, 0, 30), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override
@@ -21,19 +21,7 @@ public class EnchantmentSwiftBlade extends UniqueEnchantment
 	{
 		return 1;
 	}
-	
-	@Override
-	public int getMinEnchantability(int enchantmentLevel)
-	{
-		return 26;
-	}
-	
-	@Override
-	public int getMaxEnchantability(int enchantmentLevel)
-	{
-		return 56;
-	}
-	
+		
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{

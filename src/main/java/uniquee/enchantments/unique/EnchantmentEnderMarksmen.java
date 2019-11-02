@@ -14,7 +14,7 @@ public class EnchantmentEnderMarksmen extends UniqueEnchantment
 	
 	public EnchantmentEnderMarksmen()
 	{
-		super("endermarksmen", Rarity.VERY_RARE, EnumEnchantmentType.BOW, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("endermarksmen", Rarity.VERY_RARE, true, 28, 2, 16), EnumEnchantmentType.BOW, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
 	
 	@Override
@@ -22,25 +22,7 @@ public class EnchantmentEnderMarksmen extends UniqueEnchantment
 	{
 		return 1;
 	}
-	
-	@Override
-	public int getMinEnchantability(int enchantmentLevel)
-	{
-		return 26;
-	}
-	
-	@Override
-	public int getMaxEnchantability(int enchantmentLevel)
-	{
-		return 42;
-	}
-	
-	@Override
-	public boolean isTreasureEnchantment()
-	{
-		return true;
-	}
-	
+		
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{

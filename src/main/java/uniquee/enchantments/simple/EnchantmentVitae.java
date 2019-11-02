@@ -20,7 +20,7 @@ public class EnchantmentVitae extends UniqueEnchantment
 	
 	public EnchantmentVitae()
 	{
-		super("vitae", Rarity.VERY_RARE, EnumEnchantmentType.ARMOR, new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET});
+		super(new DefaultData("vitae", Rarity.VERY_RARE, false, 10, 2, 7), EnumEnchantmentType.ARMOR, new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET});
 	}
 	
 	@Override
@@ -28,19 +28,7 @@ public class EnchantmentVitae extends UniqueEnchantment
 	{
 		return 5;
 	}
-	
-	@Override
-	public int getMinEnchantability(int enchantmentLevel)
-	{
-		return 8 + (2 * enchantmentLevel);
-	}
-	
-	@Override
-	public int getMaxEnchantability(int enchantmentLevel)
-	{
-		return getMinEnchantability(enchantmentLevel) + 7;
-	}
-	
+		
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{

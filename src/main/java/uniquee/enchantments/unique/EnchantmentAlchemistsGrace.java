@@ -27,7 +27,7 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment
 	
 	public EnchantmentAlchemistsGrace()
 	{
-		super("alchemistsgrace",Rarity.VERY_RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, true, 20, 3, 18), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
 	
 	@Override
@@ -37,29 +37,11 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment
 	}
 	
 	@Override
-	public int getMinEnchantability(int enchantmentLevel)
-	{
-		return 17 + (3 * enchantmentLevel);
-	}
-	
-	@Override
-	public int getMaxEnchantability(int enchantmentLevel)
-	{
-		return getMinEnchantability(enchantmentLevel) + 18;
-	}
-	
-	@Override
 	public boolean canApply(ItemStack stack)
 	{
 		return stack.getItem() instanceof ItemAxe || EnumEnchantmentType.BOW.canEnchantItem(stack.getItem()) ? true : super.canApply(stack);
 	}
-	
-	@Override
-	public boolean isTreasureEnchantment()
-	{
-		return true;
-	}
-	
+		
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{

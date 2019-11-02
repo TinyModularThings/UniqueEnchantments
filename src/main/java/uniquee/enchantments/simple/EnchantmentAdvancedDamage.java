@@ -9,19 +9,27 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.IToggleEnchantment;
+import uniquee.enchantments.UniqueEnchantment.DefaultData;
 
 public class EnchantmentAdvancedDamage extends EnchantmentDamage implements IToggleEnchantment
 {
-    private static final String[] DAMAGE_NAMES = new String[] {"all", "undead", "arthropods"};
-    private static final int[] BASECOST = new int[]{18, 14, 14};
+	public static final DefaultData[] DATA = new DefaultData[]{
+		new DefaultData("all", Rarity.VERY_RARE, true, 20, 2, 18),
+		new DefaultData("undead", Rarity.RARE, true, 16, 2, 14),
+		new DefaultData("arthropods", Rarity.RARE, true, 16, 2, 14),
+	};
     private static final float[] DEFAULTS = new float[]{1F, 3F, 3F};
+	DefaultData defaults;
+	DefaultData actualData;
     public float scalar;
     boolean isEnabled = true;
     
 	public EnchantmentAdvancedDamage(int damageTypeIn)
 	{
-		super(damageTypeIn == 0 ? Rarity.VERY_RARE : Rarity.RARE, damageTypeIn, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
-		setRegistryName(DAMAGE_NAMES[damageTypeIn]);
+		super(DATA[damageTypeIn].getRarity(), damageTypeIn, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		setRegistryName(DATA[damageTypeIn].getName());
+		defaults = DATA[damageTypeIn];
+		actualData = defaults;
 		scalar = DEFAULTS[damageTypeIn];
 	}
 	
@@ -40,7 +48,7 @@ public class EnchantmentAdvancedDamage extends EnchantmentDamage implements ITog
     @Override
     public String getName()
     {
-    	return "enchantment.uniquee.damage."+DAMAGE_NAMES[damageType];
+    	return "enchantment.uniquee.damage."+defaults.getName();
     }
     
     @Override
@@ -52,19 +60,25 @@ public class EnchantmentAdvancedDamage extends EnchantmentDamage implements ITog
     @Override
     public boolean isTreasureEnchantment()
     {
-    	return true;
+    	return actualData.isTreasure();
     }
     
     @Override
     public int getMinEnchantability(int enchantmentLevel)
     {
-    	return BASECOST[damageType] + (2 * enchantmentLevel);
+    	return actualData.getLevelCost(enchantmentLevel);
     }
     
     @Override
     public int getMaxEnchantability(int enchantmentLevel)
     {
-    	return getMinEnchantability(enchantmentLevel) + BASECOST[damageType];
+		return getMinEnchantability(enchantmentLevel) + actualData.getRangeCost();
+    }
+    
+    @Override
+    public Rarity getRarity()
+    {
+    	return actualData.getRarity();
     }
     
     @Override
@@ -82,8 +96,6 @@ public class EnchantmentAdvancedDamage extends EnchantmentDamage implements ITog
         }
     }
     
-    
-    
 	@Override
 	public String getConfigName()
 	{
@@ -100,6 +112,7 @@ public class EnchantmentAdvancedDamage extends EnchantmentDamage implements ITog
 	public void loadFromConfig(Configuration config)
 	{
 		isEnabled = config.get(getConfigName(), "enabled", true).getBoolean();
+		actualData = new DefaultData(defaults, config, getConfigName());
 		scalar = (float)config.get(getConfigName(), "scalar", DEFAULTS[damageType]).getDouble();
 	}
 }

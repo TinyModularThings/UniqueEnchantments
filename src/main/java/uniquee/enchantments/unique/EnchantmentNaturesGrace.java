@@ -12,7 +12,7 @@ public class EnchantmentNaturesGrace extends UniqueEnchantment
 
 	public EnchantmentNaturesGrace()
 	{
-		super("naturesgrace", Rarity.VERY_RARE, EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
+		super(new DefaultData("naturesgrace", Rarity.VERY_RARE, true, 22, 4, 22), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
 	}
 	
 	@Override
@@ -22,29 +22,10 @@ public class EnchantmentNaturesGrace extends UniqueEnchantment
 	}
 	
 	@Override
-	public int getMinEnchantability(int enchantmentLevel)
-	{
-		return 18;
-	}
-	
-	@Override
-	public int getMaxEnchantability(int enchantmentLevel)
-	{
-		return 40;
-	}
-	
-	@Override
-	public boolean isTreasureEnchantment()
-	{
-		return true;
-	}
-	
-	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{
 		return ench instanceof EnchantmentAresBlessing || ench instanceof EnchantmentAlchemistsGrace || ench instanceof EnchantmentWarriorsGrace ? false : super.canApplyTogether(ench);
 	}
-
 	
 	@Override
 	public void loadData(Configuration config)

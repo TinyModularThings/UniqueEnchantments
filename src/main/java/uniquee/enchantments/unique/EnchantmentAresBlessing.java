@@ -10,7 +10,7 @@ public class EnchantmentAresBlessing extends UniqueEnchantment
 	public static double SCALAR = 2D;
 	public EnchantmentAresBlessing()
 	{
-		super("aresblessing", Rarity.VERY_RARE, EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
+		super(new DefaultData("aresblessing", Rarity.VERY_RARE, true, 28, 2, 32), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
 	}
 	
 	@Override
@@ -19,24 +19,6 @@ public class EnchantmentAresBlessing extends UniqueEnchantment
 		return 1;
 	}
 	
-	@Override
-	public int getMinEnchantability(int enchantmentLevel)
-	{
-		return 26 + (enchantmentLevel * 2);
-	}
-	
-	@Override
-	public int getMaxEnchantability(int enchantmentLevel)
-	{
-		return getMinEnchantability(enchantmentLevel) + 32;
-	}
-	
-	@Override
-	public boolean isTreasureEnchantment()
-	{
-		return true;
-	}
-
 	@Override
 	public void loadData(Configuration config)
 	{

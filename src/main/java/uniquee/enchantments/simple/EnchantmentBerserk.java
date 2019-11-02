@@ -16,7 +16,7 @@ public class EnchantmentBerserk extends UniqueEnchantment
 	
 	public EnchantmentBerserk()
 	{
-		super("berserk", Rarity.RARE, EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("berserk", Rarity.RARE, false, 20, 2, 22), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override
@@ -29,18 +29,6 @@ public class EnchantmentBerserk extends UniqueEnchantment
 	public boolean canApply(ItemStack stack)
 	{
         return stack.getItem() instanceof ItemAxe ? true : super.canApply(stack);
-	}
-	
-	@Override
-	public int getMinEnchantability(int enchantmentLevel)
-	{
-		return 18;
-	}
-	
-	@Override
-	public int getMaxEnchantability(int enchantmentLevel)
-	{
-		return 40;
 	}
 	
 	@Override
