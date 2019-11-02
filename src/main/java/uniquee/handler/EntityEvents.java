@@ -1,11 +1,15 @@
 package uniquee.handler;
 
+import java.util.Collections;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -80,7 +84,6 @@ public class EntityEvents
 					player.heal((float)(1D * EnchantmentNaturesGrace.SCALAR));
 				}
 			}
-			return;
 		}
 		ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 		int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.CLOUD_WALKER, stack);
@@ -265,12 +268,12 @@ public class EntityEvents
 	{
 		Multimap<String, AttributeModifier> mods = HashMultimap.create();
 		int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.VITAE, stack);
-		if(level > 0)
+		if(level > 0 && getSlotsFor(UniqueEnchantments.VITAE).contains(slot))
 		{
 			mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(EnchantmentVitae.getForSlot(slot), "Vitae Boost", level * EnchantmentVitae.SCALAR, 0));
 		}
 		level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.SWIFT, stack);
-		if(level > 0)
+		if(level > 0 && getSlotsFor(UniqueEnchantments.SWIFT).contains(slot))
 		{
 			mods.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(EnchantmentSwift.SPEED_MOD, "Swift Boost", EnchantmentSwift.SCALAR * level, 2));
 		}
@@ -315,6 +318,19 @@ public class EntityEvents
 			return new ItemStack(Items.ARROW);
 		}
 		return ItemStack.EMPTY;
+	}
+	
+	public static Set<EntityEquipmentSlot> getSlotsFor(Enchantment ench)
+	{
+		try
+		{
+			return new ObjectOpenHashSet<EntityEquipmentSlot>((EntityEquipmentSlot[])ReflectionHelper.getPrivateValue(Enchantment.class, ench, "applicableEquipmentTypes", "field_185263_a"));
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return Collections.EMPTY_SET;
 	}
 	
 	public static boolean hasBlockCount(World world, BlockPos pos, int limit, Predicate<IBlockState> validator)
