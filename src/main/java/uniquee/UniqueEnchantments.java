@@ -11,10 +11,13 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import uniquee.compat.FirstAidHandler;
@@ -35,7 +38,7 @@ import uniquee.enchantments.unique.EnchantmentNaturesGrace;
 import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
 import uniquee.handler.EntityEvents;
 
-@Mod(modid = "uniquee", name = "Unique Enchantments", version = "1.0.0")
+@Mod(modid = "uniquee", name = "Unique Enchantments", version = "1.0.0", guiFactory = "uniquee.handler.ConfigHandler")
 public class UniqueEnchantments
 {
 	static List<IToggleEnchantment> ENCHANTMENTS = new ObjectArrayList<IToggleEnchantment>();
@@ -61,7 +64,7 @@ public class UniqueEnchantments
 	public static Enchantment FAST_FOOD = new EnchantmentFastFood();
 	public static Enchantment NATURES_GRACE = new EnchantmentNaturesGrace();
 	
-	static Configuration CONFIG;
+	public static Configuration CONFIG;
 	
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent event)
@@ -72,7 +75,13 @@ public class UniqueEnchantments
 		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE);
 		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(FirstAidHandler.INSTANCE);
+		MinecraftForge.EVENT_BUS.register(this);
 		CONFIG = new Configuration(event.getSuggestedConfigurationFile());
+	}
+	
+	@EventHandler
+	public void onPostInit(FMLPostInitializationEvent event)
+	{
 		loadConfig();
 	}
 	
@@ -80,6 +89,25 @@ public class UniqueEnchantments
 	public void onServerStarting(FMLServerStartingEvent event)
 	{
 		event.registerServerCommand(new ReloadCommand());
+	}
+	
+	@SubscribeEvent
+	public void onConfigChange(OnConfigChangedEvent evt)
+	{
+		if(evt.getModID().equalsIgnoreCase("uniquee"))
+		{
+			return;
+		}
+		try
+		{
+			for(IToggleEnchantment ench : ENCHANTMENTS)
+			{
+				ench.loadFromConfig(CONFIG);
+			}
+		}
+		catch(Exception e)
+		{
+		}
 	}
 	
 	public static void loadConfig()
