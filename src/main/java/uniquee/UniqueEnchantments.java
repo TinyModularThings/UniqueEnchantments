@@ -41,7 +41,7 @@ import uniquee.enchantments.unique.EnchantmentNaturesGrace;
 import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
 import uniquee.handler.EntityEvents;
 
-@Mod(modid = "uniquee", name = "Unique Enchantments", version = "1.1.0", guiFactory = "uniquee.handler.ConfigHandler")
+@Mod(modid = "uniquee", name = "Unique Enchantments", version = "1.1.1", guiFactory = "uniquee.handler.ConfigHandler")
 public class UniqueEnchantments
 {
 	static List<IToggleEnchantment> ENCHANTMENTS = new ObjectArrayList<IToggleEnchantment>();

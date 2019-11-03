@@ -2,12 +2,10 @@ package uniquee.enchantments.simple;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.unique.EnchantmentAresBlessing;
 
 public class EnchantmentVitae extends UniqueEnchantment
 {
@@ -27,12 +25,6 @@ public class EnchantmentVitae extends UniqueEnchantment
 	public int getMaxLevel()
 	{
 		return 5;
-	}
-		
-	@Override
-	protected boolean canApplyTogether(Enchantment ench)
-	{
-		return ench instanceof EnchantmentAresBlessing ? false : super.canApplyTogether(ench);
 	}
 	
 	public static UUID getForSlot(EntityEquipmentSlot slot)

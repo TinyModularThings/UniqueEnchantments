@@ -257,6 +257,10 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onXPDrop(LivingExperienceDropEvent event)
 	{
+		if(event.getAttackingPlayer() == null)
+		{
+			return;
+		}
 		int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.SAGES_BLESSING, EnchantmentHelper.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, event.getAttackingPlayer()));
 		if(level > 0)
 		{
