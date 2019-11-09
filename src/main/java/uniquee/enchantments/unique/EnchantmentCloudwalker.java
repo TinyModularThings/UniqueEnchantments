@@ -7,6 +7,7 @@ import uniquee.enchantments.UniqueEnchantment;
 
 public class EnchantmentCloudwalker extends UniqueEnchantment
 {
+	public static final String TIMER = "cloud";
 	public static int TICKS = 50;
 
 	public EnchantmentCloudwalker()

@@ -11,7 +11,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	public static final Rarity[] RARITIES = Rarity.values();
 	DefaultData defaults;
 	DefaultData actualData;
-	boolean enabled = false;
+	protected boolean enabled = false;
 	String configName;
 	
 	protected UniqueEnchantment(DefaultData data, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots)

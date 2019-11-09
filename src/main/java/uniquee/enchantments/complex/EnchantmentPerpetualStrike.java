@@ -9,7 +9,9 @@ import uniquee.enchantments.UniqueEnchantment;
 public class EnchantmentPerpetualStrike extends UniqueEnchantment
 {
 	public static double SCALAR = 0.025D;
-
+	public static final String HIT_COUNT = "strikes";
+	public static final String HIT_ID = "hit_id";
+	
 	public EnchantmentPerpetualStrike()
 	{
 		super(new DefaultData("perpetualstrike", Rarity.VERY_RARE, false, 26, 2, 30), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
