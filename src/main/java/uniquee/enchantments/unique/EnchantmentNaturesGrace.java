@@ -10,8 +10,9 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.enchantments.type.IGraceEnchantment;
 
-public class EnchantmentNaturesGrace extends UniqueEnchantment
+public class EnchantmentNaturesGrace extends UniqueEnchantment implements IGraceEnchantment
 {
 	public static double SCALAR = 0.5D;
 	public static Predicate<IBlockState> FLOWERS = new Predicate<IBlockState>(){

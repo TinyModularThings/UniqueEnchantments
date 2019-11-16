@@ -6,9 +6,10 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.enchantments.type.IBlessingEnchantment;
 import uniquee.enchantments.unique.EnchantmentFastFood;
 
-public class EnchantmentSagesBlessing extends UniqueEnchantment
+public class EnchantmentSagesBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
 	public static double XP_BOOST = 0.2D;
 	

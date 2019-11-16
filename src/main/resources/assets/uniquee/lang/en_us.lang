@@ -48,3 +48,13 @@ enchantment.uniquee.ecological=Ecological
 enchantment.uniquee.ecological.desc=Standing near Wood(Logs) & Leaves, will recover slowly the durability of your tool.
 enchantment.uniquee.phoenixs_blessing=Phoenix's Blessing
 enchantment.uniquee.phoenixs_blessing.desc=When died, will resurrect you with full Health and Hunger
+enchantment.uniquee.midas_blessing=Midas Blessing
+enchantment.uniquee.midas_blessing.desc=Shift-Leftclicking an Anvil will consume all of your Gold in your Inventory. Mining an oreGem, will consume Gold, but double the drops.
+enchantment.uniquee.ifrits_grace=Ifrit's Grace
+enchantment.uniquee.ifrits_grace.desc=Shift-Leftclicking an Anvil will consume all Lava/Magma related Blocks in you Inventory and store it as "Lava Power". Mining a Block will consume Lava Power, mining an Ore will consume even more. Therefore the Drops will be smelted.
+enchantment.uniquee.jokers_blessing=Joker's Blessing
+enchantment.uniquee.jokers_blessing.desc=Consume Experience, to double all drops.
+
+//Tooltips
+tooltip.uniqee.stored.gold.name="Stored Gold: %s"
+tooltip.uniqee.stored.lava.name="Stored Lava: %s"

@@ -1,8 +1,10 @@
 package uniquee.handler;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -10,6 +12,7 @@ import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -32,14 +35,18 @@ import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -55,14 +62,20 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 import uniquee.UniqueEnchantments;
+import uniquee.enchantments.complex.EnchantmentJokersBlessing;
 import uniquee.enchantments.complex.EnchantmentMomentum;
 import uniquee.enchantments.complex.EnchantmentPerpetualStrike;
 import uniquee.enchantments.complex.EnchantmentSpartanWeapon;
@@ -78,14 +91,32 @@ import uniquee.enchantments.unique.EnchantmentCloudwalker;
 import uniquee.enchantments.unique.EnchantmentEcological;
 import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
 import uniquee.enchantments.unique.EnchantmentFastFood;
+import uniquee.enchantments.unique.EnchantmentIfritsGrace;
+import uniquee.enchantments.unique.EnchantmentMidasBlessing;
 import uniquee.enchantments.unique.EnchantmentNaturesGrace;
 import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
 import uniquee.handler.ai.AISpecialFindPlayer;
 
 public class EntityEvents
 {
-	NBTTagCompound localData = new NBTTagCompound();
 	public static final EntityEvents INSTANCE = new EntityEvents();
+	
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void onToolTipEvent(ItemTooltipEvent event)
+	{
+		ItemStack stack = event.getItemStack();
+		int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.MIDAS_BLESSING, stack);
+		if(level > 0)
+		{
+			event.getToolTip().add(I18n.format("tooltip.uniqee.stored.gold.name", getInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, 0)));
+		}
+		level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.IFRIDS_GRACE, stack);
+		if(level > 0)
+		{
+			event.getToolTip().add(I18n.format("tooltip.uniqee.stored.lava.name", getInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, 0)));
+		}
+	}
 	
 	@SubscribeEvent
 	public void onEntitySpawn(EntityJoinWorldEvent event)
@@ -217,6 +248,112 @@ public class EntityEvents
 			int max = EnchantmentMomentum.CAP * level;
 			NBTTagCompound nbt = event.getPlayer().getEntityData();
 			nbt.setInteger(EnchantmentMomentum.COUNT, Math.min(max, nbt.getInteger(EnchantmentMomentum.COUNT) + 1));
+		}
+	}
+	
+	@SubscribeEvent
+	public void onBlockLoot(HarvestDropsEvent event)
+	{
+		if(event.getHarvester() == null)
+		{
+			return;
+		}
+		ItemStack stack = event.getHarvester().getHeldItemMainhand();
+		int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.MIDAS_BLESSING, stack);
+		if(level > 0)
+		{
+			int gold = getInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, 0);
+			if(gold > 0 && isGem(event.getState()))
+			{
+				gold -= (int)(Math.ceil((double)EnchantmentMidasBlessing.LEVEL_SCALAR / (double)level) + EnchantmentMidasBlessing.BASE_COST);
+				setInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, Math.max(0, gold));
+				int multiplier = 1 + level;
+				List<ItemStack> newDrops = new ObjectArrayList<ItemStack>();
+				for(ItemStack drop : event.getDrops())
+				{
+					growStack(drop, drop.getCount() * multiplier, newDrops);
+				}
+				event.getDrops().clear();
+				event.getDrops().addAll(newDrops);
+			}
+		}
+		level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.IFRIDS_GRACE, stack);
+		if(level > 0)
+		{
+			int stored = getInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, 0);
+			if(stored > 0)
+			{
+				boolean ore = isOre(event.getState());
+				int smelted = 0;
+				List<ItemStack> stacks = event.getDrops();
+				for(int i = 0,m=stacks.size();i<m;i++)
+				{
+					ItemStack toBurn = stacks.get(i).copy();
+					toBurn.setCount(1);
+					ItemStack burned = FurnaceRecipes.instance().getSmeltingResult(toBurn).copy();
+					if(burned.isEmpty())
+					{
+						continue;
+					}
+					burned.setCount(burned.getCount() * stacks.get(i).getCount());
+					stacks.set(i, burned);
+					smelted++;
+				}
+				if(smelted > 0)
+				{
+					stored -= smelted * (ore ? 5 : 1);
+					setInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, Math.max(0, stored));
+				}
+			}
+		}
+		level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.JOKERS_BLESSING, stack);
+		if(level > 0)
+		{
+			int neededXP = (int)Math.ceil((float)EnchantmentJokersBlessing.SCALAR / (float)level);
+			EntityPlayer player = event.getHarvester();
+			if(player.experienceTotal >= neededXP)
+			{
+				player.experienceTotal -= neededXP;
+				player.experienceLevel = getLvlForXP(player.experienceTotal);
+				player.experience = (float)(player.experienceTotal - getXPForLvl(player.experienceLevel)) / player.xpBarCap();
+				for(ItemStack drop : event.getDrops())
+				{
+					drop.grow(drop.getCount());
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onBlockClick(RightClickBlock event)
+	{
+		if(event.getEntityPlayer().isSneaking())
+		{
+			ItemStack stack = event.getItemStack();
+			int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.MIDAS_BLESSING, stack);
+			if(level > 0)
+			{
+				int found = consumeItems(event.getEntityPlayer(), EnchantmentMidasBlessing.VALIDATOR, Integer.MAX_VALUE);
+				if(found > 0)
+				{
+					setInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, getInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, 0) + found);
+					event.setCancellationResult(EnumActionResult.SUCCESS);
+					event.setCanceled(true);
+					return;
+				}
+			}
+			level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.IFRIDS_GRACE, stack);
+			if(level > 0)
+			{
+				int found = consumeItems(event.getEntityPlayer(), EnchantmentIfritsGrace.VALIDATOR, Integer.MAX_VALUE);
+				if(found > 0)
+				{
+					setInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, getInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, 0) + found);
+					event.setCancellationResult(EnumActionResult.SUCCESS);
+					event.setCanceled(true);
+					return;
+				}
+			}
 		}
 	}
 	
@@ -460,6 +597,17 @@ public class EntityEvents
 		stack.setTagInfo(tagName, new NBTTagLong(value));
 	}
 	
+	public static void growStack(ItemStack source, int size, List<ItemStack> output)
+	{
+		while(size > 0)
+		{
+			ItemStack stack = source.copy();
+			stack.setCount(Math.min(size, stack.getMaxStackSize()));
+			output.add(stack);
+			size -= stack.getCount();
+		}
+	}
+	
 	public static ItemStack getArrowStack(EntityArrow arrow)
 	{
 		try
@@ -502,6 +650,79 @@ public class EntityEvents
 		return Collections.EMPTY_SET;
 	}
 	
+	public static boolean isOre(IBlockState state)
+	{
+		Item item = Item.getItemFromBlock(state.getBlock());
+		if(item == Items.AIR)
+		{
+			return false;
+		}
+		//Correct way to extract meta-data out of a BlockState. This is accurate from 1.12 backwards to most versions I know. (1.4.7 I think)
+		for(int id : OreDictionary.getOreIDs(new ItemStack(item, 1, item.getMetadata(state.getBlock().getMetaFromState(state)))))
+		{
+			if(OreDictionary.getOreName(id).startsWith("ore"))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static boolean isGem(IBlockState state)
+	{
+		Item item = Item.getItemFromBlock(state.getBlock());
+		if(item == Items.AIR)
+		{
+			return false;
+		}
+		//Correct way to extract meta-data out of a BlockState. This is accurate from 1.12 backwards to most versions I know. (1.4.7 I think)
+		for(int id : OreDictionary.getOreIDs(new ItemStack(item, 1, item.getMetadata(state.getBlock().getMetaFromState(state)))))
+		{
+			String gem = OreDictionary.getOreName(id);
+			if(gem.startsWith("ore") && OreDictionary.doesOreNameExist("gem"+gem.substring(3)))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static int consumeItems(EntityPlayer player, ToIntFunction<ItemStack> validator, int limit)
+	{
+		int found = 0;
+		NonNullList<ItemStack> inv = player.inventory.mainInventory;
+		for(int i = 0,m=inv.size();i<m;i++)
+		{
+			ItemStack stack = inv.get(i);
+			int value = validator.applyAsInt(stack);
+			if(value <= 0)
+			{
+				continue;
+			}
+			int left = limit - found;
+			if(left >= stack.getCount() * value)
+			{
+				found+=stack.getCount() * value;
+				if(stack.getItem().hasContainerItem(stack))
+				{
+					inv.set(i, stack.getItem().getContainerItem(stack));
+					continue;
+				}
+				inv.set(i, ItemStack.EMPTY);
+			}
+			else if(left / value > 0)
+			{
+				stack.shrink(left / value);
+				found += left;
+			}
+			if(found >= limit)
+			{
+				break;
+			}
+		}
+		return found;
+	}
+	
 	public static boolean hasBlockCount(World world, BlockPos pos, int limit, Predicate<IBlockState> validator)
 	{
 		MutableBlockPos newPos = new MutableBlockPos();
@@ -525,5 +746,28 @@ public class EntityEvents
 			}
 		}
 		return false;
+	}
+	
+	public static int getXP(EntityPlayer player)
+	{
+		return getXPForLvl(player.experienceLevel) + (int)(player.experience * player.xpBarCap());
+	}
+	
+	public static int getXPForLvl(int level) 
+	{
+		if (level < 0) return Integer.MAX_VALUE;
+		if (level <= 15)return level * level + 6 * level;
+		if (level <= 30)return (int) (((level * level) * 2.5D) - (40.5D * level) + 360.0D);
+		return (int) (((level * level) * 4.5D) - (162.5D * level) + 2220.0D);
+	}
+
+	public static int getLvlForXP(int totalXP)
+	{
+		int result = 0;
+		while (getXPForLvl(result) <= totalXP) 
+		{
+			result++;
+		}
+		return --result;
 	}
 }

@@ -4,8 +4,9 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.enchantments.type.IBlessingEnchantment;
 
-public class EnchantmentAresBlessing extends UniqueEnchantment
+public class EnchantmentAresBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
 	public static double SCALAR = 2D;
 	public EnchantmentAresBlessing()

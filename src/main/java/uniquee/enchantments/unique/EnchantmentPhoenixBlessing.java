@@ -6,8 +6,9 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.enchantments.type.IBlessingEnchantment;
 
-public class EnchantmentPhoenixBlessing extends UniqueEnchantment
+public class EnchantmentPhoenixBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
 	
 	public EnchantmentPhoenixBlessing()

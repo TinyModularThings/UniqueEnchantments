@@ -9,8 +9,9 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.enchantments.type.IGraceEnchantment;
 
-public class EnchantmentWarriorsGrace extends UniqueEnchantment
+public class EnchantmentWarriorsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
 	public static double SCALAR = 1D;
 

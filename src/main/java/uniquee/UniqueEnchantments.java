@@ -22,6 +22,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import uniquee.compat.FirstAidHandler;
 import uniquee.enchantments.IToggleEnchantment;
+import uniquee.enchantments.complex.EnchantmentJokersBlessing;
 import uniquee.enchantments.complex.EnchantmentMomentum;
 import uniquee.enchantments.complex.EnchantmentPerpetualStrike;
 import uniquee.enchantments.complex.EnchantmentSpartanWeapon;
@@ -39,12 +40,14 @@ import uniquee.enchantments.unique.EnchantmentCloudwalker;
 import uniquee.enchantments.unique.EnchantmentEcological;
 import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
 import uniquee.enchantments.unique.EnchantmentFastFood;
+import uniquee.enchantments.unique.EnchantmentIfritsGrace;
+import uniquee.enchantments.unique.EnchantmentMidasBlessing;
 import uniquee.enchantments.unique.EnchantmentNaturesGrace;
 import uniquee.enchantments.unique.EnchantmentPhoenixBlessing;
 import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
 import uniquee.handler.EntityEvents;
 
-@Mod(modid = "uniquee", name = "Unique Enchantments", version = "1.2.0", guiFactory = "uniquee.handler.ConfigHandler")
+@Mod(modid = "uniquee", name = "Unique Enchantments", version = "1.3.0", guiFactory = "uniquee.handler.ConfigHandler")
 public class UniqueEnchantments
 {
 	static List<IToggleEnchantment> ENCHANTMENTS = new ObjectArrayList<IToggleEnchantment>();
@@ -64,6 +67,8 @@ public class UniqueEnchantments
 	public static Enchantment PERPETUAL_STRIKE = new EnchantmentPerpetualStrike();
 	public static Enchantment CLIMATE_TRANQUILITY = new EnchantmentClimateTranquility();
 	public static Enchantment MOMENTUM = new EnchantmentMomentum();
+	//Disabled because to high exploits
+	public static Enchantment JOKERS_BLESSING = new EnchantmentJokersBlessing();
 	
 	//Unique
 	public static Enchantment WARRIORS_GRACE = new EnchantmentWarriorsGrace();
@@ -75,6 +80,8 @@ public class UniqueEnchantments
 	public static Enchantment NATURES_GRACE = new EnchantmentNaturesGrace();
 	public static Enchantment ECOLOGICAL = new EnchantmentEcological();
 	public static Enchantment PHOENIX_BLESSING = new EnchantmentPhoenixBlessing();
+	public static Enchantment MIDAS_BLESSING = new EnchantmentMidasBlessing();
+	public static Enchantment IFRIDS_GRACE = new EnchantmentIfritsGrace();
 	
 	public static Configuration CONFIG;
 	
@@ -84,7 +91,7 @@ public class UniqueEnchantments
 		IForgeRegistry<Enchantment> registry = ForgeRegistries.ENCHANTMENTS;
 		registerEnchantments(BERSERKER, ADV_SHARPNESS, ADV_SMITE, ADV_BANE_OF_ARTHROPODS, VITAE, SWIFT, SAGES_BLESSING, ENDER_EYES);
 		registerEnchantments(SWIFT_BLADE, SPARTAN_WEAPON, PERPETUAL_STRIKE, CLIMATE_TRANQUILITY, MOMENTUM);
-		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE, ECOLOGICAL, PHOENIX_BLESSING);
+		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE, ECOLOGICAL, PHOENIX_BLESSING, MIDAS_BLESSING, IFRIDS_GRACE);
 		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(FirstAidHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(this);

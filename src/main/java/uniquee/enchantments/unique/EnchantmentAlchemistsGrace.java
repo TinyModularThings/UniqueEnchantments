@@ -18,8 +18,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.enchantments.type.IGraceEnchantment;
 
-public class EnchantmentAlchemistsGrace extends UniqueEnchantment
+public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
 	public static Potion[] EFFECTS = new Potion[]{MobEffects.SPEED, MobEffects.HASTE, MobEffects.RESISTANCE, MobEffects.STRENGTH};
 	public static int AMPLIFIER_CAP = 2;
