@@ -184,7 +184,7 @@ public class EntityEvents
 		for(ItemStack equipStack : UniqueEnchantments.ECOLOGICAL.getEntityEquipment(player))
 		{
 			level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.ECOLOGICAL, equipStack);
-			if(level > 0 && equipStack.isItemDamaged() && player.world.getTotalWorldTime() % Math.min(1, (int)(EnchantmentEcological.SPEED / Math.sqrt(level / EnchantmentEcological.SCALE))) == 0)
+			if(level > 0 && equipStack.isItemDamaged() && player.world.getTotalWorldTime() % Math.max(1, (int)(EnchantmentEcological.SPEED / Math.sqrt(level / EnchantmentEcological.SCALE))) == 0)
 			{
 				if((cache == null ? cache = hasBlockCount(player.world, player.getPosition(), 1, EnchantmentEcological.STATES) : cache.booleanValue()))
 				{

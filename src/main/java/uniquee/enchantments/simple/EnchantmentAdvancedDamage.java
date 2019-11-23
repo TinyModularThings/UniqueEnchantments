@@ -101,9 +101,9 @@ public class EnchantmentAdvancedDamage extends EnchantmentDamage implements ITog
 	{
 		switch(damageType)
 		{
-			case 0: return "adv_sharpness";
-			case 1: return "adv_smite";
-			case 2: return "adv_arthropods";
+			case 0: return "ameliorated_sharpness";
+			case 1: return "ameliorated_smite";
+			case 2: return "ameliorated_arthropods";
 			default: return "I_AM_ERROR";
 		}
 	}
