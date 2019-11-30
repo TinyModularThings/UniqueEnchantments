@@ -48,7 +48,7 @@ public class EnchantmentAdvancedDamage extends EnchantmentDamage implements ITog
     @Override
     public String getName()
     {
-    	return "enchantment.uniquee.damage."+defaults.getName();
+    	return "enchantment.uniquee."+defaults.getName();
     }
     
     @Override

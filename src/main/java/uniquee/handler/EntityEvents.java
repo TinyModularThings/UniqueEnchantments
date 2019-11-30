@@ -24,6 +24,7 @@ import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
@@ -63,6 +64,7 @@ import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -82,6 +84,7 @@ import uniquee.enchantments.complex.EnchantmentPerpetualStrike;
 import uniquee.enchantments.complex.EnchantmentSpartanWeapon;
 import uniquee.enchantments.complex.EnchantmentSwiftBlade;
 import uniquee.enchantments.simple.EnchantmentBerserk;
+import uniquee.enchantments.simple.EnchantmentBoneCrusher;
 import uniquee.enchantments.simple.EnchantmentFocusImpact;
 import uniquee.enchantments.simple.EnchantmentSagesBlessing;
 import uniquee.enchantments.simple.EnchantmentSwift;
@@ -452,6 +455,14 @@ public class EntityEvents
 					event.getEntityLiving().setFire(level * EnchantmentClimateTranquility.BURN_TIME);
 				}
 			}
+			if(event.getEntityLiving() instanceof AbstractSkeleton)
+			{
+				level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.BONE_CRUSH, base.getHeldItemMainhand());
+				if(level > 0)
+				{
+					event.setAmount((float)(event.getAmount() * (1F + (EnchantmentBoneCrusher.SCALAR * level))));
+				}
+			}
 		}
 	}
 	
@@ -569,6 +580,20 @@ public class EntityEvents
 		if(level > 0)
 		{
 			event.setDroppedExperience((int)(event.getDroppedExperience() + event.getDroppedExperience() * (level * EnchantmentSagesBlessing.XP_BOOST)));
+		}
+	}
+	
+	@SubscribeEvent
+	public void onLootingLevel(LootingLevelEvent event)
+	{
+		Entity entity = event.getDamageSource().getTrueSource();
+		if(entity instanceof EntityLivingBase && event.getEntityLiving() instanceof AbstractSkeleton)
+		{
+			int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.BONE_CRUSH, ((EntityLivingBase)entity).getHeldItemMainhand());
+			if(level > 0)
+			{
+				event.setLootingLevel((event.getLootingLevel() + 1) + level);
+			}
 		}
 	}
 	

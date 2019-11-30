@@ -2,12 +2,12 @@
 //Simple
 enchantment.uniquee.berserk=Berserker
 enchantment.uniquee.berserk.desc=The lower your Health, the higher your Damage
-enchantment.uniquee.damage.all=Ameliorated Sharpness
-enchantment.uniquee.damage.all.desc=An Advanced Version of Sharpness
-enchantment.uniquee.damage.undead=Ameliorated Smite
-enchantment.uniquee.damage.undead.desc=An Advanced Version of Smite
-enchantment.uniquee.damage.arthropods=Ameliorated Bane of Arthropod
-enchantment.uniquee.damage.arthropods.desc=An Advanced Version of Bane of Arthropod
+enchantment.uniquee.all=Ameliorated Sharpness
+enchantment.uniquee.all.desc=An Advanced Version of Sharpness
+enchantment.uniquee.undead=Ameliorated Smite
+enchantment.uniquee.undead.desc=An Advanced Version of Smite
+enchantment.uniquee.arthropods=Ameliorated Bane of Arthropod
+enchantment.uniquee.arthropods.desc=An Advanced Version of Bane of Arthropod
 enchantment.uniquee.vitae=Vitae
 enchantment.uniquee.vitae.desc=Grants you more Health
 enchantment.uniquee.swift=Swift
@@ -18,6 +18,8 @@ enchantment.uniquee.ender_eyes=Ender Eye's
 enchantment.uniquee.ender_eyes.desc=Makes that endermen won't attack you on looking at them
 enchantment.uniquee.focus_impact=Focus Impact
 enchantment.uniquee.focus_impact.desc=Low Attack Speed, increases damage dealt
+enchantment.uniquee.bone_crusher=Bone Crusher
+enchantment.uniquee.bone_crusher.desc=Low Attack Speed, increases damage dealt
 
 //Complex
 enchantment.uniquee.swiftblade=Swift Blade
