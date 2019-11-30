@@ -61,6 +61,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
@@ -81,6 +82,7 @@ import uniquee.enchantments.complex.EnchantmentPerpetualStrike;
 import uniquee.enchantments.complex.EnchantmentSpartanWeapon;
 import uniquee.enchantments.complex.EnchantmentSwiftBlade;
 import uniquee.enchantments.simple.EnchantmentBerserk;
+import uniquee.enchantments.simple.EnchantmentFocusImpact;
 import uniquee.enchantments.simple.EnchantmentSagesBlessing;
 import uniquee.enchantments.simple.EnchantmentSwift;
 import uniquee.enchantments.simple.EnchantmentVitae;
@@ -91,6 +93,7 @@ import uniquee.enchantments.unique.EnchantmentCloudwalker;
 import uniquee.enchantments.unique.EnchantmentEcological;
 import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
 import uniquee.enchantments.unique.EnchantmentFastFood;
+import uniquee.enchantments.unique.EnchantmentIcarusAegis;
 import uniquee.enchantments.unique.EnchantmentIfritsGrace;
 import uniquee.enchantments.unique.EnchantmentMidasBlessing;
 import uniquee.enchantments.unique.EnchantmentNaturesGrace;
@@ -115,6 +118,11 @@ public class EntityEvents
 		if(level > 0)
 		{
 			event.getToolTip().add(I18n.format("tooltip.uniqee.stored.lava.name", getInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, 0)));
+		}
+		level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.ICARUS_AEGIS, stack);
+		if(level > 0)
+		{
+			event.getToolTip().add(I18n.format("tooltip.uniqee.stored.feather.name", getInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, 0)));
 		}
 	}
 	
@@ -158,6 +166,16 @@ public class EntityEvents
 			{
 				EnchantmentClimateTranquility.onClimate(player);
 			}
+			if(player.world.getTotalWorldTime() % 10 == 0)
+			{
+				ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+				int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.ICARUS_AEGIS, stack);
+				if(level > 0)
+				{
+					stack.getTagCompound().setBoolean(EnchantmentIcarusAegis.FLYING_TAG, player.isElytraFlying());
+				}
+			}
+
 		}
 		ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 		int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.CLOUD_WALKER, stack);
@@ -354,6 +372,18 @@ public class EntityEvents
 					return;
 				}
 			}
+			level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.ICARUS_AEGIS, stack);
+			if(level > 0)
+			{
+				int found = consumeItems(event.getEntityPlayer(), EnchantmentIcarusAegis.VALIDATOR, Integer.MAX_VALUE);
+				if(found > 0)
+				{
+					setInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, getInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, 0) + found);
+					event.setCancellationResult(EnumActionResult.SUCCESS);
+					event.setCanceled(true);
+					return;
+				}
+			}
 		}
 	}
 	
@@ -382,6 +412,15 @@ public class EntityEvents
 				if(attr != null)
 				{
 					event.setAmount(event.getAmount() * (1F + (float)Math.log10(attr.getAttributeValue() / EnchantmentSwiftBlade.SCALAR * level)));
+				}
+			}
+			level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.FOCUS_IMPACT, base.getHeldItemMainhand());
+			if(level > 0)
+			{
+				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
+				if(attr != null)
+				{
+					event.setAmount(event.getAmount() * (1F + (float)Math.log10(EnchantmentFocusImpact.SCALAR * level / (attr.getAttributeValue() * attr.getAttributeValue()))));
 				}
 			}
 			level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.PERPETUAL_STRIKE, base.getHeldItemMainhand());
@@ -429,6 +468,23 @@ public class EntityEvents
 				event.setAmount(event.getAmount() + (event.getAmount()*((float)EnchantmentSpartanWeapon.SCALAR*level)));
 			}
 		}
+		if(event.getSource() == DamageSource.FLY_INTO_WALL)
+		{
+			ItemStack stack = event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+			int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.ICARUS_AEGIS, stack);
+			if(level > 0)
+			{
+				int feathers = getInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, 0);
+				int consume = (int)Math.ceil((double)EnchantmentIcarusAegis.SCALAR / (double)level);
+				if(feathers >= consume)
+				{
+					feathers -= consume;
+					setInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, feathers);
+					event.setCanceled(true);
+					return;
+				}
+			}
+		}
 		if(event.getAmount() >= event.getEntityLiving().getHealth())
 		{
 			DamageSource source = event.getSource();
@@ -459,6 +515,25 @@ public class EntityEvents
                 living.world.setEntityState(living, (byte)35);
                 stack.shrink(1);
 				event.setCanceled(true);
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onLivingFall(LivingFallEvent event)
+	{
+		ItemStack stack = event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+		int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.ICARUS_AEGIS, stack);
+		if(level > 0 && stack.getTagCompound().getBoolean(EnchantmentIcarusAegis.FLYING_TAG))
+		{
+			int feathers = getInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, 0);
+			int consume = (int)Math.ceil((double)EnchantmentIcarusAegis.SCALAR / (double)level);
+			if(feathers >= consume)
+			{
+				feathers -= consume;
+				setInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, feathers);
+				event.setCanceled(true);
+				return;
 			}
 		}
 	}

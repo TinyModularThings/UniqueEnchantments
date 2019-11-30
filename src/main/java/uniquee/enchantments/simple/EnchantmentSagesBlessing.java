@@ -4,6 +4,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentUntouching;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IBlessingEnchantment;
@@ -22,6 +23,12 @@ public class EnchantmentSagesBlessing extends UniqueEnchantment implements IBles
 	public int getMaxLevel()
 	{
 		return 5;
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return EnumEnchantmentType.WEAPON.canEnchantItem(stack.getItem());
 	}
 	
 	@Override

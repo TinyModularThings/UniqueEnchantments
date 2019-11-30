@@ -16,6 +16,8 @@ enchantment.uniquee.sages_blessing=Sage's Blessing
 enchantment.uniquee.sages_blessing.desc=Increases XP Loot per level
 enchantment.uniquee.ender_eyes=Ender Eye's
 enchantment.uniquee.ender_eyes.desc=Makes that endermen won't attack you on looking at them
+enchantment.uniquee.focus_impact=Focus Impact
+enchantment.uniquee.focus_impact.desc=Low Attack Speed, increases damage dealt
 
 //Complex
 enchantment.uniquee.swiftblade=Swift Blade
@@ -54,7 +56,10 @@ enchantment.uniquee.ifrits_grace=Ifrit's Grace
 enchantment.uniquee.ifrits_grace.desc=Shift-Leftclicking an Anvil will consume all Lava/Magma related Blocks in you Inventory and store it as "Lava Power". Mining a Block will consume Lava Power, mining an Ore will consume even more. Therefore the Drops will be smelted.
 enchantment.uniquee.jokers_blessing=Joker's Blessing
 enchantment.uniquee.jokers_blessing.desc=Consume Experience, to double all drops.
+enchantment.uniquee.icarus_aegis=Icarus Aegis
+enchantment.uniquee.icarus_aegis.desc=If Feather are in your Inventory, Fall Damage by gliding can be negated, by consuming Feathers
 
 //Tooltips
 tooltip.uniqee.stored.gold.name="Stored Gold: %s"
 tooltip.uniqee.stored.lava.name="Stored Lava: %s"
+tooltip.uniqee.stored.feather.name="Stored Feathers: %s"

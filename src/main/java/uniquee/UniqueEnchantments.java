@@ -30,6 +30,7 @@ import uniquee.enchantments.complex.EnchantmentSwiftBlade;
 import uniquee.enchantments.simple.EnchantmentAdvancedDamage;
 import uniquee.enchantments.simple.EnchantmentBerserk;
 import uniquee.enchantments.simple.EnchantmentEnderEyes;
+import uniquee.enchantments.simple.EnchantmentFocusImpact;
 import uniquee.enchantments.simple.EnchantmentSagesBlessing;
 import uniquee.enchantments.simple.EnchantmentSwift;
 import uniquee.enchantments.simple.EnchantmentVitae;
@@ -40,6 +41,7 @@ import uniquee.enchantments.unique.EnchantmentCloudwalker;
 import uniquee.enchantments.unique.EnchantmentEcological;
 import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
 import uniquee.enchantments.unique.EnchantmentFastFood;
+import uniquee.enchantments.unique.EnchantmentIcarusAegis;
 import uniquee.enchantments.unique.EnchantmentIfritsGrace;
 import uniquee.enchantments.unique.EnchantmentMidasBlessing;
 import uniquee.enchantments.unique.EnchantmentNaturesGrace;
@@ -47,7 +49,7 @@ import uniquee.enchantments.unique.EnchantmentPhoenixBlessing;
 import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
 import uniquee.handler.EntityEvents;
 
-@Mod(modid = "uniquee", name = "Unique Enchantments", version = "1.3.0", guiFactory = "uniquee.handler.ConfigHandler")
+@Mod(modid = "uniquee", name = "Unique Enchantments", version = "1.4.0", guiFactory = "uniquee.handler.ConfigHandler")
 public class UniqueEnchantments
 {
 	static List<IToggleEnchantment> ENCHANTMENTS = new ObjectArrayList<IToggleEnchantment>();
@@ -60,6 +62,7 @@ public class UniqueEnchantments
 	public static Enchantment SWIFT = new EnchantmentSwift();
 	public static Enchantment SAGES_BLESSING = new EnchantmentSagesBlessing();
 	public static Enchantment ENDER_EYES = new EnchantmentEnderEyes();
+	public static Enchantment FOCUS_IMPACT = new EnchantmentFocusImpact();
 	
 	//Complex
 	public static Enchantment SWIFT_BLADE = new EnchantmentSwiftBlade();
@@ -82,6 +85,7 @@ public class UniqueEnchantments
 	public static Enchantment PHOENIX_BLESSING = new EnchantmentPhoenixBlessing();
 	public static Enchantment MIDAS_BLESSING = new EnchantmentMidasBlessing();
 	public static Enchantment IFRIDS_GRACE = new EnchantmentIfritsGrace();
+	public static Enchantment ICARUS_AEGIS = new EnchantmentIcarusAegis();
 	
 	public static Configuration CONFIG;
 	
@@ -89,9 +93,9 @@ public class UniqueEnchantments
 	public void onPreInit(FMLPreInitializationEvent event)
 	{
 		IForgeRegistry<Enchantment> registry = ForgeRegistries.ENCHANTMENTS;
-		registerEnchantments(BERSERKER, ADV_SHARPNESS, ADV_SMITE, ADV_BANE_OF_ARTHROPODS, VITAE, SWIFT, SAGES_BLESSING, ENDER_EYES);
+		registerEnchantments(BERSERKER, ADV_SHARPNESS, ADV_SMITE, ADV_BANE_OF_ARTHROPODS, VITAE, SWIFT, SAGES_BLESSING, ENDER_EYES, FOCUS_IMPACT);
 		registerEnchantments(SWIFT_BLADE, SPARTAN_WEAPON, PERPETUAL_STRIKE, CLIMATE_TRANQUILITY, MOMENTUM);
-		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE, ECOLOGICAL, PHOENIX_BLESSING, MIDAS_BLESSING, IFRIDS_GRACE);
+		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE, ECOLOGICAL, PHOENIX_BLESSING, MIDAS_BLESSING, IFRIDS_GRACE, ICARUS_AEGIS);
 		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(FirstAidHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(this);
