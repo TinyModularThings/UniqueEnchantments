@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import uniquee.compat.FirstAidHandler;
 import uniquee.enchantments.IToggleEnchantment;
-import uniquee.enchantments.complex.EnchantmentJokersBlessing;
+import uniquee.enchantments.complex.EnchantmentEnderMending;
 import uniquee.enchantments.complex.EnchantmentMomentum;
 import uniquee.enchantments.complex.EnchantmentPerpetualStrike;
 import uniquee.enchantments.complex.EnchantmentSpartanWeapon;
@@ -32,6 +32,7 @@ import uniquee.enchantments.simple.EnchantmentBerserk;
 import uniquee.enchantments.simple.EnchantmentBoneCrusher;
 import uniquee.enchantments.simple.EnchantmentEnderEyes;
 import uniquee.enchantments.simple.EnchantmentFocusImpact;
+import uniquee.enchantments.simple.EnchantmentRange;
 import uniquee.enchantments.simple.EnchantmentSagesBlessing;
 import uniquee.enchantments.simple.EnchantmentSwift;
 import uniquee.enchantments.simple.EnchantmentVitae;
@@ -65,6 +66,7 @@ public class UniqueEnchantments
 	public static Enchantment ENDER_EYES = new EnchantmentEnderEyes();
 	public static Enchantment FOCUS_IMPACT = new EnchantmentFocusImpact();
 	public static Enchantment BONE_CRUSH = new EnchantmentBoneCrusher();
+	public static Enchantment RANGE = new EnchantmentRange();
 	
 	//Complex
 	public static Enchantment SWIFT_BLADE = new EnchantmentSwiftBlade();
@@ -72,8 +74,7 @@ public class UniqueEnchantments
 	public static Enchantment PERPETUAL_STRIKE = new EnchantmentPerpetualStrike();
 	public static Enchantment CLIMATE_TRANQUILITY = new EnchantmentClimateTranquility();
 	public static Enchantment MOMENTUM = new EnchantmentMomentum();
-	//Disabled because to high exploits
-	public static Enchantment JOKERS_BLESSING = new EnchantmentJokersBlessing();
+	public static Enchantment ENDER_MENDING = new EnchantmentEnderMending();
 	
 	//Unique
 	public static Enchantment WARRIORS_GRACE = new EnchantmentWarriorsGrace();
@@ -95,8 +96,8 @@ public class UniqueEnchantments
 	public void onPreInit(FMLPreInitializationEvent event)
 	{
 		IForgeRegistry<Enchantment> registry = ForgeRegistries.ENCHANTMENTS;
-		registerEnchantments(BERSERKER, ADV_SHARPNESS, ADV_SMITE, ADV_BANE_OF_ARTHROPODS, VITAE, SWIFT, SAGES_BLESSING, ENDER_EYES, FOCUS_IMPACT, BONE_CRUSH);
-		registerEnchantments(SWIFT_BLADE, SPARTAN_WEAPON, PERPETUAL_STRIKE, CLIMATE_TRANQUILITY, MOMENTUM);
+		registerEnchantments(BERSERKER, ADV_SHARPNESS, ADV_SMITE, ADV_BANE_OF_ARTHROPODS, VITAE, SWIFT, SAGES_BLESSING, ENDER_EYES, FOCUS_IMPACT, BONE_CRUSH, RANGE);
+		registerEnchantments(SWIFT_BLADE, SPARTAN_WEAPON, PERPETUAL_STRIKE, CLIMATE_TRANQUILITY, MOMENTUM, ENDER_MENDING);
 		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE, ECOLOGICAL, PHOENIX_BLESSING, MIDAS_BLESSING, IFRIDS_GRACE, ICARUS_AEGIS);
 		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(FirstAidHandler.INSTANCE);

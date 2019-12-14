@@ -11,6 +11,7 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
@@ -40,6 +41,12 @@ public class EnchantmentMidasBlessing extends UniqueEnchantment implements IBles
 	public int getMaxLevel()
 	{
 		return 3;
+	}
+	
+	@Override
+	protected boolean canNotApplyToItems(ItemStack stack)
+	{
+		return !(stack.getItem() instanceof ItemPickaxe);
 	}
 	
 	@Override

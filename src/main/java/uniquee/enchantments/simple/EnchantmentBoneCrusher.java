@@ -1,7 +1,9 @@
 package uniquee.enchantments.simple;
 
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EntityEquipmentSlot.Type;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -32,5 +34,17 @@ public class EnchantmentBoneCrusher extends UniqueEnchantment
 	public void loadData(Configuration config)
 	{
 		SCALAR = config.get(getConfigName(), "scalar", 0.2D).getDouble();
+	}
+	
+	public static boolean isNotArmored(AbstractSkeleton skeleton)
+	{
+		for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
+		{
+			if(slot.getSlotType() == Type.ARMOR && !skeleton.getItemStackFromSlot(slot).isEmpty())
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 }

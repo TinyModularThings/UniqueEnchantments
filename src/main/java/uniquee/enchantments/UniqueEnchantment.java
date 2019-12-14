@@ -51,10 +51,15 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack)
 	{
-		return enabled ? (super.canApplyAtEnchantingTable(stack) || canApplyToItem(stack)) : false;
+		return enabled ? (super.canApplyAtEnchantingTable(stack) || canApplyToItem(stack)) && !canNotApplyToItems(stack) : false;
 	}
 	
 	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return false;
+	}
+	
+	protected boolean canNotApplyToItems(ItemStack stack)
 	{
 		return false;
 	}

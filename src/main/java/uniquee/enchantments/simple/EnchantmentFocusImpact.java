@@ -11,7 +11,7 @@ import uniquee.enchantments.complex.EnchantmentSwiftBlade;
 
 public class EnchantmentFocusImpact extends UniqueEnchantment
 {
-	public static double SCALAR = 1.675D;
+	public static double SCALAR = 1.05D;
 	
 	public EnchantmentFocusImpact()
 	{
@@ -39,7 +39,7 @@ public class EnchantmentFocusImpact extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 1.675D).getDouble();
+		SCALAR = config.get(getConfigName(), "scalar", 1.05D).getDouble();
 	}
 	
 }
