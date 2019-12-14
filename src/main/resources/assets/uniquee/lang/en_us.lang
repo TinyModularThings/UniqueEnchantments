@@ -20,6 +20,8 @@ enchantment.uniquee.focus_impact=Focus Impact
 enchantment.uniquee.focus_impact.desc=Low Attack Speed, increases damage dealt
 enchantment.uniquee.bone_crusher=Bone Crusher
 enchantment.uniquee.bone_crusher.desc=Low Attack Speed, increases damage dealt
+enchantment.uniquee.ranged=Range
+enchantment.uniquee.ranged.desc=Increases Reach, but will reduce Damage and Mining Speed when the bonus Reach is in use
 
 //Complex
 enchantment.uniquee.swiftblade=Swift Blade
@@ -32,6 +34,8 @@ enchantment.uniquee.climate_tranquility=Climate Tranquility
 enchantment.uniquee.climate_tranquility.desc=Weapons will react to temperature and and receive effects of the counterpart.
 enchantment.uniquee.momentum=Momentum
 enchantment.uniquee.momentum.desc=Continued mining will further increase your Mining Speed per Block mined
+enchantment.uniquee.ender_mending=Ender Mending
+enchantment.uniquee.ender_mending.desc=Improved Version of Mending, will store exceeding Experience in the Tool. Ender Mending will split it's Experience to every Item that has either Ender Mending or Mending
 
 //Unique
 enchantment.uniquee.warriorsgrace=Warrior's Grace
@@ -65,3 +69,4 @@ enchantment.uniquee.icarus_aegis.desc=If Feather are in your Inventory, Fall Dam
 tooltip.uniqee.stored.gold.name="Stored Gold: %s"
 tooltip.uniqee.stored.lava.name="Stored Lava: %s"
 tooltip.uniqee.stored.feather.name="Stored Feathers: %s"
+tooltip.uniqee.stored.repair.name="Stored Repairs: %s"

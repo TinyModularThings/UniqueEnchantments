@@ -1,9 +1,15 @@
 package uniquee.enchantments.complex;
 
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentMending;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.enchantments.unique.EnchantmentEcological;
+import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
+import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
 
 public class EnchantmentEnderMending extends UniqueEnchantment
 {
@@ -16,7 +22,25 @@ public class EnchantmentEnderMending extends UniqueEnchantment
 	{
 		super(new DefaultData("ender_mending", Rarity.VERY_RARE, true, 26, 8, 5), EnumEnchantmentType.BREAKABLE, EntityEquipmentSlot.values());
 	}
-
+	
+	@Override
+	public int getMaxLevel()
+	{
+		return 3;
+	}
+	
+	@Override
+	protected boolean canApplyTogether(Enchantment ench)
+	{
+		return ench instanceof EnchantmentMending || ench instanceof EnchantmentEnderMarksmen || ench instanceof EnchantmentWarriorsGrace || ench instanceof EnchantmentEcological ? false : super.canApplyTogether(ench);
+	}
+	
+	@Override
+	protected boolean canNotApplyToItems(ItemStack stack)
+	{
+		return EnumEnchantmentType.ARMOR.canEnchantItem(stack.getItem());
+	}
+	
 	@Override
 	public void loadData(Configuration config)
 	{
