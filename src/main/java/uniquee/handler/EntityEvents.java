@@ -251,6 +251,7 @@ public class EntityEvents
 		{
 			return;
 		}
+		int maxLevel = 0;
 		Object2BooleanMap<ItemStack> values = new Object2BooleanLinkedOpenHashMap<ItemStack>();
 		int foundItems = 0;
 		for(EntityEquipmentSlot value : getSlotsFor(UniqueEnchantments.ENDER_MENDING))
@@ -260,10 +261,12 @@ public class EntityEvents
 			{
 				continue;
 			}
-			if(EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.ENDER_MENDING, stack) > 0)
+			int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.ENDER_MENDING, stack);
+			if(level > 0)
 			{
 				values.put(stack, true);
 				foundItems++;
+				maxLevel = Math.max(maxLevel, level);
 			}
 			else if(stack.isItemDamaged() && EnchantmentHelper.getEnchantmentLevel(Enchantments.MENDING, stack) > 0)
 			{
@@ -274,7 +277,9 @@ public class EntityEvents
 		{
 			return;
 		}
-		int totalXP = event.getOrb().xpValue * 2;
+		int xp = event.getOrb().xpValue;
+		int totalXP = (int)((xp * 1F - (EnchantmentEnderMending.SCALAR_VALUE + (EnchantmentEnderMending.SCALAR_LEVEL * maxLevel))) * 2);
+		xp -= (totalXP / 2);
 		int usedXP = 0;
 		for(Object2BooleanMap.Entry<ItemStack> entry : values.object2BooleanEntrySet())
 		{
@@ -295,6 +300,7 @@ public class EntityEvents
 			player.onItemPickup(event.getOrb(), 1);
 			event.getOrb().setDead();
 			event.setCanceled(true);
+			player.addExperience(xp);
 			return;
 		}
 		totalXP -= usedXP;
@@ -324,6 +330,7 @@ public class EntityEvents
 		player.onItemPickup(event.getOrb(), 1);
 		event.getOrb().setDead();
 		event.setCanceled(true);
+		player.addExperience(xp);
 	}
 	
 	@SubscribeEvent
