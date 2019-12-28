@@ -3,7 +3,7 @@ package uniquee.enchantments.unique;
 import java.util.Set;
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentHelper;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
@@ -17,6 +17,7 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.MiscUtil;
 
 public class EnchantmentClimateTranquility extends UniqueEnchantment
 {
@@ -58,50 +59,42 @@ public class EnchantmentClimateTranquility extends UniqueEnchantment
 	
 	public static void onClimate(EntityPlayer player)
 	{
-		ItemStack stack = EnchantmentHelper.getEnchantedItem(UniqueEnchantments.CLIMATE_TRANQUILITY, player);
+		Object2IntMap.Entry<EntityEquipmentSlot> slot = MiscUtil.getEnchantedItem(UniqueEnchantments.CLIMATE_TRANQUILITY, player);
 		AbstractAttributeMap map = player.getAttributeMap();
 		IAttributeInstance speed = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 		IAttributeInstance damage = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
-		if(stack.isEmpty())
+		if(slot.getIntValue() <= 0)
 		{
 			speed.removeModifier(SPEED_UUID);
 			damage.removeModifier(ATTACK_UUID);
 			return;
 		}
-		int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.CLIMATE_TRANQUILITY, stack);
-		if(!stack.isEmpty())
+		int level = slot.getIntValue();
+		Set<BiomeDictionary.Type> effects = BiomeDictionary.getTypes(player.world.getBiome(player.getPosition()));
+		boolean hasHot = effects.contains(BiomeDictionary.Type.HOT) || effects.contains(BiomeDictionary.Type.NETHER);
+		boolean hasCold = effects.contains(BiomeDictionary.Type.COLD);
+		if(hasHot && !hasCold)
 		{
-			Set<BiomeDictionary.Type> effects = BiomeDictionary.getTypes(player.world.getBiome(player.getPosition()));
-			boolean hasHot = effects.contains(BiomeDictionary.Type.HOT) || effects.contains(BiomeDictionary.Type.NETHER);
-			boolean hasCold = effects.contains(BiomeDictionary.Type.COLD);
-			if(hasHot && !hasCold)
+			AttributeModifier speedMod = new AttributeModifier(SPEED_UUID, "Climate Boost", (SPEED_SCALE * level), 2);
+			if(!speed.hasModifier(speedMod))
 			{
-				AttributeModifier speedMod = new AttributeModifier(SPEED_UUID, "Climate Boost", (SPEED_SCALE * level), 2);
-				if(!speed.hasModifier(speedMod))
-				{
-					speed.applyModifier(speedMod);
-				}
-			}
-			else
-			{
-				speed.removeModifier(SPEED_UUID);
-			}
-			if(hasCold && !hasCold)
-			{
-				AttributeModifier damageMod = new AttributeModifier(ATTACK_UUID, "Climate Boost", (ATTACK_SCALE * level), 2);
-				if(!damage.hasModifier(damageMod))
-				{
-					damage.applyModifier(damageMod);
-				}
-			}
-			else
-			{
-				damage.removeModifier(ATTACK_UUID);
+				speed.applyModifier(speedMod);
 			}
 		}
 		else
 		{
 			speed.removeModifier(SPEED_UUID);
+		}
+		if(hasCold && !hasCold)
+		{
+			AttributeModifier damageMod = new AttributeModifier(ATTACK_UUID, "Climate Boost", (ATTACK_SCALE * level), 2);
+			if(!damage.hasModifier(damageMod))
+			{
+				damage.applyModifier(damageMod);
+			}
+		}
+		else
+		{
 			damage.removeModifier(ATTACK_UUID);
 		}
 	}

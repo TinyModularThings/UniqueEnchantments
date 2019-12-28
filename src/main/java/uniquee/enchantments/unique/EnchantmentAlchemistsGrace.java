@@ -3,10 +3,10 @@ package uniquee.enchantments.unique;
 import java.util.List;
 import java.util.Set;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,6 +20,7 @@ import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
+import uniquee.utils.MiscUtil;
 
 public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
@@ -54,10 +55,10 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 		if(entity instanceof EntityLivingBase)
 		{
 			EntityLivingBase base = (EntityLivingBase)entity;
-			ItemStack stack = EnchantmentHelper.getEnchantedItem(UniqueEnchantments.ALCHEMISTS_GRACE, base);
-			if(!stack.isEmpty())
+			Object2IntMap.Entry<EntityEquipmentSlot> slot = MiscUtil.getEnchantedItem(UniqueEnchantments.ALCHEMISTS_GRACE, base);
+			if(slot.getIntValue() > 0)
 			{
-				int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.ALCHEMISTS_GRACE, stack);
+				int level = slot.getIntValue();
 				Set<Potion> potions = new ObjectOpenHashSet<Potion>();
 				for(int i = level;i>=0;i--)
 				{

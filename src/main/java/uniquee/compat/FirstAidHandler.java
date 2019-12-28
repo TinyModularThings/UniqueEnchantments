@@ -1,17 +1,18 @@
 package uniquee.compat;
 
 import ichttt.mods.firstaid.api.event.FirstAidLivingDamageEvent;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.unique.EnchantmentAresBlessing;
+import uniquee.utils.MiscUtil;
 
 public class FirstAidHandler
 {
@@ -36,9 +37,8 @@ public class FirstAidHandler
 				}	
 			}
 			EntityPlayer living = event.getEntityPlayer();
-			ItemStack stack = EnchantmentHelper.getEnchantedItem(UniqueEnchantments.PHOENIX_BLESSING, living);
-			int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.PHOENIX_BLESSING, stack);
-			if(level > 0)
+			Object2IntMap.Entry<EntityEquipmentSlot> slot = MiscUtil.getEnchantedItem(UniqueEnchantments.PHOENIX_BLESSING, living);
+			if(slot.getIntValue() > 0)
 			{
 				living.heal(living.getMaxHealth());
 				living.clearActivePotions();
@@ -46,7 +46,7 @@ public class FirstAidHandler
 	            living.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 900, 1));
 	            living.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 100, 1));
 	            living.world.setEntityState(living, (byte)35);
-	            stack.shrink(1);
+	            living.getItemStackFromSlot(slot.getKey()).shrink(1);
 			}
 		}
 	}
