@@ -7,6 +7,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
@@ -25,8 +26,10 @@ import uniquee.enchantments.IToggleEnchantment;
 import uniquee.enchantments.complex.EnchantmentEnderMending;
 import uniquee.enchantments.complex.EnchantmentMomentum;
 import uniquee.enchantments.complex.EnchantmentPerpetualStrike;
+import uniquee.enchantments.complex.EnchantmentSmartAss;
 import uniquee.enchantments.complex.EnchantmentSpartanWeapon;
 import uniquee.enchantments.complex.EnchantmentSwiftBlade;
+import uniquee.enchantments.curse.EnchantmentPestilencesOdium;
 import uniquee.enchantments.simple.EnchantmentAdvancedDamage;
 import uniquee.enchantments.simple.EnchantmentBerserk;
 import uniquee.enchantments.simple.EnchantmentBoneCrusher;
@@ -41,6 +44,7 @@ import uniquee.enchantments.unique.EnchantmentAresBlessing;
 import uniquee.enchantments.unique.EnchantmentClimateTranquility;
 import uniquee.enchantments.unique.EnchantmentCloudwalker;
 import uniquee.enchantments.unique.EnchantmentEcological;
+import uniquee.enchantments.unique.EnchantmentEnderLibrarian;
 import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
 import uniquee.enchantments.unique.EnchantmentFastFood;
 import uniquee.enchantments.unique.EnchantmentIcarusAegis;
@@ -50,8 +54,9 @@ import uniquee.enchantments.unique.EnchantmentNaturesGrace;
 import uniquee.enchantments.unique.EnchantmentPhoenixBlessing;
 import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
 import uniquee.handler.EntityEvents;
+import uniquee.handler.potion.PotionPestilencesOdium;
 
-@Mod(modid = "uniquee", name = "Unique Enchantments", version = "1.4.0", guiFactory = "uniquee.handler.ConfigHandler")
+@Mod(modid = "uniquee", name = "Unique Enchantments", version = "1.6.0", guiFactory = "uniquee.handler.ConfigHandler")
 public class UniqueEnchantments
 {
 	static List<IToggleEnchantment> ENCHANTMENTS = new ObjectArrayList<IToggleEnchantment>();
@@ -75,6 +80,7 @@ public class UniqueEnchantments
 	public static Enchantment CLIMATE_TRANQUILITY = new EnchantmentClimateTranquility();
 	public static Enchantment MOMENTUM = new EnchantmentMomentum();
 	public static Enchantment ENDER_MENDING = new EnchantmentEnderMending();
+	public static Enchantment SMART_ASS = new EnchantmentSmartAss();
 	
 	//Unique
 	public static Enchantment WARRIORS_GRACE = new EnchantmentWarriorsGrace();
@@ -89,6 +95,13 @@ public class UniqueEnchantments
 	public static Enchantment MIDAS_BLESSING = new EnchantmentMidasBlessing();
 	public static Enchantment IFRIDS_GRACE = new EnchantmentIfritsGrace();
 	public static Enchantment ICARUS_AEGIS = new EnchantmentIcarusAegis();
+	public static Enchantment ENDER_LIBRARIAN = new EnchantmentEnderLibrarian();
+	
+	//Curses
+	public static Enchantment PESTILENCES_ODIUM = new EnchantmentPestilencesOdium();
+	
+	//Potions
+	public static Potion PESTILENCES_ODIUM_POTION = new PotionPestilencesOdium();
 	
 	public static Configuration CONFIG;
 	
@@ -97,8 +110,10 @@ public class UniqueEnchantments
 	{
 		IForgeRegistry<Enchantment> registry = ForgeRegistries.ENCHANTMENTS;
 		registerEnchantments(BERSERKER, ADV_SHARPNESS, ADV_SMITE, ADV_BANE_OF_ARTHROPODS, VITAE, SWIFT, SAGES_BLESSING, ENDER_EYES, FOCUS_IMPACT, BONE_CRUSH, RANGE);
-		registerEnchantments(SWIFT_BLADE, SPARTAN_WEAPON, PERPETUAL_STRIKE, CLIMATE_TRANQUILITY, MOMENTUM, ENDER_MENDING);
-		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE, ECOLOGICAL, PHOENIX_BLESSING, MIDAS_BLESSING, IFRIDS_GRACE, ICARUS_AEGIS);
+		registerEnchantments(SWIFT_BLADE, SPARTAN_WEAPON, PERPETUAL_STRIKE, CLIMATE_TRANQUILITY, MOMENTUM, ENDER_MENDING, SMART_ASS);
+		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE, ECOLOGICAL, PHOENIX_BLESSING, MIDAS_BLESSING, IFRIDS_GRACE, ICARUS_AEGIS, ENDER_LIBRARIAN);
+		registerEnchantments(PESTILENCES_ODIUM);
+		ForgeRegistries.POTIONS.register(PESTILENCES_ODIUM_POTION);
 		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(FirstAidHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(this);
@@ -156,7 +171,7 @@ public class UniqueEnchantments
 		}
 	}
 	
-	private void registerEnchantments(Enchantment...enchantments)
+	public static void registerEnchantments(Enchantment...enchantments)
 	{
 		ForgeRegistries.ENCHANTMENTS.registerAll(enchantments);
 		for(Enchantment enchantment : enchantments)

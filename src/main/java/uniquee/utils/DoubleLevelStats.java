@@ -2,7 +2,7 @@ package uniquee.utils;
 
 import net.minecraftforge.common.config.Configuration;
 
-public class LevelStats
+public class DoubleLevelStats
 {
 	String name;
 	final double baseConfig;
@@ -10,7 +10,7 @@ public class LevelStats
 	double base;
 	double level;
 	
-	public LevelStats(String name, double base, double level)
+	public DoubleLevelStats(String name, double base, double level)
 	{
 		this.name = name;
 		this.baseConfig = base;

@@ -36,6 +36,8 @@ enchantment.uniquee.momentum=Momentum
 enchantment.uniquee.momentum.desc=Continued mining will further increase your Mining Speed per Block mined
 enchantment.uniquee.ender_mending=Ender Mending
 enchantment.uniquee.ender_mending.desc=Improved Version of Mending, will store exceeding Experience in the Tool. Ender Mending will split it's Experience to every Item that has either Ender Mending or Mending
+enchantment.uniquee.smart_ass=Smart Ass
+enchantment.uniquee.smart_ass.desc=Mining Gravel, Sand or Logs, will break the top block first
 
 //Unique
 enchantment.uniquee.warriorsgrace=Warrior's Grace
@@ -64,6 +66,15 @@ enchantment.uniquee.jokers_blessing=Joker's Blessing
 enchantment.uniquee.jokers_blessing.desc=Consume Experience, to double all drops.
 enchantment.uniquee.icarus_aegis=Icarus Aegis
 enchantment.uniquee.icarus_aegis.desc=If Feather are in your Inventory, Fall Damage by gliding can be negated, by consuming Feathers
+enchantment.uniquee.ender_librarian=Ender Librarian
+enchantment.uniquee.ender_librarian.desc=Shift-rightclicking with a Map will teleport you in a random spot in the Map, Treasuremap will teleport you more precise to the Location. The Item will be consumed
+
+//Curse
+enchantment.uniquee.uniquepestilences_odium=Pestilence's Odium
+enchantment.uniquee.uniquepestilences_odium.desc=Non-Hostile Entities in your area will be continuesly damaged, won't drop Loot
+
+//Potion
+potion.uniquee.uniquepestilences_odium=Pestilence's Odium
 
 //Tooltips
 tooltip.uniqee.stored.gold.name="Stored Gold: %s"

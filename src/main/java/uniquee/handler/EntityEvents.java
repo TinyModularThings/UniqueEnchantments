@@ -12,11 +12,13 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockAnvil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -39,22 +41,26 @@ import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
+import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
@@ -70,6 +76,7 @@ import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
@@ -84,8 +91,10 @@ import uniquee.UniqueEnchantments;
 import uniquee.enchantments.complex.EnchantmentEnderMending;
 import uniquee.enchantments.complex.EnchantmentMomentum;
 import uniquee.enchantments.complex.EnchantmentPerpetualStrike;
+import uniquee.enchantments.complex.EnchantmentSmartAss;
 import uniquee.enchantments.complex.EnchantmentSpartanWeapon;
 import uniquee.enchantments.complex.EnchantmentSwiftBlade;
+import uniquee.enchantments.curse.EnchantmentPestilencesOdium;
 import uniquee.enchantments.simple.EnchantmentBerserk;
 import uniquee.enchantments.simple.EnchantmentBoneCrusher;
 import uniquee.enchantments.simple.EnchantmentFocusImpact;
@@ -204,7 +213,18 @@ public class EntityEvents
 					stack.getTagCompound().setBoolean(EnchantmentIcarusAegis.FLYING_TAG, player.isElytraFlying());
 				}
 			}
-
+			if(player.world.getTotalWorldTime() % 40 == 0)
+			{
+				int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantments.PESTILENCES_ODIUM, player);
+				if(level > 0)
+				{
+					List<EntityAgeable> living = player.world.getEntitiesWithinAABB(EntityAgeable.class, new AxisAlignedBB(player.getPosition()).grow(EnchantmentPestilencesOdium.RADIUS));
+					for(int i = 0,m=living.size();i<m;i++)
+					{
+						living.get(i).addPotionEffect(new PotionEffect(UniqueEnchantments.PESTILENCES_ODIUM_POTION, 200, level));
+					}
+				}
+			}
 		}
 		ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.CLOUD_WALKER, stack);
@@ -386,7 +406,35 @@ public class EntityEvents
 			return;
 		}
 		ItemStack held = event.getPlayer().getHeldItemMainhand();
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.SAGES_BLESSING, held);
+		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.SMART_ASS, held);
+		if(level > 0)
+		{
+			if(EnchantmentSmartAss.VALID_STATES.test(event.getState()))
+			{
+				Block block = event.getState().getBlock();
+				int limit = EnchantmentSmartAss.STATS.get(level);
+				World world = event.getWorld();
+				IBlockState lastState = null;
+				BlockPos lastPos = null;
+				for(int i = 1;i<limit;i++)
+				{
+					BlockPos pos = event.getPos().up(i);
+					IBlockState state = world.getBlockState(pos);
+					if(state.getBlock() != block)
+					{
+						continue;
+					}
+					lastState = state;
+					lastPos = pos;
+				}
+				if(lastState != null && MiscUtil.harvestBlock(event, lastState, lastPos))
+				{
+					event.setCanceled(true);
+					return;
+				}
+			}
+		}
+		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.SAGES_BLESSING, held);
 		if(level > 0)
 		{
 			event.setExpToDrop((int)(event.getExpToDrop() + event.getExpToDrop() * (level * EnchantmentSagesBlessing.XP_BOOST)));
@@ -454,6 +502,52 @@ public class EntityEvents
 					setInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, Math.max(0, stored));
 				}
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onItemClick(RightClickItem event)
+	{
+		ItemStack stack = event.getItemStack();
+		if(!event.getWorld().isRemote && stack.getItem() instanceof ItemMap && MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDER_LIBRARIAN, stack) > 0)
+		{
+			ItemMap map = (ItemMap)stack.getItem();
+			MapData data = map.getMapData(stack, event.getWorld());
+			if(data == null || data.dimension != event.getWorld().provider.getDimension())
+			{
+				return;
+			}
+			int x = data.xCenter;
+			int z = data.zCenter;
+			BlockPos position = null;
+			NBTTagCompound nbt = stack.getTagCompound();
+	        if (nbt != null)
+	        {
+	        	//Have to do it that way because Mine-craft decorations are rotated and its annoying to math that out properly.
+	            NBTTagList list = nbt.getTagList("Decorations", 10);
+	            for(int i = 0,m=list.tagCount();i<m;i++)
+	            {
+	                NBTTagCompound nbtData = list.getCompoundTagAt(i);
+	                if(nbtData.getString("id").equalsIgnoreCase("+"))
+	                {
+	                	position = new BlockPos(nbtData.getInteger("x") - 20, 255, nbtData.getInteger("z") - 20);
+	                }
+	            }
+	        }
+	        if(position != null)
+	        {
+				BlockPos pos = event.getWorld().getTopSolidOrLiquidBlock(position);
+				event.getEntityPlayer().setPositionAndUpdate(pos.getX() + 0.5F, Math.max(event.getWorld().getSeaLevel(), pos.getY() + 1), pos.getZ() + 0.5F);
+	        }
+	        else
+	        {
+		        int limit = 64 * (1 << data.scale) * 2;
+		        int xOffset = (int)((event.getWorld().rand.nextDouble() - 0.5D) * limit);
+		        int zOffset = (int)((event.getWorld().rand.nextDouble() - 0.5D) * limit);
+				BlockPos pos = event.getWorld().getTopSolidOrLiquidBlock(new BlockPos(x + xOffset, 255, z + zOffset));
+				event.getEntityPlayer().setPositionAndUpdate(pos.getX() + 0.5F, Math.max(event.getWorld().getSeaLevel(), pos.getY() + 1), pos.getZ() + 0.5F);
+	        }
+	        stack.shrink(1);
 		}
 	}
 	
