@@ -22,6 +22,10 @@ enchantment.uniquee.bone_crusher=Bone Crusher
 enchantment.uniquee.bone_crusher.desc=Low Attack Speed, increases damage dealt
 enchantment.uniquee.ranged=Range
 enchantment.uniquee.ranged.desc=Increases Reach, but will reduce Damage and Mining Speed when the bonus Reach is in use
+enchantment.uniquee.treasurers_eyes=Treasurer's Eyes
+enchantment.uniquee.treasurers_eyes.desc=With this Enchantment you'll see Special Effects on Entity, depending on the Enchantments on it
+
+
 
 //Complex
 enchantment.uniquee.swiftblade=Swift Blade
@@ -68,10 +72,16 @@ enchantment.uniquee.icarus_aegis=Icarus Aegis
 enchantment.uniquee.icarus_aegis.desc=If Feather are in your Inventory, Fall Damage by gliding can be negated, by consuming Feathers
 enchantment.uniquee.ender_librarian=Ender Librarian
 enchantment.uniquee.ender_librarian.desc=Shift-rightclicking with a Map will teleport you in a random spot in the Map, Treasuremap will teleport you more precise to the Location. The Item will be consumed
+enchantment.uniquee.ender_librarian=Ender Librarian
+enchantment.uniquee.ender_librarian.desc=Shift-rightclicking with a Map will teleport you in a random spot in the Map, Treasuremap will teleport you more precise to the Location. The Item will be consumed
+enchantment.uniquee.demeters_soul=Demeter's Soul
+enchantment.uniquee.demeters_soul.desc=Shift-rightclicking a seed to active. Marked seeds will only produce 1 product and will automatically be harvested and stored into your Ender Chest
 
 //Curse
 enchantment.uniquee.pestilences_odium=Pestilence's Odium
 enchantment.uniquee.pestilences_odium.desc=Non-Hostile Entities in your area will be continuously damaged, won't drop Loot
+enchantment.uniquee.deaths_odium=Death's Odium
+enchantment.uniquee.deaths_odium.desc=Dieing while having this Curse in your inventory will cause you to lose a Base HP. Lost Base HP will be granted back, as long as this Enchantment is on an active Slot..
 
 //Potion
 potion.uniquee.uniquepestilences_odium=Pestilence's Odium
@@ -81,3 +91,5 @@ tooltip.uniqee.stored.gold.name="Stored Gold: %s"
 tooltip.uniqee.stored.lava.name="Stored Lava: %s"
 tooltip.uniqee.stored.feather.name="Stored Feathers: %s"
 tooltip.uniqee.stored.repair.name="Stored Repairs: %s"
+tooltip.uniqee.crops.added.name="Added Crop To Auto Harvester"
+tooltip.uniqee.crops.removed.name="Removed Crop From Auto Harvester"

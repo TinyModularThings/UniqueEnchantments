@@ -27,17 +27,6 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class MiscUtil
 {
-	public static BlockPos rotate(int rotation, int x, int y, int xOffset, int yOffset)
-	{
-		double rad = Math.toRadians(rotation);
-		float actualX = x - xOffset;
-		float actualY = y - yOffset;
-		double cos = Math.cos(rad);
-		double sin = Math.sin(rad);
-		int xPos = (int)(actualX * cos - actualY * sin + xOffset);
-		int yPos = (int)(actualX * sin + actualY * cos + yOffset);
-		return new BlockPos(xPos, 255, yPos);
-	}
 	
 	public static int getEnchantmentLevel(Enchantment ench, ItemStack stack)
 	{

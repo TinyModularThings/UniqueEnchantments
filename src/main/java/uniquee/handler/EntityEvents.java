@@ -60,6 +60,7 @@ import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.BiomeDictionary;
@@ -75,6 +76,7 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
@@ -89,12 +91,14 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import uniquee.UniqueEnchantments;
+import uniquee.api.crops.CropHarvestRegistry;
 import uniquee.enchantments.complex.EnchantmentEnderMending;
 import uniquee.enchantments.complex.EnchantmentMomentum;
 import uniquee.enchantments.complex.EnchantmentPerpetualStrike;
 import uniquee.enchantments.complex.EnchantmentSmartAss;
 import uniquee.enchantments.complex.EnchantmentSpartanWeapon;
 import uniquee.enchantments.complex.EnchantmentSwiftBlade;
+import uniquee.enchantments.curse.EnchantmentDeathsOdium;
 import uniquee.enchantments.curse.EnchantmentPestilencesOdium;
 import uniquee.enchantments.simple.EnchantmentBerserk;
 import uniquee.enchantments.simple.EnchantmentBoneCrusher;
@@ -107,6 +111,7 @@ import uniquee.enchantments.unique.EnchantmentAlchemistsGrace;
 import uniquee.enchantments.unique.EnchantmentAresBlessing;
 import uniquee.enchantments.unique.EnchantmentClimateTranquility;
 import uniquee.enchantments.unique.EnchantmentCloudwalker;
+import uniquee.enchantments.unique.EnchantmentDemetersSoul;
 import uniquee.enchantments.unique.EnchantmentEcological;
 import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
 import uniquee.enchantments.unique.EnchantmentFastFood;
@@ -116,6 +121,7 @@ import uniquee.enchantments.unique.EnchantmentMidasBlessing;
 import uniquee.enchantments.unique.EnchantmentNaturesGrace;
 import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
 import uniquee.handler.ai.AISpecialFindPlayer;
+import uniquee.utils.HarvestEntry;
 import uniquee.utils.MiscUtil;
 
 public class EntityEvents
@@ -226,6 +232,30 @@ public class EntityEvents
 					for(int i = 0,m=living.size();i<m;i++)
 					{
 						living.get(i).addPotionEffect(new PotionEffect(UniqueEnchantments.PESTILENCES_ODIUM_POTION, 200, level));
+					}
+				}
+			}
+			if(player.world.getTotalWorldTime() % 20 == 0)
+			{
+				HarvestEntry entry = EnchantmentDemetersSoul.getNextIndex(player);
+				if(entry != null)
+				{
+					EnumActionResult result = entry.harvest(player.world, player);
+					if(result == EnumActionResult.FAIL)
+					{
+						NBTTagList list = EnchantmentDemetersSoul.getCrops(player);
+						for(int i = 0,m=list.tagCount();i<m;i++)
+						{
+							if(entry.matches(list.getCompoundTagAt(i)))
+							{
+								list.removeTag(i--);
+								break;
+							}
+						}
+					}
+					else if(result == EnumActionResult.SUCCESS)
+					{
+						player.addExhaustion(0.06F);
 					}
 				}
 			}
@@ -561,44 +591,67 @@ public class EntityEvents
 		if(event.getEntityPlayer().isSneaking())
 		{
 			IBlockState state = event.getWorld().getBlockState(event.getPos());
-			if(!(state.getBlock() instanceof BlockAnvil))
+			if(state.getBlock() instanceof BlockAnvil)
 			{
+				ItemStack stack = event.getItemStack();
+				Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
+				if(enchantments.getInt(UniqueEnchantments.MIDAS_BLESSING) > 0)
+				{
+					int found = consumeItems(event.getEntityPlayer(), EnchantmentMidasBlessing.VALIDATOR, Integer.MAX_VALUE);
+					if(found > 0)
+					{
+						setInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, getInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, 0) + found);
+						event.setCancellationResult(EnumActionResult.SUCCESS);
+						event.setCanceled(true);
+						return;
+					}
+				}
+				if(enchantments.getInt(UniqueEnchantments.IFRIDS_GRACE) > 0)
+				{
+					int found = consumeItems(event.getEntityPlayer(), EnchantmentIfritsGrace.VALIDATOR, Integer.MAX_VALUE);
+					if(found > 0)
+					{
+						setInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, getInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, 0) + found);
+						event.setCancellationResult(EnumActionResult.SUCCESS);
+						event.setCanceled(true);
+						return;
+					}
+				}
+				if(enchantments.getInt(UniqueEnchantments.ICARUS_AEGIS) > 0)
+				{
+					int found = consumeItems(event.getEntityPlayer(), EnchantmentIcarusAegis.VALIDATOR, Integer.MAX_VALUE);
+					if(found > 0)
+					{
+						setInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, getInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, 0) + found);
+						event.setCancellationResult(EnumActionResult.SUCCESS);
+						event.setCanceled(true);
+						return;
+					}
+				}
+			}
+			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.DEMETERS_SOUL, event.getItemStack());
+			if(level > 0 && CropHarvestRegistry.INSTANCE.isValid(state.getBlock()) && !event.getWorld().isRemote)
+			{
+				HarvestEntry entry = new HarvestEntry(event.getWorld().provider.getDimension(), event.getPos().toLong());
+				NBTTagList list = EnchantmentDemetersSoul.getCrops(event.getEntityPlayer());
+				boolean found = false;
+				for(int i = 0,m=list.tagCount();i<m;i++)
+				{
+					if(entry.matches(list.getCompoundTagAt(i)))
+					{
+						found = true;
+						list.removeTag(i--);
+						break;
+					}
+				}
+				if(!found)
+				{
+					list.appendTag(entry.save());
+				}
+				event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqee.crops."+(found ? "removed" : "added")+".name"), false);
+				event.setCancellationResult(EnumActionResult.SUCCESS);
+				event.setCanceled(true);
 				return;
-			}
-			ItemStack stack = event.getItemStack();
-			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
-			if(enchantments.getInt(UniqueEnchantments.MIDAS_BLESSING) > 0)
-			{
-				int found = consumeItems(event.getEntityPlayer(), EnchantmentMidasBlessing.VALIDATOR, Integer.MAX_VALUE);
-				if(found > 0)
-				{
-					setInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, getInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, 0) + found);
-					event.setCancellationResult(EnumActionResult.SUCCESS);
-					event.setCanceled(true);
-					return;
-				}
-			}
-			if(enchantments.getInt(UniqueEnchantments.IFRIDS_GRACE) > 0)
-			{
-				int found = consumeItems(event.getEntityPlayer(), EnchantmentIfritsGrace.VALIDATOR, Integer.MAX_VALUE);
-				if(found > 0)
-				{
-					setInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, getInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, 0) + found);
-					event.setCancellationResult(EnumActionResult.SUCCESS);
-					event.setCanceled(true);
-					return;
-				}
-			}
-			if(enchantments.getInt(UniqueEnchantments.ICARUS_AEGIS) > 0)
-			{
-				int found = consumeItems(event.getEntityPlayer(), EnchantmentIcarusAegis.VALIDATOR, Integer.MAX_VALUE);
-				if(found > 0)
-				{
-					setInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, getInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, 0) + found);
-					event.setCancellationResult(EnumActionResult.SUCCESS);
-					event.setCanceled(true);
-					return;
-				}
 			}
 		}
 	}
@@ -795,6 +848,33 @@ public class EntityEvents
 				}
 			}
 		}
+		Object2IntMap.Entry<EntityEquipmentSlot> ench = MiscUtil.getEnchantedItem(UniqueEnchantments.DEATHS_ODIUM, event.getEntityLiving());
+		if(ench.getIntValue() > 0)
+		{
+			ItemStack stack = event.getEntityLiving().getItemStackFromSlot(ench.getKey());
+			setInt(stack, EnchantmentDeathsOdium.CURSE_STORAGE, getInt(stack, EnchantmentDeathsOdium.CURSE_STORAGE, 0) + 1);
+			IAttributeInstance instance = event.getEntityLiving().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH);
+			AttributeModifier mod = instance.getModifier(EnchantmentDeathsOdium.REMOVE_UUID);
+			float toRemove = 0F;
+			if(mod != null)
+			{
+				toRemove += mod.getAmount();
+				instance.removeModifier(mod);
+			}
+			NBTTagCompound nbt = event.getEntityLiving().getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+			event.getEntityLiving().getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, nbt);
+			nbt.setFloat(EnchantmentDeathsOdium.CURSE_STORAGE, toRemove - 1F);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onRespawn(PlayerEvent.Clone event)
+	{
+		float f = event.getEntityPlayer().getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getFloat(EnchantmentDeathsOdium.CURSE_STORAGE);
+		if(f != 0)
+		{
+			event.getEntityLiving().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier(EnchantmentDeathsOdium.REMOVE_UUID, "odiums_curse", f, 0));
+		}
 	}
 	
 	@SubscribeEvent
@@ -910,6 +990,15 @@ public class EntityEvents
 		if(level > 0 && MiscUtil.getSlotsFor(UniqueEnchantments.RANGE).contains(slot))
 		{
 			mods.put(EntityPlayer.REACH_DISTANCE.getName(), new AttributeModifier(EnchantmentRange.RANGE_MOD, "Range Boost", EnchantmentRange.RANGE.getAsFloat(level), 0));
+		}
+		level = enchantments.getInt(UniqueEnchantments.DEATHS_ODIUM);
+		if(level > 0 && MiscUtil.getSlotsFor(UniqueEnchantments.DEATHS_ODIUM).contains(slot))
+		{
+			int value = getInt(stack, EnchantmentDeathsOdium.CURSE_STORAGE, 0);
+			if(value > 0)
+			{
+				mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(EnchantmentDeathsOdium.getForSlot(slot), "Death Odiums Restore", value, 0));
+			}
 		}
 		return mods;
 	}

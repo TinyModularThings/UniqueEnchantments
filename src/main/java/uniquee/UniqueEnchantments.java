@@ -1,18 +1,28 @@
 package uniquee;
 
 import java.util.List;
+import java.util.Map.Entry;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.AbstractSkeleton;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -20,7 +30,11 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
+import uniquee.api.crops.CropHarvestRegistry;
+import uniquee.client.EnchantmentLayer;
 import uniquee.compat.FirstAidHandler;
 import uniquee.enchantments.IToggleEnchantment;
 import uniquee.enchantments.complex.EnchantmentEnderMending;
@@ -29,6 +43,7 @@ import uniquee.enchantments.complex.EnchantmentPerpetualStrike;
 import uniquee.enchantments.complex.EnchantmentSmartAss;
 import uniquee.enchantments.complex.EnchantmentSpartanWeapon;
 import uniquee.enchantments.complex.EnchantmentSwiftBlade;
+import uniquee.enchantments.curse.EnchantmentDeathsOdium;
 import uniquee.enchantments.curse.EnchantmentPestilencesOdium;
 import uniquee.enchantments.simple.EnchantmentAdvancedDamage;
 import uniquee.enchantments.simple.EnchantmentBerserk;
@@ -38,11 +53,13 @@ import uniquee.enchantments.simple.EnchantmentFocusImpact;
 import uniquee.enchantments.simple.EnchantmentRange;
 import uniquee.enchantments.simple.EnchantmentSagesBlessing;
 import uniquee.enchantments.simple.EnchantmentSwift;
+import uniquee.enchantments.simple.EnchantmentTreasurersEyes;
 import uniquee.enchantments.simple.EnchantmentVitae;
 import uniquee.enchantments.unique.EnchantmentAlchemistsGrace;
 import uniquee.enchantments.unique.EnchantmentAresBlessing;
 import uniquee.enchantments.unique.EnchantmentClimateTranquility;
 import uniquee.enchantments.unique.EnchantmentCloudwalker;
+import uniquee.enchantments.unique.EnchantmentDemetersSoul;
 import uniquee.enchantments.unique.EnchantmentEcological;
 import uniquee.enchantments.unique.EnchantmentEnderLibrarian;
 import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
@@ -72,6 +89,7 @@ public class UniqueEnchantments
 	public static Enchantment FOCUS_IMPACT = new EnchantmentFocusImpact();
 	public static Enchantment BONE_CRUSH = new EnchantmentBoneCrusher();
 	public static Enchantment RANGE = new EnchantmentRange();
+	public static Enchantment TREASURERS_EYES = new EnchantmentTreasurersEyes();
 	
 	//Complex
 	public static Enchantment SWIFT_BLADE = new EnchantmentSwiftBlade();
@@ -96,9 +114,11 @@ public class UniqueEnchantments
 	public static Enchantment IFRIDS_GRACE = new EnchantmentIfritsGrace();
 	public static Enchantment ICARUS_AEGIS = new EnchantmentIcarusAegis();
 	public static Enchantment ENDER_LIBRARIAN = new EnchantmentEnderLibrarian();
+	public static Enchantment DEMETERS_SOUL = new EnchantmentDemetersSoul();
 	
 	//Curses
 	public static Enchantment PESTILENCES_ODIUM = new EnchantmentPestilencesOdium();
+	public static Enchantment DEATHS_ODIUM = new EnchantmentDeathsOdium();
 	
 	//Potions
 	public static Potion PESTILENCES_ODIUM_POTION = new PotionPestilencesOdium();
@@ -109,10 +129,10 @@ public class UniqueEnchantments
 	public void onPreInit(FMLPreInitializationEvent event)
 	{
 		IForgeRegistry<Enchantment> registry = ForgeRegistries.ENCHANTMENTS;
-		registerEnchantments(BERSERKER, ADV_SHARPNESS, ADV_SMITE, ADV_BANE_OF_ARTHROPODS, VITAE, SWIFT, SAGES_BLESSING, ENDER_EYES, FOCUS_IMPACT, BONE_CRUSH, RANGE);
+		registerEnchantments(BERSERKER, ADV_SHARPNESS, ADV_SMITE, ADV_BANE_OF_ARTHROPODS, VITAE, SWIFT, SAGES_BLESSING, ENDER_EYES, FOCUS_IMPACT, BONE_CRUSH, RANGE, TREASURERS_EYES);
 		registerEnchantments(SWIFT_BLADE, SPARTAN_WEAPON, PERPETUAL_STRIKE, CLIMATE_TRANQUILITY, MOMENTUM, ENDER_MENDING, SMART_ASS);
-		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE, ECOLOGICAL, PHOENIX_BLESSING, MIDAS_BLESSING, IFRIDS_GRACE, ICARUS_AEGIS, ENDER_LIBRARIAN);
-		registerEnchantments(PESTILENCES_ODIUM);
+		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE, ECOLOGICAL, PHOENIX_BLESSING, MIDAS_BLESSING, IFRIDS_GRACE, ICARUS_AEGIS, ENDER_LIBRARIAN, DEMETERS_SOUL);
+		registerEnchantments(PESTILENCES_ODIUM, DEATHS_ODIUM);
 		ForgeRegistries.POTIONS.register(PESTILENCES_ODIUM_POTION);
 		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(FirstAidHandler.INSTANCE);
@@ -124,12 +144,34 @@ public class UniqueEnchantments
 	public void onPostInit(FMLPostInitializationEvent event)
 	{
 		loadConfig();
+		if(FMLCommonHandler.instance().getSide().isClient())
+		{
+			onClientLoad();
+		}
+		CropHarvestRegistry.INSTANCE.init();
 	}
 	
 	@EventHandler
 	public void onServerStarting(FMLServerStartingEvent event)
 	{
 		event.registerServerCommand(new ReloadCommand());
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void onClientLoad()
+	{
+		RenderManager manager = Minecraft.getMinecraft().getRenderManager();
+		for(RenderPlayer player : manager.getSkinMap().values())
+		{
+			player.addLayer(new EnchantmentLayer());
+		}
+		for(Entry<Class<? extends Entity>, Render<? extends Entity>> entry : manager.entityRenderMap.entrySet())
+		{
+			if(entry.getValue() instanceof RenderLivingBase && (AbstractSkeleton.class.isAssignableFrom(entry.getKey()) || EntityZombie.class.isAssignableFrom(entry.getKey())))
+			{
+				((RenderLivingBase<?>)entry.getValue()).addLayer(new EnchantmentLayer());
+			}
+		}
 	}
 	
 	@SubscribeEvent
