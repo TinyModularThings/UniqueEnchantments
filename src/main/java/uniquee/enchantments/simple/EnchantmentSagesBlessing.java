@@ -40,7 +40,7 @@ public class EnchantmentSagesBlessing extends UniqueEnchantment implements IBles
 	@Override
 	public void loadData(Configuration config)
 	{
-		XP_BOOST = config.get(getConfigName(), "scale", 0.2D).getDouble();
+		XP_BOOST = config.get(getConfigName(), "xp_boost", 0.2D).getDouble();
 	}
 	
 }

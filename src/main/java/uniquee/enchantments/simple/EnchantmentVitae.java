@@ -14,7 +14,7 @@ public class EnchantmentVitae extends UniqueEnchantment
 	public static final UUID HEALTH_MOD_CHEST = UUID.fromString("72a87567-c59a-42a8-90e7-1ce787d42ad7");
 	public static final UUID HEALTH_MOD_LEGS = UUID.fromString("aa0db628-1082-42dc-8f97-bb935ed325c2");
 	public static final UUID HEALTH_MOD_FEET = UUID.fromString("1ae23c8c-1b59-4bcc-85c3-e5aa5ce75fe1");
-	public static double SCALAR = 1D;
+	public static double HEALTH_BOOST = 1D;
 	
 	public EnchantmentVitae()
 	{
@@ -43,7 +43,7 @@ public class EnchantmentVitae extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration entry)
 	{
-		SCALAR = entry.get(getConfigName(), "scalar", 1D).getDouble();
+		HEALTH_BOOST = entry.get(getConfigName(), "health_boost", 1D).getDouble();
 	}
 	
 }

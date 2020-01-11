@@ -10,12 +10,12 @@ import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.unique.EnchantmentEcological;
 import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
 import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
+import uniquee.utils.DoubleLevelStats;
 
 public class EnchantmentEnderMending extends UniqueEnchantment
 {
 	public static final String ENDER_TAG = "ender_mending";
-	public static double SCALAR_VALUE = 0.25D;
-	public static double SCALAR_LEVEL = 0.25D;
+	public static final DoubleLevelStats ABSORBTION_RATIO = new DoubleLevelStats("absorbtion_ratio", 0.25D, 0.25D);
 	public static int LIMIT = 250;
 	
 	public EnchantmentEnderMending()
@@ -44,8 +44,7 @@ public class EnchantmentEnderMending extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR_LEVEL = config.get(getConfigName(), "scalar_level", 0.25D).getDouble();
-		SCALAR_VALUE = config.get(getConfigName(), "scalar_value", 0.25D).getDouble();
+		ABSORBTION_RATIO.handleConfig(config, getConfigName());
 		LIMIT = config.get(getConfigName(), "limit", 250).getInt();
 	}
 	

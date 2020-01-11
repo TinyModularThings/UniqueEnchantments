@@ -43,7 +43,7 @@ enchantment.uniquee.smart_ass.desc=Mining Gravel, Sand or Logs, will break the t
 enchantment.uniquee.warriorsgrace=Warrior's Grace
 enchantment.uniquee.warriorsgrace.desc=Killing an Entity will replenish Durability scaling with the Max HP of the Entity
 enchantment.uniquee.naturesgrace=Nature's Grace
-enchantment.uniquee.naturesgrace.desc=Standing near Flowers or Leaves and not receiving damage for 15 seconds, will grant you regen
+enchantment.uniquee.naturesgrace.desc=Standing near Flowers or Leaves will restore Health, as long as the Player didnt receive Damage recently
 enchantment.uniquee.fastfood=Fast Food
 enchantment.uniquee.fastfood.desc=Living Animals/Passives wont drop anything but therefore replenish Hunger
 enchantment.uniquee.endermarksmen=Enders Markmen
@@ -71,7 +71,7 @@ enchantment.uniquee.ender_librarian.desc=Shift-rightclicking with a Map will tel
 
 //Curse
 enchantment.uniquee.uniquepestilences_odium=Pestilence's Odium
-enchantment.uniquee.uniquepestilences_odium.desc=Non-Hostile Entities in your area will be continuesly damaged, won't drop Loot
+enchantment.uniquee.uniquepestilences_odium.desc=Non-Hostile Entities in your area will be continuously damaged, won't drop Loot
 
 //Potion
 potion.uniquee.uniquepestilences_odium=Pestilence's Odium

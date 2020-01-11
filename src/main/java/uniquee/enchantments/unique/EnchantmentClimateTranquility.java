@@ -85,7 +85,7 @@ public class EnchantmentClimateTranquility extends UniqueEnchantment
 		{
 			speed.removeModifier(SPEED_UUID);
 		}
-		if(hasCold && !hasCold)
+		if(hasCold && !hasHot)
 		{
 			AttributeModifier damageMod = new AttributeModifier(ATTACK_UUID, "Climate Boost", (ATTACK_SCALE * level), 2);
 			if(!damage.hasModifier(damageMod))

@@ -3,6 +3,9 @@ package uniquee.enchantments.complex;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemAxe;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
 
@@ -21,6 +24,12 @@ public class EnchantmentPerpetualStrike extends UniqueEnchantment
 	public int getMaxLevel()
 	{
 		return 3;
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemHoe;
 	}
 	
 	@Override

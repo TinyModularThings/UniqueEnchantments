@@ -6,10 +6,12 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.IntLevelStats;
 
 public class EnchantmentFastFood extends UniqueEnchantment
 {
-	public static int SCALAR = 1;
+	public static final IntLevelStats NURISHMENT = new IntLevelStats("nourishment", 2, 1);
+	public static double SATURATION = 0.5D;
 
 	public EnchantmentFastFood()
 	{
@@ -31,6 +33,7 @@ public class EnchantmentFastFood extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 1).getInt();
+		NURISHMENT.handleConfig(config, getConfigName());
+		SATURATION = config.get(getConfigName(), "saturation_scalar", 0.5D).getDouble();
 	}
 }

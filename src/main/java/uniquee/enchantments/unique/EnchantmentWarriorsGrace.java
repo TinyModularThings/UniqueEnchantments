@@ -13,7 +13,7 @@ import uniquee.enchantments.type.IGraceEnchantment;
 
 public class EnchantmentWarriorsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
-	public static double SCALAR = 1D;
+	public static double DURABILITY_GAIN = 1.1D;
 
 	public EnchantmentWarriorsGrace()
 	{
@@ -41,6 +41,6 @@ public class EnchantmentWarriorsGrace extends UniqueEnchantment implements IGrac
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 1D).getDouble();
+		DURABILITY_GAIN = config.get(getConfigName(), "durability_gain", 1.1D).getDouble();
 	}
 }

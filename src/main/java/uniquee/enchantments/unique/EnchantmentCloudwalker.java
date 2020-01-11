@@ -4,11 +4,12 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.IntLevelStats;
 
 public class EnchantmentCloudwalker extends UniqueEnchantment
 {
 	public static final String TIMER = "cloud";
-	public static int TICKS = 50;
+	public static final IntLevelStats TICKS = new IntLevelStats("duration", 8, 28);
 
 	public EnchantmentCloudwalker()
 	{
@@ -24,6 +25,6 @@ public class EnchantmentCloudwalker extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		TICKS = config.get(getConfigName(), "ticks", 50).getInt();
+		TICKS.handleConfig(config, getConfigName());
 	}
 }

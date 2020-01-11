@@ -22,8 +22,8 @@ public class EnchantmentEcological extends UniqueEnchantment
 			return t.getBlock() instanceof BlockLog || t.getBlock() instanceof BlockLeaves;
 		}
 	};
-	public static int SPEED = 200;
-	public static double SCALE = 1.75D;
+	public static int SPEED = 220;
+	public static double SCALE = 1.85D;
 	
 	public EnchantmentEcological()
 	{
@@ -45,8 +45,8 @@ public class EnchantmentEcological extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SPEED = config.get(getConfigName(), "speed", 200).getInt();
-		SCALE = config.get(getConfigName(), "scale", 1.75D).getDouble();
+		SPEED = config.get(getConfigName(), "speed", 220).getInt();
+		SCALE = config.get(getConfigName(), "scale", 1.85D).getDouble();
 	}
 	
 }

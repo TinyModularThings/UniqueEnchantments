@@ -11,10 +11,12 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
+import uniquee.utils.DoubleLevelStats;
 
 public class EnchantmentNaturesGrace extends UniqueEnchantment implements IGraceEnchantment
 {
-	public static double SCALAR = 0.5D;
+	public static final DoubleLevelStats HEALING = new DoubleLevelStats("healing", 0.2, 0.4);
+	public static int DELAY = 100;
 	public static Predicate<IBlockState> FLOWERS = new Predicate<IBlockState>(){
 		@Override
 		public boolean test(IBlockState t)
@@ -30,7 +32,7 @@ public class EnchantmentNaturesGrace extends UniqueEnchantment implements IGrace
 	@Override
 	public int getMaxLevel()
 	{
-		return 1;
+		return 2;
 	}
 	
 	@Override
@@ -42,6 +44,7 @@ public class EnchantmentNaturesGrace extends UniqueEnchantment implements IGrace
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 0.5D).getDouble();
+		HEALING.handleConfig(config, getConfigName());
+		DELAY = config.get(getConfigName(), "delay", 100).getInt();
 	}
 }

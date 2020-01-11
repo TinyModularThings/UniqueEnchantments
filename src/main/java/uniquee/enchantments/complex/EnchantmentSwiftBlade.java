@@ -3,6 +3,9 @@ package uniquee.enchantments.complex;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemAxe;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.simple.EnchantmentBerserk;
@@ -21,7 +24,13 @@ public class EnchantmentSwiftBlade extends UniqueEnchantment
 	{
 		return 1;
 	}
-		
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemHoe;
+	}
+	
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{

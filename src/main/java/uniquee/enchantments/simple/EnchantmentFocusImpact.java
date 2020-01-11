@@ -39,7 +39,7 @@ public class EnchantmentFocusImpact extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 1.05D).getDouble();
+		SCALAR = config.get(getConfigName(), "scalar", 1.05D, "Important Info: Turning the Scalar to 0.639 or below will end up Healing the enemy with the Bonus Damage instead of Damaging on LvL 3 for a 1.6 Attack Speed(Default Attack Speed). so keep it above").getDouble();
 	}
 	
 }

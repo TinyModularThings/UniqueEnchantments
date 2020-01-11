@@ -13,7 +13,7 @@ public class EnchantmentPestilencesOdium extends UniqueEnchantment
 	
 	public EnchantmentPestilencesOdium()
 	{
-		super(new DefaultData("pestilences_odium", Rarity.UNCOMMON, false, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
+		super(new DefaultData("pestilences_odium", Rarity.RARE, false, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
 	}
 	
 	@Override

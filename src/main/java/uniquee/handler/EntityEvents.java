@@ -57,6 +57,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
@@ -173,16 +174,19 @@ public class EntityEvents
 		EntityPlayer player = event.player;
 		if(event.side == Side.SERVER)
 		{
-			if(player.world.getTotalWorldTime() % 200 == 0)
+			if(player.getHealth() < player.getMaxHealth())
 			{
-				if(player.getHealth() < player.getMaxHealth())
+				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.NATURES_GRACE, player.getItemStackFromSlot(EntityEquipmentSlot.CHEST));
+				if(level > 0 && player.world.getTotalWorldTime() % Math.sqrt(EnchantmentNaturesGrace.DELAY / level) == 0)
 				{
-					int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.NATURES_GRACE, player.getItemStackFromSlot(EntityEquipmentSlot.CHEST));
 					if(level > 0 && player.getCombatTracker().getBestAttacker() == null && hasBlockCount(player.world, player.getPosition(), 4, EnchantmentNaturesGrace.FLOWERS))
 					{
-						player.heal((float)(1D * EnchantmentNaturesGrace.SCALAR));
+						player.heal(EnchantmentNaturesGrace.HEALING.getAsFloat(level));
 					}
 				}
+			}
+			if(player.world.getTotalWorldTime() % 100 == 0)
+			{
 				EntityEquipmentSlot[] slots = MiscUtil.getEquipmentSlotsFor(UniqueEnchantments.ENDER_MENDING);
 				for(int i = 0;i<slots.length;i++)
 				{
@@ -232,19 +236,19 @@ public class EntityEvents
 		{
 			if(player.isSneaking())
 			{
-				int value = getInt(stack, EnchantmentCloudwalker.TIMER, EnchantmentCloudwalker.TICKS * level);
+				int value = getInt(stack, EnchantmentCloudwalker.TIMER, EnchantmentCloudwalker.TICKS.get(level));
 				if(value <= 0)
 				{
 					return;
 				}
-				player.motionY = 0D;
+				player.motionY = player.capabilities.isFlying ? 0.15D : 0D;
 				player.fall(player.fallDistance, 1F);
 				player.fallDistance = 0F;
 				setInt(stack, EnchantmentCloudwalker.TIMER, value-1);
 			}
 			else
 			{
-				setInt(stack, EnchantmentCloudwalker.TIMER, EnchantmentCloudwalker.TICKS * level);
+				setInt(stack, EnchantmentCloudwalker.TIMER, EnchantmentCloudwalker.TICKS.get(level));
 			}
 		}
 		Boolean cache = null;
@@ -300,7 +304,7 @@ public class EntityEvents
 			return;
 		}
 		int xp = event.getOrb().xpValue;
-		int totalXP = (int)((xp * 1F - (EnchantmentEnderMending.SCALAR_VALUE + (EnchantmentEnderMending.SCALAR_LEVEL * maxLevel))) * 2);
+		int totalXP = (int)((xp * 1F - EnchantmentEnderMending.ABSORBTION_RATIO.getAsFloat(maxLevel)) * 2);
 		xp -= (totalXP / 2);
 		int usedXP = 0;
 		for(Object2BooleanMap.Entry<ItemStack> entry : values.object2BooleanEntrySet())
@@ -384,7 +388,7 @@ public class EntityEvents
 			double value = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getBaseValue();
 			if(value * value < player.getDistanceSqToCenter(event.getPos()))
 			{
-				event.setNewSpeed(event.getNewSpeed() * (1F - (float)(EnchantmentRange.REDUCTION_VALUE / (EnchantmentRange.REDUCTION_LEVEL * level))));
+				event.setNewSpeed(event.getNewSpeed() * (1F - EnchantmentRange.REDUCTION.getAsFloat(level)));
 			}
 		}
 	}
@@ -498,7 +502,7 @@ public class EntityEvents
 				}
 				if(smelted > 0)
 				{
-					stored -= smelted * (ore ? 5 : 1);
+					stored -= MathHelper.ceil(smelted * (ore ? 5 : 1) * EnchantmentIfritsGrace.SCALAR / level);
 					setInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, Math.max(0, stored));
 				}
 			}
@@ -684,7 +688,7 @@ public class EntityEvents
 				double value = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getBaseValue();
 				if(value * value < player.getDistanceSq(event.getEntity()))
 				{
-					event.setAmount(event.getAmount() * (1F - (float)(EnchantmentRange.REDUCTION_VALUE / (EnchantmentRange.REDUCTION_LEVEL * level))));
+					event.setAmount(event.getAmount() * (1F - EnchantmentRange.REDUCTION.getAsFloat(level)));
 				}
 			}
 		}
@@ -725,11 +729,12 @@ public class EntityEvents
 			DamageSource source = event.getSource();
 			if(!source.isMagicDamage() && source != DamageSource.FALL)
 			{
-				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ARES_BLESSING, event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.CHEST));
-				if(level > 0)
+				ItemStack stack = event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ARES_BLESSING, stack);
+				if(level > 0 && stack.isItemStackDamageable())
 				{
 					float damage = event.getAmount();
-					event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.CHEST).damageItem((int)(damage * (EnchantmentAresBlessing.SCALAR / level)), event.getEntityLiving());
+					stack.damageItem((int)(damage * (EnchantmentAresBlessing.SCALAR / level)), event.getEntityLiving());
 					event.setCanceled(true);
 					return;
 				}	
@@ -783,7 +788,7 @@ public class EntityEvents
 			if(level > 0)
 			{
 				ItemStack stack = base.getHeldItemMainhand();
-				int amount = Math.min(stack.getItemDamage(), (int)Math.sqrt(event.getEntityLiving().getMaxHealth() * level * EnchantmentWarriorsGrace.SCALAR));
+				int amount = Math.min(stack.getItemDamage(), MathHelper.ceil(Math.sqrt(event.getEntityLiving().getMaxHealth() * level) * EnchantmentWarriorsGrace.DURABILITY_GAIN));
 				if(amount > 0)
 				{
 					stack.damageItem(-amount, base);
@@ -830,10 +835,13 @@ public class EntityEvents
 			int level = MiscUtil.getEnchantedItem(UniqueEnchantments.FAST_FOOD, base).getIntValue();
 			if(level > 0)
 			{
-				level *= EnchantmentFastFood.SCALAR;
-				base.getFoodStats().addStats(1 * level , 0.5F * level);
+				base.getFoodStats().addStats(EnchantmentFastFood.NURISHMENT.get(level), (float)(EnchantmentFastFood.SATURATION * level));
 				event.setCanceled(true);
 			}
+		}
+		if(event.getEntityLiving().isPotionActive(UniqueEnchantments.PESTILENCES_ODIUM_POTION))
+		{
+			event.setCanceled(true);
 		}
 	}
 	
@@ -891,17 +899,17 @@ public class EntityEvents
 		int level = enchantments.getInt(UniqueEnchantments.VITAE);
 		if(level > 0 && MiscUtil.getSlotsFor(UniqueEnchantments.VITAE).contains(slot))
 		{
-			mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(EnchantmentVitae.getForSlot(slot), "Vitae Boost", level * EnchantmentVitae.SCALAR, 0));
+			mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(EnchantmentVitae.getForSlot(slot), "Vitae Boost", level * EnchantmentVitae.HEALTH_BOOST, 0));
 		}
 		level = enchantments.getInt(UniqueEnchantments.SWIFT);
 		if(level > 0 && MiscUtil.getSlotsFor(UniqueEnchantments.SWIFT).contains(slot))
 		{
-			mods.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(EnchantmentSwift.SPEED_MOD, "Swift Boost", EnchantmentSwift.SCALAR * level, 2));
+			mods.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(EnchantmentSwift.SPEED_MOD, "Swift Boost", EnchantmentSwift.SPEED_BONUS.getAsDouble(level), 2));
 		}
 		level = enchantments.getInt(UniqueEnchantments.RANGE);
 		if(level > 0 && MiscUtil.getSlotsFor(UniqueEnchantments.RANGE).contains(slot))
 		{
-			mods.put(EntityPlayer.REACH_DISTANCE.getName(), new AttributeModifier(EnchantmentRange.RANGE_MOD, "Range Boost", EnchantmentRange.RANGE_VALUE + (EnchantmentRange.RANGE_LEVEL * level), 0));
+			mods.put(EntityPlayer.REACH_DISTANCE.getName(), new AttributeModifier(EnchantmentRange.RANGE_MOD, "Range Boost", EnchantmentRange.RANGE.getAsFloat(level), 0));
 		}
 		return mods;
 	}
