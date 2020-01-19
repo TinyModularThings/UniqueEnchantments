@@ -8,6 +8,8 @@ import net.minecraft.block.FallingBlock;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.utils.IntLevelStats;
@@ -15,13 +17,14 @@ import uniquee.utils.IntLevelStats;
 public class SmartAssEnchantment extends UniqueEnchantment
 {
 	public static final IntLevelStats STATS = new IntLevelStats("range", 2, 3);
-	//TODO Implement Tags
+	public static final Tag<Block> SMART_ASS = new BlockTags.Wrapper(new ResourceLocation("uniquee", "smart_ass"));
+
 	public static final Predicate<BlockState> VALID_STATES = new Predicate<BlockState>(){
 		@Override
 		public boolean test(BlockState t)
 		{
 			Block block = t.getBlock();
-			return BlockTags.LOGS.contains(block) || block instanceof FallingBlock;
+			return BlockTags.LOGS.contains(block) || block instanceof FallingBlock || SMART_ASS.contains(block);
 		}
 	};
 	

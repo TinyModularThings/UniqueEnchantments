@@ -124,8 +124,10 @@ public class AdvancedDamageEnchantment extends DamageEnchantment implements ITog
 	@Override
 	public void loadFromConfig(Builder entry)
 	{
+		entry.push(getConfigName());
 		isEnabled = entry.define("enabled", true);
 		values.loadConfig(entry);
 		scalar.handleConfig(entry);
+		entry.pop();
 	}
 }

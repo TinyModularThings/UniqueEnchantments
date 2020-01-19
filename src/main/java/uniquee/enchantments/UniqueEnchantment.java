@@ -19,7 +19,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	protected UniqueEnchantment(DefaultData data, EnchantmentType typeIn, EquipmentSlotType[] slots)
 	{
 		super(data.getRarity(), typeIn, slots);
-		setRegistryName(data.getName());
+		setRegistryName("uniquee", data.getName());
 		configName = data.getName();
 		values = data;
 	}

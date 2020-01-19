@@ -21,7 +21,6 @@ public class EnchantmentMidasBlessing extends UniqueEnchantment implements IBles
 		@Override
 		public int applyAsInt(ItemStack value)
 		{
-			//TODO Implement Tag!
 			return Tags.Items.INGOTS_GOLD.contains(value.getItem()) ? 1 : 0;
 		}
 	};

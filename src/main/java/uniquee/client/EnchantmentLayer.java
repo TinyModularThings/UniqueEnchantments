@@ -19,9 +19,9 @@ import uniquee.UniqueEnchantments;
 import uniquee.enchantments.simple.TreasurersEyesEnchantment;
 import uniquee.utils.MiscUtil;
 
-public class EnchantmentLayer extends LayerRenderer<LivingEntity, EntityModel<LivingEntity>>
+public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> extends LayerRenderer<T, M> 
 {
-	public EnchantmentLayer(IEntityRenderer<LivingEntity, EntityModel<LivingEntity>> entityRendererIn)
+	public EnchantmentLayer(IEntityRenderer<T, M> entityRendererIn)
 	{
 		super(entityRendererIn);
 	}
@@ -36,7 +36,7 @@ public class EnchantmentLayer extends LayerRenderer<LivingEntity, EntityModel<Li
 			maxDistance *= maxDistance;
 			return player.getDistanceSq(base) <= maxDistance;
 		}
-		return false;
+		return true;
 	}
 	
 	

@@ -2,6 +2,7 @@ package uniquee.enchantments.unique;
 
 import java.util.function.Predicate;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
@@ -9,6 +10,8 @@ import net.minecraft.enchantment.InfinityEnchantment;
 import net.minecraft.enchantment.MendingEnchantment;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.utils.DoubleStat;
@@ -16,11 +19,12 @@ import uniquee.utils.IntStat;
 
 public class EnchantmentEcological extends UniqueEnchantment
 {
+	public static final Tag<Block> ECHOLOGICAL = new BlockTags.Wrapper(new ResourceLocation("uniquee", "echological"));
 	public static Predicate<BlockState> STATES = new Predicate<BlockState>(){
 		@Override
 		public boolean test(BlockState t)
 		{
-			return BlockTags.LOGS.contains(t.getBlock()) || BlockTags.LEAVES.contains(t.getBlock());
+			return BlockTags.LOGS.contains(t.getBlock()) || BlockTags.LEAVES.contains(t.getBlock()) || ECHOLOGICAL.contains(t.getBlock());
 		}
 	};
 	public static IntStat SPEED = new IntStat(220, "speed");

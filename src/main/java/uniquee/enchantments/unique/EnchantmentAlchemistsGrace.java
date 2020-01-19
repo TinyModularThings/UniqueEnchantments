@@ -16,7 +16,10 @@ import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.registries.ForgeRegistries;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
@@ -27,6 +30,7 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 {
 	public static List<List<EffectInstance>> EFFECTS = new ObjectArrayList<List<EffectInstance>>();
 	public static IntStat SECONDS = new IntStat(4, "seconds");
+	static ConfigValue<List<? extends String>> EFFECT_CONFIG;
 	
 	public EnchantmentAlchemistsGrace()
 	{
@@ -72,7 +76,7 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 					{
 						if(potions.add(effect.getPotion()))
 						{
-							base.addPotionEffect(new EffectInstance(effect.getPotion(), effect.getDuration() * level * time, effect.getAmplifier()));
+							base.addPotionEffect(new EffectInstance(effect.getPotion(), effect.getDuration() * time, effect.getAmplifier()));
 						}
 					}
 				}
@@ -84,5 +88,39 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 	public void loadData(Builder config)
 	{
 		SECONDS.handleConfig(config);
+		config.comment("Which Potion Effects should be applied. Format: MinimumEnchantLevel;Potion;PotionLevel;BaseDuration");
+		EFFECT_CONFIG = config.defineList("effects", ObjectArrayList.wrap(new String[]{"1;minecraft:speed;1;4", "2;minecraft:haste;1;6", "2;minecraft:speed;2;6", "3;minecraft:resistance;1;8", "3;minecraft:haste;2;8", "4;minecraft:strength;2;10", "4;minecraft:resistance;2;10"}), (T) -> true);
+	}
+	
+	@Override
+	public void onConfigChanged()
+	{
+		EFFECTS.clear();
+		List<? extends String> list = EFFECT_CONFIG.get();
+		for(int i = 0,m=list.size();i<m;i++)
+		{
+			String[] split = list.get(i).split(";");
+			if(split.length < 4)
+			{
+				continue;
+			}
+			Effect p = ForgeRegistries.POTIONS.getValue(new ResourceLocation(split[1]));
+			if(p != null)
+			{
+				try
+				{
+					int index = Integer.parseInt(split[0]);
+					while(EFFECTS.size() <= index)
+					{
+						EFFECTS.add(new ObjectArrayList<EffectInstance>());
+					}
+					EFFECTS.get(index).add(new EffectInstance(p, Integer.parseInt(split[3]) * 20, Integer.parseInt(split[2])));	
+				}
+				catch(Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
