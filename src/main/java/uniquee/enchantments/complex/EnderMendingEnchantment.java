@@ -7,9 +7,9 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.unique.EnchantmentEcological;
-import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
-import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
+import uniquee.enchantments.unique.EcologicalEnchantment;
+import uniquee.enchantments.unique.EnderMarksmenEnchantment;
+import uniquee.enchantments.unique.WarriorsGraceEnchantment;
 import uniquee.utils.DoubleLevelStats;
 import uniquee.utils.IntStat;
 
@@ -33,7 +33,7 @@ public class EnderMendingEnchantment extends UniqueEnchantment
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{
-		return ench instanceof MendingEnchantment || ench instanceof EnchantmentEnderMarksmen || ench instanceof EnchantmentWarriorsGrace || ench instanceof EnchantmentEcological ? false : super.canApplyTogether(ench);
+		return ench instanceof MendingEnchantment || ench instanceof EnderMarksmenEnchantment || ench instanceof WarriorsGraceEnchantment || ench instanceof EcologicalEnchantment ? false : super.canApplyTogether(ench);
 	}
 	
 	@Override

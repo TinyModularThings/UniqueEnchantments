@@ -6,12 +6,12 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.utils.IntLevelStats;
 
-public class EnchantmentCloudwalker extends UniqueEnchantment
+public class CloudwalkerEnchantment extends UniqueEnchantment
 {
 	public static final String TIMER = "cloud";
 	public static final IntLevelStats TICKS = new IntLevelStats("duration", 8, 28);
 
-	public EnchantmentCloudwalker()
+	public CloudwalkerEnchantment()
 	{
 		super(new DefaultData("cloudwalker", Rarity.RARE, true, 16, 3, 16), EnchantmentType.ARMOR_FEET, new EquipmentSlotType[]{EquipmentSlotType.FEET});
 	}

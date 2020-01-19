@@ -5,14 +5,14 @@ import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectType;
 import net.minecraft.util.DamageSource;
-import uniquee.enchantments.curse.EnchantmentPestilencesOdium;
+import uniquee.enchantments.curse.PestilencesOdiumEnchantment;
 
-public class PotionPestilencesOdium extends Effect
+public class PestilencesOdiumPotion extends Effect
 {
-	public PotionPestilencesOdium()
+	public PestilencesOdiumPotion()
 	{
 		super(EffectType.HARMFUL, 3484199);
-		setRegistryName("pestilences_odium");
+		setRegistryName("uniquee", "pestilences_odium");
 	}
 	
 	@Override
@@ -23,9 +23,11 @@ public class PotionPestilencesOdium extends Effect
 		{
 			return;
 		}
-		if(entityLivingBaseIn.world.getGameTime() % Math.max(1, (EnchantmentPestilencesOdium.DELAY.get() / Math.max(1, amplifier))) == 0)
+		if(entityLivingBaseIn.world.getGameTime() % Math.max(1, (PestilencesOdiumEnchantment.DELAY.get() / Math.max(1, amplifier))) == 0)
 		{
-			entityLivingBaseIn.attackEntityFrom(DamageSource.MAGIC, EnchantmentPestilencesOdium.DAMAGE_PER_TICK.getFloat() * amplifier);
+			float value = PestilencesOdiumEnchantment.DAMAGE_PER_TICK.getFloat() * amplifier;
+			System.out.println("Value: "+value);
+			entityLivingBaseIn.attackEntityFrom(DamageSource.MAGIC, value);
 		}
 	}
 	

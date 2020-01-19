@@ -17,7 +17,7 @@ import uniquee.enchantments.UniqueEnchantment;
 import uniquee.utils.DoubleStat;
 import uniquee.utils.IntStat;
 
-public class EnchantmentEcological extends UniqueEnchantment
+public class EcologicalEnchantment extends UniqueEnchantment
 {
 	public static final Tag<Block> ECHOLOGICAL = new BlockTags.Wrapper(new ResourceLocation("uniquee", "echological"));
 	public static Predicate<BlockState> STATES = new Predicate<BlockState>(){
@@ -30,7 +30,7 @@ public class EnchantmentEcological extends UniqueEnchantment
 	public static IntStat SPEED = new IntStat(220, "speed");
 	public static DoubleStat SCALE = new DoubleStat(1.85D, "scale");
 	
-	public EnchantmentEcological()
+	public EcologicalEnchantment()
 	{
 		super(new DefaultData("ecological", Rarity.RARE, true, 22, 2, 40), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
 	}
@@ -44,7 +44,7 @@ public class EnchantmentEcological extends UniqueEnchantment
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{
-		return ench instanceof EnchantmentWarriorsGrace || ench instanceof MendingEnchantment || ench instanceof EnchantmentEnderMarksmen || ench instanceof InfinityEnchantment ? false : super.canApplyTogether(ench);
+		return ench instanceof WarriorsGraceEnchantment || ench instanceof MendingEnchantment || ench instanceof EnderMarksmenEnchantment || ench instanceof InfinityEnchantment ? false : super.canApplyTogether(ench);
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IBlessingEnchantment;
-import uniquee.enchantments.unique.EnchantmentFastFood;
+import uniquee.enchantments.unique.FastFoodEnchantment;
 import uniquee.utils.DoubleStat;
 
 public class SagesBlessingEnchantment extends UniqueEnchantment implements IBlessingEnchantment
@@ -35,7 +35,7 @@ public class SagesBlessingEnchantment extends UniqueEnchantment implements IBles
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{
-		return ench instanceof SilkTouchEnchantment || ench instanceof EnchantmentFastFood ? false : super.canApplyTogether(ench);
+		return ench instanceof SilkTouchEnchantment || ench instanceof FastFoodEnchantment ? false : super.canApplyTogether(ench);
 	}
 
 	@Override

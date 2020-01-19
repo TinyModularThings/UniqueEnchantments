@@ -7,9 +7,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquee.enchantments.UniqueEnchantment;
 
-public class EnchantmentEnderLibrarian extends UniqueEnchantment
+public class EnderLibrarianEnchantment extends UniqueEnchantment
 {
-	public EnchantmentEnderLibrarian()
+	public EnderLibrarianEnchantment()
 	{
 		super(new DefaultData("ender_librarian", Rarity.VERY_RARE, true, 24, 3, 10), EnchantmentType.FISHING_ROD, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}

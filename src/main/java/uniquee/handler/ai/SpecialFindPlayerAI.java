@@ -2,9 +2,8 @@ package uniquee.handler.ai;
 
 import java.lang.reflect.Method;
 
-import javax.swing.text.html.parser.Entity;
-
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
@@ -12,14 +11,13 @@ import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import uniquee.UniqueEnchantments;
 import uniquee.utils.MiscUtil;
 
 public class SpecialFindPlayerAI extends NearestAttackableTargetGoal<PlayerEntity>
 {
-	public static final Method TELEPORT_RANDOMLY = ObfuscationReflectionHelper.findMethod(EndermanEntity.class, "teleportRandomly");
-	public static final Method TELEPORT_TO = ObfuscationReflectionHelper.findMethod(EndermanEntity.class, "teleportToEntity", Entity.class);
+	public static final Method TELEPORT_RANDOMLY = MiscUtil.findMethod(EndermanEntity.class, new String[]{"teleportRandomly", "func_70820_n"});
+	public static final Method TELEPORT_TO = MiscUtil.findMethod(EndermanEntity.class, new String[]{"teleportToEntity", "func_70816_c"}, Entity.class);
 	
 	private final EndermanEntity enderman;
 	private PlayerEntity player;
@@ -39,19 +37,19 @@ public class SpecialFindPlayerAI extends NearestAttackableTargetGoal<PlayerEntit
 	
 	public boolean shouldAttack(EndermanEntity source, PlayerEntity target)
 	{
-		ItemStack itemstack = player.inventory.armorInventory.get(3);
+		ItemStack itemstack = target.inventory.armorInventory.get(3);
 		if(itemstack.getItem() == Blocks.CARVED_PUMPKIN.asItem() || MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDER_EYES, itemstack) > 0)
 		{
 			return false;
 		}
 		else
 		{
-			Vec3d vec3d = player.getLook(1.0F).normalize();
-			Vec3d vec3d1 = new Vec3d(source.posX - player.posX, source.getBoundingBox().minY + source.getEyeHeight() - (player.posY + player.getEyeHeight()), source.posZ - player.posZ);
+			Vec3d vec3d = target.getLook(1.0F).normalize();
+			Vec3d vec3d1 = new Vec3d(source.posX - target.posX, source.getBoundingBox().minY + source.getEyeHeight() - (target.posY + target.getEyeHeight()), source.posZ - target.posZ);
 			double d0 = vec3d1.length();
 			vec3d1 = vec3d1.normalize();
 			double d1 = vec3d.dotProduct(vec3d1);
-			return d1 > 1.0D - 0.025D / d0 ? player.canEntityBeSeen(source) : false;
+			return d1 > 1.0D - 0.025D / d0 ? target.canEntityBeSeen(source) : false;
 		}
 	}
 	

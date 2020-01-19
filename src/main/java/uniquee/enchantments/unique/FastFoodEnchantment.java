@@ -9,12 +9,12 @@ import uniquee.enchantments.UniqueEnchantment;
 import uniquee.utils.DoubleStat;
 import uniquee.utils.IntLevelStats;
 
-public class EnchantmentFastFood extends UniqueEnchantment
+public class FastFoodEnchantment extends UniqueEnchantment
 {
 	public static final IntLevelStats NURISHMENT = new IntLevelStats("nourishment", 2, 1);
 	public static DoubleStat SATURATION = new DoubleStat(0.5D, "saturation");
 
-	public EnchantmentFastFood()
+	public FastFoodEnchantment()
 	{
 		super(new DefaultData("fastfood", Rarity.RARE, true, 14, 6, 10), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}

@@ -7,13 +7,13 @@ import uniquee.enchantments.UniqueEnchantment;
 import uniquee.utils.DoubleStat;
 import uniquee.utils.IntStat;
 
-public class EnchantmentPestilencesOdium extends UniqueEnchantment
+public class PestilencesOdiumEnchantment extends UniqueEnchantment
 {
 	public static DoubleStat RADIUS = new DoubleStat(7, "radius");
 	public static IntStat DELAY = new IntStat(300, "delay");
 	public static DoubleStat DAMAGE_PER_TICK = new DoubleStat(0.25F, "damage_per_tick");
 	
-	public EnchantmentPestilencesOdium()
+	public PestilencesOdiumEnchantment()
 	{
 		super(new DefaultData("pestilences_odium", Rarity.RARE, false, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
 	}

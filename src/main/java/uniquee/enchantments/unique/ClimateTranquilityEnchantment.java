@@ -22,7 +22,7 @@ import uniquee.utils.DoubleStat;
 import uniquee.utils.IntStat;
 import uniquee.utils.MiscUtil;
 
-public class EnchantmentClimateTranquility extends UniqueEnchantment
+public class ClimateTranquilityEnchantment extends UniqueEnchantment
 {
 	public static UUID SPEED_UUID = UUID.fromString("7b8a3791-8f94-4127-82b2-26418679d551");
 	public static DoubleStat SPEED_SCALE = new DoubleStat(0.1D, "speed_scale");
@@ -32,7 +32,7 @@ public class EnchantmentClimateTranquility extends UniqueEnchantment
 	public static DoubleStat ATTACK_SCALE = new DoubleStat(0.1D, "attack_scale");
 	public static IntStat BURN_TIME = new IntStat(1, "burn_time");
 	
-	public EnchantmentClimateTranquility()
+	public ClimateTranquilityEnchantment()
 	{
 		super(new DefaultData("climate_tranquility", Rarity.RARE, true, 20, 2, 12), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}

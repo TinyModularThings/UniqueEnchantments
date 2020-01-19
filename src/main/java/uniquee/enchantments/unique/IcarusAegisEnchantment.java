@@ -11,7 +11,7 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.utils.IntStat;
 
-public class EnchantmentIcarusAegis extends UniqueEnchantment
+public class IcarusAegisEnchantment extends UniqueEnchantment
 {
 	public static IntStat SCALAR = new IntStat(2, "scalar");
 	public static String FEATHER_TAG = "feathers";
@@ -24,7 +24,7 @@ public class EnchantmentIcarusAegis extends UniqueEnchantment
 		}
 	};
 	
-	public EnchantmentIcarusAegis()
+	public IcarusAegisEnchantment()
 	{
 		super(new DefaultData("icarus_aegis", Rarity.VERY_RARE, true, 20, 2, 20), EnchantmentType.ARMOR_CHEST, new EquipmentSlotType[]{EquipmentSlotType.CHEST});
 	}

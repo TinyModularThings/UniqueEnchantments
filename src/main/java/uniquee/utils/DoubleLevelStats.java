@@ -50,4 +50,9 @@ public class DoubleLevelStats
 	{
 		return (float)(getBase() + (getLevel() * level));
 	}
+	
+	public float getDevided(int level)
+	{
+		return (float)(getBase() / (getLevel() * level));
+	}
 }

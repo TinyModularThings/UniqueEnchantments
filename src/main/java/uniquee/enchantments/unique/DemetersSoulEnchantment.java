@@ -11,12 +11,12 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.utils.HarvestEntry;
 
-public class EnchantmentDemetersSoul extends UniqueEnchantment
+public class DemetersSoulEnchantment extends UniqueEnchantment
 {
 	public static final String ID = "crop_queue";
 	public static final String QUEUE_INDEX = "index_queue";
 	
-	public EnchantmentDemetersSoul()
+	public DemetersSoulEnchantment()
 	{
 		super(new DefaultData("demeters_soul", Rarity.VERY_RARE, true, 20, 6, 40), EnchantmentType.BREAKABLE, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}

@@ -26,13 +26,13 @@ import uniquee.enchantments.type.IGraceEnchantment;
 import uniquee.utils.IntStat;
 import uniquee.utils.MiscUtil;
 
-public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGraceEnchantment
+public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGraceEnchantment
 {
 	public static List<List<EffectInstance>> EFFECTS = new ObjectArrayList<List<EffectInstance>>();
 	public static IntStat SECONDS = new IntStat(4, "seconds");
 	static ConfigValue<List<? extends String>> EFFECT_CONFIG;
 	
-	public EnchantmentAlchemistsGrace()
+	public AlchemistsGraceEnchantment()
 	{
 		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, true, 20, 3, 18), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}
@@ -52,7 +52,7 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{
-		return ench instanceof EnchantmentWarriorsGrace || ench instanceof EnchantmentNaturesGrace ? false : super.canApplyTogether(ench);
+		return ench instanceof WarriorsGraceEnchantment || ench instanceof NaturesGraceEnchantment ? false : super.canApplyTogether(ench);
 	}
 	
 	public static void applyToEntity(Entity entity)
@@ -114,7 +114,7 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 					{
 						EFFECTS.add(new ObjectArrayList<EffectInstance>());
 					}
-					EFFECTS.get(index).add(new EffectInstance(p, Integer.parseInt(split[3]) * 20, Integer.parseInt(split[2])));	
+					EFFECTS.get(index).add(new EffectInstance(p, Integer.parseInt(split[3]), Integer.parseInt(split[2])));	
 				}
 				catch(Exception e)
 				{

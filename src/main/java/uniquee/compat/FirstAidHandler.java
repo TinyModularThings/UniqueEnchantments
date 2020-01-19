@@ -11,7 +11,7 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.unique.EnchantmentAresBlessing;
+import uniquee.enchantments.unique.AresBlessingEnchantment;
 import uniquee.utils.MiscUtil;
 
 public class FirstAidHandler
@@ -31,7 +31,7 @@ public class FirstAidHandler
 				if(level > 0 && stack.isDamageable())
 				{
 					float damage = event.getUndistributedDamage();
-					stack.damageItem((int)(damage * (EnchantmentAresBlessing.SCALAR.get() / level)), event.getEntityLiving(), MiscUtil.get(EquipmentSlotType.CHEST));
+					stack.damageItem((int)(damage * (AresBlessingEnchantment.SCALAR.get() / level)), event.getEntityLiving(), MiscUtil.get(EquipmentSlotType.CHEST));
 					event.setCanceled(true);
 					return;
 				}	

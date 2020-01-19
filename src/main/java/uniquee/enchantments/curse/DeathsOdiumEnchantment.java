@@ -7,7 +7,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquee.enchantments.UniqueEnchantment;
 
-public class EnchantmentDeathsOdium extends UniqueEnchantment
+public class DeathsOdiumEnchantment extends UniqueEnchantment
 {
 	public static final String CURSE_STORAGE = "curse_storage";
 	public static final UUID REMOVE_UUID = UUID.fromString("1a74e7ff-3914-4e57-8f59-aed5c17c04a0");
@@ -20,7 +20,7 @@ public class EnchantmentDeathsOdium extends UniqueEnchantment
 	public static final UUID FEET_MOD = UUID.fromString("6d64591f-abda-431f-87da-0622ba33b665");
 	
 	
-	public EnchantmentDeathsOdium()
+	public DeathsOdiumEnchantment()
 	{
 		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, false, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
 	}

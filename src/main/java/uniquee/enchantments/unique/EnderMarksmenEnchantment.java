@@ -10,11 +10,11 @@ import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.complex.EnderMendingEnchantment;
 import uniquee.utils.DoubleStat;
 
-public class EnchantmentEnderMarksmen extends UniqueEnchantment
+public class EnderMarksmenEnchantment extends UniqueEnchantment
 {
 	public static DoubleStat SCALAR = new DoubleStat(2D, "scalar");
 	
-	public EnchantmentEnderMarksmen()
+	public EnderMarksmenEnchantment()
 	{
 		super(new DefaultData("endermarksmen", Rarity.VERY_RARE, true, 28, 2, 16), EnchantmentType.BOW, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}
@@ -28,7 +28,7 @@ public class EnchantmentEnderMarksmen extends UniqueEnchantment
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{
-		return ench instanceof MendingEnchantment || ench instanceof EnderMendingEnchantment || ench instanceof InfinityEnchantment || ench instanceof EnchantmentEcological ? false : super.canApplyTogether(ench);
+		return ench instanceof MendingEnchantment || ench instanceof EnderMendingEnchantment || ench instanceof InfinityEnchantment || ench instanceof EcologicalEnchantment ? false : super.canApplyTogether(ench);
 	}
 	
 	@Override

@@ -14,7 +14,7 @@ import uniquee.enchantments.type.IGraceEnchantment;
 import uniquee.utils.DoubleLevelStats;
 import uniquee.utils.IntStat;
 
-public class EnchantmentNaturesGrace extends UniqueEnchantment implements IGraceEnchantment
+public class NaturesGraceEnchantment extends UniqueEnchantment implements IGraceEnchantment
 {
 	public static final DoubleLevelStats HEALING = new DoubleLevelStats("healing", 0.2, 0.4);
 	public static IntStat DELAY = new IntStat(100, "delay");
@@ -25,7 +25,7 @@ public class EnchantmentNaturesGrace extends UniqueEnchantment implements IGrace
 			return BlockTags.SMALL_FLOWERS.contains(t.getBlock()) || t.getBlock() instanceof DoublePlantBlock || BlockTags.LEAVES.contains(t.getBlock());
 		}
 	};	
-	public EnchantmentNaturesGrace()
+	public NaturesGraceEnchantment()
 	{
 		super(new DefaultData("naturesgrace", Rarity.VERY_RARE, true, 22, 4, 22), EnchantmentType.ARMOR_CHEST, new EquipmentSlotType[]{EquipmentSlotType.CHEST});
 	}
@@ -39,7 +39,7 @@ public class EnchantmentNaturesGrace extends UniqueEnchantment implements IGrace
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{
-		return ench instanceof EnchantmentAresBlessing || ench instanceof EnchantmentAlchemistsGrace || ench instanceof EnchantmentWarriorsGrace ? false : super.canApplyTogether(ench);
+		return ench instanceof AresBlessingEnchantment || ench instanceof AlchemistsGraceEnchantment || ench instanceof WarriorsGraceEnchantment ? false : super.canApplyTogether(ench);
 	}
 
 	@Override

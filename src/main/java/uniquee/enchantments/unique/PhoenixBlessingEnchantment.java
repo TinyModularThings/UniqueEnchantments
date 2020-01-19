@@ -8,10 +8,10 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IBlessingEnchantment;
 
-public class EnchantmentPhoenixBlessing extends UniqueEnchantment implements IBlessingEnchantment
+public class PhoenixBlessingEnchantment extends UniqueEnchantment implements IBlessingEnchantment
 {
 	
-	public EnchantmentPhoenixBlessing()
+	public PhoenixBlessingEnchantment()
 	{
 		super(new DefaultData("phoenixs_blessing", Rarity.RARE, true, 26, 2, 2), EnchantmentType.ALL, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}

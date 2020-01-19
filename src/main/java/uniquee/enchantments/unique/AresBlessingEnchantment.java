@@ -7,10 +7,10 @@ import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IBlessingEnchantment;
 import uniquee.utils.DoubleStat;
 
-public class EnchantmentAresBlessing extends UniqueEnchantment implements IBlessingEnchantment
+public class AresBlessingEnchantment extends UniqueEnchantment implements IBlessingEnchantment
 {
 	public static DoubleStat SCALAR = new DoubleStat(2D, "scalar");
-	public EnchantmentAresBlessing()
+	public AresBlessingEnchantment()
 	{
 		super(new DefaultData("aresblessing", Rarity.VERY_RARE, true, 28, 2, 32), EnchantmentType.ARMOR_CHEST, new EquipmentSlotType[]{EquipmentSlotType.CHEST});
 	}

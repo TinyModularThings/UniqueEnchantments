@@ -1,5 +1,7 @@
 package uniquee.utils;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -8,6 +10,7 @@ import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -27,7 +30,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class MiscUtil
@@ -122,8 +124,7 @@ public class MiscUtil
 	{
 		try
 		{
-			
-			return (EquipmentSlotType[])ObfuscationReflectionHelper.getPrivateValue(Enchantment.class, ench, "applicableEquipmentTypes");
+			return findField(Enchantment.class, ench, EquipmentSlotType[].class, "applicableEquipmentTypes", "field_185263_a");
 		}
 		catch(Exception e)
 		{
@@ -153,6 +154,41 @@ public class MiscUtil
 			}
 		}
 		return new AbstractObject2IntMap.BasicEntry<>(null, 0);
+	}
+	
+	public static Method findMethod(Class<?> clz, String[] names, Class<?>...variables)
+	{
+		for(String s : names)
+		{
+			try
+			{
+				Method method = clz.getDeclaredMethod(s, variables);
+				method.setAccessible(true);
+				return method;
+			}
+			catch(Exception e)
+			{
+			}
+		}
+		throw new IllegalStateException("Couldnt find methods: "+ObjectArrayList.wrap(names));
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T findField(Class<?> clz, Object instance, Class<T> result, String...names)
+	{
+		for(String s : names)
+		{
+			try
+			{
+				Field field = clz.getDeclaredField(s);
+				field.setAccessible(true);
+				return (T)field.get(instance);
+			}
+			catch(Exception e)
+			{
+			}
+		}
+		throw new IllegalStateException("Couldnt find fields: "+ObjectArrayList.wrap(names));
 	}
 	
 	public static boolean harvestBlock(BreakEvent event, BlockState state, BlockPos pos)

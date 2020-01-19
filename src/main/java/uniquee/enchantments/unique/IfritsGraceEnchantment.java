@@ -22,7 +22,7 @@ import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
 import uniquee.utils.IntStat;
 
-public class EnchantmentIfritsGrace extends UniqueEnchantment implements IGraceEnchantment
+public class IfritsGraceEnchantment extends UniqueEnchantment implements IGraceEnchantment
 {
 	public static Object2IntMap<Item> LAVA_ITEMS = new Object2IntOpenHashMap<Item>();
 	public static ToIntFunction<ItemStack> VALIDATOR = new ToIntFunction<ItemStack>(){
@@ -36,7 +36,7 @@ public class EnchantmentIfritsGrace extends UniqueEnchantment implements IGraceE
 	public static IntStat SCALAR = new IntStat(10, "scalar");
 	static ConfigValue<List<? extends String>> ITEMS;
 
-	public EnchantmentIfritsGrace()
+	public IfritsGraceEnchantment()
 	{
 		super(new DefaultData("ifrits_grace", Rarity.RARE, true, 14, 4, 40), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
@@ -48,9 +48,23 @@ public class EnchantmentIfritsGrace extends UniqueEnchantment implements IGraceE
 	}
 	
 	@Override
+	public boolean isAllowedOnBooks()
+	{
+		//Disabled do to forge bugs
+		return false;
+	}
+	
+	@Override
+	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	{
+		//Disabled do to forge bugs
+		return false;
+	}
+	
+	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{
-		return ench instanceof LootBonusEnchantment || ench instanceof SilkTouchEnchantment || ench instanceof EnchantmentMidasBlessing ? false : super.canApplyTogether(ench);
+		return ench instanceof LootBonusEnchantment || ench instanceof SilkTouchEnchantment || ench instanceof MidasBlessingEnchantment ? false : super.canApplyTogether(ench);
 	}
 
 	@Override

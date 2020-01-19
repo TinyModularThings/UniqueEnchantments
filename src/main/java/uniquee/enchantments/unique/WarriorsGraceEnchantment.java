@@ -12,11 +12,11 @@ import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
 import uniquee.utils.DoubleStat;
 
-public class EnchantmentWarriorsGrace extends UniqueEnchantment implements IGraceEnchantment
+public class WarriorsGraceEnchantment extends UniqueEnchantment implements IGraceEnchantment
 {
 	public static DoubleStat DURABILITY_GAIN = new DoubleStat(1.1D, "durability_gain");
 
-	public EnchantmentWarriorsGrace()
+	public WarriorsGraceEnchantment()
 	{
 		super(new DefaultData("warriorsgrace", Rarity.VERY_RARE, true, 22, 2, 30), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
@@ -36,7 +36,7 @@ public class EnchantmentWarriorsGrace extends UniqueEnchantment implements IGrac
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{
-		return ench instanceof UnbreakingEnchantment || ench instanceof MendingEnchantment || ench instanceof EnchantmentAlchemistsGrace || ench instanceof EnchantmentNaturesGrace || ench instanceof EnchantmentEcological ? false : super.canApplyTogether(ench);
+		return ench instanceof UnbreakingEnchantment || ench instanceof MendingEnchantment || ench instanceof AlchemistsGraceEnchantment || ench instanceof NaturesGraceEnchantment || ench instanceof EcologicalEnchantment ? false : super.canApplyTogether(ench);
 	}
 
 	@Override
