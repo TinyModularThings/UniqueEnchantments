@@ -183,9 +183,9 @@ public class EntityEvents
 			if(player.getHealth() < player.getMaxHealth())
 			{
 				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.NATURES_GRACE, player.getItemStackFromSlot(EntityEquipmentSlot.CHEST));
-				if(level > 0 && player.world.getTotalWorldTime() % Math.sqrt(EnchantmentNaturesGrace.DELAY / level) == 0)
+				if(level > 0 && player.world.getTotalWorldTime() % MathHelper.floor(Math.sqrt(EnchantmentNaturesGrace.DELAY / level)) == 0)
 				{
-					if(level > 0 && player.getCombatTracker().getBestAttacker() == null && hasBlockCount(player.world, player.getPosition(), 4, EnchantmentNaturesGrace.FLOWERS))
+					if(player.getCombatTracker().getBestAttacker() == null && hasBlockCount(player.world, player.getPosition(), 4, EnchantmentNaturesGrace.FLOWERS))
 					{
 						player.heal(EnchantmentNaturesGrace.HEALING.getAsFloat(level));
 					}
@@ -274,7 +274,10 @@ public class EntityEvents
 				player.motionY = player.capabilities.isFlying ? 0.15D : 0D;
 				player.fall(player.fallDistance, 1F);
 				player.fallDistance = 0F;
-				setInt(stack, EnchantmentCloudwalker.TIMER, value-1);
+				if(!player.isCreative())
+				{
+					setInt(stack, EnchantmentCloudwalker.TIMER, value-1);
+				}
 			}
 			else
 			{
@@ -409,7 +412,7 @@ public class EntityEvents
 				count = 0;
 				nbt.setInteger(EnchantmentMomentum.COUNT, 0);
 			}
-			event.setNewSpeed((float)(event.getNewSpeed() - (level * (count / EnchantmentMomentum.SCALAR) / event.getNewSpeed())));
+			event.setNewSpeed((float)(event.getNewSpeed() + (event.getNewSpeed() * (level * (count / EnchantmentMomentum.SCALAR) / event.getOriginalSpeed()))));
 			nbt.setLong(EnchantmentMomentum.LAST_MINE, worldTime);
 		}
 		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.RANGE, held);
@@ -418,7 +421,7 @@ public class EntityEvents
 			double value = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getBaseValue();
 			if(value * value < player.getDistanceSqToCenter(event.getPos()))
 			{
-				event.setNewSpeed(event.getNewSpeed() * (1F - EnchantmentRange.REDUCTION.getAsFloat(level)));
+				event.setNewSpeed(event.getNewSpeed() * (1F - EnchantmentRange.REDUCTION.getDevided(level)));
 			}
 		}
 	}
@@ -476,7 +479,7 @@ public class EntityEvents
 		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.MOMENTUM, held);
 		if(level > 0)
 		{
-			int max = EnchantmentMomentum.CAP * level;
+			int max = EnchantmentMomentum.CAP + level;
 			NBTTagCompound nbt = event.getPlayer().getEntityData();
 			nbt.setInteger(EnchantmentMomentum.COUNT, Math.min(max, nbt.getInteger(EnchantmentMomentum.COUNT) + 1));
 		}
@@ -741,7 +744,7 @@ public class EntityEvents
 				double value = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getBaseValue();
 				if(value * value < player.getDistanceSq(event.getEntity()))
 				{
-					event.setAmount(event.getAmount() * (1F - EnchantmentRange.REDUCTION.getAsFloat(level)));
+					event.setAmount(event.getAmount() * (1F - EnchantmentRange.REDUCTION.getDevided(level)));
 				}
 			}
 		}

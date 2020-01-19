@@ -39,4 +39,9 @@ public class DoubleLevelStats
 	{
 		return (float)(base + (this.level * level));
 	}
+	
+	public float getDevided(int level)
+	{
+		return (float)(base / (this.level * level));
+	}
 }
