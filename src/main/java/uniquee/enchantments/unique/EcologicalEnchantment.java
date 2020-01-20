@@ -19,7 +19,7 @@ import uniquee.utils.IntStat;
 
 public class EcologicalEnchantment extends UniqueEnchantment
 {
-	public static final Tag<Block> ECHOLOGICAL = new BlockTags.Wrapper(new ResourceLocation("uniquee", "echological"));
+	public static final Tag<Block> ECHOLOGICAL = new BlockTags.Wrapper(new ResourceLocation("uniquee", "ecological"));
 	public static Predicate<BlockState> STATES = new Predicate<BlockState>(){
 		@Override
 		public boolean test(BlockState t)

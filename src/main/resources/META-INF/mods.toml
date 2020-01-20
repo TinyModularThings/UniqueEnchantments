@@ -1,17 +1,11 @@
 modLoader="javafml"
-
 loaderVersion="[28,)"
-
 [[mods]]
-
 modId="uniquee"
-
-version="1.7.0"
-
+version="1.8.0"
 displayName="Unique Enchantments"
-
-credits="Thanks for this example mod goes to Java" #optional
-
+credits="Thanks Xaikii for the Mod Design, Thanks to Speiger for the Code"
 authors="Speiger, Xaikii"
 description='''
+A Set of Unique Enchantments
 '''

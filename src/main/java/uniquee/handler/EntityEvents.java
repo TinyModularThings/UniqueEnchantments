@@ -90,7 +90,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.entity.player.PlayerXpEvent.PickupXp;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniquee.UniqueEnchantments;
 import uniquee.api.crops.CropHarvestRegistry;
@@ -165,7 +164,6 @@ public class EntityEvents
 			GoalSelector goals = ((EndermanEntity)entity).targetSelector;
 			for(PrioritizedGoal goal : new ObjectArrayList<PrioritizedGoal>(MiscUtil.findField(GoalSelector.class, goals, Set.class, "goals", "field_220892_d")))
 			{
-				System.out.println("Logger: "+goal);
 				if(goal.getPriority() == 1 && goal.getGoal() instanceof NearestAttackableTargetGoal)
 				{
 					goals.removeGoal(goal.getGoal());
@@ -493,64 +491,65 @@ public class EntityEvents
 	}
 	
 	//Forge Event Not Implemented
-	@SubscribeEvent
-	public void onBlockLoot(HarvestDropsEvent event)
-	{
-		if(event.getHarvester() == null)
-		{
-			return;
-		}
-		ItemStack stack = event.getHarvester().getHeldItemMainhand();
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.MIDAS_BLESSING, stack);
-		if(level > 0)
-		{
-			int gold = getInt(stack, MidasBlessingEnchantment.GOLD_COUNTER, 0);
-			if(gold > 0 && MidasBlessingEnchantment.IS_GEM.test(event.getState()))
-			{
-				gold -= (int)(Math.ceil((double)MidasBlessingEnchantment.LEVEL_SCALAR.get() / level) + MidasBlessingEnchantment.BASE_COST.get());
-				setInt(stack, MidasBlessingEnchantment.GOLD_COUNTER, Math.max(0, gold));
-				int multiplier = 1 + level;
-				List<ItemStack> newDrops = new ObjectArrayList<ItemStack>();
-				for(ItemStack drop : event.getDrops())
-				{
-					growStack(drop, drop.getCount() * multiplier, newDrops);
-				}
-				event.getDrops().clear();
-				event.getDrops().addAll(newDrops);
-			}
-		}
-		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.IFRIDS_GRACE, stack);
-		if(level > 0)
-		{
-			int stored = getInt(stack, IfritsGraceEnchantment.LAVA_COUNT, 0);
-			if(stored > 0)
-			{
-				boolean ore = isOre(event.getState());
-				int smelted = 0;
-				List<ItemStack> stacks = event.getDrops();
-				for(int i = 0,m=stacks.size();i<m;i++)
-				{
-					ItemStack toBurn = stacks.get(i).copy();
-					toBurn.setCount(1);
-					//TODO Implement fix for this.
-					ItemStack burned = ItemStack.EMPTY;
-//					ItemStack burned = FurnaceRecipes.instance().getSmeltingResult(toBurn).copy();
-					if(burned.isEmpty())
-					{
-						continue;
-					}
-					burned.setCount(burned.getCount() * stacks.get(i).getCount());
-					stacks.set(i, burned);
-					smelted++;
-				}
-				if(smelted > 0)
-				{
-					stored -= MathHelper.ceil(smelted * (ore ? 5 : 1) * IfritsGraceEnchantment.SCALAR.get() / level);
-					setInt(stack, IfritsGraceEnchantment.LAVA_COUNT, Math.max(0, stored));
-				}
-			}
-		}
-	}
+//	@SubscribeEvent
+//	public void onBlockLoot(HarvestDropsEvent event)
+//	{
+//		if(event.getHarvester() == null)
+//		{
+//			return;
+//		}
+//		ItemStack stack = event.getHarvester().getHeldItemMainhand();
+//		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.MIDAS_BLESSING, stack);
+//		if(level > 0)
+//		{
+//			int gold = getInt(stack, MidasBlessingEnchantment.GOLD_COUNTER, 0);
+//			if(gold > 0 && MidasBlessingEnchantment.IS_GEM.test(event.getState()))
+//			{
+//				gold -= (int)(Math.ceil((double)MidasBlessingEnchantment.LEVEL_SCALAR.get() / level) + MidasBlessingEnchantment.BASE_COST.get());
+//				setInt(stack, MidasBlessingEnchantment.GOLD_COUNTER, Math.max(0, gold));
+//				int multiplier = 1 + level;
+//				List<ItemStack> newDrops = new ObjectArrayList<ItemStack>();
+//				for(ItemStack drop : event.getDrops())
+//				{
+//					growStack(drop, drop.getCount() * multiplier, newDrops);
+//				}
+//				event.getDrops().clear();
+//				event.getDrops().addAll(newDrops);
+//			}
+//		}
+//		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.IFRIDS_GRACE, stack);
+//		if(level > 0)
+//		{
+//			int stored = getInt(stack, IfritsGraceEnchantment.LAVA_COUNT, 0);
+//			if(stored > 0)
+//			{
+//				boolean ore = isOre(event.getState());
+//				int smelted = 0;
+//				List<ItemStack> stacks = event.getDrops();
+//				for(int i = 0,m=stacks.size();i<m;i++)
+//				{
+//					ItemStack toBurn = stacks.get(i).copy();
+//					toBurn.setCount(1);
+//					//TODO Implement fix for this.
+//					ItemStack burned = ItemStack.EMPTY;
+////					ItemStack burned = FurnaceRecipes.instance().getSmeltingResult(toBurn).copy();
+//					if(burned.isEmpty())
+//					{
+//						continue;
+//					}
+//					burned.setCount(burned.getCount() * stacks.get(i).getCount());
+//					stacks.set(i, burned);
+//					smelted++;
+//				}
+//				if(smelted > 0)
+//				{
+//					stored -= MathHelper.ceil(smelted * (ore ? 5 : 1) * IfritsGraceEnchantment.SCALAR.get() / level);
+//					setInt(stack, IfritsGraceEnchantment.LAVA_COUNT, Math.max(0, stored));
+//				}
+//			}
+//		}
+//	}
+	
 	@SuppressWarnings("unchecked")
 	@SubscribeEvent
 	public void onItemClick(RightClickItem event)
