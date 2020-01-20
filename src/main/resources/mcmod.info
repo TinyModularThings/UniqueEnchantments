@@ -3,7 +3,7 @@
   "modid": "uniquee",
   "name": "Unique Enchantments",
   "description": "A Set of Unique Enchantments",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
