@@ -101,18 +101,19 @@ public class EnchantmentAdvancedDamage extends EnchantmentDamage implements ITog
 	{
 		switch(damageType)
 		{
-			case 0: return "ameliorated_sharpness";
-			case 1: return "ameliorated_smite";
-			case 2: return "ameliorated_arthropods";
+			case 0: return "base.ameliorated_sharpness";
+			case 1: return "base.ameliorated_smite";
+			case 2: return "base.ameliorated_arthropods";
 			default: return "I_AM_ERROR";
 		}
 	}
-
+	
 	@Override
 	public void loadFromConfig(Configuration config)
 	{
 		isEnabled = config.get(getConfigName(), "enabled", true).getBoolean();
 		actualData = new DefaultData(defaults, config, getConfigName());
 		scalar = (float)config.get(getConfigName(), "scalar", DEFAULTS[damageType]).getDouble();
+		config.getCategory(getConfigName()).setLanguageKey(getName());
 	}
 }

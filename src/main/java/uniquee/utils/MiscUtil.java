@@ -27,7 +27,6 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class MiscUtil
 {
-	
 	public static int getEnchantmentLevel(Enchantment ench, ItemStack stack)
 	{
 		if(stack.isEmpty())

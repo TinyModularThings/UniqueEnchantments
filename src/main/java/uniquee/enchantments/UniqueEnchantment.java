@@ -13,6 +13,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	DefaultData actualData;
 	protected boolean enabled = false;
 	String configName;
+	String categoryName = "base";
 	
 	protected UniqueEnchantment(DefaultData data, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots)
 	{
@@ -73,7 +74,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	@Override
 	public String getConfigName()
 	{
-		return configName;
+		return categoryName+"."+configName;
+	}
+	
+	protected void setCategory(String name)
+	{
+		this.categoryName = name;
 	}
 	
 	@Override
@@ -82,6 +88,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		enabled = config.get(getConfigName(), "enabled", true).getBoolean();
 		actualData = new DefaultData(defaults, config, getConfigName());
 		loadData(config);
+		config.getCategory(getConfigName()).setLanguageKey(getName());
 	}
 	
 	public abstract void loadData(Configuration config);
