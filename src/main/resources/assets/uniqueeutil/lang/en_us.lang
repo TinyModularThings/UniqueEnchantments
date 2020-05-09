@@ -1,0 +1,11 @@
+enchantment.uniqueeutil.sleipnirs_grace=Sleipnir's Grace
+enchantment.uniqueeutil.sleipnirs_grace.desc=The Movement Speed of the ridden entity is steadily increasing
+enchantment.uniqueeutil.famines_odium=Famine's Odium
+enchantment.uniqueeutil.famines_odium.desc=Will eat randomly Food from your inventory, regardless of your Hunger or Saturation, and wont restore full Hunger Value. If no Food is found in Inventory the Player will take damage.
+enchantment.uniqueeutil.thick_pick=Thick Pick
+enchantment.uniqueeutil.thick_pick.desc=Consume Gems to increase Mining Speed for Blocks with a high Hardness
+enchantment.uniqueeutil.rocketman=Rocket Man
+enchantment.uniqueeutil.rocketman.desc=A Rocket can force you into Elytra Mode. Rocket Flight Duration increased.
+
+
+tooltip.uniqeeutil.stored.repair.name=Stored Gems %s

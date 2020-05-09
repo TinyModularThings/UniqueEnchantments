@@ -54,6 +54,7 @@ import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
@@ -124,10 +125,23 @@ import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
 import uniquee.handler.ai.AISpecialFindPlayer;
 import uniquee.utils.HarvestEntry;
 import uniquee.utils.MiscUtil;
+import uniquee.utils.Triple;
 
 public class EntityEvents
 {
 	public static final EntityEvents INSTANCE = new EntityEvents();
+	List<Tuple<Enchantment, String[]>> tooltips = new ObjectArrayList<Tuple<Enchantment, String[]>>();
+	List<Triple<Enchantment, ToIntFunction<ItemStack>, String>> anvilHelpers = new ObjectArrayList<Triple<Enchantment, ToIntFunction<ItemStack>, String>>();
+	
+	public void registerStorageTooltip(Enchantment ench, String translation, String tag)
+	{
+		tooltips.add(new Tuple<Enchantment, String[]>(ench, new String[]{translation, tag}));
+	}
+	
+	public void registerAnvilHelper(Enchantment ench, ToIntFunction<ItemStack> helper, String tag)
+	{
+		anvilHelpers.add(Triple.create(ench, helper, tag));
+	}
 	
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
@@ -135,21 +149,14 @@ public class EntityEvents
 	{
 		ItemStack stack = event.getItemStack();
 		Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
-		if(enchantments.getInt(UniqueEnchantments.MIDAS_BLESSING) > 0)
+		for(int i = 0,m=tooltips.size();i<m;i++)
 		{
-			event.getToolTip().add(I18n.format("tooltip.uniqee.stored.gold.name", getInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, 0)));
-		}
-		if(enchantments.getInt(UniqueEnchantments.IFRIDS_GRACE) > 0)
-		{
-			event.getToolTip().add(I18n.format("tooltip.uniqee.stored.lava.name", getInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, 0)));
-		}
-		if(enchantments.getInt(UniqueEnchantments.ICARUS_AEGIS) > 0)
-		{
-			event.getToolTip().add(I18n.format("tooltip.uniqee.stored.feather.name", getInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, 0)));
-		}
-		if(enchantments.getInt(UniqueEnchantments.ENDER_MENDING) > 0)
-		{
-			event.getToolTip().add(I18n.format("tooltip.uniqee.stored.repair.name", getInt(stack, EnchantmentEnderMending.ENDER_TAG, 0)));
+			Tuple<Enchantment, String[]> entry = tooltips.get(i);
+			if(enchantments.getInt(entry.getFirst()) > 0)
+			{
+				String[] names = entry.getSecond();
+				event.getToolTip().add(I18n.format(names[0], getInt(stack, names[1], 0)));
+			}
 		}
 	}
 	
@@ -599,37 +606,18 @@ public class EntityEvents
 			{
 				ItemStack stack = event.getItemStack();
 				Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
-				if(enchantments.getInt(UniqueEnchantments.MIDAS_BLESSING) > 0)
+				for(int i = 0,m=anvilHelpers.size();i<m;i++)
 				{
-					int found = consumeItems(event.getEntityPlayer(), EnchantmentMidasBlessing.VALIDATOR, Integer.MAX_VALUE);
-					if(found > 0)
+					Triple<Enchantment, ToIntFunction<ItemStack>, String> entry = anvilHelpers.get(i);
+					if(enchantments.getInt(entry.getKey()) > 0)
 					{
-						setInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, getInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, 0) + found);
-						event.setCancellationResult(EnumActionResult.SUCCESS);
-						event.setCanceled(true);
-						return;
-					}
-				}
-				if(enchantments.getInt(UniqueEnchantments.IFRIDS_GRACE) > 0)
-				{
-					int found = consumeItems(event.getEntityPlayer(), EnchantmentIfritsGrace.VALIDATOR, Integer.MAX_VALUE);
-					if(found > 0)
-					{
-						setInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, getInt(stack, EnchantmentIfritsGrace.LAVA_COUNT, 0) + found);
-						event.setCancellationResult(EnumActionResult.SUCCESS);
-						event.setCanceled(true);
-						return;
-					}
-				}
-				if(enchantments.getInt(UniqueEnchantments.ICARUS_AEGIS) > 0)
-				{
-					int found = consumeItems(event.getEntityPlayer(), EnchantmentIcarusAegis.VALIDATOR, Integer.MAX_VALUE);
-					if(found > 0)
-					{
-						setInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, getInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, 0) + found);
-						event.setCancellationResult(EnumActionResult.SUCCESS);
-						event.setCanceled(true);
-						return;
+						int found = consumeItems(event.getEntityPlayer(), entry.getValue(), Integer.MAX_VALUE);
+						if(found > 0)
+						{
+							setInt(stack, entry.getExtra(), found + getInt(stack, entry.getExtra(), 0));
+							event.setCancellationResult(EnumActionResult.SUCCESS);
+							event.setCanceled(true);
+						}
 					}
 				}
 			}

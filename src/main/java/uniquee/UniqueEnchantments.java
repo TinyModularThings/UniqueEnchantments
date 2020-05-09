@@ -2,8 +2,10 @@ package uniquee;
 
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -77,7 +79,7 @@ import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
 import uniquee.handler.EntityEvents;
 import uniquee.handler.potion.PotionPestilencesOdium;
 
-@Mod(modid = "uniquee", name = "Unique Enchantments", version = "1.8.0", guiFactory = "uniquee.handler.ConfigHandler")
+@Mod(modid = "uniquee", name = "Unique Enchantments", version = "1.9.0", guiFactory = "uniquee.handler.ConfigHandler")
 public class UniqueEnchantments
 {
 	static List<IToggleEnchantment> ENCHANTMENTS = new ObjectArrayList<IToggleEnchantment>();
@@ -142,6 +144,16 @@ public class UniqueEnchantments
 		MinecraftForge.EVENT_BUS.register(FirstAidHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(this);
 		CONFIG = new Configuration(event.getSuggestedConfigurationFile());
+		
+		EntityEvents.INSTANCE.registerStorageTooltip(MIDAS_BLESSING, "tooltip.uniqee.stored.gold.name", EnchantmentMidasBlessing.GOLD_COUNTER);
+		EntityEvents.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniqee.stored.lava.name", EnchantmentIfritsGrace.LAVA_COUNT);
+		EntityEvents.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniqee.stored.feather.name", EnchantmentIcarusAegis.FEATHER_TAG);
+		EntityEvents.INSTANCE.registerStorageTooltip(ENDER_MENDING, "tooltip.uniqee.stored.repair.name", EnchantmentEnderMending.ENDER_TAG);
+		
+		
+		EntityEvents.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, EnchantmentMidasBlessing.VALIDATOR, EnchantmentMidasBlessing.GOLD_COUNTER);
+		EntityEvents.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, EnchantmentIfritsGrace.VALIDATOR, EnchantmentIfritsGrace.LAVA_COUNT);
+		EntityEvents.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, EnchantmentIcarusAegis.VALIDATOR, EnchantmentIcarusAegis.FEATHER_TAG);
 	}
 	
 	@EventHandler
@@ -191,6 +203,7 @@ public class UniqueEnchantments
 			{
 				ench.loadFromConfig(CONFIG);
 			}
+			CONFIG.save();
 		}
 		catch(Exception e)
 		{

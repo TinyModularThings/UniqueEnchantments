@@ -5,6 +5,7 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Loader;
 
 public abstract class UniqueEnchantment extends Enchantment implements IToggleEnchantment
 {
@@ -18,7 +19,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	protected UniqueEnchantment(DefaultData data, EnumEnchantmentType typeIn, EntityEquipmentSlot[] slots)
 	{
 		super(data.getRarity(), typeIn, slots);
-		setName("uniquee."+data.getName());
+		setName(Loader.instance().activeModContainer().getModId()+"."+data.getName());
 		setRegistryName(data.getName());
 		this.configName = data.getName();
 		defaults = data;
