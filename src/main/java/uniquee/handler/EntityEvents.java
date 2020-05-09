@@ -83,6 +83,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -932,7 +933,7 @@ public class EntityEvents
 	public void onArrowHit(ProjectileImpactEvent.Arrow event)
 	{
 		RayTraceResult result = event.getRayTraceResult();
-		if(result.typeOfHit != Type.ENTITY || !(result.entityHit instanceof EntityLivingBase))
+		if(result.typeOfHit != Type.ENTITY || !(result.entityHit instanceof EntityLivingBase) || event.getEntity().world.isRemote)
 		{
 			return;
 		}
