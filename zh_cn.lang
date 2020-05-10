@@ -36,7 +36,7 @@ enchantment.uniquee.climate_tranquility.desc=武器会对温度做出反应，�
 enchantment.uniquee.momentum=动量
 enchantment.uniquee.momentum.desc=持续开采将进一步提高开采速度
 enchantment.uniquee.ender_mending=末影修补
-enchantment.uniquee.ender_mending.desc=改进的修补版本，将在工具中存储超过的经验。 Ender Mending会将经验分配给具有Ender Mending或Mending的每个物品
+enchantment.uniquee.ender_mending.desc=改进的修补版本，将在工具中存储超过的经验。末影修补会将经验分配给具有末影修补或经验修补的每个物品
 enchantment.uniquee.smart_ass=小机灵鬼
 enchantment.uniquee.smart_ass.desc=开采砾石，沙子或原木将首先破坏顶部块
 
