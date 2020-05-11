@@ -1,0 +1,11 @@
+enchantment.uniqueeutil.sleipnirs_grace=斯莱普尼尔的恩典
+enchantment.uniqueeutil.sleipnirs_grace.desc=骑乘实体的移动速度会逐步提高(北欧神话故事中主神奥丁的坐骑,雪白毛色的八腿天马)
+enchantment.uniqueeutil.famines_odium=饥荒
+enchantment.uniqueeutil.famines_odium.desc=无论您的饥饿或饱和程度如何，都会从您的库存中随机食用食物，并且无法恢复全部的饥饿价值。 如果在库存中找不到食物，则玩家将受到伤害。
+enchantment.uniqueeutil.thick_pick=入镐三分
+enchantment.uniqueeutil.thick_pick.desc=使用宝石来加快高硬度方块的采掘速度
+enchantment.uniqueeutil.rocketman=火 箭 人
+enchantment.uniqueeutil.rocketman.desc=烟花火箭可以迫使您进入鞘翅模式。 火箭飞行持续时间增加。
+
+
+tooltip.uniqeeutil.stored.repair.name=储存的宝石%s
