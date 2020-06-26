@@ -80,7 +80,7 @@ enchantment.uniquee.demeters_soul.desc=用有该附魔的工具潜行右键一�
 enchantment.uniquee.pestilences_odium=瘟疫的憎恶
 enchantment.uniquee.pestilences_odium.desc=在你附近的中立生物将会不断受到伤害，而且不会掉落物品。
 enchantment.uniquee.deaths_odium=死亡的憎恶
-enchantment.uniquee.deaths_odium.desc=在装备拥有该诅咒的情况下死亡会使你失去基础生命值。快捷栏放置装备或者穿戴装备可以抵消诅咒。
+enchantment.uniquee.deaths_odium.desc=在装备拥有该诅咒的情况下死亡会使你失去基础生命值。快捷栏放置该装备或者穿戴该装备都可以抵消诅咒。
 
 //Potion
 potion.uniquee.uniquepestilences_odium=瘟疫的憎恶
