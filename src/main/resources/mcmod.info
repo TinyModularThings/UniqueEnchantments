@@ -1,8 +1,8 @@
 [
 {
-  "modid": "uniquee",
-  "name": "Unique Enchantments",
-  "description": "A Set of Unique Enchantments",
+  "modid": "${modid}",
+  "name": "${name}",
+  "description": "${description}",
   "version": "1.8.0",
   "mcversion": "${mcversion}",
   "url": "",

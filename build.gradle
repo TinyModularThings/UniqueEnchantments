@@ -12,8 +12,8 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 
 version = "1.0"
-group = "com.yourname.modid" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "modid"
+group = "uniquee" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "uniquee"
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
@@ -68,11 +68,37 @@ processResources {
         include 'mcmod.info'
                 
         // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniquee", 'name':"Unique Enchantments", 'description':"A Set of Unique Enchantments"
     }
         
     // copy everything else except the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+jar {
+    exclude "uniqueeutils", "assets/uniqueeutil"
+}
+
+task utilsJar(type: Jar) {
+    baseName = 'uniqueeutils'
+    from(sourceSets.main.output) {
+        exclude 'uniquee', 'assets/uniquee', 'mcmod.info'
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniqueeutils", 'name':"Unique Enchantments Utilities", 'description':"A Set of Unique Enchantments Utility classes"
+    }
+}
+
+
+reobf {
+    utilsJar {
+    	spec -> spec.classpath = sourceSets.main.compileClasspath
+    }
+}
+
+artifacts {
+    archives utilsJar
 }
