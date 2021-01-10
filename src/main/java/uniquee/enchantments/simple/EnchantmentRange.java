@@ -19,13 +19,7 @@ public class EnchantmentRange extends UniqueEnchantment
 	
 	public EnchantmentRange()
 	{
-		super(new DefaultData("ranged", Rarity.COMMON, false, 12, 4, 75), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 4;
+		super(new DefaultData("ranged", Rarity.COMMON, 4, false, 12, 4, 75), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override

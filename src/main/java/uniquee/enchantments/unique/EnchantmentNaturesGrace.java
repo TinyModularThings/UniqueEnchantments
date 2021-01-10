@@ -26,13 +26,7 @@ public class EnchantmentNaturesGrace extends UniqueEnchantment implements IGrace
 	};	
 	public EnchantmentNaturesGrace()
 	{
-		super(new DefaultData("naturesgrace", Rarity.VERY_RARE, true, 22, 4, 22), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 2;
+		super(new DefaultData("naturesgrace", Rarity.VERY_RARE, 2, true, 22, 4, 22), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
 	}
 	
 	@Override

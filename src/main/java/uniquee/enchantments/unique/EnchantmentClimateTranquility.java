@@ -31,19 +31,13 @@ public class EnchantmentClimateTranquility extends UniqueEnchantment
 	
 	public EnchantmentClimateTranquility()
 	{
-		super(new DefaultData("climate_tranquility", Rarity.RARE, true, 20, 2, 12), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("climate_tranquility", Rarity.RARE, 3, true, 20, 2, 12), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
 	
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
 		return stack.getItem() instanceof ItemAxe || EnumEnchantmentType.BOW.canEnchantItem(stack.getItem());
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
 	}
 	
 	@Override

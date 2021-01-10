@@ -25,15 +25,9 @@ public class EnchantmentIcarusAegis extends UniqueEnchantment
 	
 	public EnchantmentIcarusAegis()
 	{
-		super(new DefaultData("icarus_aegis", Rarity.VERY_RARE, true, 20, 2, 20), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
+		super(new DefaultData("icarus_aegis", Rarity.VERY_RARE, 2, true, 20, 2, 20), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
 	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 2;
-	}
-	
+		
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack)
 	{

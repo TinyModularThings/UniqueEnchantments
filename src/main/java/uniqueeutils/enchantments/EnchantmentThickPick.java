@@ -27,14 +27,8 @@ public class EnchantmentThickPick extends UniqueEnchantment
 	};
 	public EnchantmentThickPick()
 	{
-		super(new DefaultData("thick_pick", Rarity.RARE, false, 26, 4, 75), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("thick_pick", Rarity.RARE, 2, false, 26, 4, 75), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 		setCategory("utils");
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 2;
 	}
 	
 	@Override

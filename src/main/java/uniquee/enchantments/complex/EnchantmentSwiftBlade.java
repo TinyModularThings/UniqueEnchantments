@@ -16,13 +16,7 @@ public class EnchantmentSwiftBlade extends UniqueEnchantment
 
 	public EnchantmentSwiftBlade()
 	{
-		super(new DefaultData("swiftblade", Rarity.VERY_RARE, false, 26, 0, 30), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
+		super(new DefaultData("swiftblade", Rarity.VERY_RARE, 1, false, 26, 0, 30), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override

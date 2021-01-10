@@ -13,13 +13,7 @@ public class EnchantmentCloudwalker extends UniqueEnchantment
 
 	public EnchantmentCloudwalker()
 	{
-		super(new DefaultData("cloudwalker", Rarity.RARE, true, 16, 3, 16), EnumEnchantmentType.ARMOR_FEET, new EntityEquipmentSlot[]{EntityEquipmentSlot.FEET});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 4;
+		super(new DefaultData("cloudwalker", Rarity.RARE, 4, true, 16, 3, 16), EnumEnchantmentType.ARMOR_FEET, new EntityEquipmentSlot[]{EntityEquipmentSlot.FEET});
 	}
 	
 	@Override

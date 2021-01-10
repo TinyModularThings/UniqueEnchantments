@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
@@ -25,6 +25,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+@SuppressWarnings("deprecation")
 public class MiscUtil
 {
 	public static int getEnchantmentLevel(Enchantment ench, ItemStack stack)
@@ -111,7 +112,7 @@ public class MiscUtil
 	public static Set<EntityEquipmentSlot> getSlotsFor(Enchantment ench)
 	{
 		EntityEquipmentSlot[] slots = getEquipmentSlotsFor(ench);
-		return slots.length <= 0 ? Collections.emptySet() : new ObjectOpenHashSet(slots);
+		return slots.length <= 0 ? Collections.emptySet() : new ObjectLinkedOpenHashSet<>(slots);
 	}
 	
 	public static Object2IntMap.Entry<EntityEquipmentSlot> getEnchantedItem(Enchantment enchantment, EntityLivingBase base)
@@ -119,17 +120,17 @@ public class MiscUtil
 		EntityEquipmentSlot[] slots = getEquipmentSlotsFor(enchantment);
 		if(slots.length <= 0)
 		{
-			return new AbstractObject2IntMap.BasicEntry(null, 0);
+			return new AbstractObject2IntMap.BasicEntry<>(null, 0);
 		}
 		for(int i = 0;i < slots.length;i++)
 		{
 			int level = getEnchantmentLevel(enchantment, base.getItemStackFromSlot(slots[i]));
 			if(level > 0)
 			{
-				return new AbstractObject2IntMap.BasicEntry(slots[i], level);
+				return new AbstractObject2IntMap.BasicEntry<>(slots[i], level);
 			}
 		}
-		return new AbstractObject2IntMap.BasicEntry(null, 0);
+		return new AbstractObject2IntMap.BasicEntry<>(null, 0);
 	}
 	
 	public static boolean harvestBlock(BreakEvent event, IBlockState state, BlockPos pos)

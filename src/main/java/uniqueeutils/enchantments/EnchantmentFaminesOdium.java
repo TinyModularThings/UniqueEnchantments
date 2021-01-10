@@ -18,14 +18,8 @@ public class EnchantmentFaminesOdium extends UniqueEnchantment
 	
 	public EnchantmentFaminesOdium()
 	{
-		super(new DefaultData("famines_odium", Rarity.UNCOMMON, true, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
+		super(new DefaultData("famines_odium", Rarity.UNCOMMON, 1, true, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
 		setCategory("utils");
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
 	}
 	
 	@Override

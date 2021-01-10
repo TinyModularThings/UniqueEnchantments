@@ -15,13 +15,7 @@ public class EnchantmentFastFood extends UniqueEnchantment
 
 	public EnchantmentFastFood()
 	{
-		super(new DefaultData("fastfood", Rarity.RARE, true, 14, 6, 10), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 2;
+		super(new DefaultData("fastfood", Rarity.RARE, 2, true, 14, 6, 10), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
 		
 	@Override

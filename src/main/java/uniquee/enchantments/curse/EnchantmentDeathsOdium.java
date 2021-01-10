@@ -22,13 +22,7 @@ public class EnchantmentDeathsOdium extends UniqueEnchantment
 	
 	public EnchantmentDeathsOdium()
 	{
-		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, false, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
+		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 1, false, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
 	}
 	
 	@Override

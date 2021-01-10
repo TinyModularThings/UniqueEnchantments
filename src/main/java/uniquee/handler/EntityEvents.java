@@ -84,7 +84,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem
 import net.minecraftforge.event.entity.player.PlayerPickupXpEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.BlockEvent.HarvestDropsEvent;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -127,6 +126,7 @@ import uniquee.utils.HarvestEntry;
 import uniquee.utils.MiscUtil;
 import uniquee.utils.Triple;
 
+@SuppressWarnings("deprecation")
 public class EntityEvents
 {
 	public static final EntityEvents INSTANCE = new EntityEvents();
@@ -929,7 +929,6 @@ public class EntityEvents
 		EnchantmentAlchemistsGrace.applyToEntity(arrow.shootingEntity);
 		if(arrow.shootingEntity instanceof EntityPlayer)
 		{
-			EntityLivingBase hitEntity = (EntityLivingBase)result.entityHit;
 			EntityPlayer player = (EntityPlayer)arrow.shootingEntity;
 			Object2IntMap.Entry<EntityEquipmentSlot> slot = MiscUtil.getEnchantedItem(UniqueEnchantments.ENDERMARKSMEN, player);
 			if(slot.getIntValue() > 0)
@@ -937,7 +936,7 @@ public class EntityEvents
 				int level = slot.getIntValue();
 				ItemStack stack = player.getItemStackFromSlot(slot.getKey());
 				arrow.pickupStatus = PickupStatus.DISALLOWED;
-				player.addItemStackToInventory(this.getArrowStack(arrow));
+				player.addItemStackToInventory(getArrowStack(arrow));
 				int needed = Math.min((int)(level*EnchantmentEnderMarksmen.SCALAR), stack.getItemDamage());
 				if(needed > 0)
 				{

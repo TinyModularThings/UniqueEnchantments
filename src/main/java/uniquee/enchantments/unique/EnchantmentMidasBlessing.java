@@ -34,13 +34,7 @@ public class EnchantmentMidasBlessing extends UniqueEnchantment implements IBles
 	
 	public EnchantmentMidasBlessing()
 	{
-		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, true, 22, 2, 75), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
+		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 3, true, 22, 2, 75), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override

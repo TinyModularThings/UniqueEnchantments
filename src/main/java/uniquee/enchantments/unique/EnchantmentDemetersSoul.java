@@ -18,9 +18,9 @@ public class EnchantmentDemetersSoul extends UniqueEnchantment
 	
 	public EnchantmentDemetersSoul()
 	{
-		super(new DefaultData("demeters_soul", Rarity.VERY_RARE, true, 20, 6, 40), EnumEnchantmentType.BREAKABLE, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("demeters_soul", Rarity.VERY_RARE, 1, true, 20, 6, 40), EnumEnchantmentType.BREAKABLE, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
-
+	
 	@Override
 	public void loadData(Configuration config)
 	{

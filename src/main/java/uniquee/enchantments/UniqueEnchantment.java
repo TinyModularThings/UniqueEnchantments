@@ -27,6 +27,18 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	}
 	
 	@Override
+	public int getMinLevel()
+	{
+		return actualData.getMinLevel();
+	}
+	
+	@Override
+	public int getMaxLevel()
+	{
+		return actualData.getMaxLevel();
+	}
+	
+	@Override
 	public boolean isTreasureEnchantment()
 	{
 		return actualData.isTreasure();
@@ -98,6 +110,8 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	{
 		String name;
 		Rarity rare;
+		int minLevel;
+		int maxLevel;
 		boolean isTreasure;
 		int baseCost;
 		int levelCost;
@@ -106,6 +120,8 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		public DefaultData(DefaultData defaultValues, Configuration config, String configName)
 		{
 			name = defaultValues.getName();
+			minLevel = config.get(configName, "min_level", defaultValues.getMinLevel()).getInt();
+			maxLevel = config.get(configName, "max_level", defaultValues.getMaxLevel()).getInt();
 			rare = RARITIES[config.get(configName, "rarity", defaultValues.getRarity().ordinal()).getInt()];
 			isTreasure = config.get(configName, "treasure", defaultValues.isTreasure()).getBoolean();
 			baseCost = config.get(configName, "base_cost", defaultValues.getBaseCost()).getInt();
@@ -113,10 +129,17 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 			rangeCost = config.get(configName, "cost_limit", defaultValues.getRangeCost()).getInt();
 		}
 		
-		public DefaultData(String name, Rarity rare, boolean isTreasure, int baseCost, int levelCost, int rangeCost)
+		public DefaultData(String name, Rarity rare, int maxLevel, boolean isTreasure, int baseCost, int levelCost, int rangeCost)
+		{
+			this(name, rare, 1, maxLevel, isTreasure, baseCost, levelCost, rangeCost);
+		}
+		
+		public DefaultData(String name, Rarity rare, int minLevel, int maxLevel, boolean isTreasure, int baseCost, int levelCost, int rangeCost)
 		{
 			this.name = name;
 			this.rare = rare;
+			this.minLevel = minLevel;
+			this.maxLevel = maxLevel;
 			this.isTreasure = isTreasure;
 			this.baseCost = baseCost;
 			this.levelCost = levelCost;
@@ -137,7 +160,17 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		{
 			return rare;
 		}
-
+		
+		public int getMinLevel()
+		{
+			return minLevel;
+		}
+		
+		public int getMaxLevel()
+		{
+			return maxLevel;
+		}
+		
 		public boolean isTreasure()
 		{
 			return isTreasure;

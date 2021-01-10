@@ -15,13 +15,7 @@ public class EnchantmentMomentum extends UniqueEnchantment
 	
 	public EnchantmentMomentum()
 	{
-		super(new DefaultData("momentum", Rarity.RARE, true, 10, 5, 75), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
+		super(new DefaultData("momentum", Rarity.RARE, 3, true, 10, 5, 75), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override

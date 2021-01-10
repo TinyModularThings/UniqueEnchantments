@@ -16,19 +16,13 @@ public class EnchantmentSpartanWeapon extends UniqueEnchantment
 
 	public EnchantmentSpartanWeapon()
 	{
-		super(new DefaultData("spartanweapon", Rarity.RARE, true, 11, 3, 10), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("spartanweapon", Rarity.RARE, 5, true, 11, 3, 10), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
 	
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
 		return stack.getItem() instanceof ItemAxe;
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 5;
 	}
 	
 	@Override

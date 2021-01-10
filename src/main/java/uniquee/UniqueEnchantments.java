@@ -2,10 +2,8 @@ package uniquee;
 
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -38,7 +36,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.registries.IForgeRegistry;
 import uniquee.api.crops.CropHarvestRegistry;
 import uniquee.client.EnchantmentLayer;
 import uniquee.compat.FirstAidHandler;
@@ -134,7 +131,6 @@ public class UniqueEnchantments
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent event)
 	{
-		IForgeRegistry<Enchantment> registry = ForgeRegistries.ENCHANTMENTS;
 		registerEnchantments(BERSERKER, ADV_SHARPNESS, ADV_SMITE, ADV_BANE_OF_ARTHROPODS, VITAE, SWIFT, SAGES_BLESSING, ENDER_EYES, FOCUS_IMPACT, BONE_CRUSH, RANGE, TREASURERS_EYES);
 		registerEnchantments(SWIFT_BLADE, SPARTAN_WEAPON, PERPETUAL_STRIKE, CLIMATE_TRANQUILITY, MOMENTUM, ENDER_MENDING, SMART_ASS);
 		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE, ECOLOGICAL, PHOENIX_BLESSING, MIDAS_BLESSING, IFRIDS_GRACE, ICARUS_AEGIS, ENDER_LIBRARIAN, DEMETERS_SOUL);

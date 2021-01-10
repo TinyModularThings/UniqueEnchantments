@@ -30,13 +30,7 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 	
 	public EnchantmentAlchemistsGrace()
 	{
-		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, true, 20, 3, 18), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 4;
+		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, 4, true, 20, 3, 18), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
 	
 	@Override

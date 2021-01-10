@@ -2,7 +2,6 @@ package uniqueeutils.enchantments;
 
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemEgg;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -15,13 +14,8 @@ public class EnchantmentRocketMan extends UniqueEnchantment
 			
 	public EnchantmentRocketMan()
 	{
-		super(new DefaultData("rocketman", Rarity.VERY_RARE, true, 25, 4, 20), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
+		super(new DefaultData("rocketman", Rarity.VERY_RARE, 3, true, 25, 4, 20), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
 		setCategory("utils");
-	}
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
 	}
 	
 	@Override

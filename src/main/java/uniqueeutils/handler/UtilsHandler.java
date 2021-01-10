@@ -13,7 +13,6 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
-import net.minecraft.item.ItemFirework;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -23,7 +22,6 @@ import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -39,6 +37,7 @@ import uniqueeutils.enchantments.EnchantmentRocketMan;
 import uniqueeutils.enchantments.EnchantmentSleipnirsGrace;
 import uniqueeutils.enchantments.EnchantmentThickPick;
 
+@SuppressWarnings("deprecation")
 public class UtilsHandler
 {
 	public static UtilsHandler INSTANCE = new UtilsHandler();

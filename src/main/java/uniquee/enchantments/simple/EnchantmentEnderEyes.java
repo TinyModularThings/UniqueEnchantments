@@ -9,13 +9,7 @@ public class EnchantmentEnderEyes extends UniqueEnchantment
 {
 	public EnchantmentEnderEyes()
 	{
-		super(new DefaultData("ender_eyes", Rarity.UNCOMMON, false, 10, 2, 5), EnumEnchantmentType.ARMOR_HEAD, new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
+		super(new DefaultData("ender_eyes", Rarity.UNCOMMON, 1, false, 10, 2, 5), EnumEnchantmentType.ARMOR_HEAD, new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD});
 	}
 	
 	@Override

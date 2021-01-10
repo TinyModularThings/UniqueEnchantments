@@ -17,6 +17,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import uniquee.UniqueEnchantments;
 
+@SuppressWarnings("deprecation")
 public class AISpecialFindPlayer extends EntityAINearestAttackableTarget<EntityPlayer>
 {
 	EntityEnderman enderman;

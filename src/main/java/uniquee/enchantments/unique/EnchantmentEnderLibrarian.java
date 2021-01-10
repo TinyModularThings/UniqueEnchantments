@@ -11,15 +11,9 @@ public class EnchantmentEnderLibrarian extends UniqueEnchantment
 {
 	public EnchantmentEnderLibrarian()
 	{
-		super(new DefaultData("ender_librarian", Rarity.VERY_RARE, true, 24, 3, 10), EnumEnchantmentType.FISHING_ROD, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("ender_librarian", Rarity.VERY_RARE, 1, true, 24, 3, 10), EnumEnchantmentType.FISHING_ROD, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
-	}
-	
+		
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack)
 	{

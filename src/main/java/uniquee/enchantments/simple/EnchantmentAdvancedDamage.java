@@ -14,9 +14,9 @@ import uniquee.enchantments.UniqueEnchantment.DefaultData;
 public class EnchantmentAdvancedDamage extends EnchantmentDamage implements IToggleEnchantment
 {
 	public static final DefaultData[] DATA = new DefaultData[]{
-		new DefaultData("all", Rarity.VERY_RARE, true, 20, 2, 18),
-		new DefaultData("undead", Rarity.RARE, true, 16, 2, 14),
-		new DefaultData("arthropods", Rarity.RARE, true, 16, 2, 14),
+		new DefaultData("all", Rarity.VERY_RARE, 5, true, 20, 2, 18),
+		new DefaultData("undead", Rarity.RARE, 5, true, 16, 2, 14),
+		new DefaultData("arthropods", Rarity.RARE, 5, true, 16, 2, 14),
 	};
     private static final float[] DEFAULTS = new float[]{1F, 3F, 3F};
 	DefaultData defaults;
@@ -49,12 +49,6 @@ public class EnchantmentAdvancedDamage extends EnchantmentDamage implements ITog
     public String getName()
     {
     	return "enchantment.uniquee."+defaults.getName();
-    }
-    
-    @Override
-    public int getMaxLevel()
-    {
-    	return 5;
     }
     
     @Override

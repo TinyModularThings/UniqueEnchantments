@@ -13,7 +13,7 @@ public class EnchantmentPhoenixBlessing extends UniqueEnchantment implements IBl
 	
 	public EnchantmentPhoenixBlessing()
 	{
-		super(new DefaultData("phoenixs_blessing", Rarity.RARE, true, 26, 2, 2), EnumEnchantmentType.ALL, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("phoenixs_blessing", Rarity.RARE, 1, true, 26, 2, 2), EnumEnchantmentType.ALL, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
 	
 	@Override

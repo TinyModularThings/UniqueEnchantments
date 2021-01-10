@@ -18,7 +18,7 @@ import uniquee.utils.IntLevelStats;
 public class EnchantmentSmartAss extends UniqueEnchantment
 {
 	public static final IntLevelStats STATS = new IntLevelStats("range", 2, 3);
-	static final Set<Block> BLOCKS = new ObjectOpenHashSet();
+	static final Set<Block> BLOCKS = new ObjectOpenHashSet<>();
 	public static final Predicate<IBlockState> VALID_STATES = new Predicate<IBlockState>(){
 		@Override
 		public boolean test(IBlockState t)
@@ -30,13 +30,7 @@ public class EnchantmentSmartAss extends UniqueEnchantment
 	
 	public EnchantmentSmartAss()
 	{
-		super(new DefaultData("smart_ass", Rarity.RARE, false, 28, 6, 40), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
+		super(new DefaultData("smart_ass", Rarity.RARE, 3, false, 28, 6, 40), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override

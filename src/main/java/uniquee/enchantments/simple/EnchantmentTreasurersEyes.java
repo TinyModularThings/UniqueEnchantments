@@ -12,7 +12,7 @@ public class EnchantmentTreasurersEyes extends UniqueEnchantment
 	
 	public EnchantmentTreasurersEyes()
 	{
-		super(new DefaultData("treasurers_eyes", Rarity.RARE, false, 28, 6, 10), EnumEnchantmentType.ARMOR_HEAD, new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD});
+		super(new DefaultData("treasurers_eyes", Rarity.RARE, 1, false, 28, 6, 10), EnumEnchantmentType.ARMOR_HEAD, new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD});
 	}
 
 	@Override

@@ -19,14 +19,8 @@ public class EnchantmentSleipnirsGrace extends UniqueEnchantment
 	
 	public EnchantmentSleipnirsGrace()
 	{
-		super(new DefaultData("sleipnirs_grace", Rarity.UNCOMMON, true, 20, 3, 0), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[0]);
+		super(new DefaultData("sleipnirs_grace", Rarity.UNCOMMON, 3, true, 20, 3, 0), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[0]);
 		setCategory("utils");
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
 	}
 	
 	@Override

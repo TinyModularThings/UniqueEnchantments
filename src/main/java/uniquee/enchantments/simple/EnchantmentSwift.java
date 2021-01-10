@@ -15,13 +15,7 @@ public class EnchantmentSwift extends UniqueEnchantment
 	
 	public EnchantmentSwift()
 	{
-		super(new DefaultData("swift", Rarity.RARE, false, 14, 4, 18), EnumEnchantmentType.ARMOR_LEGS, new EntityEquipmentSlot[]{EntityEquipmentSlot.LEGS});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 2;
+		super(new DefaultData("swift", Rarity.RARE, 2, false, 14, 4, 18), EnumEnchantmentType.ARMOR_LEGS, new EntityEquipmentSlot[]{EntityEquipmentSlot.LEGS});
 	}
 	
 	@Override
