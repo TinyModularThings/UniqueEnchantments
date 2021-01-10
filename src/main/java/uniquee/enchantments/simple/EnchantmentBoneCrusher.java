@@ -34,7 +34,7 @@ public class EnchantmentBoneCrusher extends UniqueEnchantment
 	{
 		for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
 		{
-			if(slot.getSlotType() == Type.ARMOR && !skeleton.getItemStackFromSlot(slot).isEmpty())
+			if(slot.getSlotType() == Type.ARMOR && slot != EntityEquipmentSlot.HEAD && !skeleton.getItemStackFromSlot(slot).isEmpty())
 			{
 				return false;
 			}

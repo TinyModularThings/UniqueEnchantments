@@ -15,7 +15,7 @@ import uniquee.utils.DoubleLevelStats;
 
 public class EnchantmentNaturesGrace extends UniqueEnchantment implements IGraceEnchantment
 {
-	public static final DoubleLevelStats HEALING = new DoubleLevelStats("healing", 0.2, 0.4);
+	public static final DoubleLevelStats HEALING = new DoubleLevelStats("healing", 0.6, 0.2);
 	public static int DELAY = 100;
 	public static Predicate<IBlockState> FLOWERS = new Predicate<IBlockState>(){
 		@Override

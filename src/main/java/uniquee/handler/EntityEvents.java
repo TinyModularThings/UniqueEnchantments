@@ -191,7 +191,7 @@ public class EntityEvents
 			if(player.getHealth() < player.getMaxHealth())
 			{
 				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.NATURES_GRACE, player.getItemStackFromSlot(EntityEquipmentSlot.CHEST));
-				if(level > 0 && player.world.getTotalWorldTime() % MathHelper.floor(Math.sqrt(EnchantmentNaturesGrace.DELAY / level)) == 0)
+				if(level > 0 && player.world.getTotalWorldTime() % Math.max(MathHelper.floor(Math.sqrt(EnchantmentNaturesGrace.DELAY / level)), 1) == 0)
 				{
 					if(player.getCombatTracker().getBestAttacker() == null && hasBlockCount(player.world, player.getPosition(), 4, EnchantmentNaturesGrace.FLOWERS))
 					{
@@ -266,6 +266,11 @@ public class EntityEvents
 						player.addExhaustion(0.06F);
 					}
 				}
+				Object2IntMap.Entry<EntityEquipmentSlot> level = MiscUtil.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, player);
+				if(level.getIntValue() > 0)
+				{
+					player.addExhaustion(0.01F * level.getIntValue());
+				}
 			}
 		}
 		ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
@@ -291,6 +296,11 @@ public class EntityEvents
 			{
 				setInt(stack, EnchantmentCloudwalker.TIMER, EnchantmentCloudwalker.TICKS.get(level));
 			}
+		}
+		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.SWIFT, player.getItemStackFromSlot(EntityEquipmentSlot.LEGS));
+		if(level > 0 && player.isOnLadder() && player.moveForward != 0F && player.motionY > 0 && player.motionY <= 0.2 && !player.isSneaking())
+		{
+			player.motionY += EnchantmentSwift.SPEED_BONUS.getAsDouble(level) * 3D;
 		}
 		Boolean cache = null;
 		//Reflection is slower then direct call. But Twice the Iteration & Double IsEmpty Check is slower then Reflection.
@@ -665,7 +675,7 @@ public class EntityEvents
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(base.getHeldItemMainhand());
 			if(enchantments.getInt(UniqueEnchantments.BERSERKER) > 0)
 			{
-				event.setAmount(event.getAmount() * (1F + ((float)EnchantmentBerserk.SCALAR * (base.getMaxHealth() / base.getHealth()))));
+				event.setAmount(event.getAmount() * (1F + ((float)EnchantmentBerserk.SCALAR * (base.getMaxHealth() / Math.max(base.getHealth(), 1F)))));
 			}
 			int level = enchantments.getInt(UniqueEnchantments.SWIFT_BLADE);
 			if(level > 0)
@@ -794,7 +804,7 @@ public class EntityEvents
 				{
 					((EntityPlayer)living).getFoodStats().addStats(Short.MAX_VALUE, 1F);
 				}
-                living.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 900, 1));
+                living.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 600, 2));
                 living.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 100, 1));
                 living.world.setEntityState(living, (byte)35);
                 event.getEntityLiving().getItemStackFromSlot(slot.getKey()).shrink(1);
@@ -811,7 +821,7 @@ public class EntityEvents
 		if(level > 0 && stack.getTagCompound().getBoolean(EnchantmentIcarusAegis.FLYING_TAG))
 		{
 			int feathers = getInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, 0);
-			int consume = (int)Math.ceil((double)EnchantmentIcarusAegis.SCALAR / (double)level);
+			int consume = (int)Math.max(Math.ceil((double)EnchantmentIcarusAegis.SCALAR / (double)level), 4D);
 			if(feathers >= consume)
 			{
 				feathers -= consume;

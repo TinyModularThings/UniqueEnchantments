@@ -45,7 +45,7 @@ public class FirstAidHandler
 				living.heal(living.getMaxHealth());
 				living.clearActivePotions();
 				living.getFoodStats().addStats(Short.MAX_VALUE, 1F);
-	            living.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 900, 1));
+	            living.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 600, 2));
 	            living.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 100, 1));
 	            living.world.setEntityState(living, (byte)35);
 	            living.getItemStackFromSlot(slot.getKey()).shrink(1);

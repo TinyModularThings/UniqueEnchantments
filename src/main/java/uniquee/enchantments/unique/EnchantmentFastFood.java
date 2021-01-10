@@ -11,7 +11,7 @@ import uniquee.utils.IntLevelStats;
 public class EnchantmentFastFood extends UniqueEnchantment
 {
 	public static final IntLevelStats NURISHMENT = new IntLevelStats("nourishment", 2, 1);
-	public static double SATURATION = 0.5D;
+	public static double SATURATION = 2D;
 
 	public EnchantmentFastFood()
 	{
@@ -28,6 +28,6 @@ public class EnchantmentFastFood extends UniqueEnchantment
 	public void loadData(Configuration config)
 	{
 		NURISHMENT.handleConfig(config, getConfigName());
-		SATURATION = config.get(getConfigName(), "saturation_scalar", 0.5D).getDouble();
+		SATURATION = config.get(getConfigName(), "saturation_scalar", 2D).getDouble();
 	}
 }

@@ -11,7 +11,7 @@ import uniquee.enchantments.UniqueEnchantment;
 
 public class EnchantmentPerpetualStrike extends UniqueEnchantment
 {
-	public static double SCALAR = 0.025D;
+	public static double SCALAR = 0.075D;
 	public static final String HIT_COUNT = "strikes";
 	public static final String HIT_ID = "hit_id";
 	
@@ -35,6 +35,6 @@ public class EnchantmentPerpetualStrike extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration entry)
 	{
-		SCALAR = entry.get(getConfigName(), "scalar", 0.025D).getDouble();
+		SCALAR = entry.get(getConfigName(), "scalar", 0.075D).getDouble();
 	}
 }

@@ -12,7 +12,7 @@ import uniquee.enchantments.UniqueEnchantment;
 
 public class EnchantmentIcarusAegis extends UniqueEnchantment
 {
-	public static int SCALAR = 2;
+	public static int SCALAR = 24;
 	public static String FEATHER_TAG = "feathers";
 	public static String FLYING_TAG = "flying";
 	public static ToIntFunction<ItemStack> VALIDATOR = new ToIntFunction<ItemStack>(){
@@ -37,7 +37,7 @@ public class EnchantmentIcarusAegis extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 2).getInt();
+		SCALAR = config.get(getConfigName(), "scalar", 24).getInt();
 	}
 	
 }

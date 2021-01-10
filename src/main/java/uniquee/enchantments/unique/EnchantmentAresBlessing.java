@@ -8,7 +8,7 @@ import uniquee.enchantments.type.IBlessingEnchantment;
 
 public class EnchantmentAresBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
-	public static double SCALAR = 2D;
+	public static double SCALAR = 6D;
 	public EnchantmentAresBlessing()
 	{
 		super(new DefaultData("aresblessing", Rarity.VERY_RARE, 1, true, 28, 2, 32), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
@@ -17,6 +17,6 @@ public class EnchantmentAresBlessing extends UniqueEnchantment implements IBless
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 2D).getDouble();
+		SCALAR = config.get(getConfigName(), "scalar", 6D).getDouble();
 	}
 }

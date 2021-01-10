@@ -12,7 +12,7 @@ import uniquee.enchantments.simple.EnchantmentBerserk;
 
 public class EnchantmentSwiftBlade extends UniqueEnchantment
 {
-	public static double SCALAR = 1.1D;
+	public static double SCALAR = 1.2D;
 
 	public EnchantmentSwiftBlade()
 	{
@@ -34,6 +34,6 @@ public class EnchantmentSwiftBlade extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration entry)
 	{
-		SCALAR = entry.get(getConfigName(), "scalar", 1.1D).getDouble();
+		SCALAR = entry.get(getConfigName(), "scalar", 1.2D).getDouble();
 	}
 }
