@@ -2,6 +2,7 @@ package uniquee.handler;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
@@ -67,6 +68,7 @@ import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -132,6 +134,7 @@ public class EntityEvents
 	public static final EntityEvents INSTANCE = new EntityEvents();
 	List<Tuple<Enchantment, String[]>> tooltips = new ObjectArrayList<Tuple<Enchantment, String[]>>();
 	List<Triple<Enchantment, ToIntFunction<ItemStack>, String>> anvilHelpers = new ObjectArrayList<Triple<Enchantment, ToIntFunction<ItemStack>, String>>();
+	public static final ThreadLocal<UUID> ENDERMEN_TO_BLOCK = new ThreadLocal<>();
 	
 	public void registerStorageTooltip(Enchantment ench, String translation, String tag)
 	{
@@ -277,11 +280,22 @@ public class EntityEvents
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.CLOUD_WALKER, stack);
 		if(level > 0)
 		{
-			if(player.isSneaking())
+			NBTTagCompound nbt = player.getEntityData();
+			if(player.isSneaking() && !nbt.getBoolean(EnchantmentCloudwalker.TRIGGER) && (!player.onGround || nbt.getBoolean(EnchantmentCloudwalker.ENABLED)))
+			{
+				nbt.setBoolean(EnchantmentCloudwalker.ENABLED, nbt.getBoolean(EnchantmentCloudwalker.ENABLED));
+				nbt.setBoolean(EnchantmentCloudwalker.TRIGGER, true);
+			}
+			else if(!player.isSneaking())
+			{
+				nbt.setBoolean(EnchantmentCloudwalker.TRIGGER, false);
+			}
+			if(nbt.getBoolean(EnchantmentCloudwalker.ENABLED))
 			{
 				int value = getInt(stack, EnchantmentCloudwalker.TIMER, EnchantmentCloudwalker.TICKS.get(level));
 				if(value <= 0)
 				{
+					nbt.setBoolean(EnchantmentCloudwalker.ENABLED, false);
 					return;
 				}
 				player.motionY = player.capabilities.isFlying ? 0.15D : 0D;
@@ -290,6 +304,10 @@ public class EntityEvents
 				if(!player.isCreative())
 				{
 					setInt(stack, EnchantmentCloudwalker.TIMER, value-1);
+					if(player.world.getTotalWorldTime() % 20 == 0)
+					{
+						stack.damageItem(1, player);
+					}
 				}
 			}
 			else
@@ -952,7 +970,22 @@ public class EntityEvents
 				{
 					stack.damageItem(-needed, player);
 				}
+				if(result.entityHit instanceof EntityEnderman)
+				{
+					ENDERMEN_TO_BLOCK.set(result.entityHit.getUniqueID());
+				}
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEndermenTeleport(EnderTeleportEvent event)
+	{
+		UUID id = ENDERMEN_TO_BLOCK.get();
+		if(event.getEntity().getUniqueID().equals(id))
+		{
+			ENDERMEN_TO_BLOCK.set(null);
+			event.setCanceled(true);
 		}
 	}
 	

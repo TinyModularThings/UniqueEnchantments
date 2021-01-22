@@ -9,6 +9,8 @@ import uniquee.utils.IntLevelStats;
 public class EnchantmentCloudwalker extends UniqueEnchantment
 {
 	public static final String TIMER = "cloud";
+	public static final String TRIGGER = "cloud_trigger";
+	public static final String ENABLED = "cloud_enabled";
 	public static final IntLevelStats TICKS = new IntLevelStats("duration", 8, 28);
 
 	public EnchantmentCloudwalker()

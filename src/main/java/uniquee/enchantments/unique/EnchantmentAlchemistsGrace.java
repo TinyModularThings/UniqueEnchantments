@@ -25,8 +25,7 @@ import uniquee.utils.MiscUtil;
 
 public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
-	public static List<List<PotionEffect>> EFFECTS = new ObjectArrayList<List<PotionEffect>>();
-	public static int SECONDS = 4;
+	public static final List<List<PotionPlan>> EFFECTS = new ObjectArrayList<>();
 	
 	public EnchantmentAlchemistsGrace()
 	{
@@ -57,15 +56,12 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 				Set<Potion> potions = new ObjectOpenHashSet<Potion>();
 				for(int i = level;i>=0;i--)
 				{
-					if(EFFECTS.size() <= i)
+					if(EFFECTS.size() > i)
 					{
-						continue;
-					}
-					for(PotionEffect effect : EFFECTS.get(i))
-					{
-						if(potions.add(effect.getPotion()))
+						for(PotionPlan plan : EFFECTS.get(i))
 						{
-							base.addPotionEffect(new PotionEffect(effect.getPotion(), effect.getDuration() * level * (SECONDS * 20), effect.getAmplifier()));
+							PotionEffect effect = plan.createEffect(level);
+							if(potions.add(effect.getPotion())) base.addPotionEffect(effect);
 						}
 					}
 				}
@@ -77,32 +73,48 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 	public void loadData(Configuration config)
 	{
 		EFFECTS.clear();
-		String[] potions = config.getStringList("effects", getConfigName(), new String[]{"1;minecraft:speed;1;4", "2;minecraft:haste;1;6", "2;minecraft:speed;2;6", "3;minecraft:resistance;1;8", "3;minecraft:haste;2;8", "4;minecraft:strength;2;10", "4;minecraft:resistance;2;10"}, "Which Potion Effects should be applied. Format: MinimumEnchantLevel;Potion;PotionLevel;BaseDuration");
-		SECONDS = config.get(getConfigName(), "duration_scalar", 4, "How much the duration should be multiplied with (in seconds)").getInt();
+		String[] potions = config.getStringList("effects", getConfigName(), new String[]{"1;minecraft:speed;1;4", "2;minecraft:haste;1;6", "2;minecraft:speed;2;6", "3;minecraft:resistance;1;8", "3;minecraft:haste;2;8", "4;minecraft:strength;2;10", "4;minecraft:resistance;2;10"}, "Which Potion Effects should be applied. Format: Potion;MinimumEnchantLevel;PotionBaseLevel;PotionLevelIncrease;BaseDuration");
 		for(String s : potions)
 		{
 			String[] split = s.split(";");
-			if(split.length < 4)
+			if(split.length == 5)
 			{
-				continue;
-			}
-			Potion p = Potion.REGISTRY.getObject(new ResourceLocation(split[1]));
-			if(p != null)
-			{
-				try
+				Potion p = Potion.REGISTRY.getObject(new ResourceLocation(split[0]));
+				if(p != null)
 				{
-					int index = Integer.parseInt(split[0]);
-					while(EFFECTS.size() <= index)
+					try
 					{
-						EFFECTS.add(new ObjectArrayList<PotionEffect>());
+						PotionPlan plan = new PotionPlan(p, split);
+						while(EFFECTS.size() <= plan.baseEnchantment) EFFECTS.add(new ObjectArrayList<>());
+						EFFECTS.get(plan.baseEnchantment).add(plan);	
 					}
-					EFFECTS.get(index).add(new PotionEffect(p, Integer.parseInt(split[3]), Integer.parseInt(split[2])));	
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
+					catch(Exception e) { e.printStackTrace(); }
 				}
 			}
+		}
+	}
+	
+	public static class PotionPlan
+	{
+		Potion potion;
+		int baseEnchantment;
+		int basePotionLevel;
+		int PotionLevelIncrease;
+		int baseDuration;
+		
+		public PotionPlan(Potion potion, String[] data)
+		{
+			this.potion = potion;
+			baseEnchantment = Integer.parseInt(data[1]);
+			basePotionLevel = Integer.parseInt(data[2]);
+			PotionLevelIncrease = Integer.parseInt(data[3]);
+			baseDuration = Integer.parseInt(data[4]);
+		}
+		
+		public PotionEffect createEffect(int baseLevel)
+		{
+			int diff = Math.max(0, baseLevel - baseEnchantment);
+			return new PotionEffect(potion, baseDuration * baseLevel, basePotionLevel + (PotionLevelIncrease * diff));
 		}
 	}
 }
