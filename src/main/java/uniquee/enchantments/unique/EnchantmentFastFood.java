@@ -10,7 +10,7 @@ import uniquee.utils.IntLevelStats;
 
 public class EnchantmentFastFood extends UniqueEnchantment
 {
-	public static final IntLevelStats NURISHMENT = new IntLevelStats("nourishment", 2, 1);
+	public static final IntLevelStats NURISHMENT = new IntLevelStats("nourishment", 1, 2);
 	public static double SATURATION = 2D;
 
 	public EnchantmentFastFood()
