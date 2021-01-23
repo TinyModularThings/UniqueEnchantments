@@ -30,13 +30,7 @@ public class SmartAssEnchantment extends UniqueEnchantment
 	
 	public SmartAssEnchantment()
 	{
-		super(new DefaultData("smart_ass", Rarity.RARE, false, 28, 6, 40), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
+		super(new DefaultData("smart_ass", Rarity.RARE, 3, false, 28, 6, 40), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
 	
 	@Override

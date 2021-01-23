@@ -19,15 +19,9 @@ public class RangeEnchantment extends UniqueEnchantment
 	
 	public RangeEnchantment()
 	{
-		super(new DefaultData("ranged", Rarity.COMMON, false, 12, 4, 75), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(new DefaultData("ranged", Rarity.COMMON, 4, false, 12, 4, 75), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 4;
-	}
-	
+		
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{

@@ -32,13 +32,7 @@ public class EcologicalEnchantment extends UniqueEnchantment
 	
 	public EcologicalEnchantment()
 	{
-		super(new DefaultData("ecological", Rarity.RARE, true, 22, 2, 40), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
+		super(new DefaultData("ecological", Rarity.RARE, 3, true, 22, 2, 40), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
 	}
 	
 	@Override

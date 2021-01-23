@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
@@ -54,6 +55,7 @@ import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.Tuple;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
@@ -74,6 +76,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -124,11 +127,25 @@ import uniquee.enchantments.unique.WarriorsGraceEnchantment;
 import uniquee.handler.ai.SpecialFindPlayerAI;
 import uniquee.utils.HarvestEntry;
 import uniquee.utils.MiscUtil;
+import uniquee.utils.Triple;
 
 public class EntityEvents
 {
 	public static final Method ARROW_STACK = MiscUtil.findMethod(AbstractArrowEntity.class, new String[]{"getArrowStack", "func_184550_j"});
 	public static final EntityEvents INSTANCE = new EntityEvents();
+	List<Tuple<Enchantment, String[]>> tooltips = new ObjectArrayList<Tuple<Enchantment, String[]>>();
+	List<Triple<Enchantment, ToIntFunction<ItemStack>, String>> anvilHelpers = new ObjectArrayList<Triple<Enchantment, ToIntFunction<ItemStack>, String>>();
+	static final ThreadLocal<UUID> ENDER_MEN_TELEPORT = new ThreadLocal<>();
+	
+	public void registerStorageTooltip(Enchantment ench, String translation, String tag)
+	{
+		tooltips.add(new Tuple<Enchantment, String[]>(ench, new String[]{translation, tag}));
+	}
+	
+	public void registerAnvilHelper(Enchantment ench, ToIntFunction<ItemStack> helper, String tag)
+	{
+		anvilHelpers.add(Triple.create(ench, helper, tag));
+	}
 	
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
@@ -186,11 +203,10 @@ public class EntityEvents
 			if(player.getHealth() < player.getMaxHealth())
 			{
 				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.NATURES_GRACE, player.getItemStackFromSlot(EquipmentSlotType.CHEST));
-				if(level > 0 && player.world.getGameTime() % MathHelper.floor(Math.sqrt(NaturesGraceEnchantment.DELAY.get() / level)) == 0)
+				if(level > 0 && player.world.getGameTime() % Math.max(1, MathHelper.floor(Math.sqrt(NaturesGraceEnchantment.DELAY.get() / level))) == 0)
 				{
 					if(player.getCombatTracker().getBestAttacker() == null && hasBlockCount(player.world, player.getPosition(), 4, NaturesGraceEnchantment.FLOWERS))
 					{
-						System.out.println("Call 2");
 						player.heal(NaturesGraceEnchantment.HEALING.getAsFloat(level));
 					}
 				}
@@ -261,6 +277,12 @@ public class EntityEvents
 					{
 						player.addExhaustion(0.06F);
 					}
+					
+				}
+				Object2IntMap.Entry<EquipmentSlotType> level = MiscUtil.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, player);
+				if(level.getIntValue() > 0)
+				{
+					player.addExhaustion(0.01F * level.getIntValue());
 				}
 			}
 		}
@@ -268,11 +290,22 @@ public class EntityEvents
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.CLOUD_WALKER, stack);
 		if(level > 0)
 		{
-			if(player.isSneaking())
+			CompoundNBT nbt = player.getPersistentData();
+			if(player.isSneaking() && !nbt.getBoolean(CloudwalkerEnchantment.TRIGGER) && (!player.onGround || nbt.getBoolean(CloudwalkerEnchantment.ENABLED)))
+			{
+				nbt.putBoolean(CloudwalkerEnchantment.ENABLED, nbt.getBoolean(CloudwalkerEnchantment.ENABLED));
+				nbt.putBoolean(CloudwalkerEnchantment.TRIGGER, true);
+			}
+			else if(!player.isSneaking())
+			{
+				nbt.putBoolean(CloudwalkerEnchantment.TRIGGER, false);
+			}
+			if(nbt.getBoolean(CloudwalkerEnchantment.ENABLED))
 			{
 				int value = getInt(stack, CloudwalkerEnchantment.TIMER, CloudwalkerEnchantment.TICKS.get(level));
 				if(value <= 0)
 				{
+					nbt.putBoolean(CloudwalkerEnchantment.ENABLED, false);
 					return;
 				}
 				Vec3d vec = player.getMotion();
@@ -282,12 +315,21 @@ public class EntityEvents
 				if(!player.isCreative())
 				{
 					setInt(stack, CloudwalkerEnchantment.TIMER, value-1);
+					if(player.world.getGameTime() % 20 == 0)
+					{
+						stack.damageItem(1, player, MiscUtil.get(EquipmentSlotType.FEET));
+					}
 				}
 			}
 			else
 			{
 				setInt(stack, CloudwalkerEnchantment.TIMER, CloudwalkerEnchantment.TICKS.get(level));
 			}
+		}
+		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.SWIFT, player.getItemStackFromSlot(EquipmentSlotType.LEGS));
+		if(level > 0 && player.isOnLadder() && player.moveForward != 0F && player.getMotion().getY() > 0 && player.getMotion().getY() <= 0.2 && !player.isSneaking())
+		{
+			player.setMotion(player.getMotion().add(0, SwiftEnchantment.SPEED_BONUS.getAsDouble(level) * 3D, 0));
 		}
 		Boolean cache = null;
 		//Reflection is slower then direct call. But Twice the Iteration & Double IsEmpty Check is slower then Reflection.
@@ -490,7 +532,7 @@ public class EntityEvents
 		}
 	}
 	
-	//Forge Event Not Implemented
+	//Forge Event Not Implemented Only Available since 1.16.x
 //	@SubscribeEvent
 //	public void onBlockLoot(HarvestDropsEvent event)
 //	{
@@ -532,7 +574,7 @@ public class EntityEvents
 //					toBurn.setCount(1);
 //					//TODO Implement fix for this.
 //					ItemStack burned = ItemStack.EMPTY;
-////					ItemStack burned = FurnaceRecipes.instance().getSmeltingResult(toBurn).copy();
+//					ItemStack burned = FurnaceRecipes.instance().getSmeltingResult(toBurn).copy();
 //					if(burned.isEmpty())
 //					{
 //						continue;
@@ -694,7 +736,7 @@ public class EntityEvents
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(base.getHeldItemMainhand());
 			if(enchantments.getInt(UniqueEnchantments.BERSERKER) > 0)
 			{
-				event.setAmount(event.getAmount() * (1F + (BerserkEnchantment.SCALAR.getFloat() * (base.getMaxHealth() / base.getHealth()))));
+				event.setAmount(event.getAmount() * (1F + (BerserkEnchantment.SCALAR.getFloat() * (base.getMaxHealth() / Math.max(1F, base.getHealth())))));
 			}
 			int level = enchantments.getInt(UniqueEnchantments.SWIFT_BLADE);
 			if(level > 0)
@@ -823,7 +865,7 @@ public class EntityEvents
 				{
 					((PlayerEntity)living).getFoodStats().addStats(Short.MAX_VALUE, 1F);
 				}
-                living.addPotionEffect(new EffectInstance(Effects.REGENERATION, 900, 1));
+                living.addPotionEffect(new EffectInstance(Effects.REGENERATION, 600, 1));
                 living.addPotionEffect(new EffectInstance(Effects.ABSORPTION, 100, 1));
                 living.world.setEntityState(living, (byte)35);
                 event.getEntityLiving().getItemStackFromSlot(slot.getKey()).shrink(1);
@@ -840,7 +882,7 @@ public class EntityEvents
 		if(level > 0 && stack.getTag().getBoolean(IcarusAegisEnchantment.FLYING_TAG))
 		{
 			int feathers = getInt(stack, IcarusAegisEnchantment.FEATHER_TAG, 0);
-			int consume = (int)Math.ceil((double)IcarusAegisEnchantment.SCALAR.get() / level);
+			int consume = (int)Math.max(Math.ceil((double)IcarusAegisEnchantment.SCALAR.get() / level), 4);
 			if(feathers >= consume)
 			{
 				feathers -= consume;
@@ -972,7 +1014,23 @@ public class EntityEvents
 				{
 					stack.damageItem(-needed, player, MiscUtil.get(slot.getKey()));
 				}
+				Entity entity = ((EntityRayTraceResult)result).getEntity();
+				if(entity instanceof EndermanEntity)
+				{
+					ENDER_MEN_TELEPORT.set(entity.getUniqueID());
+				}
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEndermenTeleport(EnderTeleportEvent event)
+	{
+		UUID id = ENDER_MEN_TELEPORT.get();
+		if(event.getEntity().getUniqueID().equals(id))
+		{
+			ENDER_MEN_TELEPORT.set(null);
+			event.setCanceled(true);
 		}
 	}
 	

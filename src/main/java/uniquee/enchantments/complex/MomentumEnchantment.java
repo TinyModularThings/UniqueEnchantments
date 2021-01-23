@@ -17,15 +17,9 @@ public class MomentumEnchantment extends UniqueEnchantment
 	
 	public MomentumEnchantment()
 	{
-		super(new DefaultData("momentum", Rarity.RARE, true, 10, 5, 75), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(new DefaultData("momentum", Rarity.RARE, 3, true, 10, 5, 75), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
 	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
-	}
-
 	@Override
 	public void loadData(Builder config)
 	{

@@ -34,7 +34,7 @@ public class ClimateTranquilityEnchantment extends UniqueEnchantment
 	
 	public ClimateTranquilityEnchantment()
 	{
-		super(new DefaultData("climate_tranquility", Rarity.RARE, true, 20, 2, 12), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("climate_tranquility", Rarity.RARE, 3, true, 20, 2, 12), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}
 	
 	@Override
@@ -42,13 +42,7 @@ public class ClimateTranquilityEnchantment extends UniqueEnchantment
 	{
 		return stack.getItem() instanceof AxeItem || EnchantmentType.BOW.canEnchantItem(stack.getItem());
 	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
-	}
-	
+		
 	@Override
 	public void loadData(Builder config)
 	{

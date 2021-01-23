@@ -17,15 +17,9 @@ public class SagesBlessingEnchantment extends UniqueEnchantment implements IBles
 	
 	public SagesBlessingEnchantment()
 	{
-		super(new DefaultData("sages_blessing", Rarity.COMMON, false, 10, 4, 10), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("sages_blessing", Rarity.COMMON, 5, false, 10, 4, 10), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 5;
-	}
-	
+		
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{

@@ -16,7 +16,7 @@ public class BoneCrusherEnchantment extends UniqueEnchantment
 	
 	public BoneCrusherEnchantment()
 	{
-		super(new DefaultData("bone_crusher", Rarity.VERY_RARE, true, 18, 5, 50), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(new DefaultData("bone_crusher", Rarity.VERY_RARE, 2, true, 18, 5, 50), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
 	
 	@Override
@@ -25,17 +25,11 @@ public class BoneCrusherEnchantment extends UniqueEnchantment
 		return stack.getItem() instanceof AxeItem;
 	}
 	
-	@Override
-	public int getMaxLevel()
-	{
-		return 2;
-	}
-	
 	public static boolean isNotArmored(AbstractSkeletonEntity skeleton)
 	{
 		for(EquipmentSlotType slot : EquipmentSlotType.values())
 		{
-			if(slot.getSlotType() == Group.ARMOR && !skeleton.getItemStackFromSlot(slot).isEmpty())
+			if(slot.getSlotType() == Group.ARMOR && slot != EquipmentSlotType.HEAD && !skeleton.getItemStackFromSlot(slot).isEmpty())
 			{
 				return false;
 			}

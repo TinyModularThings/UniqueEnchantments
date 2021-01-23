@@ -19,16 +19,9 @@ public class DeathsOdiumEnchantment extends UniqueEnchantment
 	public static final UUID LEGGINGS_MOD = UUID.fromString("7155868f-c452-482b-9c35-20d3082cf766");
 	public static final UUID FEET_MOD = UUID.fromString("6d64591f-abda-431f-87da-0622ba33b665");
 	
-	
 	public DeathsOdiumEnchantment()
 	{
-		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, false, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
+		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 1, false, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
 	}
 	
 	@Override

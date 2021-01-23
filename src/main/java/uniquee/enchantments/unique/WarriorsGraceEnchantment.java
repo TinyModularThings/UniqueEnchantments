@@ -18,15 +18,9 @@ public class WarriorsGraceEnchantment extends UniqueEnchantment implements IGrac
 
 	public WarriorsGraceEnchantment()
 	{
-		super(new DefaultData("warriorsgrace", Rarity.VERY_RARE, true, 22, 2, 30), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(new DefaultData("warriorsgrace", Rarity.VERY_RARE, 1, true, 22, 2, 30), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
-	}
-	
+		
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{

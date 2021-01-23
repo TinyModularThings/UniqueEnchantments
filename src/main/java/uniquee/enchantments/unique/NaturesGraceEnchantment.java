@@ -16,7 +16,7 @@ import uniquee.utils.IntStat;
 
 public class NaturesGraceEnchantment extends UniqueEnchantment implements IGraceEnchantment
 {
-	public static final DoubleLevelStats HEALING = new DoubleLevelStats("healing", 0.2, 0.4);
+	public static final DoubleLevelStats HEALING = new DoubleLevelStats("healing", 0.6, 0.2);
 	public static IntStat DELAY = new IntStat(100, "delay");
 	public static Predicate<BlockState> FLOWERS = new Predicate<BlockState>(){
 		@Override
@@ -27,13 +27,7 @@ public class NaturesGraceEnchantment extends UniqueEnchantment implements IGrace
 	};	
 	public NaturesGraceEnchantment()
 	{
-		super(new DefaultData("naturesgrace", Rarity.VERY_RARE, true, 22, 4, 22), EnchantmentType.ARMOR_CHEST, new EquipmentSlotType[]{EquipmentSlotType.CHEST});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 2;
+		super(new DefaultData("naturesgrace", Rarity.VERY_RARE, 2, true, 22, 4, 22), EnchantmentType.ARMOR_CHEST, new EquipmentSlotType[]{EquipmentSlotType.CHEST});
 	}
 	
 	@Override

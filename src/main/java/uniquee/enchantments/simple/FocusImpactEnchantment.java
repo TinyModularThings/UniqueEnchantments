@@ -16,15 +16,9 @@ public class FocusImpactEnchantment extends UniqueEnchantment
 	
 	public FocusImpactEnchantment()
 	{
-		super(new DefaultData("focus_impact", Rarity.RARE, false, 20, 2, 17), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(new DefaultData("focus_impact", Rarity.RARE, 3, false, 20, 2, 17), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
-	}
-	
+		
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{

@@ -11,13 +11,7 @@ public class EnderLibrarianEnchantment extends UniqueEnchantment
 {
 	public EnderLibrarianEnchantment()
 	{
-		super(new DefaultData("ender_librarian", Rarity.VERY_RARE, true, 24, 3, 10), EnchantmentType.FISHING_ROD, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
+		super(new DefaultData("ender_librarian", Rarity.VERY_RARE, 1, true, 24, 3, 10), EnchantmentType.FISHING_ROD, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}
 	
 	@Override

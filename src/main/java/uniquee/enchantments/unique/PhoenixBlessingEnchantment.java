@@ -10,10 +10,9 @@ import uniquee.enchantments.type.IBlessingEnchantment;
 
 public class PhoenixBlessingEnchantment extends UniqueEnchantment implements IBlessingEnchantment
 {
-	
 	public PhoenixBlessingEnchantment()
 	{
-		super(new DefaultData("phoenixs_blessing", Rarity.RARE, true, 26, 2, 2), EnchantmentType.ALL, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("phoenixs_blessing", Rarity.RARE, 1, true, 26, 2, 2), EnchantmentType.ALL, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}
 	
 	@Override

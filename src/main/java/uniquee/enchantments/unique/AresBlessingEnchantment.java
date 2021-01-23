@@ -9,16 +9,11 @@ import uniquee.utils.DoubleStat;
 
 public class AresBlessingEnchantment extends UniqueEnchantment implements IBlessingEnchantment
 {
-	public static DoubleStat SCALAR = new DoubleStat(2D, "scalar");
+	public static DoubleStat SCALAR = new DoubleStat(6D, "scalar");
+	
 	public AresBlessingEnchantment()
 	{
-		super(new DefaultData("aresblessing", Rarity.VERY_RARE, true, 28, 2, 32), EnchantmentType.ARMOR_CHEST, new EquipmentSlotType[]{EquipmentSlotType.CHEST});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
+		super(new DefaultData("aresblessing", Rarity.VERY_RARE, 1, true, 28, 2, 32), EnchantmentType.ARMOR_CHEST, new EquipmentSlotType[]{EquipmentSlotType.CHEST});
 	}
 	
 	@Override

@@ -17,13 +17,7 @@ public class BerserkEnchantment extends UniqueEnchantment
 	
 	public BerserkEnchantment()
 	{
-		super(new DefaultData("berserk", Rarity.RARE, false, 20, 2, 22), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
+		super(new DefaultData("berserk", Rarity.RARE, 1, false, 20, 2, 22), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
 	
 	@Override

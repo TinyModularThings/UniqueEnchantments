@@ -44,7 +44,7 @@ public class MidasBlessingEnchantment extends UniqueEnchantment implements IBles
 	
 	public MidasBlessingEnchantment()
 	{
-		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, true, 22, 2, 75), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 3, true, 22, 2, 75), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
 	
 	@Override
@@ -59,12 +59,6 @@ public class MidasBlessingEnchantment extends UniqueEnchantment implements IBles
 	{
 		//Disabled do to forge bugs
 		return false;
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
 	}
 	
 	@Override

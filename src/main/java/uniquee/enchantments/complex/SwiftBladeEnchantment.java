@@ -13,17 +13,11 @@ import uniquee.utils.DoubleStat;
 
 public class SwiftBladeEnchantment extends UniqueEnchantment
 {
-	public static DoubleStat SCALAR = new DoubleStat(1.1D, "scalar");
+	public static DoubleStat SCALAR = new DoubleStat(1.2D, "scalar");
 
 	public SwiftBladeEnchantment()
 	{
-		super(new DefaultData("swiftblade", Rarity.VERY_RARE, false, 26, 0, 30), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
+		super(new DefaultData("swiftblade", Rarity.VERY_RARE, 1, false, 26, 0, 30), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
 	
 	@Override

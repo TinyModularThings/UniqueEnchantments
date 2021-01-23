@@ -13,7 +13,7 @@ import uniquee.utils.IntStat;
 
 public class IcarusAegisEnchantment extends UniqueEnchantment
 {
-	public static IntStat SCALAR = new IntStat(2, "scalar");
+	public static IntStat SCALAR = new IntStat(24, "scalar");
 	public static String FEATHER_TAG = "feathers";
 	public static String FLYING_TAG = "flying";
 	public static ToIntFunction<ItemStack> VALIDATOR = new ToIntFunction<ItemStack>(){
@@ -26,13 +26,7 @@ public class IcarusAegisEnchantment extends UniqueEnchantment
 	
 	public IcarusAegisEnchantment()
 	{
-		super(new DefaultData("icarus_aegis", Rarity.VERY_RARE, true, 20, 2, 20), EnchantmentType.ARMOR_CHEST, new EquipmentSlotType[]{EquipmentSlotType.CHEST});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 2;
+		super(new DefaultData("icarus_aegis", Rarity.VERY_RARE, 2, true, 20, 2, 20), EnchantmentType.ARMOR_CHEST, new EquipmentSlotType[]{EquipmentSlotType.CHEST});
 	}
 	
 	@Override

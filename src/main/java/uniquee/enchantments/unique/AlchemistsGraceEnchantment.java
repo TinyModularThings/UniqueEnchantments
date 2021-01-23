@@ -23,26 +23,18 @@ import net.minecraftforge.registries.ForgeRegistries;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
-import uniquee.utils.IntStat;
 import uniquee.utils.MiscUtil;
 
 public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGraceEnchantment
 {
-	public static List<List<EffectInstance>> EFFECTS = new ObjectArrayList<List<EffectInstance>>();
-	public static IntStat SECONDS = new IntStat(4, "seconds");
+	public static final List<List<PotionPlan>> EFFECTS = new ObjectArrayList<>();
 	static ConfigValue<List<? extends String>> EFFECT_CONFIG;
 	
 	public AlchemistsGraceEnchantment()
 	{
-		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, true, 20, 3, 18), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, 4, true, 20, 3, 18), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 4;
-	}
-	
+		
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
@@ -64,7 +56,6 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 			if(slot.getIntValue() > 0)
 			{
 				int level = slot.getIntValue();
-				int time = SECONDS.get() * 20;
 				Set<Effect> potions = new ObjectOpenHashSet<Effect>();
 				for(int i = level;i>=0;i--)
 				{
@@ -72,11 +63,12 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 					{
 						continue;
 					}
-					for(EffectInstance effect : EFFECTS.get(i))
+					for(PotionPlan plan : EFFECTS.get(i))
 					{
+						EffectInstance effect = plan.createEffect(level);
 						if(potions.add(effect.getPotion()))
 						{
-							base.addPotionEffect(new EffectInstance(effect.getPotion(), effect.getDuration() * time, effect.getAmplifier()));
+							base.addPotionEffect(effect);
 						}
 					}
 				}
@@ -87,7 +79,6 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 	@Override
 	public void loadData(Builder config)
 	{
-		SECONDS.handleConfig(config);
 		config.comment("Which Potion Effects should be applied. Format: MinimumEnchantLevel;Potion;PotionLevel;BaseDuration");
 		EFFECT_CONFIG = config.defineList("effects", ObjectArrayList.wrap(new String[]{"1;minecraft:speed;1;4", "2;minecraft:haste;1;6", "2;minecraft:speed;2;6", "3;minecraft:resistance;1;8", "3;minecraft:haste;2;8", "4;minecraft:strength;2;10", "4;minecraft:resistance;2;10"}), (T) -> true);
 	}
@@ -100,27 +91,44 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 		for(int i = 0,m=list.size();i<m;i++)
 		{
 			String[] split = list.get(i).split(";");
-			if(split.length < 4)
+			if(split.length == 5)
 			{
-				continue;
-			}
-			Effect p = ForgeRegistries.POTIONS.getValue(new ResourceLocation(split[1]));
-			if(p != null)
-			{
-				try
+				Effect p = ForgeRegistries.POTIONS.getValue(new ResourceLocation(split[0]));
+				if(p != null)
 				{
-					int index = Integer.parseInt(split[0]);
-					while(EFFECTS.size() <= index)
+					try
 					{
-						EFFECTS.add(new ObjectArrayList<EffectInstance>());
+						PotionPlan plan = new PotionPlan(p, split);
+						while(EFFECTS.size() <= plan.baseEnchantment) EFFECTS.add(new ObjectArrayList<>());
+						EFFECTS.get(plan.baseEnchantment).add(plan);	
 					}
-					EFFECTS.get(index).add(new EffectInstance(p, Integer.parseInt(split[3]), Integer.parseInt(split[2])));	
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
+					catch(Exception e) { e.printStackTrace(); }
 				}
 			}
+		}
+	}
+	
+	public static class PotionPlan
+	{
+		Effect potion;
+		int baseEnchantment;
+		int basePotionLevel;
+		int PotionLevelIncrease;
+		int baseDuration;
+		
+		public PotionPlan(Effect potion, String[] data)
+		{
+			this.potion = potion;
+			baseEnchantment = Integer.parseInt(data[1]);
+			basePotionLevel = Integer.parseInt(data[2]);
+			PotionLevelIncrease = Integer.parseInt(data[3]);
+			baseDuration = Integer.parseInt(data[4]);
+		}
+		
+		public EffectInstance createEffect(int baseLevel)
+		{
+			int diff = Math.max(0, baseLevel - baseEnchantment);
+			return new EffectInstance(potion, baseDuration * baseLevel, basePotionLevel + (PotionLevelIncrease * diff));
 		}
 	}
 }

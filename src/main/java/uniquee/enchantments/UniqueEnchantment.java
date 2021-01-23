@@ -15,13 +15,26 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	DefaultData values;
 	protected BooleanValue enabled;
 	String configName;
-	
+	String categoryName = "base";
+
 	protected UniqueEnchantment(DefaultData data, EnchantmentType typeIn, EquipmentSlotType[] slots)
 	{
 		super(data.getRarity(), typeIn, slots);
 		setRegistryName("uniquee", data.getName());
 		configName = data.getName();
 		values = data;
+	}
+	
+	@Override
+	public int getMaxLevel()
+	{
+		return values.getMaxLevel();
+	}
+	
+	@Override
+	public int getMinLevel()
+	{
+		return values.getMinLevel();
 	}
 	
 	@Override
@@ -73,13 +86,19 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	@Override
 	public String getConfigName()
 	{
-		return configName;
+		return categoryName+"."+configName;
+	}
+	
+	protected void setCategory(String name)
+	{
+		this.categoryName = name;
 	}
 	
 	@Override
 	public final void loadFromConfig(ForgeConfigSpec.Builder config)
 	{
 		config.push(getConfigName());
+		config.translation(getName());
 		enabled = config.define("enabled", true);
 		values.loadConfig(config);
 		loadData(config);
@@ -90,6 +109,8 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	
 	public static class DefaultData
 	{
+		int minLevel;
+		int maxLevel;
 		String name;
 		Rarity rare;
 		boolean isTreasure;
@@ -102,8 +123,15 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		IntValue baseCost_Config;
 		IntValue levelCost_Config;
 		IntValue rangeCost_Config;
+		IntValue minLevel_Config;
+		IntValue maxLevel_Config;
 		
-		public DefaultData(String name, Rarity rare, boolean isTreasure, int baseCost, int levelCost, int rangeCost)
+		public DefaultData(String name, Rarity rare, int maxLevel, boolean isTreasure, int baseCost, int levelCost, int rangeCost)
+		{
+			this(name, rare, 1, maxLevel, isTreasure, baseCost, levelCost, rangeCost);
+		}
+		
+		public DefaultData(String name, Rarity rare, int minLevel, int maxLevel, boolean isTreasure, int baseCost, int levelCost, int rangeCost)
 		{
 			this.name = name;
 			this.rare = rare;
@@ -115,6 +143,8 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		
 		public void loadConfig(ForgeConfigSpec.Builder config)
 		{
+			minLevel_Config = config.defineInRange("min_level", minLevel, 0, Integer.MAX_VALUE);
+			maxLevel_Config = config.defineInRange("max_level", maxLevel, 0, Integer.MAX_VALUE);
 			rare_Config = config.defineEnum("rarity", rare);
 			isTreasure_Config = config.define("treasure", isTreasure);
 			baseCost_Config = config.defineInRange("base_cost", baseCost, 0, Integer.MAX_VALUE);
@@ -131,6 +161,16 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		public String getName()
 		{
 			return name;
+		}
+		
+		public int getMinLevel()
+		{
+			return minLevel_Config != null ? minLevel_Config.get() : minLevel;
+		}
+		
+		public int getMaxLevel()
+		{
+			return maxLevel_Config != null ? maxLevel_Config.get() : maxLevel;
 		}
 
 		public Rarity getRarity()

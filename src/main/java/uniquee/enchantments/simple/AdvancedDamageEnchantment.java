@@ -17,9 +17,9 @@ import uniquee.utils.DoubleStat;
 public class AdvancedDamageEnchantment extends DamageEnchantment implements IToggleEnchantment
 {
 	public static final DefaultData[] DATA = new DefaultData[]{
-		new DefaultData("all", Rarity.VERY_RARE, true, 20, 2, 18),
-		new DefaultData("undead", Rarity.RARE, true, 16, 2, 14),
-		new DefaultData("arthropods", Rarity.RARE, true, 16, 2, 14),
+		new DefaultData("all", Rarity.VERY_RARE, 5, true, 20, 2, 18),
+		new DefaultData("undead", Rarity.RARE, 5, true, 16, 2, 14),
+		new DefaultData("arthropods", Rarity.RARE, 5, true, 16, 2, 14),
 	};
     private static final DoubleStat[] DEFAULTS = new DoubleStat[]{new DoubleStat(1D, "scalar"), new DoubleStat(3D, "scalar"), new DoubleStat(3D, "scalar")};
 	DefaultData values;
@@ -62,12 +62,6 @@ public class AdvancedDamageEnchantment extends DamageEnchantment implements ITog
     public String getName()
     {
     	return "enchantment.uniquee."+values.getName();
-    }
-    
-    @Override
-    public int getMaxLevel()
-    {
-    	return 5;
     }
     
     @Override

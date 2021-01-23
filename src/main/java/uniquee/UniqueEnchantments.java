@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -75,7 +76,7 @@ import uniquee.handler.potion.PestilencesOdiumPotion;
 @Mod("uniquee")
 public class UniqueEnchantments
 {
-	static List<IToggleEnchantment> ENCHANTMENTS = new ObjectArrayList<IToggleEnchantment>();
+	static List<IToggleEnchantment> ENCHANTMENTS = ObjectLists.synchronize(new ObjectArrayList<IToggleEnchantment>());
 	public static Enchantment BERSERKER;
 	public static Enchantment ADV_SHARPNESS;
 	public static Enchantment ADV_SMITE;

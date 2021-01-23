@@ -38,13 +38,7 @@ public class IfritsGraceEnchantment extends UniqueEnchantment implements IGraceE
 
 	public IfritsGraceEnchantment()
 	{
-		super(new DefaultData("ifrits_grace", Rarity.RARE, true, 14, 4, 40), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
+		super(new DefaultData("ifrits_grace", Rarity.RARE, 3, true, 14, 4, 40), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
 	}
 	
 	@Override

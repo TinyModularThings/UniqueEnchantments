@@ -21,13 +21,7 @@ public class EnderMendingEnchantment extends UniqueEnchantment
 	
 	public EnderMendingEnchantment()
 	{
-		super(new DefaultData("ender_mending", Rarity.VERY_RARE, true, 26, 8, 5), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 3;
+		super(new DefaultData("ender_mending", Rarity.VERY_RARE, 3, true, 26, 8, 5), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
 	}
 	
 	@Override

@@ -15,13 +15,7 @@ public class PestilencesOdiumEnchantment extends UniqueEnchantment
 	
 	public PestilencesOdiumEnchantment()
 	{
-		super(new DefaultData("pestilences_odium", Rarity.RARE, false, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
+		super(new DefaultData("pestilences_odium", Rarity.RARE, 1, false, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
 	}
 	
 	@Override

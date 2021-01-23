@@ -19,13 +19,7 @@ public class VitaeEnchantment extends UniqueEnchantment
 	
 	public VitaeEnchantment()
 	{
-		super(new DefaultData("vitae", Rarity.VERY_RARE, false, 10, 2, 7), EnchantmentType.ARMOR, new EquipmentSlotType[]{EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET});
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 5;
+		super(new DefaultData("vitae", Rarity.VERY_RARE, 5, false, 10, 2, 7), EnchantmentType.ARMOR, new EquipmentSlotType[]{EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET});
 	}
 	
 	public static UUID getForSlot(EquipmentSlotType slot)

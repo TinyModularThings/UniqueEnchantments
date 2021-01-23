@@ -11,20 +11,14 @@ import uniquee.utils.IntLevelStats;
 
 public class FastFoodEnchantment extends UniqueEnchantment
 {
-	public static final IntLevelStats NURISHMENT = new IntLevelStats("nourishment", 2, 1);
-	public static DoubleStat SATURATION = new DoubleStat(0.5D, "saturation");
+	public static final IntLevelStats NURISHMENT = new IntLevelStats("nourishment", 1, 2);
+	public static DoubleStat SATURATION = new DoubleStat(2D, "saturation");
 
 	public FastFoodEnchantment()
 	{
-		super(new DefaultData("fastfood", Rarity.RARE, true, 14, 6, 10), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("fastfood", Rarity.RARE, 2, true, 14, 6, 10), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 2;
-	}
-		
+			
 	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{

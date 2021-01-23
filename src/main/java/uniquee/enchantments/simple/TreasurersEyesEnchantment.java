@@ -12,15 +12,9 @@ public class TreasurersEyesEnchantment extends UniqueEnchantment
 	
 	public TreasurersEyesEnchantment()
 	{
-		super(new DefaultData("treasurers_eyes", Rarity.RARE, false, 28, 6, 10), EnchantmentType.ARMOR_HEAD, new EquipmentSlotType[]{EquipmentSlotType.HEAD});
+		super(new DefaultData("treasurers_eyes", Rarity.RARE, 1, false, 28, 6, 10), EnchantmentType.ARMOR_HEAD, new EquipmentSlotType[]{EquipmentSlotType.HEAD});
 	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 1;
-	}
-	
+		
 	@Override
 	public void loadData(Builder config)
 	{

@@ -15,15 +15,9 @@ public class SwiftEnchantment extends UniqueEnchantment
 	
 	public SwiftEnchantment()
 	{
-		super(new DefaultData("swift", Rarity.RARE, false, 14, 4, 18), EnchantmentType.ARMOR_LEGS, new EquipmentSlotType[]{EquipmentSlotType.LEGS});
+		super(new DefaultData("swift", Rarity.RARE, 2, false, 14, 4, 18), EnchantmentType.ARMOR_LEGS, new EquipmentSlotType[]{EquipmentSlotType.LEGS});
 	}
 	
-	@Override
-	public int getMaxLevel()
-	{
-		return 2;
-	}
-
 	@Override
 	public void loadData(Builder config)
 	{

@@ -36,6 +36,7 @@ public class MiscUtil
 {
 	static final Consumer<LivingEntity>[] SLOT_BASE = createSlots();
 	
+	@SuppressWarnings("unchecked")
 	static Consumer<LivingEntity>[] createSlots()
 	{
 		Consumer<LivingEntity>[] slots = new Consumer[EquipmentSlotType.values().length];

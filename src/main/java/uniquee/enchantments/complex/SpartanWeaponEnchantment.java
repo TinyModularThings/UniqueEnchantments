@@ -13,23 +13,17 @@ import uniquee.utils.DoubleStat;
 
 public class SpartanWeaponEnchantment extends UniqueEnchantment
 {
-	public static DoubleStat SCALAR = new DoubleStat(0.1D, "scalar");
+	public static DoubleStat SCALAR = new DoubleStat(0.075D, "scalar");
 
 	public SpartanWeaponEnchantment()
 	{
-		super(new DefaultData("spartanweapon", Rarity.RARE, true, 11, 3, 10), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("spartanweapon", Rarity.RARE, 5, true, 11, 3, 10), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}
 	
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
 		return stack.getItem() instanceof AxeItem;
-	}
-	
-	@Override
-	public int getMaxLevel()
-	{
-		return 5;
 	}
 	
 	@Override
