@@ -108,9 +108,9 @@ public class AdvancedDamageEnchantment extends DamageEnchantment implements ITog
 	{
 		switch(damageType)
 		{
-			case 0: return "ameliorated_sharpness";
-			case 1: return "ameliorated_smite";
-			case 2: return "ameliorated_arthropods";
+			case 0: return "base.ameliorated_sharpness";
+			case 1: return "base.ameliorated_smite";
+			case 2: return "base.ameliorated_arthropods";
 			default: return "I_AM_ERROR";
 		}
 	}
@@ -122,6 +122,6 @@ public class AdvancedDamageEnchantment extends DamageEnchantment implements ITog
 		isEnabled = entry.define("enabled", true);
 		values.loadConfig(entry);
 		scalar.handleConfig(entry);
-		entry.pop();
+		entry.pop(2);
 	}
 }

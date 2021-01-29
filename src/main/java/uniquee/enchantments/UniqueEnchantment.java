@@ -97,12 +97,13 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	@Override
 	public final void loadFromConfig(ForgeConfigSpec.Builder config)
 	{
+		int count = getConfigName().split(".").length + 2;
 		config.push(getConfigName());
 		config.translation(getName());
 		enabled = config.define("enabled", true);
 		values.loadConfig(config);
 		loadData(config);
-		config.pop();
+		config.pop(count);
 	}
 	
 	public abstract void loadData(ForgeConfigSpec.Builder config);
