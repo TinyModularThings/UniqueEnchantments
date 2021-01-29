@@ -1,0 +1,98 @@
+buildscript {
+    repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
+version = "1.0"
+group = "uniquee"
+archivesBaseName = "Unique Enchantments"
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+
+repositories {
+    maven {
+        url = "https://www.cursemaven.com"
+    }
+}
+
+minecraft {
+    mappings channel: 'snapshot', version: '20201028-1.16.3'
+    runs {
+        client {
+            workingDirectory project.file('run')
+        }
+
+        server {
+            workingDirectory project.file('run')
+        }
+
+        data {
+            workingDirectory project.file('run')
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.16.5-36.0.10'
+    compile fg.deobf("curse.maven:firstaid-276837:3152708")
+}
+
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "uniquee",
+            "Specification-Vendor": "uniquee",
+            "Specification-Version": "1",
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" :"uniquee",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+    version = uniquee_version
+    exclude "uniqueeutils", "assets/uniqueeutil"
+}
+jar.finalizedBy('reobfJar') 
+
+task utilsJar(type: Jar) {
+    baseName = 'Unique Enchantments Utils'
+    version = unique_utils_version
+    from(sourceSets.main.output) {
+        exclude 'uniquee', 'assets/uniquee'
+    }
+}
+
+
+reobf {
+    utilsJar {
+    	spec -> spec.classpath = sourceSets.main.compileClasspath
+    }
+}
+
+artifacts {
+    archives utilsJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
