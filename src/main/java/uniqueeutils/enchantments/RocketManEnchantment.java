@@ -14,7 +14,7 @@ public class RocketManEnchantment extends UniqueEnchantment
 			
 	public RocketManEnchantment()
 	{
-		super(new DefaultData("rocketman", Rarity.VERY_RARE, 3, true, 25, 4, 20), EnchantmentType.ARMOR_CHEST, new EquipmentSlotType[]{EquipmentSlotType.CHEST});
+		super(new DefaultData("rocketman", Rarity.VERY_RARE, 3, false, 25, 4, 20), EnchantmentType.ARMOR_CHEST, new EquipmentSlotType[]{EquipmentSlotType.CHEST});
 		setCategory("utils");
 	}
 	

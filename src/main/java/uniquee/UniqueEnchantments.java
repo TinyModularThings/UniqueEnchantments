@@ -1,42 +1,33 @@
 package uniquee;
 
 import java.lang.reflect.Field;
-import java.util.List;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.command.Commands;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.Effect;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.config.ModConfig.Reloading;
-import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import uniquee.api.BaseUEMod;
 import uniquee.api.crops.CropHarvestRegistry;
 import uniquee.client.EnchantmentLayer;
-import uniquee.enchantments.IToggleEnchantment;
 import uniquee.enchantments.complex.EnderMendingEnchantment;
 import uniquee.enchantments.complex.MomentumEnchantment;
 import uniquee.enchantments.complex.PerpetualStrikeEnchantment;
@@ -71,13 +62,13 @@ import uniquee.enchantments.unique.NaturesGraceEnchantment;
 import uniquee.enchantments.unique.PhoenixBlessingEnchantment;
 import uniquee.enchantments.unique.WarriorsGraceEnchantment;
 import uniquee.handler.EntityEvents;
+import uniquee.handler.LootModifier;
 import uniquee.handler.potion.PestilencesOdiumPotion;
 
 @Mod("uniquee")
-public class UniqueEnchantments
+public class UniqueEnchantments extends BaseUEMod
 {
 	public static final EnchantmentType ALL_TYPES = EnchantmentType.create("ANY", T -> true);
-	static List<IToggleEnchantment> ENCHANTMENTS = ObjectLists.synchronize(new ObjectArrayList<IToggleEnchantment>());
 	public static Enchantment BERSERKER;
 	public static Enchantment ADV_SHARPNESS;
 	public static Enchantment ADV_SMITE;
@@ -168,34 +159,22 @@ public class UniqueEnchantments
 		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
 		
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		init(bus, "UniqueEnchantment.toml");
 		bus.register(this);
-//		bus.addListener(this::onCommandLoad);
-		MinecraftForge.EVENT_BUS.register(new EntityEvents());
+		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(this);
-		bus.addGenericListener(Enchantment.class, this::loadEnchantments);
 		bus.addGenericListener(Effect.class, this::loadPotion);
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-		builder.push("general");
-		for(int i = 0,m=ENCHANTMENTS.size();i<m;i++)
-		{
-			ENCHANTMENTS.get(i).loadFromConfig(builder);
-		}
-		builder.pop();
-		CONFIG = builder.build();
-		ModLoadingContext.get().registerConfig(Type.COMMON, CONFIG, "UniqueEnchantments.toml");
-	}
-	
-    @SubscribeEvent
-    public void onLoad(ModConfig.Loading configEvent) 
-    {
-    	reloadConfig();
-    }
+		bus.addGenericListener(GlobalLootModifierSerializer.class, this::loadLoot);
 
-    @SubscribeEvent
-    public void onFileChange(Reloading configEvent) 
-    {
-    	reloadConfig();
-    }
+		EntityEvents.INSTANCE.registerStorageTooltip(MIDAS_BLESSING, "tooltip.uniqee.stored.gold.name", MidasBlessingEnchantment.GOLD_COUNTER);
+		EntityEvents.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniqee.stored.lava.name", IfritsGraceEnchantment.LAVA_COUNT);
+		EntityEvents.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniqee.stored.feather.name", IcarusAegisEnchantment.FEATHER_TAG);
+		EntityEvents.INSTANCE.registerStorageTooltip(ENDER_MENDING, "tooltip.uniqee.stored.repair.name", EnderMendingEnchantment.ENDER_TAG);
+		
+		EntityEvents.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessingEnchantment.VALIDATOR, MidasBlessingEnchantment.GOLD_COUNTER);
+		EntityEvents.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGraceEnchantment.VALIDATOR, IfritsGraceEnchantment.LAVA_COUNT);
+		EntityEvents.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, IcarusAegisEnchantment.VALIDATOR, IcarusAegisEnchantment.FEATHER_TAG);
+	}
     
     @SubscribeEvent
 	public void postInit(FMLCommonSetupEvent setup) 
@@ -220,15 +199,6 @@ public class UniqueEnchantments
 			}
 		}
 	}
-    
-	public void onCommandLoad(RegisterCommandsEvent event) {
-    	event.getDispatcher().register(Commands.literal("uniquee").executes((T) -> {
-			reloadConfig();
-			T.getSource().sendFeedback(new StringTextComponent("Updated Config Data"), true);
-			return 0;
-		}));
-    	
-    }
     
 	@SubscribeEvent
     @OnlyIn(Dist.CLIENT)
@@ -257,41 +227,13 @@ public class UniqueEnchantments
     	renderer.addLayer(new EnchantmentLayer<>(renderer));
     }
     
-    void reloadConfig()
+    public void loadLoot(RegistryEvent.Register<GlobalLootModifierSerializer<?>> event)
     {
-    	for(int i = 0,m=ENCHANTMENTS.size();i<m;i++)
-    	{
-    		ENCHANTMENTS.get(i).onConfigChanged();
-    	}
+    	event.getRegistry().register(LootModifier.Serializer.INSTANCE);
     }
     
     public void loadPotion(RegistryEvent.Register<Effect> event)
     {
     	event.getRegistry().register(PESTILENCES_ODIUM_POTION);
     }
-    
-	public void loadEnchantments(RegistryEvent.Register<Enchantment> event)
-	{
-		event.getRegistry().registerAll(ENCHANTMENTS.toArray(new Enchantment[ENCHANTMENTS.size()]));
-	}
-	
-	public static Enchantment register(Enchantment ench)
-	{
-		if(ench instanceof IToggleEnchantment)
-		{
-			ENCHANTMENTS.add((IToggleEnchantment)ench);
-		}
-		return ench;
-	}
-	
-	public static void registerEnchantments(Enchantment...enchantments)
-	{
-		for(Enchantment enchantment : enchantments)
-		{
-			if(enchantment instanceof IToggleEnchantment)
-			{
-				ENCHANTMENTS.add((IToggleEnchantment)enchantment);
-			}
-		}
-	}
 }

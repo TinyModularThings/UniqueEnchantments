@@ -23,6 +23,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
@@ -66,6 +67,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap.Type;
@@ -124,8 +126,6 @@ import uniquee.enchantments.unique.EcologicalEnchantment;
 import uniquee.enchantments.unique.EnderMarksmenEnchantment;
 import uniquee.enchantments.unique.FastFoodEnchantment;
 import uniquee.enchantments.unique.IcarusAegisEnchantment;
-import uniquee.enchantments.unique.IfritsGraceEnchantment;
-import uniquee.enchantments.unique.MidasBlessingEnchantment;
 import uniquee.enchantments.unique.NaturesGraceEnchantment;
 import uniquee.enchantments.unique.WarriorsGraceEnchantment;
 import uniquee.handler.ai.SpecialFindPlayerAI;
@@ -157,21 +157,14 @@ public class EntityEvents
 	{
 		ItemStack stack = event.getItemStack();
 		Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
-		if(enchantments.getInt(UniqueEnchantments.MIDAS_BLESSING) > 0)
+		for(int i = 0,m=tooltips.size();i<m;i++)
 		{
-			event.getToolTip().add(new TranslationTextComponent("tooltip.uniqee.stored.gold.name", getInt(stack, MidasBlessingEnchantment.GOLD_COUNTER, 0)));
-		}
-		if(enchantments.getInt(UniqueEnchantments.IFRIDS_GRACE) > 0)
-		{
-			event.getToolTip().add(new TranslationTextComponent("tooltip.uniqee.stored.lava.name", getInt(stack, IfritsGraceEnchantment.LAVA_COUNT, 0)));
-		}
-		if(enchantments.getInt(UniqueEnchantments.ICARUS_AEGIS) > 0)
-		{
-			event.getToolTip().add(new TranslationTextComponent("tooltip.uniqee.stored.feather.name", getInt(stack, IcarusAegisEnchantment.FEATHER_TAG, 0)));
-		}
-		if(enchantments.getInt(UniqueEnchantments.ENDER_MENDING) > 0)
-		{
-			event.getToolTip().add(new TranslationTextComponent("tooltip.uniqee.stored.repair.name", getInt(stack, EnderMendingEnchantment.ENDER_TAG, 0)));
+			Tuple<Enchantment, String[]> entry = tooltips.get(i);
+			if(enchantments.getInt(entry.getA()) > 0)
+			{
+				String[] names = entry.getB();
+				event.getToolTip().add(new TranslationTextComponent(names[0], getInt(stack, names[1], 0)).mergeStyle(TextFormatting.GOLD));
+			}
 		}
 	}
 	
@@ -281,13 +274,40 @@ public class EntityEvents
 					{
 						player.addExhaustion(0.06F);
 					}
-					
+				}
+				if(isMining(player))
+				{
+					int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ALCHEMISTS_GRACE, player.getHeldItemMainhand());
+					if(level > 0)
+					{
+						AlchemistsGraceEnchantment.applyToEntity(player);
+					}
 				}
 				Object2IntMap.Entry<EquipmentSlotType> level = MiscUtil.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, player);
 				if(level.getIntValue() > 0)
 				{
 					player.addExhaustion(0.01F * level.getIntValue());
 				}
+			}
+			CompoundNBT data = event.player.getPersistentData();
+			if(data.contains(DeathsOdiumEnchantment.CURSE_DAMAGE) && data.getLong(DeathsOdiumEnchantment.CRUSE_TIMER) < event.player.world.getGameTime())
+			{
+				float total = data.getFloat(DeathsOdiumEnchantment.CURSE_DAMAGE);
+				if(total > 0F)
+				{
+					ModifiableAttributeInstance instance = event.player.getAttribute(Attributes.MAX_HEALTH);
+					AttributeModifier mod = instance.getModifier(DeathsOdiumEnchantment.REMOVE_UUID);
+					if(mod != null)
+					{
+						float newValue = (float)Math.max(0F, mod.getAmount() - total);
+						instance.removeModifier(mod);
+						if(newValue > 0)
+						{
+							instance.applyPersistentModifier(new AttributeModifier(DeathsOdiumEnchantment.REMOVE_UUID, "odiums_curse", newValue, Operation.ADDITION));
+						}
+					}
+				}	
+				data.remove(DeathsOdiumEnchantment.CURSE_DAMAGE);
 			}
 		}
 		ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
@@ -297,7 +317,7 @@ public class EntityEvents
 			CompoundNBT nbt = player.getPersistentData();
 			if(player.isSneaking() && !nbt.getBoolean(CloudwalkerEnchantment.TRIGGER) && (!player.isOnGround() || nbt.getBoolean(CloudwalkerEnchantment.ENABLED)))
 			{
-				nbt.putBoolean(CloudwalkerEnchantment.ENABLED, nbt.getBoolean(CloudwalkerEnchantment.ENABLED));
+				nbt.putBoolean(CloudwalkerEnchantment.ENABLED, !nbt.getBoolean(CloudwalkerEnchantment.ENABLED));
 				nbt.putBoolean(CloudwalkerEnchantment.TRIGGER, true);
 			}
 			else if(!player.isSneaking())
@@ -457,11 +477,11 @@ public class EntityEvents
 			CompoundNBT nbt = player.getPersistentData();
 			long worldTime = player.world.getGameTime();
 			long time = nbt.getLong(MomentumEnchantment.LAST_MINE);
-			int count = nbt.getInt(MomentumEnchantment.COUNT);
+			int count = getInt(held, MomentumEnchantment.COUNT, 0);
 			if(worldTime - time > MomentumEnchantment.MAX_DELAY.get() || worldTime < time)
 			{
 				count = 0;
-				nbt.putInt(MomentumEnchantment.COUNT, 0);
+				setInt(held, MomentumEnchantment.COUNT, 0);
 			}
 			event.setNewSpeed(event.getNewSpeed() + (event.getNewSpeed() * (level * (count / MomentumEnchantment.SCALAR.getFloat()) / event.getOriginalSpeed())));
 			nbt.putLong(MomentumEnchantment.LAST_MINE, worldTime);
@@ -530,71 +550,15 @@ public class EntityEvents
 		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.MOMENTUM, held);
 		if(level > 0)
 		{
-			int max = MomentumEnchantment.CAP.get() + level;
-			CompoundNBT nbt = event.getPlayer().getPersistentData();
-			nbt.putInt(MomentumEnchantment.COUNT, Math.min(max, nbt.getInt(MomentumEnchantment.COUNT) + 1));
+			int count = getInt(held, MomentumEnchantment.COUNT, 0);
+			int old = count;
+			count = Math.min(MomentumEnchantment.CAP.get() + level, count+1);
+			if(count != old)
+			{
+				setInt(held, MomentumEnchantment.COUNT, count);
+			}
 		}
 	}
-	
-	//Forge Event Not Implemented Only Available since 1.16.x
-//	@SubscribeEvent
-//	public void onBlockLoot(HarvestDropsEvent event)
-//	{
-//		if(event.getHarvester() == null)
-//		{
-//			return;
-//		}
-//		ItemStack stack = event.getHarvester().getHeldItemMainhand();
-//		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.MIDAS_BLESSING, stack);
-//		if(level > 0)
-//		{
-//			int gold = getInt(stack, MidasBlessingEnchantment.GOLD_COUNTER, 0);
-//			if(gold > 0 && MidasBlessingEnchantment.IS_GEM.test(event.getState()))
-//			{
-//				gold -= (int)(Math.ceil((double)MidasBlessingEnchantment.LEVEL_SCALAR.get() / level) + MidasBlessingEnchantment.BASE_COST.get());
-//				setInt(stack, MidasBlessingEnchantment.GOLD_COUNTER, Math.max(0, gold));
-//				int multiplier = 1 + level;
-//				List<ItemStack> newDrops = new ObjectArrayList<ItemStack>();
-//				for(ItemStack drop : event.getDrops())
-//				{
-//					growStack(drop, drop.getCount() * multiplier, newDrops);
-//				}
-//				event.getDrops().clear();
-//				event.getDrops().addAll(newDrops);
-//			}
-//		}
-//		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.IFRIDS_GRACE, stack);
-//		if(level > 0)
-//		{
-//			int stored = getInt(stack, IfritsGraceEnchantment.LAVA_COUNT, 0);
-//			if(stored > 0)
-//			{
-//				boolean ore = isOre(event.getState());
-//				int smelted = 0;
-//				List<ItemStack> stacks = event.getDrops();
-//				for(int i = 0,m=stacks.size();i<m;i++)
-//				{
-//					ItemStack toBurn = stacks.get(i).copy();
-//					toBurn.setCount(1);
-//					//TODO Implement fix for this.
-//					ItemStack burned = ItemStack.EMPTY;
-//					ItemStack burned = FurnaceRecipes.instance().getSmeltingResult(toBurn).copy();
-//					if(burned.isEmpty())
-//					{
-//						continue;
-//					}
-//					burned.setCount(burned.getCount() * stacks.get(i).getCount());
-//					stacks.set(i, burned);
-//					smelted++;
-//				}
-//				if(smelted > 0)
-//				{
-//					stored -= MathHelper.ceil(smelted * (ore ? 5 : 1) * IfritsGraceEnchantment.SCALAR.get() / level);
-//					setInt(stack, IfritsGraceEnchantment.LAVA_COUNT, Math.max(0, stored));
-//				}
-//			}
-//		}
-//	}
 	
 	@SuppressWarnings("unchecked")
 	@SubscribeEvent
@@ -662,37 +626,18 @@ public class EntityEvents
 			{
 				ItemStack stack = event.getItemStack();
 				Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
-				if(enchantments.getInt(UniqueEnchantments.MIDAS_BLESSING) > 0)
+				for(int i = 0,m=anvilHelpers.size();i<m;i++)
 				{
-					int found = consumeItems(event.getPlayer(), MidasBlessingEnchantment.VALIDATOR, Integer.MAX_VALUE);
-					if(found > 0)
+					Triple<Enchantment, ToIntFunction<ItemStack>, String> entry = anvilHelpers.get(i);
+					if(enchantments.getInt(entry.getKey()) > 0)
 					{
-						setInt(stack, MidasBlessingEnchantment.GOLD_COUNTER, getInt(stack, MidasBlessingEnchantment.GOLD_COUNTER, 0) + found);
-						event.setCancellationResult(ActionResultType.SUCCESS);
-						event.setCanceled(true);
-						return;
-					}
-				}
-				if(enchantments.getInt(UniqueEnchantments.IFRIDS_GRACE) > 0)
-				{
-					int found = consumeItems(event.getPlayer(), IfritsGraceEnchantment.VALIDATOR, Integer.MAX_VALUE);
-					if(found > 0)
-					{
-						setInt(stack, IfritsGraceEnchantment.LAVA_COUNT, getInt(stack, IfritsGraceEnchantment.LAVA_COUNT, 0) + found);
-						event.setCancellationResult(ActionResultType.SUCCESS);
-						event.setCanceled(true);
-						return;
-					}
-				}
-				if(enchantments.getInt(UniqueEnchantments.ICARUS_AEGIS) > 0)
-				{
-					int found = consumeItems(event.getPlayer(), IcarusAegisEnchantment.VALIDATOR, Integer.MAX_VALUE);
-					if(found > 0)
-					{
-						setInt(stack, IcarusAegisEnchantment.FEATHER_TAG, getInt(stack, IcarusAegisEnchantment.FEATHER_TAG, 0) + found);
-						event.setCancellationResult(ActionResultType.SUCCESS);
-						event.setCanceled(true);
-						return;
+						int found = consumeItems(event.getPlayer(), entry.getValue(), Integer.MAX_VALUE);
+						if(found > 0)
+						{
+							setInt(stack, entry.getExtra(), found + getInt(stack, entry.getExtra(), 0));
+							event.setCancellationResult(ActionResultType.SUCCESS);
+							event.setCanceled(true);
+						}
 					}
 				}
 			}
@@ -869,11 +814,20 @@ public class EntityEvents
 				{
 					((PlayerEntity)living).getFoodStats().addStats(Short.MAX_VALUE, 1F);
 				}
+				living.getPersistentData().putLong(DeathsOdiumEnchantment.CRUSE_TIMER, living.getEntityWorld().getGameTime() + DeathsOdiumEnchantment.DELAY.get());
                 living.addPotionEffect(new EffectInstance(Effects.REGENERATION, 600, 1));
                 living.addPotionEffect(new EffectInstance(Effects.ABSORPTION, 100, 1));
                 living.world.setEntityState(living, (byte)35);
                 event.getEntityLiving().getItemStackFromSlot(slot.getKey()).shrink(1);
 				event.setCanceled(true);
+			}
+		}
+		if(entity instanceof MobEntity)
+		{
+			CompoundNBT compound = entity.getPersistentData();
+			if(compound.getLong(DeathsOdiumEnchantment.CRUSE_TIMER) >= entity.world.getGameTime())
+			{
+				compound.putFloat(DeathsOdiumEnchantment.CURSE_DAMAGE, compound.getFloat(DeathsOdiumEnchantment.CURSE_DAMAGE)+event.getAmount());
 			}
 		}
 	}
@@ -883,7 +837,7 @@ public class EntityEvents
 	{
 		ItemStack stack = event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.CHEST);
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ICARUS_AEGIS, stack);
-		if(level > 0 && stack.getTag().getBoolean(IcarusAegisEnchantment.FLYING_TAG))
+		if(level > 0 && stack.getTag().getBoolean(IcarusAegisEnchantment.FLYING_TAG) && event.getDistance() > 3F)
 		{
 			int feathers = getInt(stack, IcarusAegisEnchantment.FEATHER_TAG, 0);
 			int consume = (int)Math.max(Math.ceil((double)IcarusAegisEnchantment.SCALAR.get() / level), 4);
@@ -1050,7 +1004,7 @@ public class EntityEvents
 		mods = createModifiersFromStack(event.getTo(), event.getSlot());
 		if(!mods.isEmpty())
 		{
-			attribute.removeModifiers(mods);
+			attribute.reapplyModifiers(mods);
 		}
 	}
 	

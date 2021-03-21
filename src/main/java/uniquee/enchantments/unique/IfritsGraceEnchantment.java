@@ -42,20 +42,6 @@ public class IfritsGraceEnchantment extends UniqueEnchantment implements IGraceE
 	}
 	
 	@Override
-	public boolean isAllowedOnBooks()
-	{
-		//Disabled do to forge bugs
-		return false;
-	}
-	
-	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
-	{
-		//Disabled do to forge bugs
-		return false;
-	}
-	
-	@Override
 	protected boolean canApplyTogether(Enchantment ench)
 	{
 		return ench instanceof LootBonusEnchantment || ench instanceof SilkTouchEnchantment || ench instanceof MidasBlessingEnchantment ? false : super.canApplyTogether(ench);

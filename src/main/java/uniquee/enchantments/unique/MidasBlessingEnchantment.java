@@ -48,20 +48,6 @@ public class MidasBlessingEnchantment extends UniqueEnchantment implements IBles
 	}
 	
 	@Override
-	public boolean isAllowedOnBooks()
-	{
-		//Disabled do to forge bugs
-		return false;
-	}
-	
-	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
-	{
-		//Disabled do to forge bugs
-		return false;
-	}
-	
-	@Override
 	protected boolean canNotApplyToItems(ItemStack stack)
 	{
 		return !(stack.getItem() instanceof PickaxeItem);

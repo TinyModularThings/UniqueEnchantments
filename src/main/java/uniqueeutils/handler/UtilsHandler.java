@@ -157,19 +157,9 @@ public class UtilsHandler
                 {
                     event.getWorld().addEntity(new FireworkRocketEntity(event.getWorld(), stack, event.getPlayer()));
                 }
-                else
-                {
-                	PlayerEntity player = event.getPlayer();
-                	event.getPlayer().setPositionAndUpdate(player.getPosX(), player.getPosY() + 0.5D, player.getPosZ());
-                }   
-                try
-				{
-                	MiscUtil.findMethod(Entity.class, new String[]{"setFlag", "func_70052_a"}, int.class, boolean.class).invoke(event.getPlayer(), 7, true);
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
-				}	
+            	PlayerEntity player = event.getPlayer();
+            	event.getPlayer().setPositionAndUpdate(player.getPosX(), player.getPosY() + 0.5D, player.getPosZ());
+                event.getPlayer().startFallFlying();
 			}
 		}
 	}

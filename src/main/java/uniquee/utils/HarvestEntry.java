@@ -41,7 +41,7 @@ public class HarvestEntry
 	
 	public ActionResultType harvest(World world, PlayerEntity player)
 	{
-		if(world.getDimensionKey().getLocation().equals(dim))
+		if(!world.getDimensionKey().getLocation().equals(dim))
 		{
 			return ActionResultType.PASS;
 		}

@@ -6,6 +6,9 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Food;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.ForgeConfigSpec;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
@@ -20,8 +23,14 @@ public class FaminesOdiumEnchantment extends UniqueEnchantment
 	
 	public FaminesOdiumEnchantment()
 	{
-		super(new DefaultData("famines_odium", Rarity.UNCOMMON, 1, true, 10, 4, 40), UniqueEnchantments.ALL_TYPES, EquipmentSlotType.values());
+		super(new DefaultData("famines_odium", Rarity.UNCOMMON, 1, false, 10, 4, 40), UniqueEnchantments.ALL_TYPES, EquipmentSlotType.values());
 		setCategory("utils");
+	}
+	
+	@Override
+	public ITextComponent getDisplayName(int level)
+	{
+		return ((IFormattableTextComponent)super.getDisplayName(level)).mergeStyle(TextFormatting.RED);
 	}
 	
 	@Override
@@ -36,6 +45,7 @@ public class FaminesOdiumEnchantment extends UniqueEnchantment
 		DELAY.handleConfig(config);
 		NURISHMENT.handleConfig(config);
 		DAMAGE.handleConfig(config);
+		System.out.println("Testing");
 	}
 	
 	public static Int2FloatMap.Entry consumeRandomItem(IInventory inventory, float effect)
