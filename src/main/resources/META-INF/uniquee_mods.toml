@@ -1,0 +1,11 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+[[mods]]
+	modId="uniquee"
+	version="1.9.0"
+	displayName="Unique Enchantments"
+	credits="Thanks Xaikii for the Mod Design, Thanks to Speiger for the Code"
+	authors="Speiger, Xaikii"
+	description='''
+	A Set of Unique Enchantments
+	'''

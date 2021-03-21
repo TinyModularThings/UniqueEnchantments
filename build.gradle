@@ -57,17 +57,23 @@ jar {
         ])
     }
     version = uniquee_version
-    exclude "uniqueeutils", "assets/uniqueeutil"
+    exclude "uniqueeutils", "assets/uniqueeutil", "META-INF/unique_utils_mods.toml", "META-INF/mods.toml"
+    rename 'uniquee_mods.toml', 'mods.toml'
+    includeEmptyDirs = false
 }
 
 task utilsJar(type: Jar) {
     baseName = 'Unique Enchantments Utils'
     version = unique_utils_version
+    includeEmptyDirs = false
     from(sourceSets.main.output) {
-        exclude 'uniquee', 'assets/uniquee'
+        exclude 'uniquee', 'assets/uniquee', 'META-INF'
+    }
+    from(sourceSets.main.resources.srcDirs) {
+    	include 'META-INF/unique_utils_mods.toml'
+    	rename 'unique_utils_mods.toml', 'mods.toml'
     }
 }
-
 
 reobf {
     utilsJar {

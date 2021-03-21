@@ -161,7 +161,7 @@ public class UtilsHandler
                 {
                 	PlayerEntity player = event.getPlayer();
                 	event.getPlayer().setPositionAndUpdate(player.posX, player.posY + 0.5D, player.posZ);
-                }   
+                }
                 try
 				{
                 	MiscUtil.findMethod(Entity.class, new String[]{"setFlag", "func_70052_a"}, int.class, boolean.class).invoke(event.getPlayer(), 7, true);

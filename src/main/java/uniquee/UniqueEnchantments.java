@@ -11,13 +11,11 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.command.Commands;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.AbstractSkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.potion.Effect;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -26,14 +24,11 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import uniquee.api.BaseUEMod;
 import uniquee.api.crops.CropHarvestRegistry;
 import uniquee.client.EnchantmentLayer;
 import uniquee.enchantments.IToggleEnchantment;
@@ -74,7 +69,7 @@ import uniquee.handler.EntityEvents;
 import uniquee.handler.potion.PestilencesOdiumPotion;
 
 @Mod("uniquee")
-public class UniqueEnchantments
+public class UniqueEnchantments extends BaseUEMod
 {
 	static List<IToggleEnchantment> ENCHANTMENTS = ObjectLists.synchronize(new ObjectArrayList<IToggleEnchantment>());
 	public static Enchantment BERSERKER;
@@ -123,10 +118,6 @@ public class UniqueEnchantments
 	public static Effect PESTILENCES_ODIUM_POTION;
 	public static ForgeConfigSpec CONFIG;
 	
-	/**
-	 * TODO Add information about Tags into Documentation!
-	 */
-	
 	public UniqueEnchantments()
 	{
 		BERSERKER = register(new BerserkEnchantment());
@@ -171,33 +162,22 @@ public class UniqueEnchantments
 		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
 		
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		init(bus, "UniqueEnchantment.toml");
 		bus.register(this);
-		MinecraftForge.EVENT_BUS.register(new EntityEvents());
+		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(this);
-		bus.addGenericListener(Enchantment.class, this::loadEnchantments);
 		bus.addGenericListener(Effect.class, this::loadPotion);
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-		builder.push("general");
-		for(int i = 0,m=ENCHANTMENTS.size();i<m;i++)
-		{
-			ENCHANTMENTS.get(i).loadFromConfig(builder);
-		}
-		builder.pop();
-		CONFIG = builder.build();
-		ModLoadingContext.get().registerConfig(Type.COMMON, CONFIG, "UniqueEnchantments.toml");
-	}
-	
-    @SubscribeEvent
-    public void onLoad(ModConfig.Loading configEvent) 
-    {
-    	reloadConfig();
-    }
 
-    @SubscribeEvent
-    public void onFileChange(ModConfig.ConfigReloading configEvent) 
-    {
-    	reloadConfig();
-    }
+		EntityEvents.INSTANCE.registerStorageTooltip(MIDAS_BLESSING, "tooltip.uniqee.stored.gold.name", MidasBlessingEnchantment.GOLD_COUNTER);
+		EntityEvents.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniqee.stored.lava.name", IfritsGraceEnchantment.LAVA_COUNT);
+		EntityEvents.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniqee.stored.feather.name", IcarusAegisEnchantment.FEATHER_TAG);
+		EntityEvents.INSTANCE.registerStorageTooltip(ENDER_MENDING, "tooltip.uniqee.stored.repair.name", EnderMendingEnchantment.ENDER_TAG);
+		
+		
+		EntityEvents.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessingEnchantment.VALIDATOR, MidasBlessingEnchantment.GOLD_COUNTER);
+		EntityEvents.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGraceEnchantment.VALIDATOR, IfritsGraceEnchantment.LAVA_COUNT);
+		EntityEvents.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, IcarusAegisEnchantment.VALIDATOR, IcarusAegisEnchantment.FEATHER_TAG);
+	}
     
     @SubscribeEvent
 	public void postInit(FMLCommonSetupEvent setup) 
@@ -223,16 +203,6 @@ public class UniqueEnchantments
 		}
 	}
     
-    @SubscribeEvent
-    public void onServer(FMLServerStartingEvent event)
-    {
-		event.getCommandDispatcher().register(Commands.literal("uniquee").executes((T) -> {
-			reloadConfig();
-			T.getSource().sendFeedback(new StringTextComponent("Updated Config Data"), true);
-			return 0;
-		}));
-    }
-    
     @SuppressWarnings({"rawtypes", "unchecked" })
 	@SubscribeEvent
     @OnlyIn(Dist.CLIENT)
@@ -252,41 +222,8 @@ public class UniqueEnchantments
 		}		
     }
     
-    void reloadConfig()
-    {
-    	for(int i = 0,m=ENCHANTMENTS.size();i<m;i++)
-    	{
-    		ENCHANTMENTS.get(i).onConfigChanged();
-    	}
-    }
-    
     public void loadPotion(RegistryEvent.Register<Effect> event)
     {
     	event.getRegistry().register(PESTILENCES_ODIUM_POTION);
     }
-    
-	public void loadEnchantments(RegistryEvent.Register<Enchantment> event)
-	{
-		event.getRegistry().registerAll(ENCHANTMENTS.toArray(new Enchantment[ENCHANTMENTS.size()]));
-	}
-	
-	public static Enchantment register(Enchantment ench)
-	{
-		if(ench instanceof IToggleEnchantment)
-		{
-			ENCHANTMENTS.add((IToggleEnchantment)ench);
-		}
-		return ench;
-	}
-	
-	public static void registerEnchantments(Enchantment...enchantments)
-	{
-		for(Enchantment enchantment : enchantments)
-		{
-			if(enchantment instanceof IToggleEnchantment)
-			{
-				ENCHANTMENTS.add((IToggleEnchantment)enchantment);
-			}
-		}
-	}
 }

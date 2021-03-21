@@ -20,7 +20,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	protected UniqueEnchantment(DefaultData data, EnchantmentType typeIn, EquipmentSlotType[] slots)
 	{
 		super(data.getRarity(), typeIn, slots);
-		setRegistryName("uniquee", data.getName());
+		setRegistryName(data.getName());
 		configName = data.getName();
 		values = data;
 	}
@@ -99,7 +99,6 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	{
 		int split = getConfigName().split(".").length+2;
 		config.push(getConfigName());
-		config.translation(getName());
 		enabled = config.define("enabled", true);
 		values.loadConfig(config);
 		loadData(config);
@@ -136,6 +135,8 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		{
 			this.name = name;
 			this.rare = rare;
+			this.minLevel = minLevel;
+			this.maxLevel = maxLevel;
 			this.isTreasure = isTreasure;
 			this.baseCost = baseCost;
 			this.levelCost = levelCost;

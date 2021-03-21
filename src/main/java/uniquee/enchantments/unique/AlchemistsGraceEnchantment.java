@@ -11,9 +11,8 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolItem;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ResourceLocation;
@@ -38,7 +37,7 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof AxeItem || stack.getItem() instanceof HoeItem || EnchantmentType.BOW.canEnchantItem(stack.getItem());
+		return stack.getItem() instanceof ToolItem || EnchantmentType.BOW.canEnchantItem(stack.getItem());
 	}
 		
 	@Override
@@ -79,8 +78,8 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 	@Override
 	public void loadData(Builder config)
 	{
-		config.comment("Which Potion Effects should be applied. Format: MinimumEnchantLevel;Potion;PotionLevel;BaseDuration");
-		EFFECT_CONFIG = config.defineList("effects", ObjectArrayList.wrap(new String[]{"1;minecraft:speed;1;4", "2;minecraft:haste;1;6", "2;minecraft:speed;2;6", "3;minecraft:resistance;1;8", "3;minecraft:haste;2;8", "4;minecraft:strength;2;10", "4;minecraft:resistance;2;10"}), (T) -> true);
+		config.comment("Which Potion Effects should be applied. Format: Potion;StartEnchantmentLvL;StartPotionLvL;PotionLvLPerEnchantLvL;BaseDuration");
+		EFFECT_CONFIG = config.defineList("effects", ObjectArrayList.wrap(new String[]{"minecraft:regeneration;1;0;0.25;10", "minecraft:speed;1;0;1.0;60", "minecraft:haste;2;0;1.0;40", "minecraft:speed;2;1;0.5;70", "minecraft:resistance;3;0;1.0;20", "minecraft:haste;3;1;0.5;60", "minecraft:strength;4;0;1.0;20", "minecraft:resistance;4;1;0.25;25", "minecraft:strength;5;1;0.2;30"}), (T) -> true);
 	}
 	
 	@Override
@@ -113,7 +112,7 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 		Effect potion;
 		int baseEnchantment;
 		int basePotionLevel;
-		int PotionLevelIncrease;
+		double PotionLevelIncrease;
 		int baseDuration;
 		
 		public PotionPlan(Effect potion, String[] data)
@@ -121,14 +120,14 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 			this.potion = potion;
 			baseEnchantment = Integer.parseInt(data[1]);
 			basePotionLevel = Integer.parseInt(data[2]);
-			PotionLevelIncrease = Integer.parseInt(data[3]);
+			PotionLevelIncrease = Double.parseDouble(data[3]);
 			baseDuration = Integer.parseInt(data[4]);
 		}
 		
 		public EffectInstance createEffect(int baseLevel)
 		{
 			int diff = Math.max(0, baseLevel - baseEnchantment);
-			return new EffectInstance(potion, baseDuration * baseLevel, basePotionLevel + (PotionLevelIncrease * diff));
+			return new EffectInstance(potion, baseDuration * baseLevel, basePotionLevel + (int)(PotionLevelIncrease * diff));
 		}
 	}
 }
