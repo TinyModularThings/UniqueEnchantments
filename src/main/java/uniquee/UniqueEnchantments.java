@@ -14,12 +14,8 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
@@ -240,11 +236,10 @@ public class UniqueEnchantments
 	
 	public static class ReloadCommand extends CommandBase
 	{
-
 		@Override
 		public String getName()
 		{
-			return "unique_enchantments";
+			return "uniquee";
 		}
 
 		@Override
@@ -256,45 +251,9 @@ public class UniqueEnchantments
 		@Override
 		public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
 		{
-			if(args.length <= 0)
-			{
-				sender.sendMessage(new TextComponentString("Sub Commands: reload, deleteCurse"));
-				return;
-			}
-			if(args[0].equalsIgnoreCase("reload"))
-			{
-				sender.sendMessage(new TextComponentString("Reloading Config"));
-				loadConfig();
-				sender.sendMessage(new TextComponentString("Reloaded Config"));
-				return;
-			}
-			else if(args[0].equalsIgnoreCase("deleteCurse"))
-			{
-				EntityPlayer player = sender instanceof EntityPlayer ? (EntityPlayer)sender : null;
-				if(args.length > 1)
-				{
-					player = getPlayer(FMLCommonHandler.instance().getMinecraftServerInstance(), sender, args[1]);
-				}
-				if(player == null)
-				{
-					sender.sendMessage(new TextComponentString("No Player found"));
-					return;
-				}
-				player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH).removeModifier(EnchantmentDeathsOdium.REMOVE_UUID);
-				for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
-				{
-					ItemStack stack = player.getItemStackFromSlot(slot);
-					if(!stack.isEmpty() && stack.getTagCompound() != null)
-					{
-						stack.getTagCompound().removeTag(EnchantmentDeathsOdium.CURSE_STORAGE);
-						if(stack.getTagCompound().hasNoTags())
-						{
-							stack.setTagCompound(null);
-						}
-					}
-				}
-				sender.sendMessage(new TextComponentString("Deleted Curse from ["+player.getName()+"]"));
-			}
+			sender.sendMessage(new TextComponentString("Reloading Config"));
+			loadConfig();
+			sender.sendMessage(new TextComponentString("Reloaded Config"));
 		}
 		
 	}

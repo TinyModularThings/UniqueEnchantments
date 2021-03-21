@@ -20,6 +20,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -269,11 +270,39 @@ public class EntityEvents
 						player.addExhaustion(0.06F);
 					}
 				}
+				if(isMining(player))
+				{
+					int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ALCHEMISTS_GRACE, player.getHeldItemMainhand());
+					if(level > 0)
+					{
+						EnchantmentAlchemistsGrace.applyToEntity(player);
+					}
+				}
 				Object2IntMap.Entry<EntityEquipmentSlot> level = MiscUtil.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, player);
 				if(level.getIntValue() > 0)
 				{
 					player.addExhaustion(0.01F * level.getIntValue());
 				}
+			}
+			NBTTagCompound data = event.player.getEntityData();
+			if(data.hasKey(EnchantmentDeathsOdium.CURSE_DAMAGE) && data.getLong(EnchantmentDeathsOdium.CRUSE_TIMER) < event.player.world.getTotalWorldTime())
+			{
+				float total = data.getFloat(EnchantmentDeathsOdium.CURSE_DAMAGE);
+				if(total > 0F)
+				{
+					IAttributeInstance instance = event.player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH);
+					AttributeModifier mod = instance.getModifier(EnchantmentDeathsOdium.REMOVE_UUID);
+					if(mod != null)
+					{
+						float newValue = (float)Math.max(0F, mod.getAmount() - total);
+						instance.removeModifier(mod);
+						if(newValue > 0)
+						{
+							instance.applyModifier(new AttributeModifier(EnchantmentDeathsOdium.REMOVE_UUID, "odiums_curse", newValue, 0));
+						}
+					}
+				}
+				data.removeTag(EnchantmentDeathsOdium.CURSE_DAMAGE);
 			}
 		}
 		ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
@@ -283,7 +312,7 @@ public class EntityEvents
 			NBTTagCompound nbt = player.getEntityData();
 			if(player.isSneaking() && !nbt.getBoolean(EnchantmentCloudwalker.TRIGGER) && (!player.onGround || nbt.getBoolean(EnchantmentCloudwalker.ENABLED)))
 			{
-				nbt.setBoolean(EnchantmentCloudwalker.ENABLED, nbt.getBoolean(EnchantmentCloudwalker.ENABLED));
+				nbt.setBoolean(EnchantmentCloudwalker.ENABLED, !nbt.getBoolean(EnchantmentCloudwalker.ENABLED));
 				nbt.setBoolean(EnchantmentCloudwalker.TRIGGER, true);
 			}
 			else if(!player.isSneaking())
@@ -314,11 +343,6 @@ public class EntityEvents
 			{
 				setInt(stack, EnchantmentCloudwalker.TIMER, EnchantmentCloudwalker.TICKS.get(level));
 			}
-		}
-		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.SWIFT, player.getItemStackFromSlot(EntityEquipmentSlot.LEGS));
-		if(level > 0 && player.isOnLadder() && player.moveForward != 0F && player.motionY > 0 && player.motionY <= 0.2 && !player.isSneaking())
-		{
-			player.motionY += EnchantmentSwift.SPEED_BONUS.getAsDouble(level) * 3D;
 		}
 		Boolean cache = null;
 		//Reflection is slower then direct call. But Twice the Iteration & Double IsEmpty Check is slower then Reflection.
@@ -822,11 +846,20 @@ public class EntityEvents
 				{
 					((EntityPlayer)living).getFoodStats().addStats(Short.MAX_VALUE, 1F);
 				}
+				living.getEntityData().setLong(EnchantmentDeathsOdium.CRUSE_TIMER, living.getEntityWorld().getTotalWorldTime() + EnchantmentDeathsOdium.DELAY);
                 living.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 600, 2));
                 living.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 100, 1));
                 living.world.setEntityState(living, (byte)35);
                 event.getEntityLiving().getItemStackFromSlot(slot.getKey()).shrink(1);
 				event.setCanceled(true);
+			}
+		}
+		if(entity instanceof EntityLiving)
+		{
+			NBTTagCompound compound = entity.getEntityData();
+			if(compound.getLong(EnchantmentDeathsOdium.CRUSE_TIMER) >= entity.world.getTotalWorldTime())
+			{
+				compound.setFloat(EnchantmentDeathsOdium.CURSE_DAMAGE, compound.getFloat(EnchantmentDeathsOdium.CURSE_DAMAGE)+event.getAmount());
 			}
 		}
 	}
@@ -836,7 +869,7 @@ public class EntityEvents
 	{
 		ItemStack stack = event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.CHEST);
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ICARUS_AEGIS, stack);
-		if(level > 0 && stack.getTagCompound().getBoolean(EnchantmentIcarusAegis.FLYING_TAG))
+		if(level > 0 && stack.getTagCompound().getBoolean(EnchantmentIcarusAegis.FLYING_TAG) && event.getDistance() > 3F)
 		{
 			int feathers = getInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, 0);
 			int consume = (int)Math.max(Math.ceil((double)EnchantmentIcarusAegis.SCALAR / (double)level), 4D);
@@ -872,7 +905,7 @@ public class EntityEvents
 		if(ench.getIntValue() > 0)
 		{
 			ItemStack stack = event.getEntityLiving().getItemStackFromSlot(ench.getKey());
-			setInt(stack, EnchantmentDeathsOdium.CURSE_STORAGE, getInt(stack, EnchantmentDeathsOdium.CURSE_STORAGE, 0) + 1);
+			setInt(stack, EnchantmentDeathsOdium.CURSE_STORAGE, Math.min(getInt(stack, EnchantmentDeathsOdium.CURSE_STORAGE, 0) + 1, EnchantmentDeathsOdium.MAX_STORAGE));
 			IAttributeInstance instance = event.getEntityLiving().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH);
 			AttributeModifier mod = instance.getModifier(EnchantmentDeathsOdium.REMOVE_UUID);
 			float toRemove = 0F;

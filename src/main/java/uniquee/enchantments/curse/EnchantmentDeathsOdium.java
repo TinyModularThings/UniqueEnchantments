@@ -10,6 +10,8 @@ import uniquee.enchantments.UniqueEnchantment;
 public class EnchantmentDeathsOdium extends UniqueEnchantment
 {
 	public static final String CURSE_STORAGE = "curse_storage";
+	public static final String CRUSE_TIMER = "curse_regain_timer";
+	public static final String CURSE_DAMAGE = "curse_regain_damage";
 	public static final UUID REMOVE_UUID = UUID.fromString("1a74e7ff-3914-4e57-8f59-aed5c17c04a0");
 	public static final UUID GENERAL_MOD = UUID.fromString("f598685c-c107-4ba0-b537-2a9c03582186");
 	public static final UUID MAIN_HAND_MOD = UUID.fromString("fbd9ead3-fdd8-45c8-a029-644b9a5c72cf");
@@ -19,6 +21,8 @@ public class EnchantmentDeathsOdium extends UniqueEnchantment
 	public static final UUID LEGGINGS_MOD = UUID.fromString("7155868f-c452-482b-9c35-20d3082cf766");
 	public static final UUID FEET_MOD = UUID.fromString("6d64591f-abda-431f-87da-0622ba33b665");
 	
+	public static int DELAY = 200;
+	public static int MAX_STORAGE = 5;
 	
 	public EnchantmentDeathsOdium()
 	{
@@ -32,7 +36,11 @@ public class EnchantmentDeathsOdium extends UniqueEnchantment
 	}
 	
 	@Override
-	public void loadData(Configuration config) {}
+	public void loadData(Configuration config) 
+	{
+		DELAY = config.get(getConfigName(), "collector_time", 200).getInt();
+		MAX_STORAGE = config.get(getConfigName(), "curse_storage_cap", 5).getInt();
+	}
 	
 	public static UUID getForSlot(EntityEquipmentSlot slot)
 	{

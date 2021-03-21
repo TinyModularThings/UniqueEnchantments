@@ -12,6 +12,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import uniquee.UniqueEnchantments;
+import uniquee.enchantments.curse.EnchantmentDeathsOdium;
 import uniquee.enchantments.unique.EnchantmentAresBlessing;
 import uniquee.utils.MiscUtil;
 
@@ -45,6 +46,7 @@ public class FirstAidHandler
 				living.heal(living.getMaxHealth());
 				living.clearActivePotions();
 				living.getFoodStats().addStats(Short.MAX_VALUE, 1F);
+				living.getEntityData().setLong(EnchantmentDeathsOdium.CRUSE_TIMER, living.getEntityWorld().getTotalWorldTime() + EnchantmentDeathsOdium.DELAY);
 	            living.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 600, 2));
 	            living.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 100, 1));
 	            living.world.setEntityState(living, (byte)35);

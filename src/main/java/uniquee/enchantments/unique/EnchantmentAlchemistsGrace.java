@@ -11,9 +11,8 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemAxe;
-import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
@@ -35,7 +34,7 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemHoe || EnumEnchantmentType.BOW.canEnchantItem(stack.getItem());
+		return stack.getItem() instanceof ItemTool || EnumEnchantmentType.BOW.canEnchantItem(stack.getItem());
 	}
 		
 	@Override
@@ -73,7 +72,7 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 	public void loadData(Configuration config)
 	{
 		EFFECTS.clear();
-		String[] potions = config.getStringList("effects", getConfigName(), new String[]{"1;minecraft:speed;1;4", "2;minecraft:haste;1;6", "2;minecraft:speed;2;6", "3;minecraft:resistance;1;8", "3;minecraft:haste;2;8", "4;minecraft:strength;2;10", "4;minecraft:resistance;2;10"}, "Which Potion Effects should be applied. Format: Potion;MinimumEnchantLevel;PotionBaseLevel;PotionLevelIncrease;BaseDuration");
+		String[] potions = config.getStringList("effects", getConfigName(), new String[]{"minecraft:regeneration;1;0;0.25;10", "minecraft:speed;1;0;1.0;60", "minecraft:haste;2;0;1.0;40", "minecraft:speed;2;1;0.5;70", "minecraft:resistance;3;0;1.0;20", "minecraft:haste;3;1;0.5;60", "minecraft:strength;4;0;1.0;20", "minecraft:resistance;4;1;0.25;25", "minecraft:strength;5;1;0.2;30"}, "Which Potion Effects should be applied. Format: Potion;MinimumEnchantLevel;PotionBaseLevel;PotionLevelIncrease;BaseDuration");
 		for(String s : potions)
 		{
 			String[] split = s.split(";");
@@ -99,7 +98,7 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 		Potion potion;
 		int baseEnchantment;
 		int basePotionLevel;
-		int PotionLevelIncrease;
+		double PotionLevelIncrease;
 		int baseDuration;
 		
 		public PotionPlan(Potion potion, String[] data)
@@ -107,14 +106,14 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 			this.potion = potion;
 			baseEnchantment = Integer.parseInt(data[1]);
 			basePotionLevel = Integer.parseInt(data[2]);
-			PotionLevelIncrease = Integer.parseInt(data[3]);
+			PotionLevelIncrease = Double.parseDouble(data[3]);
 			baseDuration = Integer.parseInt(data[4]);
 		}
 		
 		public PotionEffect createEffect(int baseLevel)
 		{
 			int diff = Math.max(0, baseLevel - baseEnchantment);
-			return new PotionEffect(potion, baseDuration * baseLevel, basePotionLevel + (PotionLevelIncrease * diff));
+			return new PotionEffect(potion, baseDuration * baseLevel, basePotionLevel + (int)(PotionLevelIncrease * diff));
 		}
 	}
 }
