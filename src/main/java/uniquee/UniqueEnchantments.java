@@ -222,6 +222,7 @@ public class UniqueEnchantments extends BaseUEMod
     }
     
 	@SuppressWarnings("unchecked")
+	@OnlyIn(Dist.CLIENT)
     private <T extends LivingEntity> void addLayer(EntityType<T> entity, EntityRendererManager manager) {
 		LivingRenderer<T, EntityModel<T>> renderer = (LivingRenderer<T, EntityModel<T>>)manager.renderers.get(entity);
     	renderer.addLayer(new EnchantmentLayer<>(renderer));

@@ -292,14 +292,14 @@ public class EntityEvents
 			CompoundNBT data = event.player.getPersistentData();
 			if(data.contains(DeathsOdiumEnchantment.CURSE_DAMAGE) && data.getLong(DeathsOdiumEnchantment.CRUSE_TIMER) < event.player.world.getGameTime())
 			{
-				float total = data.getFloat(DeathsOdiumEnchantment.CURSE_DAMAGE);
-				if(total > 0F)
+				int total = MathHelper.floor(data.getFloat(DeathsOdiumEnchantment.CURSE_DAMAGE) / DeathsOdiumEnchantment.DAMAGE_FACTOR.get());
+				if(total > 0)
 				{
 					ModifiableAttributeInstance instance = event.player.getAttribute(Attributes.MAX_HEALTH);
 					AttributeModifier mod = instance.getModifier(DeathsOdiumEnchantment.REMOVE_UUID);
 					if(mod != null)
 					{
-						float newValue = (float)Math.max(0F, mod.getAmount() - total);
+						double newValue = Math.max(0D, mod.getAmount() - total);
 						instance.removeModifier(mod);
 						if(newValue > 0)
 						{
@@ -915,7 +915,7 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onLootingLevel(LootingLevelEvent event)
 	{
-		Entity entity = event.getDamageSource().getTrueSource();
+		Entity entity = event.getDamageSource() == null ? null : event.getDamageSource().getTrueSource();
 		if(entity instanceof LivingEntity && event.getEntityLiving() instanceof AbstractSkeletonEntity)
 		{
 			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.BONE_CRUSH, ((LivingEntity)entity).getHeldItemMainhand());
