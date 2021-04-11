@@ -915,7 +915,7 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onLootingLevel(LootingLevelEvent event)
 	{
-		Entity entity = event.getDamageSource().getTrueSource();
+		Entity entity = event.getDamageSource() == null ? null : event.getDamageSource().getTrueSource();
 		if(entity instanceof LivingEntity && event.getEntityLiving() instanceof AbstractSkeletonEntity)
 		{
 			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.BONE_CRUSH, ((LivingEntity)entity).getHeldItemMainhand());
