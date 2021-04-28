@@ -24,21 +24,19 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import uniquee.enchantments.IToggleEnchantment;
 
 @SuppressWarnings("deprecation")
 public class MiscUtil
 {
+	static final Object2IntMap.Entry<EntityEquipmentSlot> NO_ENCHANTMENT = new AbstractObject2IntMap.BasicEntry<>(null, 0);
+	
 	public static int getEnchantmentLevel(Enchantment ench, ItemStack stack)
 	{
-		if(stack.isEmpty())
-		{
-			return 0;
-		}
+		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return 0;
+		if(stack.isEmpty()) return 0;
 		NBTTagList list = stack.getEnchantmentTagList();
-		if(list.hasNoTags())
-		{
-			return 0;
-		}
+		if(list.hasNoTags()) return 0;
 		int id = Enchantment.getEnchantmentID(ench);
 		for(int i = 0, m = list.tagCount();i < m;i++)
 		{
@@ -55,11 +53,9 @@ public class MiscUtil
 	
 	public static int getCombinedEnchantmentLevel(Enchantment ench, EntityLivingBase base)
 	{
+		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return 0;
 		EntityEquipmentSlot[] slots = getEquipmentSlotsFor(ench);
-		if(slots.length <= 0)
-		{
-			return 0;
-		}
+		if(slots.length <= 0) return 0;
 		int totalLevel = 0;
 		for(int i = 0;i < slots.length;i++)
 		{
@@ -70,18 +66,12 @@ public class MiscUtil
 	
 	public static Object2IntMap<Enchantment> getEnchantments(ItemStack stack)
 	{
-		if(stack.isEmpty())
-		{
-			return Object2IntMaps.emptyMap();
-		}
+		if(stack.isEmpty()) return Object2IntMaps.emptyMap();
 		NBTTagList list = stack.getEnchantmentTagList();
 		// Micro Optimization. If the EnchantmentMap is empty then returning a
 		// EmptyMap is faster then creating a new map. More Performance in
 		// checks.
-		if(list.hasNoTags())
-		{
-			return Object2IntMaps.emptyMap();
-		}
+		if(list.hasNoTags()) return Object2IntMaps.emptyMap();
 		Object2IntMap<Enchantment> map = new Object2IntOpenHashMap<Enchantment>();
 		for(int i = 0, m = list.tagCount();i < m;i++)
 		{
@@ -89,6 +79,7 @@ public class MiscUtil
 			Enchantment enchantment = Enchantment.getEnchantmentByID(tag.getShort("id"));
 			if(enchantment != null)
 			{
+				if(enchantment instanceof IToggleEnchantment && !((IToggleEnchantment)enchantment).isEnabled()) continue;
 				// Only grabbing Level if it is needed. Not wasting CPU Time on
 				// grabbing useless data
 				map.put(enchantment, tag.getInteger("lvl"));
@@ -99,6 +90,7 @@ public class MiscUtil
 	
 	public static EntityEquipmentSlot[] getEquipmentSlotsFor(Enchantment ench)
 	{
+		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return new EntityEquipmentSlot[0];
 		try
 		{
 			return (EntityEquipmentSlot[])ReflectionHelper.getPrivateValue(Enchantment.class, ench, "applicableEquipmentTypes", "field_185263_a");
@@ -111,17 +103,16 @@ public class MiscUtil
 	
 	public static Set<EntityEquipmentSlot> getSlotsFor(Enchantment ench)
 	{
+		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return Collections.emptySet();
 		EntityEquipmentSlot[] slots = getEquipmentSlotsFor(ench);
 		return slots.length <= 0 ? Collections.emptySet() : new ObjectLinkedOpenHashSet<>(slots);
 	}
 	
 	public static Object2IntMap.Entry<EntityEquipmentSlot> getEnchantedItem(Enchantment enchantment, EntityLivingBase base)
 	{
+		if(enchantment instanceof IToggleEnchantment && !((IToggleEnchantment)enchantment).isEnabled()) return NO_ENCHANTMENT;
 		EntityEquipmentSlot[] slots = getEquipmentSlotsFor(enchantment);
-		if(slots.length <= 0)
-		{
-			return new AbstractObject2IntMap.BasicEntry<>(null, 0);
-		}
+		if(slots.length <= 0) return NO_ENCHANTMENT;
 		for(int i = 0;i < slots.length;i++)
 		{
 			int level = getEnchantmentLevel(enchantment, base.getItemStackFromSlot(slots[i]));
@@ -130,7 +121,7 @@ public class MiscUtil
 				return new AbstractObject2IntMap.BasicEntry<>(slots[i], level);
 			}
 		}
-		return new AbstractObject2IntMap.BasicEntry<>(null, 0);
+		return NO_ENCHANTMENT;
 	}
 	
 	public static boolean harvestBlock(BreakEvent event, IBlockState state, BlockPos pos)

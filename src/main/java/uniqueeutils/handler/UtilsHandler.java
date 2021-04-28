@@ -1,6 +1,11 @@
 package uniqueeutils.handler;
 
+import java.util.List;
+
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -16,10 +21,15 @@ import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -32,7 +42,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import uniquee.handler.EntityEvents;
 import uniquee.utils.MiscUtil;
 import uniqueeutils.UniqueEnchantmentsUtils;
+import uniqueeutils.enchantments.EnchantmentClimber;
 import uniqueeutils.enchantments.EnchantmentFaminesOdium;
+import uniqueeutils.enchantments.EnchantmentPhanesRegret;
 import uniqueeutils.enchantments.EnchantmentRocketMan;
 import uniqueeutils.enchantments.EnchantmentSleipnirsGrace;
 import uniqueeutils.enchantments.EnchantmentThickPick;
@@ -74,6 +86,15 @@ public class UtilsHandler
 				}
 			}
 		}
+		NBTTagCompound nbt = player.getEntityData();
+		if(nbt.hasKey(EnchantmentClimber.CLIMB_POS) && time >= nbt.getLong(EnchantmentClimber.CLIMB_START) + nbt.getLong(EnchantmentClimber.CLIMB_DELAY))
+		{
+			nbt.removeTag(EnchantmentClimber.CLIMB_DELAY);
+			nbt.removeTag(EnchantmentClimber.CLIMB_START);
+			BlockPos pos = BlockPos.fromLong(nbt.getLong(EnchantmentClimber.CLIMB_POS));
+			nbt.removeTag(EnchantmentClimber.CLIMB_POS);
+			player.setPositionAndUpdate(pos.getX()+0.5F, pos.getY(), pos.getZ() + 0.5F);
+		}
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.FAMINES_ODIUM, player);
 		if(level > 0)
 		{
@@ -89,6 +110,48 @@ public class UtilsHandler
 				else
 				{
 					player.attackEntityFrom(DamageSource.MAGIC, EnchantmentFaminesOdium.DAMAGE * duration);
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onHeal(LivingHealEvent event)
+	{
+		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
+		if(level > 0 && event.getEntity().getEntityWorld().rand.nextDouble() < EnchantmentPhanesRegret.CHANCE * level)
+		{
+			event.setCanceled(true);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onBlockClick(RightClickBlock event)
+	{
+		if(event.getEntityPlayer().isSneaking())
+		{
+			IBlockState state = event.getWorld().getBlockState(event.getPos());
+			if(state.getBlock().isLadder(state, event.getWorld(), event.getPos(), event.getEntityLiving()))
+			{
+				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.CLIMBER, event.getEntityPlayer().getHeldItem(event.getHand()));
+				if(level > 0)
+				{
+					MutableBlockPos pos = new MutableBlockPos(event.getPos());
+					List<Block> blocks = new ObjectArrayList<>();
+					do 
+					{
+						pos.move(EnumFacing.UP);
+						state = event.getWorld().getBlockState(pos);
+						blocks.add(state.getBlock());
+					}
+					while(state.getBlock().isLadder(state, event.getWorld(), pos, event.getEntityLiving()));
+					if(!event.getWorld().getBlockState(pos.up()).isBlockNormalCube() && !event.getWorld().getBlockState(pos.up(2)).isBlockNormalCube())
+					{
+						NBTTagCompound nbt = event.getEntityPlayer().getEntityData();
+						nbt.setLong(EnchantmentClimber.CLIMB_POS, pos.toLong());
+						nbt.setInteger(EnchantmentClimber.CLIMB_DELAY, EnchantmentClimber.getClimbTime(level, blocks));
+						nbt.setLong(EnchantmentClimber.CLIMB_START, event.getWorld().getTotalWorldTime());
+					}
 				}
 			}
 		}

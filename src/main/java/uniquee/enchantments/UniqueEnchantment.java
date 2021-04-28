@@ -1,10 +1,15 @@
 package uniquee.enchantments;
 
+import java.util.Set;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
 
 public abstract class UniqueEnchantment extends Enchantment implements IToggleEnchantment
@@ -63,6 +68,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	}
 	
 	@Override
+	protected boolean canApplyTogether(Enchantment ench)
+	{
+		return super.canApplyTogether(ench) && !actualData.incompats.contains(ench.getRegistryName());
+	}
+	
+	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack)
 	{
 		return enabled ? (super.canApplyAtEnchantingTable(stack) || canApplyToItem(stack)) && !canNotApplyToItems(stack) : false;
@@ -70,6 +81,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	
 	@Override
 	public boolean isAllowedOnBooks()
+	{
+		return enabled;
+	}
+	
+	@Override
+	public boolean isEnabled()
 	{
 		return enabled;
 	}
@@ -95,6 +112,17 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		this.categoryName = name;
 	}
 	
+	protected void addIncomats(Enchantment...enchantments)
+	{
+		defaults.addIncompats(enchantments);
+	}
+	
+	@Override
+	public void loadIncompats()
+	{
+		
+	}
+	
 	@Override
 	public final void loadFromConfig(Configuration config)
 	{
@@ -116,6 +144,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		int baseCost;
 		int levelCost;
 		int rangeCost;
+		Set<ResourceLocation> incompats = new ObjectOpenHashSet<>();
 		
 		public DefaultData(DefaultData defaultValues, Configuration config, String configName)
 		{
@@ -127,6 +156,18 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 			baseCost = config.get(configName, "base_cost", defaultValues.getBaseCost()).getInt();
 			levelCost = config.get(configName, "per_level_cost", defaultValues.getLevelCost()).getInt();
 			rangeCost = config.get(configName, "cost_limit", defaultValues.getRangeCost()).getInt();
+			String[] result = config.get(configName, "incompats", defaultValues.getInCompats()).getStringList();
+			for(int i = 0,m=result.length;i<m;i++)
+			{
+				try
+				{
+					incompats.add(new ResourceLocation(result[i]));
+				}
+				catch(Exception e)
+				{
+					FMLLog.log.error("Adding Incompat ["+result[i]+"] has caused a crash", e);
+				}
+			}
 		}
 		
 		public DefaultData(String name, Rarity rare, int maxLevel, boolean isTreasure, int baseCost, int levelCost, int rangeCost)
@@ -144,6 +185,19 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 			this.baseCost = baseCost;
 			this.levelCost = levelCost;
 			this.rangeCost = rangeCost;
+		}
+		
+		public void addIncompats(Enchantment...enchantments)
+		{
+			for(int i = 0,m=enchantments.length;i<m;incompats.add(enchantments[i++].getRegistryName()));
+		}
+		
+		private String[] getInCompats() 
+		{
+			String[] incompatString = new String[incompats.size()];
+			int index = 0;
+			for(ResourceLocation loc : incompats) incompatString[index++] = loc.toString();
+			return incompatString;
 		}
 		
 		public int getLevelCost(int minLevel)

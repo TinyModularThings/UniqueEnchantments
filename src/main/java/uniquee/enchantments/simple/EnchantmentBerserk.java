@@ -1,14 +1,12 @@
 package uniquee.enchantments.simple;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.complex.EnchantmentSpartanWeapon;
-import uniquee.enchantments.complex.EnchantmentSwiftBlade;
 
 public class EnchantmentBerserk extends UniqueEnchantment
 {
@@ -16,7 +14,7 @@ public class EnchantmentBerserk extends UniqueEnchantment
 	
 	public EnchantmentBerserk()
 	{
-		super(new DefaultData("berserk", Rarity.RARE, 1, false, 20, 2, 22), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("berserk", Rarity.RARE, 2, false, 20, 2, 22), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override
@@ -26,9 +24,9 @@ public class EnchantmentBerserk extends UniqueEnchantment
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof EnchantmentSwiftBlade || ench instanceof EnchantmentSpartanWeapon ? false : super.canApplyTogether(ench);
+		addIncomats(UniqueEnchantments.SWIFT_BLADE, UniqueEnchantments.SPARTAN_WEAPON);
 	}
 	
 	@Override

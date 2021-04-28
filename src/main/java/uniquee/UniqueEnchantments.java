@@ -62,6 +62,7 @@ import uniquee.enchantments.unique.EnchantmentDemetersSoul;
 import uniquee.enchantments.unique.EnchantmentEcological;
 import uniquee.enchantments.unique.EnchantmentEnderLibrarian;
 import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
+import uniquee.enchantments.unique.EnchantmentEndestReap;
 import uniquee.enchantments.unique.EnchantmentFastFood;
 import uniquee.enchantments.unique.EnchantmentIcarusAegis;
 import uniquee.enchantments.unique.EnchantmentIfritsGrace;
@@ -114,6 +115,7 @@ public class UniqueEnchantments
 	public static Enchantment ICARUS_AEGIS = new EnchantmentIcarusAegis();
 	public static Enchantment ENDER_LIBRARIAN = new EnchantmentEnderLibrarian();
 	public static Enchantment DEMETERS_SOUL = new EnchantmentDemetersSoul();
+	public static Enchantment ENDEST_REAP = new EnchantmentEndestReap();
 	
 	//Curses
 	public static Enchantment PESTILENCES_ODIUM = new EnchantmentPestilencesOdium();
@@ -129,7 +131,7 @@ public class UniqueEnchantments
 	{
 		registerEnchantments(BERSERKER, ADV_SHARPNESS, ADV_SMITE, ADV_BANE_OF_ARTHROPODS, VITAE, SWIFT, SAGES_BLESSING, ENDER_EYES, FOCUS_IMPACT, BONE_CRUSH, RANGE, TREASURERS_EYES);
 		registerEnchantments(SWIFT_BLADE, SPARTAN_WEAPON, PERPETUAL_STRIKE, CLIMATE_TRANQUILITY, MOMENTUM, ENDER_MENDING, SMART_ASS);
-		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE, ECOLOGICAL, PHOENIX_BLESSING, MIDAS_BLESSING, IFRIDS_GRACE, ICARUS_AEGIS, ENDER_LIBRARIAN, DEMETERS_SOUL);
+		registerEnchantments(WARRIORS_GRACE, ENDERMARKSMEN, ARES_BLESSING, ALCHEMISTS_GRACE, CLOUD_WALKER, FAST_FOOD, NATURES_GRACE, ECOLOGICAL, PHOENIX_BLESSING, MIDAS_BLESSING, IFRIDS_GRACE, ICARUS_AEGIS, ENDER_LIBRARIAN, DEMETERS_SOUL, ENDEST_REAP);
 		registerEnchantments(PESTILENCES_ODIUM, DEATHS_ODIUM);
 		ForgeRegistries.POTIONS.register(PESTILENCES_ODIUM_POTION);
 		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
@@ -151,6 +153,7 @@ public class UniqueEnchantments
 	@EventHandler
 	public void onPostInit(FMLPostInitializationEvent event)
 	{
+		for(IToggleEnchantment ench : ENCHANTMENTS) ench.loadIncompats();
 		loadConfig();
 		if(FMLCommonHandler.instance().getSide().isClient())
 		{

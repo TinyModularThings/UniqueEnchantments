@@ -1,14 +1,13 @@
 package uniquee.enchantments.complex;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.simple.EnchantmentBerserk;
 
 public class EnchantmentSwiftBlade extends UniqueEnchantment
 {
@@ -26,11 +25,11 @@ public class EnchantmentSwiftBlade extends UniqueEnchantment
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof EnchantmentBerserk ? false : super.canApplyTogether(ench);
+		addIncomats(UniqueEnchantments.BERSERKER);
 	}
-
+	
 	@Override
 	public void loadData(Configuration entry)
 	{

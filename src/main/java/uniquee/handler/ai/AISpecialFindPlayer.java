@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntityEnderman;
@@ -16,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import uniquee.UniqueEnchantments;
+import uniquee.utils.MiscUtil;
 
 @SuppressWarnings("deprecation")
 public class AISpecialFindPlayer extends EntityAINearestAttackableTarget<EntityPlayer>
@@ -35,7 +35,7 @@ public class AISpecialFindPlayer extends EntityAINearestAttackableTarget<EntityP
     {
         ItemStack itemstack = player.inventory.armorInventory.get(3);
 
-        if (itemstack.getItem() == Item.getItemFromBlock(Blocks.PUMPKIN) || EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.ENDER_EYES, itemstack) > 0)
+        if (itemstack.getItem() == Item.getItemFromBlock(Blocks.PUMPKIN) || MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDER_EYES, itemstack) > 0)
         {
             return false;
         }

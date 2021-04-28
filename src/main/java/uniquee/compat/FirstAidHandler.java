@@ -2,7 +2,6 @@ package uniquee.compat;
 
 import ichttt.mods.firstaid.api.event.FirstAidLivingDamageEvent;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -30,7 +29,7 @@ public class FirstAidHandler
 			if(!source.isMagicDamage() && source != DamageSource.FALL)
 			{
 				ItemStack stack = event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-				int level = EnchantmentHelper.getEnchantmentLevel(UniqueEnchantments.ARES_BLESSING, stack);
+				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ARES_BLESSING, stack);
 				if(level > 0 && stack.isItemStackDamageable())
 				{
 					float damage = event.getUndistributedDamage();

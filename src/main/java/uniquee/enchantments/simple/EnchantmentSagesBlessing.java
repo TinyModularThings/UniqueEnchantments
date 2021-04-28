@@ -1,14 +1,13 @@
 package uniquee.enchantments.simple;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentUntouching;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IBlessingEnchantment;
-import uniquee.enchantments.unique.EnchantmentFastFood;
 
 public class EnchantmentSagesBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
@@ -26,9 +25,9 @@ public class EnchantmentSagesBlessing extends UniqueEnchantment implements IBles
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof EnchantmentUntouching || ench instanceof EnchantmentFastFood ? false : super.canApplyTogether(ench);
+		addIncomats(UniqueEnchantments.FAST_FOOD, Enchantments.SILK_TOUCH);
 	}
 	
 	@Override

@@ -1,15 +1,12 @@
 package uniquee.enchantments.complex;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentMending;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.unique.EnchantmentEcological;
-import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
-import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
 import uniquee.utils.DoubleLevelStats;
 
 public class EnchantmentEnderMending extends UniqueEnchantment
@@ -24,9 +21,9 @@ public class EnchantmentEnderMending extends UniqueEnchantment
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof EnchantmentMending || ench instanceof EnchantmentEnderMarksmen || ench instanceof EnchantmentWarriorsGrace || ench instanceof EnchantmentEcological ? false : super.canApplyTogether(ench);
+		addIncomats(Enchantments.MENDING, UniqueEnchantments.ENDERMARKSMEN, UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.ECOLOGICAL);
 	}
 	
 	@Override

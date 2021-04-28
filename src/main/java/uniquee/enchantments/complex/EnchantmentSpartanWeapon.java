@@ -1,14 +1,13 @@
 
 package uniquee.enchantments.complex;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.simple.EnchantmentBerserk;
 
 public class EnchantmentSpartanWeapon extends UniqueEnchantment
 {
@@ -26,9 +25,9 @@ public class EnchantmentSpartanWeapon extends UniqueEnchantment
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof EnchantmentBerserk || ench instanceof EnchantmentPerpetualStrike ? false : super.canApplyTogether(ench);
+		addIncomats(UniqueEnchantments.BERSERKER, UniqueEnchantments.PERPETUAL_STRIKE);
 	}
 	
 	@Override

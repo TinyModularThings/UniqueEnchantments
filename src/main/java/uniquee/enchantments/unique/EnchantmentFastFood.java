@@ -1,7 +1,5 @@
 package uniquee.enchantments.unique;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentLootBonus;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
@@ -16,12 +14,6 @@ public class EnchantmentFastFood extends UniqueEnchantment
 	public EnchantmentFastFood()
 	{
 		super(new DefaultData("fastfood", Rarity.RARE, 2, true, 14, 6, 10), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
-	}
-		
-	@Override
-	protected boolean canApplyTogether(Enchantment ench)
-	{
-		return ench instanceof EnchantmentLootBonus ? false : super.canApplyTogether(ench);
 	}
 	
 	@Override

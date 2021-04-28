@@ -1,13 +1,12 @@
 package uniquee.enchantments.simple;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.complex.EnchantmentSwiftBlade;
 
 public class EnchantmentFocusImpact extends UniqueEnchantment
 {
@@ -19,15 +18,15 @@ public class EnchantmentFocusImpact extends UniqueEnchantment
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
-	{
-		return ench instanceof EnchantmentSwiftBlade ? false : super.canApplyTogether(ench);
-	}
-	
-	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
 		return stack.getItem() instanceof ItemAxe;
+	}
+	
+	@Override
+	public void loadIncompats()
+	{
+		addIncomats(UniqueEnchantments.SWIFT_BLADE);
 	}
 	
 	@Override

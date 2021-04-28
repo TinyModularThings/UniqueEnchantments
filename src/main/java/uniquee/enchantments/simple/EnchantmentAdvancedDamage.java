@@ -4,10 +4,14 @@ import net.minecraft.enchantment.EnchantmentDamage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.config.Configuration;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.IToggleEnchantment;
 import uniquee.enchantments.UniqueEnchantment.DefaultData;
 
@@ -31,6 +35,30 @@ public class EnchantmentAdvancedDamage extends EnchantmentDamage implements ITog
 		defaults = DATA[damageTypeIn];
 		actualData = defaults;
 		scalar = DEFAULTS[damageTypeIn];
+	}
+	
+	@Override
+	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	{
+		return isEnabled && (super.canApplyAtEnchantingTable(stack) || (damageType > 0 && stack.getItem() instanceof ItemHoe));
+	}
+	
+	@Override
+	public void loadIncompats()
+	{
+		defaults.addIncompats(Enchantments.SHARPNESS, Enchantments.BANE_OF_ARTHROPODS, Enchantments.SMITE, UniqueEnchantments.ADV_BANE_OF_ARTHROPODS, UniqueEnchantments.ADV_SHARPNESS, UniqueEnchantments.ADV_SMITE);
+	}
+	
+	@Override
+	public boolean isAllowedOnBooks()
+	{
+		return isEnabled;
+	}
+	
+	@Override
+	public boolean isEnabled()
+	{
+		return isEnabled;
 	}
 	
     @Override

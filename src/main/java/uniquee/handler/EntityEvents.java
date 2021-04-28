@@ -29,8 +29,13 @@ import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.AbstractSkeleton;
+import net.minecraft.entity.monster.EntityElderGuardian;
 import net.minecraft.entity.monster.EntityEnderman;
+import net.minecraft.entity.monster.EntityEvoker;
+import net.minecraft.entity.monster.EntityShulker;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -118,6 +123,7 @@ import uniquee.enchantments.unique.EnchantmentCloudwalker;
 import uniquee.enchantments.unique.EnchantmentDemetersSoul;
 import uniquee.enchantments.unique.EnchantmentEcological;
 import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
+import uniquee.enchantments.unique.EnchantmentEndestReap;
 import uniquee.enchantments.unique.EnchantmentFastFood;
 import uniquee.enchantments.unique.EnchantmentIcarusAegis;
 import uniquee.enchantments.unique.EnchantmentIfritsGrace;
@@ -270,14 +276,6 @@ public class EntityEvents
 						player.addExhaustion(0.06F);
 					}
 				}
-				if(isMining(player))
-				{
-					int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ALCHEMISTS_GRACE, player.getHeldItemMainhand());
-					if(level > 0)
-					{
-						EnchantmentAlchemistsGrace.applyToEntity(player);
-					}
-				}
 				Object2IntMap.Entry<EntityEquipmentSlot> level = MiscUtil.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, player);
 				if(level.getIntValue() > 0)
 				{
@@ -287,14 +285,14 @@ public class EntityEvents
 			NBTTagCompound data = event.player.getEntityData();
 			if(data.hasKey(EnchantmentDeathsOdium.CURSE_DAMAGE) && data.getLong(EnchantmentDeathsOdium.CRUSE_TIMER) < event.player.world.getTotalWorldTime())
 			{
-				float total = data.getFloat(EnchantmentDeathsOdium.CURSE_DAMAGE);
-				if(total > 0F)
+				int total = MathHelper.floor(data.getFloat(EnchantmentDeathsOdium.CURSE_DAMAGE) / EnchantmentDeathsOdium.DAMAGE_FACTOR);
+				if(total > 0)
 				{
 					IAttributeInstance instance = event.player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH);
 					AttributeModifier mod = instance.getModifier(EnchantmentDeathsOdium.REMOVE_UUID);
 					if(mod != null)
 					{
-						float newValue = (float)Math.max(0F, mod.getAmount() - total);
+						double newValue = Math.max(0D, mod.getAmount() - total);
 						instance.removeModifier(mod);
 						if(newValue > 0)
 						{
@@ -503,7 +501,13 @@ public class EntityEvents
 			return;
 		}
 		ItemStack held = event.getPlayer().getHeldItemMainhand();
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.SMART_ASS, held);
+		Object2IntMap<Enchantment> enchs = MiscUtil.getEnchantments(held);
+		int level = enchs.getInt(UniqueEnchantments.ALCHEMISTS_GRACE);
+		if(level > 0)
+		{
+			EnchantmentAlchemistsGrace.applyToEntity(event.getPlayer(), true, event.getState().getBlockHardness(event.getWorld(), event.getPos()));
+		}
+		level = enchs.getInt(UniqueEnchantments.SMART_ASS);
 		if(level > 0)
 		{
 			if(EnchantmentSmartAss.VALID_STATES.test(event.getState()))
@@ -531,12 +535,13 @@ public class EntityEvents
 				}
 			}
 		}
-		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.SAGES_BLESSING, held);
+		level = enchs.getInt(UniqueEnchantments.SAGES_BLESSING);
 		if(level > 0)
 		{
+			level *= (event.getWorld().rand.nextInt(enchs.getInt(Enchantments.FORTUNE)+1)+1);
 			event.setExpToDrop((int)(event.getExpToDrop() + event.getExpToDrop() * (level * EnchantmentSagesBlessing.XP_BOOST)));
 		}
-		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.MOMENTUM, held);
+		level = enchs.getInt(UniqueEnchantments.MOMENTUM);
 		if(level > 0)
 		{
 			int max = EnchantmentMomentum.CAP + level;
@@ -704,7 +709,7 @@ public class EntityEvents
 	public void onEntityHit(LivingAttackEvent event)
 	{
 		Entity entity = event.getSource().getTrueSource();
-		EnchantmentAlchemistsGrace.applyToEntity(entity);
+		EnchantmentAlchemistsGrace.applyToEntity(entity, false, 1.5F);
 	}
 	
 	@SubscribeEvent
@@ -715,11 +720,17 @@ public class EntityEvents
 		{
 			EntityLivingBase base = (EntityLivingBase)entity;
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(base.getHeldItemMainhand());
-			if(enchantments.getInt(UniqueEnchantments.BERSERKER) > 0)
+			int level = enchantments.getInt(UniqueEnchantments.BERSERKER);
+			if(level > 0)
 			{
-				event.setAmount(event.getAmount() * (1F + ((float)EnchantmentBerserk.SCALAR * (base.getMaxHealth() / Math.max(base.getHealth(), 1F)))));
+				event.setAmount(event.getAmount() * (float)(1D + (EnchantmentBerserk.SCALAR * (base.getMaxHealth() / Math.max(base.getHealth(), 1D)) * Math.log10(level+1))));
 			}
-			int level = enchantments.getInt(UniqueEnchantments.SWIFT_BLADE);
+			level = enchantments.getInt(UniqueEnchantments.ENDEST_REAP);
+			if(level > 0)
+			{
+				 event.setAmount(event.getAmount() * (float)(1D + ((level * EnchantmentEndestReap.BONUS_DAMAGE_LEVEL) + (level * base.getEntityData().getInteger(EnchantmentEndestReap.REAP_STORAGE) * EnchantmentEndestReap.REAP_MULTIPLIER))));
+			}
+			level = enchantments.getInt(UniqueEnchantments.SWIFT_BLADE);
 			if(level > 0)
 			{
 				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
@@ -900,6 +911,16 @@ public class EntityEvents
 					stack.damageItem(-amount, base);
 				}
 			}
+			Entity killed = event.getEntity();
+			if((killed instanceof EntityDragon || killed instanceof EntityWither || killed instanceof EntityEvoker || killed instanceof EntityShulker || killed instanceof EntityElderGuardian) && base instanceof EntityPlayer)
+			{
+				level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
+				if(level > 0)
+				{
+					NBTTagCompound nbt = killed.getEntityData();
+					nbt.setInteger(EnchantmentEndestReap.REAP_STORAGE, Math.min(nbt.getInteger(EnchantmentEndestReap.REAP_STORAGE)+1, ((EntityPlayer)base).experienceLevel));
+				}
+			}
 		}
 		Object2IntMap.Entry<EntityEquipmentSlot> ench = MiscUtil.getEnchantedItem(UniqueEnchantments.DEATHS_ODIUM, event.getEntityLiving());
 		if(ench.getIntValue() > 0)
@@ -937,9 +958,11 @@ public class EntityEvents
 		{
 			return;
 		}
-		int level = MiscUtil.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, event.getAttackingPlayer()).getIntValue();
+		Object2IntMap.Entry<EntityEquipmentSlot> slot = MiscUtil.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, event.getAttackingPlayer());
+		int level = slot.getIntValue();
 		if(level > 0)
 		{
+			level *= (event.getAttackingPlayer().world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, event.getAttackingPlayer().getItemStackFromSlot(slot.getKey()))+1)+1);
 			event.setDroppedExperience((int)(event.getDroppedExperience() + event.getDroppedExperience() * (level * EnchantmentSagesBlessing.XP_BOOST)));
 		}
 	}
@@ -965,9 +988,11 @@ public class EntityEvents
 		if(entity instanceof EntityPlayer && event.getEntityLiving() instanceof EntityAnimal)
 		{
 			EntityPlayer base = (EntityPlayer)entity;
-			int level = MiscUtil.getEnchantedItem(UniqueEnchantments.FAST_FOOD, base).getIntValue();
+			Object2IntMap.Entry<EntityEquipmentSlot> slot = MiscUtil.getEnchantedItem(UniqueEnchantments.FAST_FOOD, base);
+			int level = slot.getIntValue();
 			if(level > 0)
 			{
+				level *= (base.world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, base.getItemStackFromSlot(slot.getKey()))+1)+1);
 				base.getFoodStats().addStats(EnchantmentFastFood.NURISHMENT.get(level), (float)(EnchantmentFastFood.SATURATION * level));
 				event.setCanceled(true);
 			}
@@ -987,7 +1012,7 @@ public class EntityEvents
 			return;
 		}
 		EntityArrow arrow = event.getArrow();
-		EnchantmentAlchemistsGrace.applyToEntity(arrow.shootingEntity);
+		EnchantmentAlchemistsGrace.applyToEntity(arrow.shootingEntity, false, 1.5F);
 		if(arrow.shootingEntity instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer)arrow.shootingEntity;
