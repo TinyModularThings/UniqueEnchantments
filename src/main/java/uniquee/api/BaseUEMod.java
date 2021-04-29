@@ -29,6 +29,7 @@ public class BaseUEMod
 		addConfig(builder);
 		for(int i = 0,m=enchantments.size();i<m;i++)
 		{
+			enchantments.get(i).loadIncompats();
 			enchantments.get(i).loadFromConfig(builder);
 		}
 		builder.pop();

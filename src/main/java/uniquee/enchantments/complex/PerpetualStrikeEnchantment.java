@@ -1,12 +1,12 @@
 package uniquee.enchantments.complex;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.utils.DoubleStat;
 
@@ -28,9 +28,9 @@ public class PerpetualStrikeEnchantment extends UniqueEnchantment
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof SpartanWeaponEnchantment ? false : super.canApplyTogether(ench);
+		addIncomats(UniqueEnchantments.SPARTAN_WEAPON);
 	}
 	
 	@Override

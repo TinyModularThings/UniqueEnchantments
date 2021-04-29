@@ -24,6 +24,7 @@ public class DeathsOdiumEnchantment extends UniqueEnchantment
 	
 	public static IntStat DELAY = new IntStat(200, "collector_time");
 	public static IntStat MAX_STORAGE = new IntStat(5, "curse_storage_cap");
+	public static IntStat DAMAGE_FACTOR = new IntStat(30, "damage_factor");
 	
 	public DeathsOdiumEnchantment()
 	{
@@ -41,6 +42,7 @@ public class DeathsOdiumEnchantment extends UniqueEnchantment
 	{
 		DELAY.handleConfig(config);
 		MAX_STORAGE.handleConfig(config);
+		DAMAGE_FACTOR.handleConfig(config);
 	}
 	
 	public static UUID getForSlot(EquipmentSlotType slot)

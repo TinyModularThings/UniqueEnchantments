@@ -1,15 +1,18 @@
 package uniquee.enchantments.simple;
 
 import net.minecraft.enchantment.DamageEnchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.IToggleEnchantment;
 import uniquee.enchantments.UniqueEnchantment.DefaultData;
 import uniquee.utils.DoubleStat;
@@ -46,14 +49,26 @@ public class AdvancedDamageEnchantment extends DamageEnchantment implements ITog
     	}
     }
     
-    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack)
-    {
-    	return isEnabled.get() && super.canApplyAtEnchantingTable(stack);
-    }
+	@Override
+	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	{
+		return isEnabled.get() && (super.canApplyAtEnchantingTable(stack) || (damageType > 0 && stack.getItem() instanceof HoeItem));
+	}
+
+	@Override
+	public void loadIncompats()
+	{
+		values.addIncompats(Enchantments.SHARPNESS, Enchantments.BANE_OF_ARTHROPODS, Enchantments.SMITE, UniqueEnchantments.ADV_BANE_OF_ARTHROPODS, UniqueEnchantments.ADV_SHARPNESS, UniqueEnchantments.ADV_SMITE);
+	}
     
     @Override
     public boolean isAllowedOnBooks()
+    {
+    	return isEnabled.get();
+    }
+    
+    @Override
+    public boolean isEnabled()
     {
     	return isEnabled.get();
     }
@@ -123,5 +138,11 @@ public class AdvancedDamageEnchantment extends DamageEnchantment implements ITog
 		values.loadConfig(entry);
 		scalar.handleConfig(entry);
 		entry.pop(2);
+	}
+	
+	@Override
+	public void onConfigChanged()
+	{
+		values.onConfigChanged();
 	}
 }

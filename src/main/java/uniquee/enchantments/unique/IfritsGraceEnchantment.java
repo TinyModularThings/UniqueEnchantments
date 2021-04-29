@@ -73,6 +73,7 @@ public class IfritsGraceEnchantment extends UniqueEnchantment implements IGraceE
 	@Override
 	public void onConfigChanged()
 	{
+		super.onConfigChanged();
 		LAVA_ITEMS.clear();
 		LAVA_ITEMS.put(Items.LAVA_BUCKET, 250);
 		LAVA_ITEMS.put(Items.MAGMA_CREAM, 20);

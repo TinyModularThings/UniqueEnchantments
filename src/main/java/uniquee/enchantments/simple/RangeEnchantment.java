@@ -2,9 +2,8 @@ package uniquee.enchantments.simple;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.SweepingEnchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -29,9 +28,9 @@ public class RangeEnchantment extends UniqueEnchantment
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof SweepingEnchantment ? false : super.canApplyTogether(ench);
+		addIncomats(Enchantments.SWEEPING);
 	}
 	
 	@Override

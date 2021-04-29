@@ -31,9 +31,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import uniquee.enchantments.IToggleEnchantment;
 
 public class MiscUtil
 {
+	static final Object2IntMap.Entry<EquipmentSlotType> NO_ENCHANTMENT = new AbstractObject2IntMap.BasicEntry<>(null, 0);
 	static final Consumer<LivingEntity>[] SLOT_BASE = createSlots();
 	
 	@SuppressWarnings("unchecked")
@@ -54,15 +56,10 @@ public class MiscUtil
 	
 	public static int getEnchantmentLevel(Enchantment ench, ItemStack stack)
 	{
-		if(stack.isEmpty())
-		{
-			return 0;
-		}
+		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return 0;
+		if(stack.isEmpty()) return 0;
 		ListNBT list = stack.getEnchantmentTagList();
-		if(list.isEmpty())
-		{
-			return 0;
-		}
+		if(list.isEmpty()) return 0;
 		String id = ench.getRegistryName().toString();
 		for(int i = 0, m = list.size();i < m;i++)
 		{
@@ -79,11 +76,9 @@ public class MiscUtil
 	
 	public static int getCombinedEnchantmentLevel(Enchantment ench, LivingEntity base)
 	{
+		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return 0;
 		EquipmentSlotType[] slots = getEquipmentSlotsFor(ench);
-		if(slots.length <= 0)
-		{
-			return 0;
-		}
+		if(slots.length <= 0) return 0;
 		int totalLevel = 0;
 		for(int i = 0;i < slots.length;i++)
 		{
@@ -94,18 +89,12 @@ public class MiscUtil
 	
 	public static Object2IntMap<Enchantment> getEnchantments(ItemStack stack)
 	{
-		if(stack.isEmpty())
-		{
-			return Object2IntMaps.emptyMap();
-		}
+		if(stack.isEmpty()) return Object2IntMaps.emptyMap();
 		ListNBT list = stack.getEnchantmentTagList();
 		// Micro Optimization. If the EnchantmentMap is empty then returning a
 		// EmptyMap is faster then creating a new map. More Performance in
 		// checks.
-		if(list.isEmpty())
-		{
-			return Object2IntMaps.emptyMap();
-		}
+		if(list.isEmpty()) return Object2IntMaps.emptyMap();
 		Object2IntMap<Enchantment> map = new Object2IntOpenHashMap<Enchantment>();
 		for(int i = 0, m = list.size();i < m;i++)
 		{
@@ -113,6 +102,7 @@ public class MiscUtil
 			Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(tag.getString("id")));
 			if(enchantment != null)
 			{
+				if(enchantment instanceof IToggleEnchantment && !((IToggleEnchantment)enchantment).isEnabled()) continue;
 				// Only grabbing Level if it is needed. Not wasting CPU Time on
 				// grabbing useless data
 				map.put(enchantment, tag.getInt("lvl"));
@@ -123,6 +113,7 @@ public class MiscUtil
 	
 	public static EquipmentSlotType[] getEquipmentSlotsFor(Enchantment ench)
 	{
+		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return new EquipmentSlotType[0];
 		try
 		{
 			return findField(Enchantment.class, ench, EquipmentSlotType[].class, "applicableEquipmentTypes", "field_185263_a");
@@ -135,16 +126,18 @@ public class MiscUtil
 	
 	public static Set<EquipmentSlotType> getSlotsFor(Enchantment ench)
 	{
+		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return Collections.emptySet();
 		EquipmentSlotType[] slots = getEquipmentSlotsFor(ench);
 		return slots.length <= 0 ? Collections.emptySet() : new ObjectOpenHashSet<EquipmentSlotType>(slots);
 	}
 	
 	public static Object2IntMap.Entry<EquipmentSlotType> getEnchantedItem(Enchantment enchantment, LivingEntity base)
 	{
+		if(enchantment instanceof IToggleEnchantment && !((IToggleEnchantment)enchantment).isEnabled()) return NO_ENCHANTMENT;
 		EquipmentSlotType[] slots = getEquipmentSlotsFor(enchantment);
 		if(slots.length <= 0)
 		{
-			return new AbstractObject2IntMap.BasicEntry<>(null, 0);
+			return NO_ENCHANTMENT;
 		}
 		for(int i = 0;i < slots.length;i++)
 		{
@@ -154,7 +147,7 @@ public class MiscUtil
 				return new AbstractObject2IntMap.BasicEntry<>(slots[i], level);
 			}
 		}
-		return new AbstractObject2IntMap.BasicEntry<>(null, 0);
+		return NO_ENCHANTMENT;
 	}
 	
 	public static Method findMethod(Class<?> clz, String[] names, Class<?>...variables)

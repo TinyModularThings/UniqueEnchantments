@@ -10,6 +10,8 @@ public interface IToggleEnchantment
 	
 	public default void onConfigChanged()
 	{
-		//TODO Implement
 	}
+	
+	public default void loadIncompats(){}
+	public boolean isEnabled();
 }

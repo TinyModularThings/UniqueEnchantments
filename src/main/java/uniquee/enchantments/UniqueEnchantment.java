@@ -8,6 +8,8 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import net.minecraftforge.registries.ForgeRegistries;
+import uniquee.utils.IdStat;
 
 public abstract class UniqueEnchantment extends Enchantment implements IToggleEnchantment
 {
@@ -73,6 +75,23 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		return enabled.get();
 	}
 	
+	@Override
+	protected boolean canApplyTogether(Enchantment ench)
+	{
+		return super.canApplyTogether(ench) && !values.incompats.contains(ench.getRegistryName());
+	}
+	
+	@Override
+	public boolean isEnabled()
+	{
+		return enabled.get();
+	}
+	
+	protected void addIncomats(Enchantment... enchantments)
+	{
+		values.addIncompats(enchantments);
+	}
+	
 	protected boolean canApplyToItem(ItemStack stack)
 	{
 		return false;
@@ -105,6 +124,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		config.pop(split);
 	}
 	
+	@Override
+	public void onConfigChanged()
+	{
+		values.onConfigChanged();
+	}
+	
 	public abstract void loadData(ForgeConfigSpec.Builder config);
 	
 	public static class DefaultData
@@ -125,6 +150,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		IntValue rangeCost_Config;
 		IntValue minLevel_Config;
 		IntValue maxLevel_Config;
+		IdStat incompats = new IdStat("incompats", ForgeRegistries.ENCHANTMENTS);
 		
 		public DefaultData(String name, Rarity rare, int maxLevel, boolean isTreasure, int baseCost, int levelCost, int rangeCost)
 		{
@@ -152,6 +178,18 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 			baseCost_Config = config.defineInRange("base_cost", baseCost, 0, Integer.MAX_VALUE);
 			levelCost_Config = config.defineInRange("per_level_cost", levelCost, 0, Integer.MAX_VALUE);
 			rangeCost_Config = config.defineInRange("cost_limit", rangeCost, 0, Integer.MAX_VALUE);
+			incompats.handleConfig(config);
+		}
+		
+		public void addIncompats(Enchantment...enchantments)
+		{
+			incompats.addDefault(enchantments);
+		}
+		
+		
+		public void onConfigChanged()
+		{
+			incompats.onConfigChanged();
 		}
 		
 		public int getLevelCost(int minLevel)
