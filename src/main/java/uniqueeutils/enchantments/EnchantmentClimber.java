@@ -29,7 +29,7 @@ public class EnchantmentClimber extends UniqueEnchantment
 	{
 		CLIMB_SPEED.clear();
 		CLIMB_SPEED.defaultReturnValue(config.get(getConfigName(), "climb_default", 0.25D).getDouble());
-		MIN_WAITING_TIME = config.get(getConfigName(), "climb_default", 0.25D).getDouble();
+		MIN_WAITING_TIME = config.get(getConfigName(), "climb_min_waiting", 0.5D).getDouble();
 		String[] blocks = config.get(getConfigName(), "climb_speed", new String[]{"minecraft:ladder;0.1", "minecraft:vine;0.25"}).getStringList();
 		for(int i = 0;i<blocks.length;i++)
 		{
