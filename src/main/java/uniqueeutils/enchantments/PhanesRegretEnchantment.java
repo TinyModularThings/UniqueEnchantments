@@ -13,6 +13,7 @@ public class PhanesRegretEnchantment extends UniqueEnchantment
 	public PhanesRegretEnchantment()
 	{
 		super(new DefaultData("phanes_regret", Rarity.UNCOMMON, 1, true, 10, 2, 75), EnchantmentType.ALL, EquipmentSlotType.values());
+		setCategory("utils");
 	}
 
 	@Override

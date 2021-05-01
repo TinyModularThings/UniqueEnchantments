@@ -28,6 +28,7 @@ public class AdvancedDamageEnchantment extends DamageEnchantment implements ITog
 	DefaultData values;
     public DoubleStat scalar;
     BooleanValue isEnabled;
+    BooleanValue isActivated;
     
 	public AdvancedDamageEnchantment(int damageTypeIn)
 	{
@@ -70,7 +71,7 @@ public class AdvancedDamageEnchantment extends DamageEnchantment implements ITog
     @Override
     public boolean isEnabled()
     {
-    	return isEnabled.get();
+    	return isActivated.get();
     }
     
     @Override
@@ -135,6 +136,7 @@ public class AdvancedDamageEnchantment extends DamageEnchantment implements ITog
 	{
 		entry.push(getConfigName());
 		isEnabled = entry.define("enabled", true);
+		isActivated = entry.define("activated", true);
 		values.loadConfig(entry);
 		scalar.handleConfig(entry);
 		entry.pop(2);

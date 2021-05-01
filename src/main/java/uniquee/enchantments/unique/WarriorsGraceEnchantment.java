@@ -1,13 +1,12 @@
 package uniquee.enchantments.unique;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.MendingEnchantment;
-import net.minecraft.enchantment.UnbreakingEnchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
 import uniquee.utils.DoubleStat;
@@ -28,9 +27,9 @@ public class WarriorsGraceEnchantment extends UniqueEnchantment implements IGrac
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof UnbreakingEnchantment || ench instanceof MendingEnchantment || ench instanceof AlchemistsGraceEnchantment || ench instanceof NaturesGraceEnchantment || ench instanceof EcologicalEnchantment ? false : super.canApplyTogether(ench);
+		addIncomats(UniqueEnchantments.ECOLOGICAL, UniqueEnchantments.ALCHEMISTS_GRACE, UniqueEnchantments.NATURES_GRACE, Enchantments.MENDING, Enchantments.UNBREAKING);
 	}
 
 	@Override

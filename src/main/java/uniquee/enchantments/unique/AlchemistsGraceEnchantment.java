@@ -6,7 +6,6 @@ import java.util.Set;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -41,9 +40,9 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 	}
 		
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof WarriorsGraceEnchantment || ench instanceof NaturesGraceEnchantment ? false : super.canApplyTogether(ench);
+		addIncomats(UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.NATURES_GRACE);
 	}
 	
 	public static void applyToEntity(Entity entity, boolean mining, float hitScalar)
@@ -124,7 +123,7 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 			baseEnchantment = Integer.parseInt(data[1]);
 			basePotionLevel = Integer.parseInt(data[2]);
 			PotionLevelIncrease = Double.parseDouble(data[3]);
-			baseDuration = Integer.parseInt(data[4]);
+			baseDuration = (int)(Double.parseDouble(data[4]) * 20);
 			fighting = Boolean.parseBoolean(data[5]);
 			mining = Boolean.parseBoolean(data[6]);
 		}
@@ -132,7 +131,7 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 		public EffectInstance createEffect(int baseLevel, float hitScalar)
 		{
 			int diff = Math.max(0, baseLevel - baseEnchantment);
-			return new EffectInstance(potion, (int)(baseDuration * baseLevel * Math.log(hitScalar+0.5F)) * 20, basePotionLevel + (int)(PotionLevelIncrease * diff));
+			return new EffectInstance(potion, (int)(baseDuration * baseLevel * Math.log(hitScalar+0.5F)), basePotionLevel + (int)(PotionLevelIncrease * diff));
 		}
 		
 		public boolean isValid(boolean mining)

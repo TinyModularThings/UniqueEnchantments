@@ -77,7 +77,6 @@ public class IdStat
 		}
 	}
 
-	
 	public void handleConfig(ForgeConfigSpec.Builder config)
 	{
 		if(comment != null) config.comment(comment);
@@ -87,6 +86,12 @@ public class IdStat
 	public void onConfigChanged()
 	{
 		values.clear();
+		List<? extends String> list = config.get();
+		for(int i = 0;i<list.size();i++)
+		{
+			ResourceLocation location = ResourceLocation.tryCreate(list.get(i));
+			if(location != null) values.add(location);
+		}
 	}
 	
 	public boolean contains(ResourceLocation location)

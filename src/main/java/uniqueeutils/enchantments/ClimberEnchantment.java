@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.ForgeRegistries;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.utils.DoubleStat;
 
@@ -30,6 +31,13 @@ public class ClimberEnchantment extends UniqueEnchantment
 	public ClimberEnchantment()
 	{
 		super(new DefaultData("climber", Rarity.COMMON, 3, true, 14, 8, 30), EnchantmentType.ARMOR_LEGS, new EquipmentSlotType[]{EquipmentSlotType.LEGS});
+		setCategory("utils");
+	}
+	
+	@Override
+	public void loadIncompats()
+	{
+		addIncomats(UniqueEnchantments.SWIFT);
 	}
 	
 	@Override

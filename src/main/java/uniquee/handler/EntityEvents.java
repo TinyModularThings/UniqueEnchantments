@@ -223,6 +223,11 @@ public class EntityEvents
 						}
 					}
 				}
+				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, player.getHeldItemMainhand());
+				if(level > 0)
+				{
+					setInt(player.getHeldItemMainhand(), EndestReapEnchantment.REAP_STORAGE, player.getPersistentData().getInt(EndestReapEnchantment.REAP_STORAGE));
+				}
 			}
 			if(player.world.getGameTime() % 30 == 0)
 			{
@@ -540,6 +545,7 @@ public class EntityEvents
 		level = enchs.getInt(UniqueEnchantments.SAGES_BLESSING);
 		if(level > 0)
 		{
+			level *= (event.getWorld().getRandom().nextInt(enchs.getInt(Enchantments.FORTUNE)+1)+1);
 			event.setExpToDrop((int)(event.getExpToDrop() + event.getExpToDrop() * (level * SagesBlessingEnchantment.XP_BOOST.get())));
 		}
 		level = enchs.getInt(UniqueEnchantments.MOMENTUM);
@@ -875,8 +881,9 @@ public class EntityEvents
 				level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
 				if(level > 0)
 				{
-					CompoundNBT nbt = killed.getPersistentData();
+					CompoundNBT nbt = base.getPersistentData();
 					nbt.putInt(EndestReapEnchantment.REAP_STORAGE, Math.min(nbt.getInt(EndestReapEnchantment.REAP_STORAGE)+1, ((PlayerEntity)base).experienceLevel));
+					setInt(base.getHeldItemMainhand(), EndestReapEnchantment.REAP_STORAGE, nbt.getInt(EndestReapEnchantment.REAP_STORAGE));
 				}
 			}
 		}

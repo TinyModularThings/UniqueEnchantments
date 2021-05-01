@@ -16,6 +16,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	public static final Rarity[] RARITIES = Rarity.values();
 	DefaultData values;
 	protected BooleanValue enabled;
+	protected BooleanValue activated;
 	String configName;
 	String categoryName = "base";
 
@@ -72,7 +73,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	@Override
 	public boolean isAllowedOnBooks()
 	{
-		return enabled.get();
+		return activated.get();
 	}
 	
 	@Override
@@ -119,6 +120,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		int split = getConfigName().split(".").length+2;
 		config.push(getConfigName());
 		enabled = config.define("enabled", true);
+		activated = config.define("activated", true);
 		values.loadConfig(config);
 		loadData(config);
 		config.pop(split);

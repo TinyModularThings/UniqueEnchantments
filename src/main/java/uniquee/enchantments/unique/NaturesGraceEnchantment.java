@@ -4,11 +4,11 @@ import java.util.function.Predicate;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.DoublePlantBlock;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
 import uniquee.utils.DoubleLevelStats;
@@ -31,9 +31,9 @@ public class NaturesGraceEnchantment extends UniqueEnchantment implements IGrace
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof AresBlessingEnchantment || ench instanceof AlchemistsGraceEnchantment || ench instanceof WarriorsGraceEnchantment ? false : super.canApplyTogether(ench);
+		addIncomats(UniqueEnchantments.ARES_BLESSING, UniqueEnchantments.ALCHEMISTS_GRACE, UniqueEnchantments.WARRIORS_GRACE);
 	}
 
 	@Override
