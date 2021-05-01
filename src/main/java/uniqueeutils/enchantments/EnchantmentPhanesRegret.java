@@ -12,6 +12,7 @@ public class EnchantmentPhanesRegret extends UniqueEnchantment
 	public EnchantmentPhanesRegret()
 	{
 		super(new DefaultData("phanes_regret", Rarity.UNCOMMON, 1, true, 10, 2, 75), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
+		setCategory("utils");
 	}
 	
 	@Override

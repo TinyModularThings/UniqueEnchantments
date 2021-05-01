@@ -4,16 +4,15 @@ import java.util.Set;
 import java.util.function.ToIntFunction;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentLootBonus;
-import net.minecraft.enchantment.EnchantmentUntouching;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IBlessingEnchantment;
 
@@ -44,9 +43,9 @@ public class EnchantmentMidasBlessing extends UniqueEnchantment implements IBles
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof EnchantmentLootBonus || ench instanceof EnchantmentUntouching || ench instanceof EnchantmentIfritsGrace ? false : super.canApplyTogether(ench);
+		addIncomats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH, UniqueEnchantments.IFRIDS_GRACE);
 	}
 	
 	@Override

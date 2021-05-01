@@ -29,13 +29,8 @@ import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
-import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityWither;
 import net.minecraft.entity.monster.AbstractSkeleton;
-import net.minecraft.entity.monster.EntityElderGuardian;
 import net.minecraft.entity.monster.EntityEnderman;
-import net.minecraft.entity.monster.EntityEvoker;
-import net.minecraft.entity.monster.EntityShulker;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -226,6 +221,11 @@ public class EntityEvents
 							setInt(stack, EnchantmentEnderMending.ENDER_TAG, stored - toRemove);
 						}
 					}
+				}
+				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, player.getHeldItemMainhand());
+				if(level > 0)
+				{
+					setInt(player.getHeldItemMainhand(), EnchantmentEndestReap.REAP_STORAGE, player.getEntityData().getInteger(EnchantmentEndestReap.REAP_STORAGE));
 				}
 			}
 			if(player.world.getTotalWorldTime() % 30 == 0)
@@ -725,11 +725,6 @@ public class EntityEvents
 			{
 				event.setAmount(event.getAmount() * (float)(1D + (EnchantmentBerserk.SCALAR * (base.getMaxHealth() / Math.max(base.getHealth(), 1D)) * Math.log10(level+1))));
 			}
-			level = enchantments.getInt(UniqueEnchantments.ENDEST_REAP);
-			if(level > 0)
-			{
-				 event.setAmount(event.getAmount() * (float)(1D + ((level * EnchantmentEndestReap.BONUS_DAMAGE_LEVEL) + (level * base.getEntityData().getInteger(EnchantmentEndestReap.REAP_STORAGE) * EnchantmentEndestReap.REAP_MULTIPLIER))));
-			}
 			level = enchantments.getInt(UniqueEnchantments.SWIFT_BLADE);
 			if(level > 0)
 			{
@@ -813,6 +808,11 @@ public class EntityEvents
 			if(level > 0 && base.getHeldItemOffhand().getItem() instanceof ItemShield)
 			{
 				event.setAmount(event.getAmount() + (event.getAmount()*((float)EnchantmentSpartanWeapon.SCALAR*level)));
+			}
+			level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
+			if(level > 0)
+			{
+				 event.setAmount(event.getAmount() * (float)(1D + ((level * EnchantmentEndestReap.BONUS_DAMAGE_LEVEL) + (level * base.getEntityData().getInteger(EnchantmentEndestReap.REAP_STORAGE) * EnchantmentEndestReap.REAP_MULTIPLIER))));
 			}
 		}
 		if(event.getSource() == DamageSource.FLY_INTO_WALL)
@@ -912,13 +912,15 @@ public class EntityEvents
 				}
 			}
 			Entity killed = event.getEntity();
-			if((killed instanceof EntityDragon || killed instanceof EntityWither || killed instanceof EntityEvoker || killed instanceof EntityShulker || killed instanceof EntityElderGuardian) && base instanceof EntityPlayer)
+			if(killed != null && EnchantmentEndestReap.isValid(killed) && base instanceof EntityPlayer)
 			{
 				level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
 				if(level > 0)
 				{
-					NBTTagCompound nbt = killed.getEntityData();
-					nbt.setInteger(EnchantmentEndestReap.REAP_STORAGE, Math.min(nbt.getInteger(EnchantmentEndestReap.REAP_STORAGE)+1, ((EntityPlayer)base).experienceLevel));
+					NBTTagCompound nbt = entity.getEntityData();
+					int result = Math.min(nbt.getInteger(EnchantmentEndestReap.REAP_STORAGE)+1, ((EntityPlayer)base).experienceLevel);
+					nbt.setInteger(EnchantmentEndestReap.REAP_STORAGE, result);
+					setInt(base.getHeldItemMainhand(), EnchantmentEndestReap.REAP_STORAGE, result);
 				}
 			}
 		}

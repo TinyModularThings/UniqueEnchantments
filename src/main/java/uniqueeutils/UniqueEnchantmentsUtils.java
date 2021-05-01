@@ -31,7 +31,7 @@ public class UniqueEnchantmentsUtils
 		UniqueEnchantments.registerEnchantments(SLEIPNIRS_GRACE, FAMINES_ODIUM, THICK_PICK, ROCKET_MAN, CLIMBER, PHANES_REGRET);
 		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);
 		EntityEvents.INSTANCE.registerAnvilHelper(THICK_PICK, EnchantmentThickPick.VALIDATOR, EnchantmentThickPick.TAG);
-		EntityEvents.INSTANCE.registerStorageTooltip(THICK_PICK, "tooltip.uniqeeutil.stored.repair.name", EnchantmentThickPick.TAG);
+		EntityEvents.INSTANCE.registerStorageTooltip(THICK_PICK, "tooltip.uniqueeutil.stored.repair.name", EnchantmentThickPick.TAG);
 	}
 	
 }

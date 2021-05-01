@@ -25,6 +25,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
@@ -133,7 +134,7 @@ public class UtilsHandler
 			IBlockState state = event.getWorld().getBlockState(event.getPos());
 			if(state.getBlock().isLadder(state, event.getWorld(), event.getPos(), event.getEntityLiving()))
 			{
-				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.CLIMBER, event.getEntityPlayer().getHeldItem(event.getHand()));
+				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.CLIMBER, event.getEntityPlayer().getItemStackFromSlot(EntityEquipmentSlot.LEGS));
 				if(level > 0)
 				{
 					MutableBlockPos pos = new MutableBlockPos(event.getPos());
@@ -145,12 +146,17 @@ public class UtilsHandler
 						blocks.add(state.getBlock());
 					}
 					while(state.getBlock().isLadder(state, event.getWorld(), pos, event.getEntityLiving()));
-					if(!event.getWorld().getBlockState(pos.up()).isBlockNormalCube() && !event.getWorld().getBlockState(pos.up(2)).isBlockNormalCube())
+					if(!event.getWorld().getBlockState(pos).isBlockNormalCube() && !event.getWorld().getBlockState(pos.up()).isBlockNormalCube())
 					{
 						NBTTagCompound nbt = event.getEntityPlayer().getEntityData();
 						nbt.setLong(EnchantmentClimber.CLIMB_POS, pos.toLong());
 						nbt.setInteger(EnchantmentClimber.CLIMB_DELAY, EnchantmentClimber.getClimbTime(level, blocks));
 						nbt.setLong(EnchantmentClimber.CLIMB_START, event.getWorld().getTotalWorldTime());
+						event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.climb.start.name"), true);
+					}
+					else
+					{
+						event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.climb.fail.name"), true);
 					}
 				}
 			}

@@ -143,7 +143,7 @@ public class UniqueEnchantments
 		EntityEvents.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniqee.stored.lava.name", EnchantmentIfritsGrace.LAVA_COUNT);
 		EntityEvents.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniqee.stored.feather.name", EnchantmentIcarusAegis.FEATHER_TAG);
 		EntityEvents.INSTANCE.registerStorageTooltip(ENDER_MENDING, "tooltip.uniqee.stored.repair.name", EnchantmentEnderMending.ENDER_TAG);
-		
+		EntityEvents.INSTANCE.registerStorageTooltip(ENDEST_REAP, "tooltip.unqiuee.stored.reap.name", EnchantmentEndestReap.REAP_STORAGE);
 		
 		EntityEvents.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, EnchantmentMidasBlessing.VALIDATOR, EnchantmentMidasBlessing.GOLD_COUNTER);
 		EntityEvents.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, EnchantmentIfritsGrace.VALIDATOR, EnchantmentIfritsGrace.LAVA_COUNT);

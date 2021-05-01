@@ -27,6 +27,7 @@ public class EnchantmentAdvancedDamage extends EnchantmentDamage implements ITog
 	DefaultData actualData;
     public float scalar;
     boolean isEnabled = true;
+    boolean isActivated = true;
     
 	public EnchantmentAdvancedDamage(int damageTypeIn)
 	{
@@ -58,7 +59,7 @@ public class EnchantmentAdvancedDamage extends EnchantmentDamage implements ITog
 	@Override
 	public boolean isEnabled()
 	{
-		return isEnabled;
+		return isActivated;
 	}
 	
     @Override
@@ -134,6 +135,7 @@ public class EnchantmentAdvancedDamage extends EnchantmentDamage implements ITog
 	public void loadFromConfig(Configuration config)
 	{
 		isEnabled = config.get(getConfigName(), "enabled", true).getBoolean();
+		isActivated = config.get(getConfigName(), "activated", true).getBoolean();
 		actualData = new DefaultData(defaults, config, getConfigName());
 		scalar = (float)config.get(getConfigName(), "scalar", DEFAULTS[damageType]).getDouble();
 		config.getCategory(getConfigName()).setLanguageKey(getName());

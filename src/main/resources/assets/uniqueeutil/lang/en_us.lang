@@ -6,6 +6,13 @@ enchantment.uniqueeutil.thick_pick=Thick Pick
 enchantment.uniqueeutil.thick_pick.desc=Consume Gems to increase Mining Speed for Blocks with a high Hardness
 enchantment.uniqueeutil.rocketman=Rocket Man
 enchantment.uniqueeutil.rocketman.desc=A Rocket can force you into Elytra Mode. Rocket Flight Duration increased.
+enchantment.uniqueeutil.climber=Climber
+enchantment.uniqueeutil.climber.desc=Right-clicking a climbable Block, will teleport you the most upper block after some seconds. You're not allowed to move meanwhile.
+enchantment.uniqueeutil.phanes_regret=Phanes Regret
+enchantment.uniqueeutil.phanes_regret.desc=Has a Chance to deny any Health gain, such as Totem of Undying
+enchantment.uniqueeutil.poseidons_soul=Poseidon's Soul
+enchantment.uniqueeutil.poseidons_soul.desc=Throwing your Trident on an Aquatic Ressource will replicate the Block in exchange for Experience
 
-
-tooltip.uniqeeutil.stored.repair.name=Stored Gems %s
+tooltip.uniqueeutil.stored.repair.name=Stored Gems %s
+tooltip.uniqueeutil.climb.start.name=Starting to Climb now
+tooltip.uniqueeutil.climb.fail.name=Top is obstructed

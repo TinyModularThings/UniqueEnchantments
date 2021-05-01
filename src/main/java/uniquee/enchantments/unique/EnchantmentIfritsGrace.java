@@ -4,15 +4,14 @@ import java.util.function.ToIntFunction;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentLootBonus;
-import net.minecraft.enchantment.EnchantmentUntouching;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
 
@@ -35,11 +34,11 @@ public class EnchantmentIfritsGrace extends UniqueEnchantment implements IGraceE
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof EnchantmentLootBonus || ench instanceof EnchantmentUntouching || ench instanceof EnchantmentMidasBlessing ? false : super.canApplyTogether(ench);
+		addIncomats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH, UniqueEnchantments.MIDAS_BLESSING);
 	}
-	
+		
 	@Override
 	public void loadData(Configuration config)
 	{

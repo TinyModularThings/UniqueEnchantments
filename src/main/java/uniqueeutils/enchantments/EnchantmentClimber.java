@@ -9,6 +9,7 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 
 public class EnchantmentClimber extends UniqueEnchantment
@@ -22,6 +23,13 @@ public class EnchantmentClimber extends UniqueEnchantment
 	public EnchantmentClimber()
 	{
 		super(new DefaultData("climber", Rarity.COMMON, 3, true, 14, 8, 30), EnumEnchantmentType.ARMOR_LEGS, new EntityEquipmentSlot[]{EntityEquipmentSlot.LEGS});
+		setCategory("utils");
+	}
+	
+	@Override
+	public void loadIncompats()
+	{
+		addIncomats(UniqueEnchantments.SWIFT);
 	}
 	
 	@Override

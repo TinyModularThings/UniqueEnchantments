@@ -1,11 +1,10 @@
 package uniquee.enchantments.unique;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentArrowInfinite;
-import net.minecraft.enchantment.EnchantmentMending;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 
 public class EnchantmentEnderMarksmen extends UniqueEnchantment
@@ -16,13 +15,13 @@ public class EnchantmentEnderMarksmen extends UniqueEnchantment
 	{
 		super(new DefaultData("endermarksmen", Rarity.VERY_RARE, 1, true, 28, 2, 16), EnumEnchantmentType.BOW, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
-			
+	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof EnchantmentMending || ench instanceof EnchantmentArrowInfinite || ench instanceof EnchantmentEcological ? false : super.canApplyTogether(ench);
+		addIncomats(UniqueEnchantments.ECOLOGICAL, Enchantments.MENDING, Enchantments.INFINITY);
 	}
-
+	
 	@Override
 	public void loadData(Configuration config)
 	{

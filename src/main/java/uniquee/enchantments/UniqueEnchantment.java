@@ -18,6 +18,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	DefaultData defaults;
 	DefaultData actualData;
 	protected boolean enabled = false;
+	protected boolean activated = false;
 	String configName;
 	String categoryName = "base";
 	
@@ -88,7 +89,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	@Override
 	public boolean isEnabled()
 	{
-		return enabled;
+		return activated;
 	}
 	
 	protected boolean canApplyToItem(ItemStack stack)
@@ -127,6 +128,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	public final void loadFromConfig(Configuration config)
 	{
 		enabled = config.get(getConfigName(), "enabled", true).getBoolean();
+		activated = config.get(getConfigName(), "activated", true).getBoolean();
 		actualData = new DefaultData(defaults, config, getConfigName());
 		loadData(config);
 		config.getCategory(getConfigName()).setLanguageKey(getName());
