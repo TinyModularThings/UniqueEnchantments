@@ -47,6 +47,7 @@ public class ThickPickEnchantment extends UniqueEnchantment
 	@Override
 	public void onConfigChanged()
 	{
+		super.onConfigChanged();
 		ITEMS.clear();
 		ITEMS.put(Items.DIAMOND, 8);
 		ITEMS.put(Items.EMERALD, 3);

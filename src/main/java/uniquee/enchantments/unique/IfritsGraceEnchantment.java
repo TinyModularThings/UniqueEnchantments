@@ -6,10 +6,8 @@ import java.util.function.ToIntFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.LootBonusEnchantment;
-import net.minecraft.enchantment.SilkTouchEnchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,6 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.ForgeRegistries;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
 import uniquee.utils.IntStat;
@@ -42,9 +41,9 @@ public class IfritsGraceEnchantment extends UniqueEnchantment implements IGraceE
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof LootBonusEnchantment || ench instanceof SilkTouchEnchantment || ench instanceof MidasBlessingEnchantment ? false : super.canApplyTogether(ench);
+		addIncomats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH, UniqueEnchantments.MIDAS_BLESSING);
 	}
 
 	@Override
@@ -59,6 +58,7 @@ public class IfritsGraceEnchantment extends UniqueEnchantment implements IGraceE
 	@Override
 	public void onConfigChanged()
 	{
+		super.onConfigChanged();
 		LAVA_ITEMS.clear();
 		LAVA_ITEMS.put(Items.LAVA_BUCKET, 250);
 		LAVA_ITEMS.put(Items.MAGMA_CREAM, 20);

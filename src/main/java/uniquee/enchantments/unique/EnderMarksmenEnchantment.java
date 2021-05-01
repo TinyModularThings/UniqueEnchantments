@@ -1,13 +1,11 @@
 package uniquee.enchantments.unique;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.InfinityEnchantment;
-import net.minecraft.enchantment.MendingEnchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.complex.EnderMendingEnchantment;
 import uniquee.utils.DoubleStat;
 
 public class EnderMarksmenEnchantment extends UniqueEnchantment
@@ -20,9 +18,9 @@ public class EnderMarksmenEnchantment extends UniqueEnchantment
 	}
 			
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof MendingEnchantment || ench instanceof EnderMendingEnchantment || ench instanceof InfinityEnchantment || ench instanceof EcologicalEnchantment ? false : super.canApplyTogether(ench);
+		addIncomats(UniqueEnchantments.ECOLOGICAL, Enchantments.MENDING, Enchantments.INFINITY);
 	}
 	
 	@Override

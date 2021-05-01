@@ -1,6 +1,14 @@
 package uniqueeutils.handler;
 
+import java.util.List;
+
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -10,19 +18,30 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FireworkRocketEntity;
+import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ElytraItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockPos.Mutable;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,7 +50,10 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import uniquee.handler.EntityEvents;
 import uniquee.utils.MiscUtil;
 import uniqueeutils.UniqueEnchantmentsUtils;
+import uniqueeutils.enchantments.ClimberEnchantment;
 import uniqueeutils.enchantments.FaminesOdiumEnchantment;
+import uniqueeutils.enchantments.PhanesRegretEnchantment;
+import uniqueeutils.enchantments.PoseidonsSoulEnchantment;
 import uniqueeutils.enchantments.RocketManEnchantment;
 import uniqueeutils.enchantments.SleipnirsGraceEnchantment;
 import uniqueeutils.enchantments.ThickPickEnchantment;
@@ -72,6 +94,15 @@ public class UtilsHandler
 				}
 			}
 		}
+		CompoundNBT nbt = player.getPersistentData();
+		if(nbt.contains(ClimberEnchantment.CLIMB_POS) && time >= nbt.getLong(ClimberEnchantment.CLIMB_START) + nbt.getLong(ClimberEnchantment.CLIMB_DELAY))
+		{
+			nbt.remove(ClimberEnchantment.CLIMB_DELAY);
+			nbt.remove(ClimberEnchantment.CLIMB_START);
+			BlockPos pos = BlockPos.fromLong(nbt.getLong(ClimberEnchantment.CLIMB_POS));
+			nbt.remove(ClimberEnchantment.CLIMB_POS);
+			player.setPositionAndUpdate(pos.getX()+0.5F, pos.getY(), pos.getZ() + 0.5F);
+		}
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.FAMINES_ODIUM, player);
 		if(level > 0)
 		{
@@ -87,6 +118,76 @@ public class UtilsHandler
 				else
 				{
 					player.attackEntityFrom(DamageSource.MAGIC, FaminesOdiumEnchantment.DAMAGE.getFloat() * duration);
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onHeal(LivingHealEvent event)
+	{
+		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
+		if(level > 0 && event.getEntity().getEntityWorld().rand.nextDouble() < PhanesRegretEnchantment.CHANCE.get() * level)
+		{
+			event.setCanceled(true);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onArrowHit(ProjectileImpactEvent.Arrow event)
+	{
+		if(!(event.getArrow() instanceof TridentEntity) || !(event.getArrow().func_234616_v_() instanceof PlayerEntity)) return;
+		RayTraceResult result = event.getRayTraceResult();
+		if(!(result instanceof BlockRayTraceResult)) return;
+		BlockRayTraceResult ray = (BlockRayTraceResult)result;
+		World world = event.getEntity().getEntityWorld();
+		BlockState state = world.getBlockState(ray.getPos());
+		if(PoseidonsSoulEnchantment.isValid(state.getBlock()))
+		{
+			ItemStack arrowStack = EntityEvents.getArrowStack(event.getArrow());
+			if(arrowStack.getItem() != Items.TRIDENT) return;
+			Object2IntMap<Enchantment> enchs = MiscUtil.getEnchantments(arrowStack);
+			int level = enchs.getInt(UniqueEnchantmentsUtils.POSEIDONS_SOUL);
+			if(level <= 0) return;
+			ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
+			stack.addEnchantment(Enchantments.SILK_TOUCH, 1);
+			Block.spawnAsEntity(world, ray.getPos(), new ItemStack(state.getBlock(), level * (world.rand.nextInt(enchs.getInt(Enchantments.FORTUNE)+1)+1)));
+			MiscUtil.drainExperience((PlayerEntity)event.getArrow().func_234616_v_(), (int)Math.log10(Math.pow(PoseidonsSoulEnchantment.BASE_CONSUMTION.get(), level)));
+		}
+	}
+	
+	@SubscribeEvent
+	public void onBlockClick(RightClickBlock event)
+	{
+		if(event.getPlayer().isSneaking())
+		{
+			BlockState state = event.getWorld().getBlockState(event.getPos());
+			if(state.getBlock().isLadder(state, event.getWorld(), event.getPos(), event.getEntityLiving()))
+			{
+				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.CLIMBER, event.getPlayer().getItemStackFromSlot(EquipmentSlotType.LEGS));
+				if(level > 0)
+				{
+					Mutable pos = new Mutable().setPos(event.getPos());
+					List<Block> blocks = new ObjectArrayList<>();
+					do
+					{
+						pos.move(Direction.UP);
+						state = event.getWorld().getBlockState(pos);
+						blocks.add(state.getBlock());
+					}
+					while(state.getBlock().isLadder(state, event.getWorld(), pos, event.getEntityLiving()));
+					if(!event.getWorld().getBlockState(pos.up()).hasOpaqueCollisionShape(event.getWorld(), pos.up()) && !event.getWorld().getBlockState(pos.up(2)).hasOpaqueCollisionShape(event.getWorld(), pos.up(2)))
+					{
+						CompoundNBT nbt = event.getPlayer().getPersistentData();
+						nbt.putLong(ClimberEnchantment.CLIMB_POS, pos.toLong());
+						nbt.putInt(ClimberEnchantment.CLIMB_DELAY, ClimberEnchantment.getClimbTime(level, blocks));
+						nbt.putLong(ClimberEnchantment.CLIMB_START, event.getWorld().getGameTime());
+						event.getPlayer().sendStatusMessage(new TranslationTextComponent("tooltip.uniqueutil.climb.start.name"), true);
+					}
+					else
+					{
+						event.getPlayer().sendStatusMessage(new TranslationTextComponent("tooltip.uniqueutil.climb.fail.name"), true);
+					}
 				}
 			}
 		}

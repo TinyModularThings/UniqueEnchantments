@@ -6,7 +6,6 @@ import java.util.Set;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -41,12 +40,12 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 	}
 		
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof WarriorsGraceEnchantment || ench instanceof NaturesGraceEnchantment ? false : super.canApplyTogether(ench);
+		addIncomats(UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.NATURES_GRACE);
 	}
 	
-	public static void applyToEntity(Entity entity)
+	public static void applyToEntity(Entity entity, boolean mining, float hitScalar)
 	{
 		if(entity instanceof LivingEntity)
 		{
@@ -64,10 +63,10 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 					}
 					for(PotionPlan plan : EFFECTS.get(i))
 					{
-						EffectInstance effect = plan.createEffect(level);
-						if(potions.add(effect.getPotion()))
+						if(plan.isValid(mining)) 
 						{
-							base.addPotionEffect(effect);
+							EffectInstance effect = plan.createEffect(level, hitScalar);
+							if(potions.add(effect.getPotion())) base.addPotionEffect(effect);
 						}
 					}
 				}
@@ -79,18 +78,19 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 	public void loadData(Builder config)
 	{
 		config.comment("Which Potion Effects should be applied. Format: Potion;StartEnchantmentLvL;StartPotionLvL;PotionLvLPerEnchantLvL;BaseDuration");
-		EFFECT_CONFIG = config.defineList("effects", ObjectArrayList.wrap(new String[]{"minecraft:regeneration;1;0;0.25;10", "minecraft:speed;1;0;1.0;60", "minecraft:haste;2;0;1.0;40", "minecraft:speed;2;1;0.5;70", "minecraft:resistance;3;0;1.0;20", "minecraft:haste;3;1;0.5;60", "minecraft:strength;4;0;1.0;20", "minecraft:resistance;4;1;0.25;25", "minecraft:strength;5;1;0.2;30"}), (T) -> true);
+		EFFECT_CONFIG = config.defineList("effects", ObjectArrayList.wrap(new String[]{"minecraft:regeneration;1;0;0.25;0.5;true;false", "minecraft:speed;1;0;1.0;3;true;true", "minecraft:haste;2;0;1.0;2;true;true", "minecraft:speed;2;1;0.5;3.5;true;true", "minecraft:resistance;3;0;1.0;1;true;false", "minecraft:haste;3;1;0.5;3;true;true", "minecraft:strength;4;0;1.0;1;true;false", "minecraft:resistance;4;1;0.25;1.25;true;false", "minecraft:fire_resistance;4;0;1.0;1.5;false;true", "minecraft:strength;5;1;0.2;1.5;true;false"}), (T) -> true);
 	}
 	
 	@Override
 	public void onConfigChanged()
 	{
+		super.onConfigChanged();
 		EFFECTS.clear();
 		List<? extends String> list = EFFECT_CONFIG.get();
 		for(int i = 0,m=list.size();i<m;i++)
 		{
 			String[] split = list.get(i).split(";");
-			if(split.length == 5)
+			if(split.length == 7)
 			{
 				Effect p = ForgeRegistries.POTIONS.getValue(new ResourceLocation(split[0]));
 				if(p != null)
@@ -114,6 +114,8 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 		int basePotionLevel;
 		double PotionLevelIncrease;
 		int baseDuration;
+		boolean fighting;
+		boolean mining;
 		
 		public PotionPlan(Effect potion, String[] data)
 		{
@@ -121,13 +123,20 @@ public class AlchemistsGraceEnchantment extends UniqueEnchantment implements IGr
 			baseEnchantment = Integer.parseInt(data[1]);
 			basePotionLevel = Integer.parseInt(data[2]);
 			PotionLevelIncrease = Double.parseDouble(data[3]);
-			baseDuration = Integer.parseInt(data[4]);
+			baseDuration = (int)(Double.parseDouble(data[4]) * 20);
+			fighting = Boolean.parseBoolean(data[5]);
+			mining = Boolean.parseBoolean(data[6]);
 		}
 		
-		public EffectInstance createEffect(int baseLevel)
+		public EffectInstance createEffect(int baseLevel, float hitScalar)
 		{
 			int diff = Math.max(0, baseLevel - baseEnchantment);
-			return new EffectInstance(potion, baseDuration * baseLevel, basePotionLevel + (int)(PotionLevelIncrease * diff));
+			return new EffectInstance(potion, (int)(baseDuration * baseLevel * Math.log(hitScalar+0.5F)), basePotionLevel + (int)(PotionLevelIncrease * diff));
+		}
+
+		public boolean isValid(boolean mining)
+		{
+			return mining ? this.mining : fighting;
 		}
 	}
 }

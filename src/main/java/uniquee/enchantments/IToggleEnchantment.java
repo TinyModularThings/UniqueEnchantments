@@ -8,8 +8,7 @@ public interface IToggleEnchantment
 	
 	public void loadFromConfig(ForgeConfigSpec.Builder entry);
 	
-	public default void onConfigChanged()
-	{
-		//TODO Implement
-	}
+	public default void onConfigChanged(){}
+	public default void loadIncompats(){}
+	public boolean isEnabled();
 }

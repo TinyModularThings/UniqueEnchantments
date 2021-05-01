@@ -75,6 +75,8 @@
 	"enchantment.uniquee.ender_librarian.desc": "Shift-rightclicking with a Map will teleport you in a random spot in the Map, Treasuremap will teleport you more precise to the Location. The Item will be consumed",
 	"enchantment.uniquee.demeters_soul": "Demeter's Soul",
 	"enchantment.uniquee.demeters_soul.desc": "Shift-rightclicking a seed to active. Marked seeds will only produce 1 product and will automatically be harvested and stored into your Ender Chest",
+	"enchantment.uniquee.endest_reap": "Endest Reap",
+	"enchantment.uniquee.endest_reap.desc": "Deals bonus magic damage on higher beings. Gains a Stack for every Reaped being.",
 	
 	"//Curse": true,
 	"enchantment.uniquee.pestilences_odium": "Pestilence's Odium",
@@ -91,5 +93,6 @@
 	"tooltip.uniqee.stored.feather.name": "Stored Feathers: %s",
 	"tooltip.uniqee.stored.repair.name": "Stored Repairs: %s",
 	"tooltip.uniqee.crops.added.name": "Added Crop To Auto Harvester",
-	"tooltip.uniqee.crops.removed.name": "Removed Crop From Auto Harvester"
+	"tooltip.uniqee.crops.removed.name": "Removed Crop From Auto Harvester",
+	"tooltip.uniquee.stored.reap.name": "Stored Reap: %s"
 }

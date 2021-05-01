@@ -1,14 +1,12 @@
 package uniquee.enchantments.simple;
 
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.complex.SpartanWeaponEnchantment;
-import uniquee.enchantments.complex.SwiftBladeEnchantment;
 import uniquee.utils.DoubleStat;
 
 public class BerserkEnchantment extends UniqueEnchantment
@@ -27,9 +25,9 @@ public class BerserkEnchantment extends UniqueEnchantment
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof SwiftBladeEnchantment || ench instanceof SpartanWeaponEnchantment ? false : super.canApplyTogether(ench);
+		addIncomats(UniqueEnchantments.SWIFT_BLADE, UniqueEnchantments.SPARTAN_WEAPON);
 	}
 
 	@Override

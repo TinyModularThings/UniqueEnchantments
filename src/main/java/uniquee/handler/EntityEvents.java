@@ -124,6 +124,7 @@ import uniquee.enchantments.unique.CloudwalkerEnchantment;
 import uniquee.enchantments.unique.DemetersSoulEnchantment;
 import uniquee.enchantments.unique.EcologicalEnchantment;
 import uniquee.enchantments.unique.EnderMarksmenEnchantment;
+import uniquee.enchantments.unique.EndestReapEnchantment;
 import uniquee.enchantments.unique.FastFoodEnchantment;
 import uniquee.enchantments.unique.IcarusAegisEnchantment;
 import uniquee.enchantments.unique.NaturesGraceEnchantment;
@@ -226,6 +227,11 @@ public class EntityEvents
 						}
 					}
 				}
+				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, player.getHeldItemMainhand());
+				if(level > 0)
+				{
+					setInt(player.getHeldItemMainhand(), EndestReapEnchantment.REAP_STORAGE, player.getPersistentData().getInt(EndestReapEnchantment.REAP_STORAGE));
+				}
 			}
 			if(player.world.getGameTime() % 30 == 0)
 			{
@@ -273,14 +279,6 @@ public class EntityEvents
 					else if(result == ActionResultType.SUCCESS)
 					{
 						player.addExhaustion(0.06F);
-					}
-				}
-				if(isMining(player))
-				{
-					int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ALCHEMISTS_GRACE, player.getHeldItemMainhand());
-					if(level > 0)
-					{
-						AlchemistsGraceEnchantment.applyToEntity(player);
 					}
 				}
 				Object2IntMap.Entry<EquipmentSlotType> level = MiscUtil.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, player);
@@ -514,7 +512,13 @@ public class EntityEvents
 			return;
 		}
 		ItemStack held = event.getPlayer().getHeldItemMainhand();
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.SMART_ASS, held);
+		Object2IntMap<Enchantment> enchs = MiscUtil.getEnchantments(held);
+		int level = enchs.getInt(UniqueEnchantments.ALCHEMISTS_GRACE);
+		if(level > 0)
+		{
+			AlchemistsGraceEnchantment.applyToEntity(event.getPlayer(), true, event.getState().getBlockHardness(event.getWorld(), event.getPos()));
+		}
+		level = enchs.getInt(UniqueEnchantments.SMART_ASS);
 		if(level > 0)
 		{
 			if(SmartAssEnchantment.VALID_STATES.test(event.getState()))
@@ -542,12 +546,13 @@ public class EntityEvents
 				}
 			}
 		}
-		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.SAGES_BLESSING, held);
+		level = enchs.getInt(UniqueEnchantments.SAGES_BLESSING);
 		if(level > 0)
 		{
+			level *= (event.getWorld().getRandom().nextInt(enchs.getInt(Enchantments.FORTUNE)+1)+1);
 			event.setExpToDrop((int)(event.getExpToDrop() + event.getExpToDrop() * (level * SagesBlessingEnchantment.XP_BOOST.get())));
 		}
-		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.MOMENTUM, held);
+		level = enchs.getInt(UniqueEnchantments.MOMENTUM);
 		if(level > 0)
 		{
 			int count = getInt(held, MomentumEnchantment.COUNT, 0);
@@ -672,7 +677,7 @@ public class EntityEvents
 	public void onEntityHit(LivingAttackEvent event)
 	{
 		Entity entity = event.getSource().getTrueSource();
-		AlchemistsGraceEnchantment.applyToEntity(entity);
+		AlchemistsGraceEnchantment.applyToEntity(entity, false, 1.5F);
 	}
 	
 	@SubscribeEvent
@@ -683,11 +688,12 @@ public class EntityEvents
 		{
 			LivingEntity base = (LivingEntity)entity;
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(base.getHeldItemMainhand());
-			if(enchantments.getInt(UniqueEnchantments.BERSERKER) > 0)
+			int level = enchantments.getInt(UniqueEnchantments.BERSERKER);
+			if(level > 0)
 			{
-				event.setAmount(event.getAmount() * (1F + (BerserkEnchantment.SCALAR.getFloat() * (base.getMaxHealth() / Math.max(1F, base.getHealth())))));
+				event.setAmount(event.getAmount() * (float)(1D + (BerserkEnchantment.SCALAR.get() * (base.getMaxHealth() / Math.max(base.getHealth(), 1D)) * Math.log10(level+1))));
 			}
-			int level = enchantments.getInt(UniqueEnchantments.SWIFT_BLADE);
+			level = enchantments.getInt(UniqueEnchantments.SWIFT_BLADE);
 			if(level > 0)
 			{
 				ModifiableAttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
@@ -770,6 +776,11 @@ public class EntityEvents
 			if(level > 0 && base.getHeldItemOffhand().getItem() instanceof ShieldItem)
 			{
 				event.setAmount(event.getAmount() + (event.getAmount() * (SpartanWeaponEnchantment.SCALAR.getFloat() * level)));
+			}
+			level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
+			if(level > 0)
+			{
+				 event.setAmount(event.getAmount() * (float)(1D + ((level * EndestReapEnchantment.BONUS_DAMAGE_LEVEL.get()) + (level * base.getPersistentData().getInt(EndestReapEnchantment.REAP_STORAGE) * EndestReapEnchantment.REAP_MULTIPLIER.get()))));
 			}
 		}
 		if(event.getSource() == DamageSource.FLY_INTO_WALL)
@@ -868,6 +879,17 @@ public class EntityEvents
 					stack.damageItem(-amount, base, MiscUtil.get(EquipmentSlotType.MAINHAND));
 				}
 			}
+			Entity killed = event.getEntity();
+			if(EndestReapEnchantment.VALID_ENTITIES.contains(killed.getType().getRegistryName()) && base instanceof PlayerEntity)
+			{
+				level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
+				if(level > 0)
+				{
+					CompoundNBT nbt = base.getPersistentData();
+					nbt.putInt(EndestReapEnchantment.REAP_STORAGE, Math.min(nbt.getInt(EndestReapEnchantment.REAP_STORAGE)+1, ((PlayerEntity)base).experienceLevel));
+					setInt(base.getHeldItemMainhand(), EndestReapEnchantment.REAP_STORAGE, nbt.getInt(EndestReapEnchantment.REAP_STORAGE));
+				}
+			}
 		}
 		Object2IntMap.Entry<EquipmentSlotType> ench = MiscUtil.getEnchantedItem(UniqueEnchantments.DEATHS_ODIUM, event.getEntityLiving());
 		if(ench.getIntValue() > 0)
@@ -905,9 +927,11 @@ public class EntityEvents
 		{
 			return;
 		}
-		int level = MiscUtil.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, event.getAttackingPlayer()).getIntValue();
+		Object2IntMap.Entry<EquipmentSlotType> slot = MiscUtil.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, event.getAttackingPlayer());
+		int level = slot.getIntValue();
 		if(level > 0)
 		{
+			level *= (event.getAttackingPlayer().world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, event.getAttackingPlayer().getItemStackFromSlot(slot.getKey()))+1)+1);
 			event.setDroppedExperience((int)(event.getDroppedExperience() + event.getDroppedExperience() * (level * SagesBlessingEnchantment.XP_BOOST.get())));
 		}
 	}
@@ -933,9 +957,11 @@ public class EntityEvents
 		if(entity instanceof PlayerEntity && event.getEntityLiving() instanceof AnimalEntity)
 		{
 			PlayerEntity base = (PlayerEntity)entity;
-			int level = MiscUtil.getEnchantedItem(UniqueEnchantments.FAST_FOOD, base).getIntValue();
+			Object2IntMap.Entry<EquipmentSlotType> slot = MiscUtil.getEnchantedItem(UniqueEnchantments.FAST_FOOD, base);
+			int level = slot.getIntValue();
 			if(level > 0)
 			{
+				level *= (base.world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, base.getItemStackFromSlot(slot.getKey()))+1)+1);
 				base.getFoodStats().addStats(FastFoodEnchantment.NURISHMENT.get(level), FastFoodEnchantment.SATURATION.getFloat() * level);
 				event.setCanceled(true);
 			}
@@ -956,7 +982,7 @@ public class EntityEvents
 		}
 		AbstractArrowEntity arrow = event.getArrow();
 		Entity shooter = arrow.func_234616_v_();
-		AlchemistsGraceEnchantment.applyToEntity(shooter);
+		AlchemistsGraceEnchantment.applyToEntity(shooter, false, 1.5F);
 		if(shooter instanceof PlayerEntity)
 		{
 			PlayerEntity player = (PlayerEntity)shooter;

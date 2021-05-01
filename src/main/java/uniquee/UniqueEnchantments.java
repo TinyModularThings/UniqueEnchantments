@@ -54,6 +54,7 @@ import uniquee.enchantments.unique.DemetersSoulEnchantment;
 import uniquee.enchantments.unique.EcologicalEnchantment;
 import uniquee.enchantments.unique.EnderLibrarianEnchantment;
 import uniquee.enchantments.unique.EnderMarksmenEnchantment;
+import uniquee.enchantments.unique.EndestReapEnchantment;
 import uniquee.enchantments.unique.FastFoodEnchantment;
 import uniquee.enchantments.unique.IcarusAegisEnchantment;
 import uniquee.enchantments.unique.IfritsGraceEnchantment;
@@ -106,6 +107,7 @@ public class UniqueEnchantments extends BaseUEMod
 	public static Enchantment ICARUS_AEGIS;
 	public static Enchantment ENDER_LIBRARIAN;
 	public static Enchantment DEMETERS_SOUL;
+	public static Enchantment ENDEST_REAP;
 	
 	//Curses
 	public static Enchantment PESTILENCES_ODIUM;
@@ -152,6 +154,7 @@ public class UniqueEnchantments extends BaseUEMod
 		ICARUS_AEGIS = register(new IcarusAegisEnchantment());
 		ENDER_LIBRARIAN = register(new EnderLibrarianEnchantment());
 		DEMETERS_SOUL = register(new DemetersSoulEnchantment());
+		ENDEST_REAP = register(new EndestReapEnchantment());
 		
 		PESTILENCES_ODIUM = register(new PestilencesOdiumEnchantment());
 		DEATHS_ODIUM = register(new DeathsOdiumEnchantment());
@@ -170,6 +173,7 @@ public class UniqueEnchantments extends BaseUEMod
 		EntityEvents.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniqee.stored.lava.name", IfritsGraceEnchantment.LAVA_COUNT);
 		EntityEvents.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniqee.stored.feather.name", IcarusAegisEnchantment.FEATHER_TAG);
 		EntityEvents.INSTANCE.registerStorageTooltip(ENDER_MENDING, "tooltip.uniqee.stored.repair.name", EnderMendingEnchantment.ENDER_TAG);
+		EntityEvents.INSTANCE.registerStorageTooltip(ENDEST_REAP, "tooltip.uniquee.stored.reap.name", EndestReapEnchantment.REAP_STORAGE);
 		
 		EntityEvents.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessingEnchantment.VALIDATOR, MidasBlessingEnchantment.GOLD_COUNTER);
 		EntityEvents.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGraceEnchantment.VALIDATOR, IfritsGraceEnchantment.LAVA_COUNT);

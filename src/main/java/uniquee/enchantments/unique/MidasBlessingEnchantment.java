@@ -5,10 +5,8 @@ import java.util.function.ToIntFunction;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.LootBonusEnchantment;
-import net.minecraft.enchantment.SilkTouchEnchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
@@ -17,6 +15,7 @@ import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.Tags;
+import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IBlessingEnchantment;
 import uniquee.utils.IntStat;
@@ -54,9 +53,9 @@ public class MidasBlessingEnchantment extends UniqueEnchantment implements IBles
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof LootBonusEnchantment || ench instanceof SilkTouchEnchantment || ench instanceof IfritsGraceEnchantment ? false : super.canApplyTogether(ench);
+		addIncomats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH, UniqueEnchantments.IFRIDS_GRACE);
 	}
 
 	@Override
