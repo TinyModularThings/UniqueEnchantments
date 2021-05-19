@@ -97,7 +97,6 @@ public class IdStat
 	
 	public boolean contains(ResourceLocation location)
 	{
-		System.out.print("Values: "+values+" : "+location);
 		return values.contains(location);
 	}
 }
