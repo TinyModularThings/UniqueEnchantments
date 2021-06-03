@@ -50,18 +50,30 @@ processResources {
 
 jar {
     version = uniquee_version
-    exclude "uniqueeutils", "assets/uniqueeutil"
+    exclude "uniqueeutils", "assets/uniqueeutil", "uniqueebattle", "assets/uniqueebattle"
 }
 
 task utilsJar(type: Jar) {
     baseName = 'Unique Enchantments Utils'
     version = unique_utils_version
     from(sourceSets.main.output) {
-        exclude 'uniquee', 'assets/uniquee', 'mcmod.info'
+        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueebattle', 'assets/uniqueebattle'
     }
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniqueeutils", 'name':"Unique Enchantments Utilities", 'description':"A Set of Unique Enchantments Utility classes"
+        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniqueeutils", 'name':"Unique Enchantments Utilities", 'description':"A Set of Unique Utility Enchantments"
+    }
+}
+
+task battleJar(type: Jar) {
+    baseName = 'Unique Enchantments Battle'
+    version = unique_battle_version
+    from(sourceSets.main.output) {
+        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueeutils', 'assets/uniqueeutil'
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniqueebattle", 'name':"Unique Enchantments Battle", 'description':"A Set of Unique Battle Enchantments"
     }
 }
 
@@ -70,8 +82,12 @@ reobf {
     utilsJar {
     	spec -> spec.classpath = sourceSets.main.compileClasspath
     }
+    battleJar {
+    	spec -> spec.classpath = sourceSets.main.compileClasspath
+    }
 }
 
 artifacts {
     archives utilsJar
+    archives battleJar
 }

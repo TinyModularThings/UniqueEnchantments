@@ -22,12 +22,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -275,4 +279,69 @@ public class UtilsHandler
 			catch(Exception e){e.printStackTrace();}
 		}
 	}
+	
+	@SubscribeEvent
+	public void onEntityAttack(LivingAttackEvent event)
+	{
+		if(event.getAmount() > 0F)
+		{
+			for(EntityPlayer player : event.getEntityLiving().getRecursivePassengersByType(EntityPlayer.class))
+			{
+				if(canBlockDamageSource(event.getSource(), player))
+				{
+					damageShield(event.getAmount(), player);
+					event.setCanceled(true);
+					return;
+				}
+			}
+		}
+	}
+	
+    public static void damageShield(float damage, EntityPlayer player)
+    {
+        if (damage >= 3.0F && player.getActiveItemStack().getItem().isShield(player.getActiveItemStack(), player))
+        {
+            ItemStack copyBeforeUse = player.getActiveItemStack().copy();
+            int i = 1 + MathHelper.floor(damage);
+            player.getActiveItemStack().damageItem(i, player);
+            if (player.getActiveItemStack().isEmpty())
+            {
+                EnumHand enumhand = player.getActiveHand();
+                net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, copyBeforeUse, enumhand);
+
+                if (enumhand == EnumHand.MAIN_HAND)
+                {
+                    player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
+                }
+                else
+                {
+                    player.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, ItemStack.EMPTY);
+                }
+
+                player.resetActiveHand();
+                player.playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.8F, 0.8F + player.world.rand.nextFloat() * 0.4F);
+            }
+        }
+    }
+	
+    public static boolean canBlockDamageSource(DamageSource damageSourceIn, EntityPlayer player)
+    {
+        if (!damageSourceIn.isUnblockable() && player.isActiveItemStackBlocking())
+        {
+        	if(MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.MOUNTING_AEGIS, player.getActiveItemStack()) <= 0) return false;
+            Vec3d vec3d = damageSourceIn.getDamageLocation();
+
+            if (vec3d != null)
+            {
+                Vec3d vec3d1 = player.getLook(1.0F);
+                Vec3d vec3d2 = vec3d.subtractReverse(new Vec3d(player.posX, player.posY, player.posZ)).normalize();
+                vec3d2 = new Vec3d(vec3d2.x, 0.0D, vec3d2.z);
+                if (vec3d2.dotProduct(vec3d1) < 0.0D)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
