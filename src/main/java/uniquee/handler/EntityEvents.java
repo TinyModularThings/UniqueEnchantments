@@ -356,7 +356,7 @@ public class EntityEvents
 		{
 			ItemStack equipStack = player.getItemStackFromSlot(slots[i]); 
 			level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ECOLOGICAL, equipStack);
-			if(level > 0 && equipStack.isDamaged() && player.world.getGameTime() % Math.max(1, (int)(EcologicalEnchantment.SPEED.get() / Math.sqrt(level / EcologicalEnchantment.SCALE.get()))) == 0)
+			if(level > 0 && equipStack.isDamaged() && player.world.getGameTime() % Math.max(1, (int)(EcologicalEnchantment.SPEED.get() / Math.sqrt(Math.pow(player.experienceLevel, level) / EcologicalEnchantment.SCALE.get()))) == 0)
 			{
 				if((cache == null ? cache = hasBlockCount(player.world, player.getPosition(), 1, EcologicalEnchantment.STATES) : cache.booleanValue()))
 				{

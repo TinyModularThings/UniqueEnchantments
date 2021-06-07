@@ -7,6 +7,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.CropsBlock;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
@@ -26,12 +28,15 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -39,6 +44,7 @@ import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -191,6 +197,28 @@ public class UtilsHandler
 				}
 			}
 		}
+		else
+		{
+			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(event.getItemStack());
+			if(ench.getInt(UniqueEnchantmentsUtils.DETEMERS_BLESSING) > 0)
+			{
+				BlockState state = event.getWorld().getBlockState(event.getPos());
+				if(state.getBlock() instanceof CropsBlock)
+				{
+					CropsBlock crops = (CropsBlock)state.getBlock();
+					if(crops.isMaxAge(state))
+					{
+						Block.spawnDrops(state, event.getWorld(), event.getPos(), event.getWorld().getTileEntity(event.getPos()), event.getPlayer(), event.getItemStack());
+						event.getWorld().setBlockState(event.getPos(), crops.withAge(0));
+						event.getItemStack().damageItem(1, event.getEntityLiving(), T -> T.sendBreakAnimation(event.getHand()));
+					}
+				}
+				else if(state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS_PATH || state.getBlock() == Blocks.GRASS_BLOCK)
+				{
+					event.getItemStack().attemptDamageItem(-ench.getInt(UniqueEnchantmentsUtils.DETEMERS_BLESSING), event.getWorld().rand, null);
+				}
+			}
+		}
 	}
 	
 	@SubscribeEvent
@@ -305,4 +333,79 @@ public class UtilsHandler
 			catch(Exception e){e.printStackTrace();}
 		}
 	}
+	
+	@SubscribeEvent
+	public void onEntityAttack(LivingAttackEvent event)
+	{
+		if(event.getAmount() > 0F)
+		{
+			for(PlayerEntity player : getPlayers(event.getEntity()))
+			{
+				if(canBlockDamageSource(event.getSource(), player))
+				{
+					damageShield(event.getAmount(), player);
+					event.setCanceled(true);
+					return;
+				}
+			}
+		}
+	}
+	
+	public List<PlayerEntity> getPlayers(Entity original)
+	{
+		List<PlayerEntity> players = new ObjectArrayList<>();
+		for(Entity entity : original.getRecursivePassengers())
+		{
+			if(entity instanceof PlayerEntity) players.add((PlayerEntity)entity);
+		}
+		return players;
+	}
+	
+    public static void damageShield(float damage, PlayerEntity player)
+    {
+        if (damage >= 3.0F && player.getActiveItemStack().getItem().isShield(player.getActiveItemStack(), player))
+        {
+            ItemStack copyBeforeUse = player.getActiveItemStack().copy();
+            int i = 1 + MathHelper.floor(damage);
+            player.getActiveItemStack().damageItem(i, player, T -> T.sendBreakAnimation(player.getActiveHand()));
+            if (player.getActiveItemStack().isEmpty())
+            {
+                Hand hand = player.getActiveHand();
+                net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, copyBeforeUse, hand);
+
+                if (hand == Hand.MAIN_HAND)
+                {
+                    player.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
+                }
+                else
+                {
+                    player.setItemStackToSlot(EquipmentSlotType.OFFHAND, ItemStack.EMPTY);
+                }
+
+                player.resetActiveHand();
+                player.playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.8F, 0.8F + player.world.rand.nextFloat() * 0.4F);
+            }
+        }
+    }
+
+    public static boolean canBlockDamageSource(DamageSource damageSourceIn, PlayerEntity player)
+    {
+        if (!damageSourceIn.isUnblockable() && player.isActiveItemStackBlocking())
+        {
+        	if(MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.MOUNTING_AEGIS, player.getActiveItemStack()) <= 0) return false;
+            Vec3d vec3d = damageSourceIn.getDamageLocation();
+
+            if (vec3d != null)
+            {
+                Vec3d vec3d1 = player.getLook(1.0F);
+                Vec3d vec3d2 = vec3d.subtractReverse(new Vec3d(player.posX, player.posY, player.posZ)).normalize();
+                vec3d2 = new Vec3d(vec3d2.x, 0.0D, vec3d2.z);
+                if (vec3d2.dotProduct(vec3d1) < 0.0D)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

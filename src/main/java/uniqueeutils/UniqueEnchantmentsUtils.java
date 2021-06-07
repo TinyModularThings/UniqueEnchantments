@@ -7,7 +7,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import uniquee.api.BaseUEMod;
 import uniquee.handler.EntityEvents;
 import uniqueeutils.enchantments.ClimberEnchantment;
+import uniqueeutils.enchantments.DemetersBlessingEnchantment;
 import uniqueeutils.enchantments.FaminesOdiumEnchantment;
+import uniqueeutils.enchantments.MountingAegisEnchantment;
 import uniqueeutils.enchantments.PhanesRegretEnchantment;
 import uniqueeutils.enchantments.PoseidonsSoulEnchantment;
 import uniqueeutils.enchantments.RocketManEnchantment;
@@ -26,6 +28,8 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	public static Enchantment CLIMBER;
 	public static Enchantment PHANES_REGRET;
 	public static Enchantment POSEIDONS_SOUL;
+	public static Enchantment MOUNTING_AEGIS;
+	public static Enchantment DETEMERS_BLESSING;
 	
 	public UniqueEnchantmentsUtils()
 	{
@@ -36,6 +40,8 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 		CLIMBER = register(new ClimberEnchantment());
 		PHANES_REGRET = register(new PhanesRegretEnchantment());
 		POSEIDONS_SOUL = register(new PoseidonsSoulEnchantment());
+		MOUNTING_AEGIS = register(new MountingAegisEnchantment());
+		DETEMERS_BLESSING = register(new DemetersBlessingEnchantment());
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UniqueEnchantment-Utils.toml");
 		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);
 		EntityEvents.INSTANCE.registerAnvilHelper(THICK_PICK, ThickPickEnchantment.VALIDATOR, ThickPickEnchantment.TAG);
