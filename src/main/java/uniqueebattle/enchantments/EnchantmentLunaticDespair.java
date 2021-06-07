@@ -2,6 +2,8 @@ package uniqueebattle.enchantments;
 
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
 
@@ -20,6 +22,12 @@ public class EnchantmentLunaticDespair extends UniqueEnchantment
 	public boolean isCurse()
 	{
 		return true;
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() instanceof ItemHoe;
 	}
 	
 	@Override

@@ -3,9 +3,12 @@ package uniqueeutils.handler;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockCrops;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -14,6 +17,7 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityFireworkRocket;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -36,6 +40,7 @@ import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -164,6 +169,34 @@ public class UtilsHandler
 					}
 				}
 			}
+		}
+		else
+		{
+			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(event.getItemStack());
+			if(ench.get(UniqueEnchantmentsUtils.DETEMERS_BLESSING) > 0)
+			{
+				IBlockState state = event.getWorld().getBlockState(event.getPos());
+				if(state.getBlock() instanceof BlockCrops)
+				{
+					BlockCrops crops = (BlockCrops)state.getBlock();
+					if(crops.isMaxAge(state))
+					{
+						state.getBlock().dropBlockAsItem(event.getWorld(), event.getPos(), state, ench.getInt(Enchantments.FORTUNE));
+						event.getWorld().setBlockState(event.getPos(), crops.withAge(0));
+						event.getItemStack().damageItem(1, event.getEntityLiving());
+					}
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onBlockPlace(BlockEvent.PlaceEvent event)
+	{
+		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.DETEMERS_BLESSING, event.getItemInHand());
+		if(level > 0)
+		{
+			event.getItemInHand().damageItem(-level, event.getPlayer());
 		}
 	}
 	

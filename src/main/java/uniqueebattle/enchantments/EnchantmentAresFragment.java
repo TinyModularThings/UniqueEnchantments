@@ -32,7 +32,7 @@ public class EnchantmentAresFragment extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof ItemBow && stack.getItem() instanceof ItemAxe && stack.getItem() instanceof ItemHoe;
+		return stack.getItem() instanceof ItemBow || stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemHoe;
 	}
 	
 	@Override

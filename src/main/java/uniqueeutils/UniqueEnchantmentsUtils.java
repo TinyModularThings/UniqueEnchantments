@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import uniquee.UniqueEnchantments;
 import uniquee.handler.EntityEvents;
 import uniqueeutils.enchantments.EnchantmentClimber;
+import uniqueeutils.enchantments.EnchantmentDemetersBlessing;
 import uniqueeutils.enchantments.EnchantmentFaminesOdium;
 import uniqueeutils.enchantments.EnchantmentMountingAegis;
 import uniqueeutils.enchantments.EnchantmentPhanesRegret;
@@ -26,11 +27,12 @@ public class UniqueEnchantmentsUtils
 	public static Enchantment CLIMBER = new EnchantmentClimber();
 	public static Enchantment PHANES_REGRET = new EnchantmentPhanesRegret();
 	public static Enchantment MOUNTING_AEGIS = new EnchantmentMountingAegis();
+	public static Enchantment DETEMERS_BLESSING = new EnchantmentDemetersBlessing();
 	
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent event)
 	{
-		UniqueEnchantments.registerEnchantments(SLEIPNIRS_GRACE, FAMINES_ODIUM, THICK_PICK, ROCKET_MAN, CLIMBER, PHANES_REGRET, MOUNTING_AEGIS);
+		UniqueEnchantments.registerEnchantments(SLEIPNIRS_GRACE, FAMINES_ODIUM, THICK_PICK, ROCKET_MAN, CLIMBER, PHANES_REGRET, MOUNTING_AEGIS, DETEMERS_BLESSING);
 		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);
 		EntityEvents.INSTANCE.registerAnvilHelper(THICK_PICK, EnchantmentThickPick.VALIDATOR, EnchantmentThickPick.TAG);
 		EntityEvents.INSTANCE.registerStorageTooltip(THICK_PICK, "tooltip.uniqueeutil.stored.repair.name", EnchantmentThickPick.TAG);

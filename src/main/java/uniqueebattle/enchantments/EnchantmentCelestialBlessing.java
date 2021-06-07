@@ -6,6 +6,7 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
@@ -32,7 +33,7 @@ public class EnchantmentCelestialBlessing extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof ItemBow && stack.getItem() instanceof ItemAxe;
+		return stack.getItem() instanceof ItemBow || stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemHoe;
 	}
 	
 	@Override
