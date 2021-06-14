@@ -41,14 +41,18 @@ public class BattleHandler
 			{
 				EntityPlayer player = (EntityPlayer)source;
 				double chance = EnchantmentAresFragment.BASE_CHANCE + ((Math.log(Math.pow(player.experienceLevel, level)) * EnchantmentAresFragment.CHANCE_MULT) / 100D);
-				float damage = (float)Math.log(3 + (level * ((1+player.getTotalArmorValue()+player.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue())*EnchantmentAresFragment.ARMOR_PERCENTAGE)));
-				if(player.world.rand.nextDouble() < chance)
+				float damage = (float)Math.log(3 + (level * ((1+event.getEntityLiving().getTotalArmorValue()+event.getEntityLiving().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue())*EnchantmentAresFragment.ARMOR_PERCENTAGE)));
+				while(chance > 0)
 				{
-					event.setAmount(event.getAmount() * damage);
-				}
-				else if(damage != 0F)
-				{
-					event.setAmount(event.getAmount() / damage);
+					if(player.world.rand.nextDouble() < chance)
+					{
+						event.setAmount(event.getAmount() * damage);
+					}
+					else if(damage != 0F)
+					{
+						event.setAmount(event.getAmount() / damage);
+					}
+					chance -= 1D;
 				}
 			}
 		}

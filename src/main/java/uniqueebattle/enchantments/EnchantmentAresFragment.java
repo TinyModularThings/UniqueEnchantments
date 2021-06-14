@@ -38,7 +38,8 @@ public class EnchantmentAresFragment extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		
+		ARMOR_PERCENTAGE = config.get(getConfigName(), "armor_percentage", 0.6D).getDouble();
+		BASE_CHANCE = config.get(getConfigName(), "base_chance", 0.5D).getDouble();
+		CHANCE_MULT = config.get(getConfigName(), "chance_multiplier", 3.258D).getDouble();
 	}
-	
 }

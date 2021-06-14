@@ -17,6 +17,7 @@ import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityFireworkRocket;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -40,7 +41,6 @@ import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -173,7 +173,7 @@ public class UtilsHandler
 		else
 		{
 			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(event.getItemStack());
-			if(ench.get(UniqueEnchantmentsUtils.DETEMERS_BLESSING) > 0)
+			if(ench.getInt(UniqueEnchantmentsUtils.DETEMERS_BLESSING) > 0)
 			{
 				IBlockState state = event.getWorld().getBlockState(event.getPos());
 				if(state.getBlock() instanceof BlockCrops)
@@ -186,17 +186,11 @@ public class UtilsHandler
 						event.getItemStack().damageItem(1, event.getEntityLiving());
 					}
 				}
+				else if(state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS_PATH || state.getBlock() == Blocks.GRASS)
+				{
+					event.getItemStack().attemptDamageItem(-ench.getInt(UniqueEnchantmentsUtils.DETEMERS_BLESSING), event.getWorld().rand, null);
+				}
 			}
-		}
-	}
-	
-	@SubscribeEvent
-	public void onBlockPlace(BlockEvent.PlaceEvent event)
-	{
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.DETEMERS_BLESSING, event.getItemInHand());
-		if(level > 0)
-		{
-			event.getItemInHand().damageItem(-level, event.getPlayer());
 		}
 	}
 	
