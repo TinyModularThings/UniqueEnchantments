@@ -4,6 +4,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
@@ -65,6 +66,18 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	}
 	
 	@Override
+	public boolean canVillagerTrade()
+	{
+		return enabled.get();
+	}
+	
+	@Override
+	public boolean canGenerateInLoot()
+	{
+		return enabled.get();
+	}
+	
+	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack)
 	{
 		return enabled.get() ? (super.canApplyAtEnchantingTable(stack) || canApplyToItem(stack)) && !canNotApplyToItems(stack) : false;
@@ -87,7 +100,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	{
 		return activated.get();
 	}
-
+	
+	protected void addIncomats(ResourceLocation... locations)
+	{
+		values.addIncompats(locations);
+	}
+	
 	protected void addIncomats(Enchantment... enchantments)
 	{
 		values.addIncompats(enchantments);
@@ -186,6 +204,11 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		public void addIncompats(Enchantment...enchantments)
 		{
 			incompats.addDefault(enchantments);
+		}
+		
+		public void addIncompats(ResourceLocation... locations)
+		{
+			incompats.addDefault(locations);
 		}
 		
 		public void onConfigChanged()

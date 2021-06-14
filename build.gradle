@@ -61,7 +61,7 @@ jar {
         ])
     }
     version = uniquee_version
-    exclude "uniqueeutils", "assets/uniqueeutil", "META-INF/unique_utils_mods.toml", "META-INF/mods.toml"
+    exclude "uniqueeutils", "assets/uniqueeutil", "uniqueebattle", "assets/uniqueebattle", "META-INF/unique_utils_mods.toml", "META-INF/unique_battle_mods.toml", "META-INF/mods.toml"
     rename 'uniquee_mods.toml', 'mods.toml'
     includeEmptyDirs = false
 }
@@ -72,7 +72,7 @@ task utilsJar(type: Jar) {
     version = unique_utils_version
     includeEmptyDirs = false
     from(sourceSets.main.output) {
-        exclude 'uniquee', 'assets/uniquee', 'META-INF', 'data'
+        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueebattle', 'assets/uniquebattle', 'META-INF'
     }
     from(sourceSets.main.resources.srcDirs) {
     	include 'META-INF/unique_utils_mods.toml'
@@ -80,11 +80,30 @@ task utilsJar(type: Jar) {
     }
 }
 
+task battleJar(type: Jar) {
+    baseName = 'Unique Enchantments Battle'
+    version = unique_battle_version
+    from(sourceSets.main.output) {
+        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueeutils', 'assets/uniqueutil', 'META-INF'
+    }
+    from(sourceSets.main.resources.srcDirs) {
+    	include 'META-INF/unique_battle_mods.toml'
+    	rename 'unique_battle_mods.toml', 'mods.toml'
+    }
+}
 
 reobf {
     utilsJar {
     	spec -> spec.classpath = sourceSets.main.compileClasspath
     }
+    battleJar {
+    	spec -> spec.classpath = sourceSets.main.compileClasspath
+    }
+}
+
+artifacts {
+    archives utilsJar
+    archives battleJar
 }
 
 artifacts {

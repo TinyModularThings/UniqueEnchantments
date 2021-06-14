@@ -1,0 +1,18 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+license="MIT License"
+[[mods]]
+	modId="uniquebattle"
+	version="1.0.0"
+	displayName="Unique Battle Enchantments"
+	credits="Thanks Xaikii for the Mod Design, Thanks to Speiger for the Code"
+	authors="Speiger, Xaikii"
+	description='''
+	A Set of Unique Battle Enchantments
+	'''
+	[[dependencies.uniquebattle]]
+		modId="uniquee"
+		mandatory=true
+		versionRange="[1.9,)"
+		ordering="BEFORE"
+		side="BOTH"

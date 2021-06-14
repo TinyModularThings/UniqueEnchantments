@@ -95,4 +95,5 @@
 	"tooltip.uniqee.crops.added.name": "Added Crop To Auto Harvester",
 	"tooltip.uniqee.crops.removed.name": "Removed Crop From Auto Harvester",
 	"tooltip.uniquee.stored.reap.name": "Stored Reap: %s"
+	
 }
