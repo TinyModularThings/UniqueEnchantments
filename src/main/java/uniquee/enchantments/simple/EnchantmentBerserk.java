@@ -7,10 +7,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
 
 public class EnchantmentBerserk extends UniqueEnchantment
 {
-	public static double SCALAR = 0.125D;
+	public static final DoubleStat SCALAR = new DoubleStat(0.125D, "scalar");
 	
 	public EnchantmentBerserk()
 	{
@@ -32,6 +33,6 @@ public class EnchantmentBerserk extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 0.125D).getDouble();
+		SCALAR.handleConfig(config, getConfigName());
 	}
 }

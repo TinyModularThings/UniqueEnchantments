@@ -9,10 +9,11 @@ import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.IntStat;
 
 public class EnchantmentIcarusAegis extends UniqueEnchantment
 {
-	public static int SCALAR = 24;
+	public static final IntStat SCALAR = new IntStat(24, "scalar");
 	public static String FEATHER_TAG = "feathers";
 	public static String FLYING_TAG = "flying";
 	public static ToIntFunction<ItemStack> VALIDATOR = new ToIntFunction<ItemStack>(){
@@ -37,7 +38,7 @@ public class EnchantmentIcarusAegis extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 24).getInt();
+		SCALAR.handleConfig(config, getConfigName());
 	}
 	
 }

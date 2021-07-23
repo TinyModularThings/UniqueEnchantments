@@ -33,7 +33,7 @@ public class FirstAidHandler
 				if(level > 0 && stack.isItemStackDamageable())
 				{
 					float damage = event.getUndistributedDamage();
-					stack.damageItem((int)(damage * (EnchantmentAresBlessing.SCALAR / level)), event.getEntityLiving());
+					stack.damageItem((int)(damage * (EnchantmentAresBlessing.SCALAR.get() / level)), event.getEntityLiving());
 					event.setCanceled(true);
 					return;
 				}	
@@ -45,7 +45,7 @@ public class FirstAidHandler
 				living.heal(living.getMaxHealth());
 				living.clearActivePotions();
 				living.getFoodStats().addStats(Short.MAX_VALUE, 1F);
-				living.getEntityData().setLong(EnchantmentDeathsOdium.CRUSE_TIMER, living.getEntityWorld().getTotalWorldTime() + EnchantmentDeathsOdium.DELAY);
+				living.getEntityData().setLong(EnchantmentDeathsOdium.CRUSE_TIMER, living.getEntityWorld().getTotalWorldTime() + EnchantmentDeathsOdium.DELAY.get());
 	            living.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 600, 2));
 	            living.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 100, 1));
 	            living.world.setEntityState(living, (byte)35);

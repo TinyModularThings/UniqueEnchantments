@@ -12,11 +12,12 @@ import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
 import uniquee.utils.DoubleLevelStats;
+import uniquee.utils.IntStat;
 
 public class EnchantmentNaturesGrace extends UniqueEnchantment implements IGraceEnchantment
 {
 	public static final DoubleLevelStats HEALING = new DoubleLevelStats("healing", 0.6, 0.2);
-	public static int DELAY = 100;
+	public static final IntStat DELAY = new IntStat(100, "delay");
 	public static Predicate<IBlockState> FLOWERS = new Predicate<IBlockState>(){
 		@Override
 		public boolean test(IBlockState t)
@@ -39,6 +40,6 @@ public class EnchantmentNaturesGrace extends UniqueEnchantment implements IGrace
 	public void loadData(Configuration config)
 	{
 		HEALING.handleConfig(config, getConfigName());
-		DELAY = config.get(getConfigName(), "delay", 100).getInt();
+		DELAY.handleConfig(config, getConfigName());
 	}
 }

@@ -9,10 +9,11 @@ import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
+import uniquee.utils.DoubleStat;
 
 public class EnchantmentWarriorsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
-	public static double DURABILITY_GAIN = 1.1D;
+	public static final DoubleStat DURABILITY_GAIN = new DoubleStat(1.1D, "durability_gain");
 
 	public EnchantmentWarriorsGrace()
 	{
@@ -34,6 +35,6 @@ public class EnchantmentWarriorsGrace extends UniqueEnchantment implements IGrac
 	@Override
 	public void loadData(Configuration config)
 	{
-		DURABILITY_GAIN = config.get(getConfigName(), "durability_gain", 1.1D).getDouble();
+		DURABILITY_GAIN.handleConfig(config, getConfigName());
 	}
 }

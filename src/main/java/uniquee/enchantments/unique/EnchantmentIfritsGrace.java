@@ -14,6 +14,7 @@ import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
+import uniquee.utils.IntStat;
 
 public class EnchantmentIfritsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
@@ -26,7 +27,7 @@ public class EnchantmentIfritsGrace extends UniqueEnchantment implements IGraceE
 		}
 	};
 	public static String LAVA_COUNT = "lava_storage";
-	public static int SCALAR = 10;
+	public static final IntStat SCALAR = new IntStat(10, "scalar");
 	
 	public EnchantmentIfritsGrace()
 	{
@@ -42,7 +43,7 @@ public class EnchantmentIfritsGrace extends UniqueEnchantment implements IGraceE
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 10).getInt();
+		SCALAR.handleConfig(config, getConfigName());
 		LAVA_ITEMS.clear();
 		LAVA_ITEMS.put(Items.LAVA_BUCKET, 250);
 		LAVA_ITEMS.put(Items.MAGMA_CREAM, 20);

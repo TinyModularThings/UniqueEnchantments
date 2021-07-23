@@ -6,6 +6,7 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.IntStat;
 
 public class EnchantmentDeathsOdium extends UniqueEnchantment
 {
@@ -21,9 +22,9 @@ public class EnchantmentDeathsOdium extends UniqueEnchantment
 	public static final UUID LEGGINGS_MOD = UUID.fromString("7155868f-c452-482b-9c35-20d3082cf766");
 	public static final UUID FEET_MOD = UUID.fromString("6d64591f-abda-431f-87da-0622ba33b665");
 	
-	public static int DELAY = 200;
-	public static int MAX_STORAGE = 5;
-	public static int DAMAGE_FACTOR = 30;
+	public static final IntStat DELAY = new IntStat(200, "collector_time");
+	public static final IntStat MAX_STORAGE = new IntStat(5, "curse_storage_cap");
+	public static final IntStat DAMAGE_FACTOR = new IntStat(30, "damage_factor");
 	
 	public EnchantmentDeathsOdium()
 	{
@@ -39,9 +40,9 @@ public class EnchantmentDeathsOdium extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config) 
 	{
-		DELAY = config.get(getConfigName(), "collector_time", 200).getInt();
-		MAX_STORAGE = config.get(getConfigName(), "curse_storage_cap", 5).getInt();
-		DAMAGE_FACTOR = config.get(getConfigName(), "damage_factor", 30).getInt();
+		DELAY.handleConfig(config, getConfigName());
+		MAX_STORAGE.handleConfig(config, getConfigName());
+		DAMAGE_FACTOR.handleConfig(config, getConfigName());
 	}
 	
 	public static UUID getForSlot(EntityEquipmentSlot slot)

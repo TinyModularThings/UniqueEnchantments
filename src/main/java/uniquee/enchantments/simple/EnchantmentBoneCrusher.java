@@ -8,10 +8,11 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
 
 public class EnchantmentBoneCrusher extends UniqueEnchantment
 {
-	public static double SCALAR = 0.2D;
+	public static final DoubleStat SCALAR = new DoubleStat(0.2D, "scalar");
 	
 	public EnchantmentBoneCrusher()
 	{
@@ -27,7 +28,7 @@ public class EnchantmentBoneCrusher extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 0.2D).getDouble();
+		SCALAR.handleConfig(config, getConfigName());
 	}
 	
 	public static boolean isNotArmored(AbstractSkeleton skeleton)

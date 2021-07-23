@@ -4,14 +4,16 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
+import uniquee.utils.IntStat;
 
 public class EnchantmentMomentum extends UniqueEnchantment
 {
 	public static final String LAST_MINE = "last_mined";
 	public static final String COUNT = "mined";
-	public static double SCALAR = 2.5D;
-	public static int CAP = 2;
-	public static int MAX_DELAY = 40;
+	public static final DoubleStat SCALAR = new DoubleStat(2.5D, "scalar");
+	public static final IntStat CAP = new IntStat(2, "cap");
+	public static final IntStat MAX_DELAY = new IntStat(40, "max_delay");
 	
 	public EnchantmentMomentum()
 	{
@@ -21,8 +23,8 @@ public class EnchantmentMomentum extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 2.5D).getDouble();
-		CAP = config.get(getConfigName(), "cap", 2).getInt();
-		MAX_DELAY = config.get(getConfigName(), "max_delay", 40).getInt();
+		SCALAR.handleConfig(config, getConfigName());
+		CAP.handleConfig(config, getConfigName());
+		MAX_DELAY.handleConfig(config, getConfigName());
 	}
 }

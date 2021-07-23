@@ -17,17 +17,19 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
+import uniquee.utils.IntStat;
 import uniquee.utils.MiscUtil;
 
 public class EnchantmentClimateTranquility extends UniqueEnchantment
 {
 	public static UUID SPEED_UUID = UUID.fromString("7b8a3791-8f94-4127-82b2-26418679d551");
-	public static double SPEED_SCALE = 0.1D;
-	public static int SLOW_TIME = 30;
+	public static final DoubleStat SPEED_SCALE = new DoubleStat(0.125D, "speed_scale");
+	public static final IntStat SLOW_TIME = new IntStat(30, "slow_duration");
 	
 	public static UUID ATTACK_UUID = UUID.fromString("b47bd399-5ad0-4f1d-a0eb-0a9146ff1734");
-	public static double ATTACK_SCALE = 0.1D;
-	public static int BURN_TIME = 1;
+	public static final DoubleStat ATTACK_SCALE = new DoubleStat(0.125D, "attack_scale");
+	public static final IntStat BURN_TIME = new IntStat(1, "burn_time");
 	
 	public EnchantmentClimateTranquility()
 	{
@@ -43,11 +45,11 @@ public class EnchantmentClimateTranquility extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SPEED_SCALE = config.get(getConfigName(), "speed_scale", 0.1D).getDouble();
-		SLOW_TIME = config.get(getConfigName(), "slow_duration", 30).getInt();
+		SPEED_SCALE.handleConfig(config, getConfigName());
+		SLOW_TIME.handleConfig(config, getConfigName());
 		
-		ATTACK_SCALE = config.get(getConfigName(), "attack_scale", 0.1D).getDouble();
-		BURN_TIME = config.get(getConfigName(), "burn_time", 1).getInt();
+		ATTACK_SCALE.handleConfig(config, getConfigName());
+		BURN_TIME.handleConfig(config, getConfigName());
 	}
 	
 	
@@ -69,7 +71,7 @@ public class EnchantmentClimateTranquility extends UniqueEnchantment
 		boolean hasCold = effects.contains(BiomeDictionary.Type.COLD);
 		if(hasHot && !hasCold)
 		{
-			AttributeModifier speedMod = new AttributeModifier(SPEED_UUID, "Climate Boost", (SPEED_SCALE * level), 2);
+			AttributeModifier speedMod = new AttributeModifier(SPEED_UUID, "Climate Boost", (SPEED_SCALE.get() * level), 2);
 			if(!speed.hasModifier(speedMod))
 			{
 				speed.applyModifier(speedMod);
@@ -81,7 +83,7 @@ public class EnchantmentClimateTranquility extends UniqueEnchantment
 		}
 		if(hasCold && !hasHot)
 		{
-			AttributeModifier damageMod = new AttributeModifier(ATTACK_UUID, "Climate Boost", (ATTACK_SCALE * level), 2);
+			AttributeModifier damageMod = new AttributeModifier(ATTACK_UUID, "Climate Boost", (ATTACK_SCALE.get() * level), 2);
 			if(!damage.hasModifier(damageMod))
 			{
 				damage.applyModifier(damageMod);

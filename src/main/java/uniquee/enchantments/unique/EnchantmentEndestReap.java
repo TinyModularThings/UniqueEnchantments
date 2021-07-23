@@ -12,12 +12,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
 
 public class EnchantmentEndestReap extends UniqueEnchantment
 {
 	public static final String REAP_STORAGE = "reap_storage";
-	public static double BONUS_DAMAGE_LEVEL = 0.7D;
-	public static double REAP_MULTIPLIER = 0.005D;
+	public static final DoubleStat BONUS_DAMAGE_LEVEL = new DoubleStat(0.7D, "bonus_damage_level");
+	public static final DoubleStat REAP_MULTIPLIER = new DoubleStat(0.005D, "reap_multiplier");
+	
 	static final Set<ResourceLocation> VALID_MOBS = new ObjectOpenHashSet<>();
 	
 	public EnchantmentEndestReap()
@@ -34,8 +36,8 @@ public class EnchantmentEndestReap extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		BONUS_DAMAGE_LEVEL = config.get(getConfigName(), "bonus_damage_level", 0.7D).getDouble();
-		REAP_MULTIPLIER = config.get(getConfigName(), "reap_multiplier", 0.005D).getDouble();
+		BONUS_DAMAGE_LEVEL.handleConfig(config, getConfigName());
+		REAP_MULTIPLIER.handleConfig(config, getConfigName());
 		String[] result = config.get(getConfigName(), "validMobs", new String[]{"minecraft:ender_dragon", "minecraft:wither", "minecraft:shulker", "minecraft:elder_guardian", "minecraft:ravager", "minecraft:evoker"}).getStringList();
 		VALID_MOBS.clear();
 		for(int i = 0;i<result.length;i++)

@@ -11,6 +11,8 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
+import uniquee.utils.IntStat;
 
 public class EnchantmentEcological extends UniqueEnchantment
 {
@@ -21,8 +23,8 @@ public class EnchantmentEcological extends UniqueEnchantment
 			return t.getBlock() instanceof BlockLog || t.getBlock() instanceof BlockLeaves;
 		}
 	};
-	public static int SPEED = 220;
-	public static double SCALE = 1.85D;
+	public static final IntStat SPEED = new IntStat(220, "speed");
+	public static final DoubleStat SCALE = new DoubleStat(1.85D, "scale");
 	
 	public EnchantmentEcological()
 	{
@@ -38,8 +40,8 @@ public class EnchantmentEcological extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SPEED = config.get(getConfigName(), "speed", 220).getInt();
-		SCALE = config.get(getConfigName(), "scale", 1.85D).getDouble();
+		SPEED.handleConfig(config, getConfigName());
+		SCALE.handleConfig(config, getConfigName());
 	}
 	
 }

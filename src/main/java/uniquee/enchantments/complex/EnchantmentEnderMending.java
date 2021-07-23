@@ -8,12 +8,13 @@ import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.utils.DoubleLevelStats;
+import uniquee.utils.IntStat;
 
 public class EnchantmentEnderMending extends UniqueEnchantment
 {
 	public static final String ENDER_TAG = "ender_mending";
 	public static final DoubleLevelStats ABSORBTION_RATIO = new DoubleLevelStats("absorbtion_ratio", 0.25D, 0.25D);
-	public static int LIMIT = 250;
+	public static final IntStat LIMIT = new IntStat(250, "limit");
 	
 	public EnchantmentEnderMending()
 	{
@@ -36,7 +37,7 @@ public class EnchantmentEnderMending extends UniqueEnchantment
 	public void loadData(Configuration config)
 	{
 		ABSORBTION_RATIO.handleConfig(config, getConfigName());
-		LIMIT = config.get(getConfigName(), "limit", 250).getInt();
+		LIMIT.handleConfig(config, getConfigName());
 	}
 	
 }

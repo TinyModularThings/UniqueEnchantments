@@ -8,10 +8,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
 
 public class EnchantmentSwiftBlade extends UniqueEnchantment
 {
-	public static double SCALAR = 1.2D;
+	public static final DoubleStat SCALAR = new DoubleStat(1.2D, "scalar");
 
 	public EnchantmentSwiftBlade()
 	{
@@ -33,6 +34,6 @@ public class EnchantmentSwiftBlade extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration entry)
 	{
-		SCALAR = entry.get(getConfigName(), "scalar", 1.2D).getDouble();
+		SCALAR.handleConfig(entry, getConfigName());
 	}
 }

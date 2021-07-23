@@ -8,10 +8,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
 
 public class EnchantmentPerpetualStrike extends UniqueEnchantment
 {
-	public static double SCALAR = 0.075D;
+	public static final DoubleStat STAT = new DoubleStat(0.075D, "scalar");
 	public static final String HIT_COUNT = "strikes";
 	public static final String HIT_ID = "hit_id";
 	
@@ -35,6 +36,6 @@ public class EnchantmentPerpetualStrike extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration entry)
 	{
-		SCALAR = entry.get(getConfigName(), "scalar", 0.075D).getDouble();
+		STAT.handleConfig(entry, getConfigName());
 	}
 }

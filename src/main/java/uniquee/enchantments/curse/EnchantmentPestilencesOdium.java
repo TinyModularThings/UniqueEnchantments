@@ -4,12 +4,14 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
+import uniquee.utils.IntStat;
 
 public class EnchantmentPestilencesOdium extends UniqueEnchantment
 {
-	public static double RADIUS = 7;
-	public static int DELAY = 300;
-	public static double DAMAGE_PER_TICK = 0.25F;
+	public static final DoubleStat RADIUS = new DoubleStat(7, "radius");
+	public static final IntStat DELAY = new IntStat(300, "delay");
+	public static final DoubleStat DAMAGE_PER_TICK = new DoubleStat(0.25D, "damage_per_tick");
 	
 	public EnchantmentPestilencesOdium()
 	{
@@ -25,9 +27,9 @@ public class EnchantmentPestilencesOdium extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		RADIUS = config.get(getConfigName(), "radius", 7D).getDouble();
-		DELAY = config.get(getConfigName(), "delay", 300).getInt();
-		DAMAGE_PER_TICK = config.get(getConfigName(), "damage_per_tick", 0.25F).getDouble();
+		RADIUS.handleConfig(config, getConfigName());
+		DELAY.handleConfig(config, getConfigName());
+		DAMAGE_PER_TICK.handleConfig(config, getConfigName());
 	}
 	
 }

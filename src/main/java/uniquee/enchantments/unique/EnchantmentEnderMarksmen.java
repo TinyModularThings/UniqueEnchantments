@@ -6,10 +6,11 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
 
 public class EnchantmentEnderMarksmen extends UniqueEnchantment
 {
-	public static double SCALAR = 2D;
+	public static final DoubleStat SCALAR = new DoubleStat(2D, "scalar");
 	
 	public EnchantmentEnderMarksmen()
 	{
@@ -25,6 +26,6 @@ public class EnchantmentEnderMarksmen extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR = config.get(getConfigName(), "scalar", 2D).getDouble();
+		SCALAR.handleConfig(config, getConfigName());
 	}
 }

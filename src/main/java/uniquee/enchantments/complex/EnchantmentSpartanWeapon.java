@@ -8,10 +8,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
 
 public class EnchantmentSpartanWeapon extends UniqueEnchantment
 {
-	public static double SCALAR = 0.1D;
+	public static final DoubleStat SCALAR = new DoubleStat(0.1D, "scalar");
 
 	public EnchantmentSpartanWeapon()
 	{
@@ -33,6 +34,6 @@ public class EnchantmentSpartanWeapon extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration entry)
 	{
-		SCALAR = entry.get(getConfigName(), "scalar", 0.1D).getDouble();
+		SCALAR.handleConfig(entry, getConfigName());
 	}
 }

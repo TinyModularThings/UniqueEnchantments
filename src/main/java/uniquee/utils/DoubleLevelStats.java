@@ -5,6 +5,7 @@ import net.minecraftforge.common.config.Configuration;
 public class DoubleLevelStats
 {
 	String name;
+	String comment;
 	final double baseConfig;
 	final double levelConfig;
 	double base;
@@ -12,7 +13,13 @@ public class DoubleLevelStats
 	
 	public DoubleLevelStats(String name, double base, double level)
 	{
+		this(name, base, level, null);
+	}
+	
+	public DoubleLevelStats(String name, double base, double level, String comment)
+	{
 		this.name = name;
+		this.comment = comment;
 		this.baseConfig = base;
 		this.levelConfig = level;
 		this.base = base;
@@ -20,11 +27,6 @@ public class DoubleLevelStats
 	}
 	
 	public void handleConfig(Configuration config, String category)
-	{
-		base = config.get(category, name+"_base", baseConfig).getDouble();
-		level = config.get(category, name+"_level", levelConfig).getDouble();
-	}
-	public void handleConfig(Configuration config, String category, String comment)
 	{
 		base = config.get(category, name+"_base", baseConfig, comment).getDouble();
 		level = config.get(category, name+"_level", levelConfig).getDouble();

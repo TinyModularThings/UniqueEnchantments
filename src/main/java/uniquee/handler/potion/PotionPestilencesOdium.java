@@ -24,9 +24,9 @@ public class PotionPestilencesOdium extends Potion
 		{
 			return;
 		}
-		if(entityLivingBaseIn.world.getTotalWorldTime() % Math.max(1, (EnchantmentPestilencesOdium.DELAY / Math.max(1, amplifier))) == 0)
+		if(entityLivingBaseIn.world.getTotalWorldTime() % Math.max(1, (EnchantmentPestilencesOdium.DELAY.get() / Math.max(1, amplifier))) == 0)
 		{
-			entityLivingBaseIn.attackEntityFrom(DamageSource.MAGIC, (float)(EnchantmentPestilencesOdium.DAMAGE_PER_TICK * amplifier));
+			entityLivingBaseIn.attackEntityFrom(DamageSource.MAGIC, (EnchantmentPestilencesOdium.DAMAGE_PER_TICK.getFloat() * amplifier));
 		}
 	}
 	

@@ -8,10 +8,11 @@ import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IBlessingEnchantment;
+import uniquee.utils.DoubleStat;
 
 public class EnchantmentSagesBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
-	public static double XP_BOOST = 0.2D;
+	public static final DoubleStat XP_BOOST = new DoubleStat(0.2D, "xp_boost");
 	
 	public EnchantmentSagesBlessing()
 	{
@@ -33,7 +34,7 @@ public class EnchantmentSagesBlessing extends UniqueEnchantment implements IBles
 	@Override
 	public void loadData(Configuration config)
 	{
-		XP_BOOST = config.get(getConfigName(), "xp_boost", 0.2D).getDouble();
+		XP_BOOST.handleConfig(config, getConfigName());
 	}
 	
 }
