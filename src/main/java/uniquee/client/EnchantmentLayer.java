@@ -29,6 +29,7 @@ public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> 
 	public boolean canSeeEffects(LivingEntity base)
 	{
 		PlayerEntity player = Minecraft.getInstance().player;
+		if(base == player) return false; 
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.TREASURERS_EYES, player.getItemStackFromSlot(EquipmentSlotType.HEAD));
 		if(level > 0)
 		{
@@ -36,10 +37,8 @@ public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> 
 			maxDistance *= maxDistance;
 			return player.getDistanceSq(base) <= maxDistance;
 		}
-		return true;
+		return false;
 	}
-	
-	
 	
 	@Override
 	public void render(LivingEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
