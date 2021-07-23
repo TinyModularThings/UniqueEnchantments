@@ -33,7 +33,7 @@ public class SleipnirsGraceEnchantment extends UniqueEnchantment
 	@Override
 	public void loadData(ForgeConfigSpec.Builder config)
 	{
-		CAP.handleConfig(config, getConfigName());
+		CAP.handleConfig(config);
 		LIMITER.handleConfig(config);
 	}
 	

@@ -40,7 +40,7 @@ public class ThickPickEnchantment extends UniqueEnchantment
 	@Override
 	public void loadData(ForgeConfigSpec.Builder config)
 	{
-		MINING_SPEED.handleConfig(config, getConfigName());
+		MINING_SPEED.handleConfig(config);
 		ITEMS_CONFIG = config.define("items", ObjectArrayList.wrap(new String[]{Items.DIAMOND.getRegistryName().toString()+";"+5}));
 	}
 	

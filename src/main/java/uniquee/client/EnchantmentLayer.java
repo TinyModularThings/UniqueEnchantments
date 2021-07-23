@@ -32,6 +32,7 @@ public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> 
 	public boolean canSeeEffects(LivingEntity base)
 	{
 		PlayerEntity player = Minecraft.getInstance().player;
+		if(player == base) return false;
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.TREASURERS_EYES, player.getItemStackFromSlot(EquipmentSlotType.HEAD));
 		if(level > 0)
 		{
@@ -39,21 +40,15 @@ public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> 
 			maxDistance *= maxDistance;
 			return player.getDistanceSq(base) <= maxDistance;
 		}
-		return true;
+		return false;
 	}
 	@Override
 	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
 	{
-		if(entity.getPersistentData().getLong("effectTimer") == entity.world.getGameTime())
-		{
-			return;
-		}
+		if(entity.getPersistentData().getLong("effectTimer") == entity.world.getGameTime()) return;
 		long time = entity.world.getGameTime();
 		entity.getPersistentData().putLong("effectTimer", time);
-		if(!canSeeEffects(entity))
-		{
-			return;
-		}
+		if(!canSeeEffects(entity)) return;
 		if(time % 14 == 0 && MiscUtil.getEnchantmentLevel(UniqueEnchantments.ARES_BLESSING, entity.getItemStackFromSlot(EquipmentSlotType.CHEST)) > 0)
 		{
 			spawnParticle(ParticleTypes.HEART, entity.world, entity.getBoundingBox(), 0F, 0.8F, 0F);

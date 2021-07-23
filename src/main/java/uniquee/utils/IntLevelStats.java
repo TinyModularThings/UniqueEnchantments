@@ -6,6 +6,7 @@ import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 public class IntLevelStats
 {
 	String name;
+	String comment;
 	final int baseConfig;
 	final int levelConfig;
 	IntValue base;
@@ -13,24 +14,24 @@ public class IntLevelStats
 	
 	public IntLevelStats(String name, int base, int level)
 	{
+		this(name, base, level, null);
+	}
+	
+	public IntLevelStats(String name, int base, int level, String comment)
+	{
 		this.name = name;
+		this.comment = comment;
 		baseConfig = base;
 		levelConfig = level;
 	}
 	
 	public void handleConfig(ForgeConfigSpec.Builder config)
 	{
+		if(comment != null) config.comment(comment);
 		base = config.defineInRange(name+"_base", baseConfig, 0, Integer.MAX_VALUE);
 		level = config.defineInRange(name+"_level", levelConfig, 0, Integer.MAX_VALUE);
 	}
-	
-	public void handleConfig(ForgeConfigSpec.Builder config, String comment)
-	{
-		config.comment(comment);
-		base = config.defineInRange(name+"_base", baseConfig, 0, Integer.MAX_VALUE);
-		level = config.defineInRange(name+"_level", levelConfig, 0, Integer.MAX_VALUE);
-	}
-	
+		
 	public int getBase()
 	{
 		return base != null ? base.get() : baseConfig;
