@@ -39,7 +39,7 @@ public class EnchantmentCelestialBlessing extends UniqueEnchantment
 	@Override
 	public void loadData(ForgeConfigSpec.Builder config)
 	{
-		SPEED_BONUS.handleConfig(config, getConfigName());
+		SPEED_BONUS.handleConfig(config);
 	}
 	
 }

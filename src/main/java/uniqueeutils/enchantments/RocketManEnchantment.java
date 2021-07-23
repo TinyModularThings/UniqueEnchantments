@@ -33,7 +33,7 @@ public class RocketManEnchantment extends UniqueEnchantment
 	@Override
 	public void loadData(ForgeConfigSpec.Builder config)
 	{
-		FLIGHT_TIME.handleConfig(config, getConfigName());
+		FLIGHT_TIME.handleConfig(config);
 	}
 	
 }
