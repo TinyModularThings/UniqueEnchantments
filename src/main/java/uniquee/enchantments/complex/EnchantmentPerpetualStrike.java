@@ -12,13 +12,14 @@ import uniquee.utils.DoubleStat;
 
 public class EnchantmentPerpetualStrike extends UniqueEnchantment
 {
-	public static final DoubleStat STAT = new DoubleStat(0.075D, "scalar");
+	public static final DoubleStat PER_HIT = new DoubleStat(0.1D, "bonus_per_hit");
+	public static final DoubleStat MULTIPLIER = new DoubleStat(0.1D, "damage_multiplier");
 	public static final String HIT_COUNT = "strikes";
 	public static final String HIT_ID = "hit_id";
 	
 	public EnchantmentPerpetualStrike()
 	{
-		super(new DefaultData("perpetualstrike", Rarity.VERY_RARE, 3, false, 26, 2, 30), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("perpetualstrike", Rarity.RARE, 3, false, 16, 6, 4), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override
@@ -36,6 +37,7 @@ public class EnchantmentPerpetualStrike extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration entry)
 	{
-		STAT.handleConfig(entry, getConfigName());
+		PER_HIT.handleConfig(entry, getConfigName());
+		MULTIPLIER.handleConfig(entry, getConfigName());
 	}
 }

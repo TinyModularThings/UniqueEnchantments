@@ -11,11 +11,12 @@ import uniquee.utils.DoubleStat;
 
 public class EnchantmentBerserk extends UniqueEnchantment
 {
-	public static final DoubleStat SCALAR = new DoubleStat(0.125D, "scalar");
+	public static final DoubleStat PERCENTUAL_DAMAGE = new DoubleStat(0.503D, "percentual_damage");
+	public static final DoubleStat MIN_HEALTH = new DoubleStat(1D, "min_health");
 	
 	public EnchantmentBerserk()
 	{
-		super(new DefaultData("berserk", Rarity.RARE, 2, false, 20, 2, 22), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("berserk", Rarity.RARE, 2, false, 10, 8, 22), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override
@@ -33,6 +34,7 @@ public class EnchantmentBerserk extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR.handleConfig(config, getConfigName());
+		PERCENTUAL_DAMAGE.handleConfig(config, getConfigName());
+		MIN_HEALTH.handleConfig(config, getConfigName());
 	}
 }

@@ -2,17 +2,20 @@ package uniquee.compat;
 
 import ichttt.mods.firstaid.api.event.FirstAidLivingDamageEvent;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.curse.EnchantmentDeathsOdium;
 import uniquee.enchantments.unique.EnchantmentAresBlessing;
+import uniquee.enchantments.unique.EnchantmentPhoenixBlessing;
 import uniquee.utils.MiscUtil;
 
 public class FirstAidHandler
@@ -50,6 +53,11 @@ public class FirstAidHandler
 	            living.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 100, 1));
 	            living.world.setEntityState(living, (byte)35);
 	            living.getItemStackFromSlot(slot.getKey()).shrink(1);
+	            for(EntityLivingBase entry : living.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(living.getPosition()).grow(EnchantmentPhoenixBlessing.RANGE.getAsDouble(slot.getIntValue()))))
+	            {
+	            	if(entry == living) continue;
+	            	entry.setFire(600000);
+	            }
 			}
 		}
 	}

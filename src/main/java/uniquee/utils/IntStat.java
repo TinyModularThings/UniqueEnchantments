@@ -27,6 +27,11 @@ public class IntStat
 		return value;
 	}
 	
+	public int get(int level)
+	{
+		return value * level;
+	}
+	
 	public void handleConfig(Configuration config, String category)
 	{
 		value = config.get(category, name, base, comment).getInt();

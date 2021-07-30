@@ -45,7 +45,7 @@ public class EnchantmentLayer implements LayerRenderer<EntityLivingBase>
 		}
 		if(time % 14 == 0 && MiscUtil.getEnchantmentLevel(UniqueEnchantments.ARES_BLESSING, entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST)) > 0)
 		{
-			spawnParticle(EnumParticleTypes.HEART, entity.world, entity.getEntityBoundingBox(), 0F, 0F, 0F, 0F, 0.8F, 0F);
+			spawnParticle(EnumParticleTypes.VILLAGER_ANGRY, entity.world, entity.getEntityBoundingBox(), 0F, 0F, 0F, 0F, 0.8F, 0F);
 		}
 		if(time % 2 == 0)
 		{

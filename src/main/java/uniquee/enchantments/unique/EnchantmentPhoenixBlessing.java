@@ -7,13 +7,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IBlessingEnchantment;
+import uniquee.utils.DoubleLevelStats;
 
 public class EnchantmentPhoenixBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
+	public static final DoubleLevelStats RANGE = new DoubleLevelStats("range", 3D, 0.25D);
 	
 	public EnchantmentPhoenixBlessing()
 	{
-		super(new DefaultData("phoenixs_blessing", Rarity.RARE, 1, true, 26, 2, 2), EnumEnchantmentType.ALL, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("phoenixs_blessing", Rarity.RARE, 2, true, 26, 2, 2), EnumEnchantmentType.ALL, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
 	
 	@Override
@@ -25,6 +27,7 @@ public class EnchantmentPhoenixBlessing extends UniqueEnchantment implements IBl
 	@Override
 	public void loadData(Configuration config)
 	{
+		RANGE.handleConfig(config, getConfigName());
 	}
 	
 }

@@ -12,11 +12,11 @@ import uniquee.utils.DoubleStat;
 
 public class EnchantmentBoneCrusher extends UniqueEnchantment
 {
-	public static final DoubleStat SCALAR = new DoubleStat(0.2D, "scalar");
+	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(0.15D, "scalar");
 	
 	public EnchantmentBoneCrusher()
 	{
-		super(new DefaultData("bone_crusher", Rarity.VERY_RARE, 2, true, 18, 5, 50), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("bone_crusher", Rarity.VERY_RARE, 4, true, 2, 8, 20), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override
@@ -28,7 +28,7 @@ public class EnchantmentBoneCrusher extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR.handleConfig(config, getConfigName());
+		BONUS_DAMAGE.handleConfig(config, getConfigName());
 	}
 	
 	public static boolean isNotArmored(AbstractSkeleton skeleton)

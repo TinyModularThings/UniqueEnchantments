@@ -11,8 +11,8 @@ public class EnchantmentMomentum extends UniqueEnchantment
 {
 	public static final String LAST_MINE = "last_mined";
 	public static final String COUNT = "mined";
-	public static final DoubleStat SCALAR = new DoubleStat(2.5D, "scalar");
-	public static final IntStat CAP = new IntStat(2, "cap");
+	public static final DoubleStat SCALAR = new DoubleStat(0.575D, "scalar");
+	public static final IntStat CAP = new IntStat(3, "cap");
 	public static final IntStat MAX_DELAY = new IntStat(40, "max_delay");
 	
 	public EnchantmentMomentum()

@@ -11,10 +11,9 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IGraceEnchantment;
-import uniquee.utils.IntStat;
+import uniquee.utils.DoubleStat;
 
 public class EnchantmentIfritsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
@@ -27,7 +26,7 @@ public class EnchantmentIfritsGrace extends UniqueEnchantment implements IGraceE
 		}
 	};
 	public static String LAVA_COUNT = "lava_storage";
-	public static final IntStat SCALAR = new IntStat(10, "scalar");
+	public static final DoubleStat SCALAR = new DoubleStat(8, "scalar");
 	
 	public EnchantmentIfritsGrace()
 	{
@@ -37,7 +36,7 @@ public class EnchantmentIfritsGrace extends UniqueEnchantment implements IGraceE
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH, UniqueEnchantments.MIDAS_BLESSING);
+		addIncomats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH);
 	}
 		
 	@Override

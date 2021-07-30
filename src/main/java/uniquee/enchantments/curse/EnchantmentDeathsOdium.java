@@ -6,6 +6,7 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
 import uniquee.utils.IntStat;
 
 public class EnchantmentDeathsOdium extends UniqueEnchantment
@@ -25,10 +26,11 @@ public class EnchantmentDeathsOdium extends UniqueEnchantment
 	public static final IntStat DELAY = new IntStat(200, "collector_time");
 	public static final IntStat MAX_STORAGE = new IntStat(5, "curse_storage_cap");
 	public static final IntStat DAMAGE_FACTOR = new IntStat(30, "damage_factor");
+	public static final DoubleStat BASE_LOSS = new DoubleStat(1, "base_loss");
 	
 	public EnchantmentDeathsOdium()
 	{
-		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 1, false, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
+		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 2, false, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
 	}
 	
 	@Override

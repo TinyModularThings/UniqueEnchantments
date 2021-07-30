@@ -12,7 +12,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IBlessingEnchantment;
 import uniquee.utils.IntStat;
@@ -46,7 +45,7 @@ public class EnchantmentMidasBlessing extends UniqueEnchantment implements IBles
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH, UniqueEnchantments.IFRIDS_GRACE);
+		addIncomats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH);
 	}
 	
 	@Override
