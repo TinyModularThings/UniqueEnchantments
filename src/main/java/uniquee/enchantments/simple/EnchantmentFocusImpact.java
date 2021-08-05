@@ -27,7 +27,7 @@ public class EnchantmentFocusImpact extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.SWIFT_BLADE);
+		addIncompats(UniqueEnchantments.SWIFT_BLADE);
 	}
 	
 	@Override

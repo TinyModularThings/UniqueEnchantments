@@ -30,7 +30,7 @@ public class EnchantmentClimber extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.SWIFT);
+		addIncompats(UniqueEnchantments.SWIFT);
 	}
 	
 	@Override

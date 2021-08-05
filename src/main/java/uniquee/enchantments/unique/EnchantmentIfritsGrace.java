@@ -36,7 +36,7 @@ public class EnchantmentIfritsGrace extends UniqueEnchantment implements IGraceE
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH);
+		addIncompats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH);
 	}
 		
 	@Override

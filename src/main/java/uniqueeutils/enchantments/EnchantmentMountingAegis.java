@@ -12,6 +12,7 @@ public class EnchantmentMountingAegis extends UniqueEnchantment
 	public EnchantmentMountingAegis()
 	{
 		super(new DefaultData("mounting_aegis", Rarity.RARE, 1, true, 24, 4, 20), EnumEnchantmentType.ALL, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		setCategory("utils");
 	}
 	
 	@Override

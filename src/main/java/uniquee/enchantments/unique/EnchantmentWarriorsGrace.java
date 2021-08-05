@@ -29,7 +29,7 @@ public class EnchantmentWarriorsGrace extends UniqueEnchantment implements IGrac
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.ECOLOGICAL, UniqueEnchantments.ALCHEMISTS_GRACE, UniqueEnchantments.NATURES_GRACE, Enchantments.MENDING, Enchantments.UNBREAKING);
+		addIncompats(UniqueEnchantments.ECOLOGICAL, UniqueEnchantments.ALCHEMISTS_GRACE, UniqueEnchantments.NATURES_GRACE, Enchantments.MENDING, Enchantments.UNBREAKING);
 	}
 	
 	@Override

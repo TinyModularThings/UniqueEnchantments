@@ -5,14 +5,15 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
+import uniqueeutils.UniqueEnchantmentsUtils;
 
 public class EnchantmentDemetersBlessing extends UniqueEnchantment
 {
 	public EnchantmentDemetersBlessing()
 	{
 		super(new DefaultData("demeters_blessing", Rarity.VERY_RARE, 2, false, 12, 8, 75), EnumEnchantmentType.BREAKABLE, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		setCategory("utils");
 	}
 	
 	@Override
@@ -24,7 +25,7 @@ public class EnchantmentDemetersBlessing extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.DEMETERS_SOUL);
+		addIncompats(UniqueEnchantmentsUtils.DEMETERS_SOUL);
 	}
 	
 	@Override

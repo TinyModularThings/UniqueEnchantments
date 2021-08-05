@@ -88,4 +88,5 @@ tooltip.uniqee.stored.feather.name=Stored Feathers: %s
 tooltip.uniqee.stored.repair.name=Stored Repairs: %s
 tooltip.uniqee.crops.added.name=Added Crop To Auto Harvester
 tooltip.uniqee.crops.removed.name=Removed Crop From Auto Harvester
+tooltip.uniqee.crops.full.name=Auto Harvester is full
 tooltip.unqiuee.stored.reap.name=Stored Reap: %s

@@ -63,7 +63,6 @@ import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.BiomeDictionary;
@@ -96,7 +95,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import uniquee.UniqueEnchantments;
-import uniquee.api.crops.CropHarvestRegistry;
 import uniquee.enchantments.complex.EnchantmentEnderMending;
 import uniquee.enchantments.complex.EnchantmentMomentum;
 import uniquee.enchantments.complex.EnchantmentPerpetualStrike;
@@ -117,7 +115,6 @@ import uniquee.enchantments.unique.EnchantmentAlchemistsGrace;
 import uniquee.enchantments.unique.EnchantmentAresBlessing;
 import uniquee.enchantments.unique.EnchantmentClimateTranquility;
 import uniquee.enchantments.unique.EnchantmentCloudwalker;
-import uniquee.enchantments.unique.EnchantmentDemetersSoul;
 import uniquee.enchantments.unique.EnchantmentEcological;
 import uniquee.enchantments.unique.EnchantmentEnderMarksmen;
 import uniquee.enchantments.unique.EnchantmentEndestReap;
@@ -129,7 +126,6 @@ import uniquee.enchantments.unique.EnchantmentNaturesGrace;
 import uniquee.enchantments.unique.EnchantmentPhoenixBlessing;
 import uniquee.enchantments.unique.EnchantmentWarriorsGrace;
 import uniquee.handler.ai.AISpecialFindPlayer;
-import uniquee.utils.HarvestEntry;
 import uniquee.utils.MiscUtil;
 import uniquee.utils.Triple;
 
@@ -249,7 +245,7 @@ public class EntityEvents
 				int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantments.PESTILENCES_ODIUM, player);
 				if(level > 0)
 				{
-					List<EntityAgeable> living = player.world.getEntitiesWithinAABB(EntityAgeable.class, new AxisAlignedBB(player.getPosition()).grow(EnchantmentPestilencesOdium.RADIUS.get()));
+					List<EntityAgeable> living = player.world.getEntitiesWithinAABB(EntityAgeable.class, new AxisAlignedBB(player.getPosition()).grow(EnchantmentPestilencesOdium.RADIUS.get(Math.log(2.8D+level*0.0625D))));
 					for(int i = 0,m=living.size();i<m;i++)
 					{
 						living.get(i).addPotionEffect(new PotionEffect(UniqueEnchantments.PESTILENCES_ODIUM_POTION, 200, level));
@@ -258,27 +254,6 @@ public class EntityEvents
 			}
 			if(player.world.getTotalWorldTime() % 20 == 0)
 			{
-				HarvestEntry entry = EnchantmentDemetersSoul.getNextIndex(player);
-				if(entry != null)
-				{
-					EnumActionResult result = entry.harvest(player.world, player);
-					if(result == EnumActionResult.FAIL)
-					{
-						NBTTagList list = EnchantmentDemetersSoul.getCrops(player);
-						for(int i = 0,m=list.tagCount();i<m;i++)
-						{
-							if(entry.matches(list.getCompoundTagAt(i)))
-							{
-								list.removeTag(i--);
-								break;
-							}
-						}
-					}
-					else if(result == EnumActionResult.SUCCESS)
-					{
-						player.addExhaustion(0.06F);
-					}
-				}
 				Object2IntMap.Entry<EntityEquipmentSlot> level = MiscUtil.getEnchantedItem(UniqueEnchantments.SAGES_BLESSING, player);
 				if(level.getIntValue() > 0)
 				{
@@ -398,7 +373,7 @@ public class EntityEvents
 			return;
 		}
 		int xp = event.getOrb().xpValue;
-		int totalXP = (int)((xp * 1F - EnchantmentEnderMending.ABSORBTION_RATIO.getAsFloat(maxLevel)) * 2);
+		int totalXP = (int)((xp * 1F - Math.min(EnchantmentEnderMending.ABSORBTION_RATIO.getAsFloat(maxLevel), EnchantmentEnderMending.ABSORBTION_CAP.get())) * 2);
 		xp -= (totalXP / 2);
 		int usedXP = 0;
 		for(Object2BooleanMap.Entry<ItemStack> entry : values.object2BooleanEntrySet())
@@ -473,7 +448,7 @@ public class EntityEvents
 				count = 0;
 				nbt.setInteger(EnchantmentMomentum.COUNT, 0);
 			}
-			event.setNewSpeed(event.getNewSpeed() + (float)Math.log10(10D + (EnchantmentMomentum.SCALAR.get(count)) / level));
+			event.setNewSpeed(event.getNewSpeed() * (float)Math.log10(10D + (EnchantmentMomentum.SCALAR.get(count)) / level));
 			nbt.setLong(EnchantmentMomentum.LAST_MINE, worldTime);
 		}
 		level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.RANGE, held);
@@ -681,30 +656,6 @@ public class EntityEvents
 						}
 					}
 				}
-			}
-			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.DEMETERS_SOUL, event.getItemStack());
-			if(level > 0 && CropHarvestRegistry.INSTANCE.isValid(state.getBlock()) && !event.getWorld().isRemote)
-			{
-				HarvestEntry entry = new HarvestEntry(event.getWorld().provider.getDimension(), event.getPos().toLong());
-				NBTTagList list = EnchantmentDemetersSoul.getCrops(event.getEntityPlayer());
-				boolean found = false;
-				for(int i = 0,m=list.tagCount();i<m;i++)
-				{
-					if(entry.matches(list.getCompoundTagAt(i)))
-					{
-						found = true;
-						list.removeTag(i--);
-						break;
-					}
-				}
-				if(!found)
-				{
-					list.appendTag(entry.save());
-				}
-				event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqee.crops."+(found ? "removed" : "added")+".name"), false);
-				event.setCancellationResult(EnumActionResult.SUCCESS);
-				event.setCanceled(true);
-				return;
 			}
 		}
 	}

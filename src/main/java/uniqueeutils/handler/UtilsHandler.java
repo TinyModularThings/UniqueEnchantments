@@ -25,7 +25,9 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
@@ -49,10 +51,13 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
+import uniquee.api.crops.CropHarvestRegistry;
 import uniquee.handler.EntityEvents;
+import uniquee.utils.HarvestEntry;
 import uniquee.utils.MiscUtil;
 import uniqueeutils.UniqueEnchantmentsUtils;
 import uniqueeutils.enchantments.EnchantmentClimber;
+import uniqueeutils.enchantments.EnchantmentDemetersSoul;
 import uniqueeutils.enchantments.EnchantmentFaminesOdium;
 import uniqueeutils.enchantments.EnchantmentPhanesRegret;
 import uniqueeutils.enchantments.EnchantmentRocketMan;
@@ -114,12 +119,37 @@ public class UtilsHandler
 				Int2FloatMap.Entry entry = EnchantmentFaminesOdium.consumeRandomItem(player.inventory, EnchantmentFaminesOdium.NURISHMENT.getFloat(level));
 				if(entry != null)
 				{
-					player.getFoodStats().addStats(entry.getIntKey(), entry.getFloatValue());
+					player.getFoodStats().addStats(MathHelper.ceil(EnchantmentFaminesOdium.NURISHMENT.get(entry.getIntKey() * Math.log(2.8D+level*0.0625D))), (float)(entry.getFloatValue() * level * Math.log(2.8D+level*0.0625D)));
 		            player.world.playSound((EntityPlayer)null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 0.5F, player.world.rand.nextFloat() * 0.1F + 0.9F);
 				}
 				else
 				{
-					player.attackEntityFrom(DamageSource.MAGIC, EnchantmentFaminesOdium.DAMAGE.getFloat(duration));
+					player.attackEntityFrom(DamageSource.MAGIC, EnchantmentFaminesOdium.DAMAGE.getFloat(duration * (float)Math.log(2.8D+level*0.0625D)));
+				}
+			}
+		}
+		int delay = Math.max(1, MathHelper.ceil(EnchantmentDemetersSoul.DELAY.get() / Math.log(10+EnchantmentDemetersSoul.SCALING.get(MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.DEMETERS_SOUL, player.getHeldItem(EnumHand.MAIN_HAND))))));
+		if(player.world.getTotalWorldTime() % delay == 0)
+		{
+			HarvestEntry entry = EnchantmentDemetersSoul.getNextIndex(player);
+			if(entry != null)
+			{
+				EnumActionResult result = entry.harvest(player.world, player);
+				if(result == EnumActionResult.FAIL)
+				{
+					NBTTagList list = EnchantmentDemetersSoul.getCrops(player);
+					for(int i = 0,m=list.tagCount();i<m;i++)
+					{
+						if(entry.matches(list.getCompoundTagAt(i)))
+						{
+							list.removeTag(i--);
+							break;
+						}
+					}
+				}
+				else if(result == EnumActionResult.SUCCESS)
+				{
+					player.addExhaustion(0.06F);
 				}
 			}
 		}
@@ -129,9 +159,20 @@ public class UtilsHandler
 	public void onHeal(LivingHealEvent event)
 	{
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
-		if(level > 0 && event.getEntity().getEntityWorld().rand.nextDouble() < EnchantmentPhanesRegret.CHANCE.get(level))
+		if(level > 0)
 		{
-			event.setCanceled(true);
+			double chance = EnchantmentPhanesRegret.CHANCE.get(Math.log(2.8D + Math.pow(level, 3)));
+			if(chance > 1D)
+			{
+				event.getEntityLiving().attackEntityFrom(DamageSource.STARVE, event.getAmount());
+				event.setCanceled(true);
+				return;
+			}
+			if(event.getEntity().getEntityWorld().rand.nextDouble() < chance)
+			{
+				event.setCanceled(true);
+				return;
+			}
 		}
 	}
 	
@@ -168,6 +209,37 @@ public class UtilsHandler
 						event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.climb.fail.name"), true);
 					}
 				}
+			}
+			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.DEMETERS_SOUL, event.getItemStack());
+			if(level > 0 && CropHarvestRegistry.INSTANCE.isValid(state.getBlock()) && !event.getWorld().isRemote)
+			{
+				HarvestEntry entry = new HarvestEntry(event.getWorld().provider.getDimension(), event.getPos().toLong());
+				NBTTagList list = EnchantmentDemetersSoul.getCrops(event.getEntityPlayer());
+				boolean found = false;
+				for(int i = 0,m=list.tagCount();i<m;i++)
+				{
+					if(entry.matches(list.getCompoundTagAt(i)))
+					{
+						found = true;
+						list.removeTag(i--);
+						break;
+					}
+				}
+				if(!found)
+				{
+					if(list.tagCount() >= EnchantmentDemetersSoul.CAP.get(level))
+					{
+						event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqee.crops.full.name"), false);
+						event.setCancellationResult(EnumActionResult.SUCCESS);
+						event.setCanceled(true);
+						return;
+					}
+					list.appendTag(entry.save());
+				}
+				event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqee.crops."+(found ? "removed" : "added")+".name"), false);
+				event.setCancellationResult(EnumActionResult.SUCCESS);
+				event.setCanceled(true);
+				return;
 			}
 		}
 		else

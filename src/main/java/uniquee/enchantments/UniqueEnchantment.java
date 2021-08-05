@@ -2,6 +2,7 @@ package uniquee.enchantments;
 
 import java.util.Set;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -113,9 +114,14 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		this.categoryName = name;
 	}
 	
-	protected void addIncomats(Enchantment...enchantments)
+	protected void addIncompats(Enchantment...enchantments)
 	{
 		defaults.addIncompats(enchantments);
+	}
+	
+	public void addIncompats(ResourceLocation...locations)
+	{
+		defaults.addIncompats(locations);
 	}
 	
 	@Override
@@ -192,6 +198,11 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		public void addIncompats(Enchantment...enchantments)
 		{
 			for(int i = 0,m=enchantments.length;i<m;incompats.add(enchantments[i++].getRegistryName()));
+		}
+		
+		public void addIncompats(ResourceLocation...locations)
+		{
+			incompats.addAll(ObjectArrayList.wrap(locations));
 		}
 		
 		private String[] getInCompats() 

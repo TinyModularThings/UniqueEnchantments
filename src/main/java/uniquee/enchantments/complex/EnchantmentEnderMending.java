@@ -8,12 +8,14 @@ import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.utils.DoubleLevelStats;
+import uniquee.utils.DoubleStat;
 import uniquee.utils.IntStat;
 
 public class EnchantmentEnderMending extends UniqueEnchantment
 {
 	public static final String ENDER_TAG = "ender_mending";
 	public static final DoubleLevelStats ABSORBTION_RATIO = new DoubleLevelStats("absorbtion_ratio", 0.55D, 0.15D);
+	public static final DoubleStat ABSORBTION_CAP = new DoubleStat(2D, "absorbtion_cap");
 	public static final IntStat LIMIT = new IntStat(250, "limit");
 	
 	public EnchantmentEnderMending()
@@ -24,7 +26,7 @@ public class EnchantmentEnderMending extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(Enchantments.MENDING, UniqueEnchantments.ENDERMARKSMEN, UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.ECOLOGICAL);
+		addIncompats(Enchantments.MENDING, UniqueEnchantments.ENDERMARKSMEN, UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.ECOLOGICAL);
 	}
 	
 	@Override
@@ -37,6 +39,7 @@ public class EnchantmentEnderMending extends UniqueEnchantment
 	public void loadData(Configuration config)
 	{
 		ABSORBTION_RATIO.handleConfig(config, getConfigName());
+		ABSORBTION_CAP.handleConfig(config, getConfigName());
 		LIMIT.handleConfig(config, getConfigName());
 	}
 	

@@ -11,9 +11,11 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
@@ -40,8 +42,9 @@ public class BattleHandler
 			if(level > 0 && source instanceof EntityPlayer)
 			{
 				EntityPlayer player = (EntityPlayer)source;
-				double chance = EnchantmentAresFragment.BASE_CHANCE + ((Math.log(Math.pow(player.experienceLevel, level)) * EnchantmentAresFragment.CHANCE_MULT) / 100D);
-				float damage = (float)Math.log(3 + (level * ((1+event.getEntityLiving().getTotalArmorValue()+event.getEntityLiving().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue())*EnchantmentAresFragment.ARMOR_PERCENTAGE)));
+				double chance = EnchantmentAresFragment.BASE_CHANCE.get() + (EnchantmentAresFragment.CHANCE_MULT.get(Math.log(Math.pow(player.experienceLevel, level))) / 100D);
+				float damage = (float)Math.log(3 + (level * ((1+event.getEntityLiving().getTotalArmorValue()+event.getEntityLiving().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue())*EnchantmentAresFragment.ARMOR_PERCENTAGE.get())));
+				int i = 0;
 				while(chance > 0)
 				{
 					if(player.world.rand.nextDouble() < chance)
@@ -53,6 +56,12 @@ public class BattleHandler
 						event.setAmount(event.getAmount() / damage);
 					}
 					chance -= 1D;
+					i++;
+				}
+				if(i > 0)
+				{
+					int durability = MathHelper.ceil(Math.log(EnchantmentAresFragment.DURABILITY_SCALING.get(player.experienceLevel * level))/(1D+MiscUtil.getEnchantmentLevel(Enchantments.UNBREAKING, source.getHeldItemMainhand())));
+					source.getHeldItemMainhand().damageItem(i*durability, source);
 				}
 			}
 		}
@@ -68,8 +77,10 @@ public class BattleHandler
 			int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.LUNATIC_DESPAIR, source);
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() + (float)(level * EnchantmentLunaticDespair.BONUS_DAMAGE));
-				source.attackEntityFrom(DamageSource.MAGIC, (float)((level * EnchantmentLunaticDespair.SELF_DAMAGE) + (level * 0.25F)));
+				event.setAmount(event.getAmount() + EnchantmentLunaticDespair.BONUS_DAMAGE.getFloat((float)Math.log(2.8D+level)));
+				source.attackEntityFrom(DamageSource.GENERIC, EnchantmentLunaticDespair.SELF_DAMAGE.getFloat(level) * (float)Math.log(2.8+level));
+				source.hurtResistantTime = 0;
+				source.attackEntityFrom(DamageSource.MAGIC, (level * 0.25F));
 			}
 		}
 	}

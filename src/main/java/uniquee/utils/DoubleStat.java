@@ -37,7 +37,7 @@ public class DoubleStat
 		return (float)value;
 	}
 	
-	public float getFloat(int level)
+	public float getFloat(float level)
 	{
 		return (float)(value * level);
 	}

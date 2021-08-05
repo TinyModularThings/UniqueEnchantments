@@ -33,7 +33,7 @@ public class EnchantmentNaturesGrace extends UniqueEnchantment implements IGrace
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.ARES_BLESSING, UniqueEnchantments.ALCHEMISTS_GRACE, UniqueEnchantments.WARRIORS_GRACE);
+		addIncompats(UniqueEnchantments.ARES_BLESSING, UniqueEnchantments.ALCHEMISTS_GRACE, UniqueEnchantments.WARRIORS_GRACE);
 	}
 	
 	@Override

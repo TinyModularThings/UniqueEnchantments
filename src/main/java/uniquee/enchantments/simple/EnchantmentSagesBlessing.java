@@ -28,7 +28,7 @@ public class EnchantmentSagesBlessing extends UniqueEnchantment implements IBles
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.FAST_FOOD, Enchantments.SILK_TOUCH);
+		addIncompats(UniqueEnchantments.FAST_FOOD, Enchantments.SILK_TOUCH);
 	}
 	
 	@Override

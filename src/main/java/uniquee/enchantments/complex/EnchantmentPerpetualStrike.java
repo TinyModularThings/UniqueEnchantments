@@ -31,7 +31,7 @@ public class EnchantmentPerpetualStrike extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.SPARTAN_WEAPON);
+		addIncompats(UniqueEnchantments.SPARTAN_WEAPON);
 	}
 	
 	@Override

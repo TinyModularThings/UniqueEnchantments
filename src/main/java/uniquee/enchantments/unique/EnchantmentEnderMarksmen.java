@@ -20,7 +20,7 @@ public class EnchantmentEnderMarksmen extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.ECOLOGICAL, Enchantments.MENDING, Enchantments.INFINITY);
+		addIncompats(UniqueEnchantments.ECOLOGICAL, Enchantments.MENDING, Enchantments.INFINITY);
 	}
 	
 	@Override

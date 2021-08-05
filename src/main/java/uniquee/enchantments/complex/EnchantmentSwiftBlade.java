@@ -28,7 +28,7 @@ public class EnchantmentSwiftBlade extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.BERSERKER);
+		addIncompats(UniqueEnchantments.BERSERKER);
 	}
 	
 	@Override

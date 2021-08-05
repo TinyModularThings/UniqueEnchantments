@@ -28,7 +28,7 @@ public class EnchantmentSpartanWeapon extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.BERSERKER, UniqueEnchantments.PERPETUAL_STRIKE);
+		addIncompats(UniqueEnchantments.BERSERKER, UniqueEnchantments.PERPETUAL_STRIKE);
 	}
 	
 	@Override

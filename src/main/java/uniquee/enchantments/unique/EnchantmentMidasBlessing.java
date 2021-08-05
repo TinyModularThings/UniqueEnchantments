@@ -44,7 +44,7 @@ public class EnchantmentMidasBlessing extends UniqueEnchantment implements IBles
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH);
+		addIncompats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH);
 	}
 	
 	@Override

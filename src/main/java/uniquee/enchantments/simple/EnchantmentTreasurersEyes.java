@@ -19,7 +19,7 @@ public class EnchantmentTreasurersEyes extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.ENDER_EYES);
+		addIncompats(UniqueEnchantments.ENDER_EYES);
 	}
 	
 	@Override

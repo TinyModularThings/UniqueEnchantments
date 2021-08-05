@@ -27,7 +27,7 @@ public class EnchantmentCelestialBlessing extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.CLIMATE_TRANQUILITY);
+		addIncompats(UniqueEnchantments.CLIMATE_TRANQUILITY);
 	}
 	
 	@Override
