@@ -13,9 +13,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.curse.EnchantmentDeathsOdium;
-import uniquee.enchantments.unique.EnchantmentAresBlessing;
-import uniquee.enchantments.unique.EnchantmentPhoenixBlessing;
+import uniquee.enchantments.curse.DeathsOdium;
+import uniquee.enchantments.unique.AresBlessing;
+import uniquee.enchantments.unique.PhoenixBlessing;
 import uniquee.utils.MiscUtil;
 
 public class FirstAidHandler
@@ -36,7 +36,7 @@ public class FirstAidHandler
 				if(level > 0 && stack.isItemStackDamageable())
 				{
 					float damage = event.getUndistributedDamage();
-					stack.damageItem((int)(damage * EnchantmentAresBlessing.SCALAR.get() / Math.log(level+1)), event.getEntityLiving());
+					stack.damageItem((int)(damage * AresBlessing.SCALAR.get() / Math.log(level+1)), event.getEntityLiving());
 					event.setCanceled(true);
 					return;
 				}	
@@ -48,12 +48,12 @@ public class FirstAidHandler
 				living.heal(living.getMaxHealth());
 				living.clearActivePotions();
 				living.getFoodStats().addStats(Short.MAX_VALUE, 1F);
-				living.getEntityData().setLong(EnchantmentDeathsOdium.CRUSE_TIMER, living.getEntityWorld().getTotalWorldTime() + EnchantmentDeathsOdium.DELAY.get());
+				living.getEntityData().setLong(DeathsOdium.CRUSE_TIMER, living.getEntityWorld().getTotalWorldTime() + DeathsOdium.DELAY.get());
 	            living.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 600, 2));
 	            living.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 100, 1));
 	            living.world.setEntityState(living, (byte)35);
 	            living.getItemStackFromSlot(slot.getKey()).shrink(1);
-	            for(EntityLivingBase entry : living.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(living.getPosition()).grow(EnchantmentPhoenixBlessing.RANGE.getAsDouble(slot.getIntValue()))))
+	            for(EntityLivingBase entry : living.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(living.getPosition()).grow(PhoenixBlessing.RANGE.getAsDouble(slot.getIntValue()))))
 	            {
 	            	if(entry == living) continue;
 	            	entry.setFire(600000);

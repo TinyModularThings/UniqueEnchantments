@@ -12,7 +12,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.simple.EnchantmentTreasurersEyes;
+import uniquee.enchantments.simple.TreasurersEyes;
 import uniquee.utils.MiscUtil;
 
 public class EnchantmentLayer implements LayerRenderer<EntityLivingBase>
@@ -23,7 +23,7 @@ public class EnchantmentLayer implements LayerRenderer<EntityLivingBase>
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.TREASURERS_EYES, player.getItemStackFromSlot(EntityEquipmentSlot.HEAD));
 		if(level > 0)
 		{
-			double maxDistance = EnchantmentTreasurersEyes.RANGE.getAsDouble(level);
+			double maxDistance = TreasurersEyes.RANGE.getAsDouble(level);
 			maxDistance *= maxDistance;
 			return player.getDistanceSq(base) <= maxDistance;
 		}
