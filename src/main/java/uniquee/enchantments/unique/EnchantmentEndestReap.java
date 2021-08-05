@@ -8,6 +8,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
@@ -24,7 +26,13 @@ public class EnchantmentEndestReap extends UniqueEnchantment
 	
 	public EnchantmentEndestReap()
 	{
-		super(new DefaultData("endest_reap", Rarity.RARE, 4, true, 30, 6, 20), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("endest_reap", Rarity.VERY_RARE, 4, true, 30, 15, 20), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() instanceof ItemHoe;
 	}
 	
 	@Override

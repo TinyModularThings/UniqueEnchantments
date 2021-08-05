@@ -13,12 +13,12 @@ import uniquee.utils.IntStat;
 public class EnchantmentEnderMending extends UniqueEnchantment
 {
 	public static final String ENDER_TAG = "ender_mending";
-	public static final DoubleLevelStats ABSORBTION_RATIO = new DoubleLevelStats("absorbtion_ratio", 0.25D, 0.25D);
+	public static final DoubleLevelStats ABSORBTION_RATIO = new DoubleLevelStats("absorbtion_ratio", 0.55D, 0.15D);
 	public static final IntStat LIMIT = new IntStat(250, "limit");
 	
 	public EnchantmentEnderMending()
 	{
-		super(new DefaultData("ender_mending", Rarity.VERY_RARE, 3, true, 26, 8, 5), EnumEnchantmentType.BREAKABLE, EntityEquipmentSlot.values());
+		super(new DefaultData("ender_mending", Rarity.VERY_RARE, 3, true, 20, 10, 5), EnumEnchantmentType.BREAKABLE, EntityEquipmentSlot.values());
 	}
 	
 	@Override

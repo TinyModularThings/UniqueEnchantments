@@ -16,7 +16,7 @@ import uniquee.utils.DoubleLevelStats;
 public class EnchantmentCelestialBlessing extends UniqueEnchantment
 {
 	public static final UUID SPEED_MOD = UUID.fromString("ce9b483d-1091-4f34-b09b-b05cc867c8db");
-	public static final DoubleLevelStats SPEED_BONUS = new DoubleLevelStats("speed_bonus", 0.02D, 0.06D);
+	public static final DoubleLevelStats SPEED_BONUS = new DoubleLevelStats("speed_bonus", 0.08D, 0.04D);
 	
 	public EnchantmentCelestialBlessing()
 	{

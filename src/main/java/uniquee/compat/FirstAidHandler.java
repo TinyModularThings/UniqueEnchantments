@@ -36,7 +36,7 @@ public class FirstAidHandler
 				if(level > 0 && stack.isItemStackDamageable())
 				{
 					float damage = event.getUndistributedDamage();
-					stack.damageItem((int)(damage * (EnchantmentAresBlessing.SCALAR.get() / level)), event.getEntityLiving());
+					stack.damageItem((int)(damage * EnchantmentAresBlessing.SCALAR.get() / Math.log(level+1)), event.getEntityLiving());
 					event.setCanceled(true);
 					return;
 				}	

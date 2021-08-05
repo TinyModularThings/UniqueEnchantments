@@ -19,7 +19,7 @@ public class EnchantmentAresFragment extends UniqueEnchantment
 	
 	public EnchantmentAresFragment()
 	{
-		super(new DefaultData("ares_fragment", Rarity.RARE, 4, true, 25, 15, 10), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("ares_fragment", Rarity.RARE, 4, true, 25, 35, 10), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 		setCategory("battle");
 	}
 	

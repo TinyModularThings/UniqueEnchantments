@@ -2,8 +2,8 @@ package uniqueeutils.enchantments;
 
 import java.util.List;
 
-import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Blocks;
@@ -11,18 +11,19 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.IntStat;
 
 public class EnchantmentClimber extends UniqueEnchantment
 {
 	public static final String CLIMB_POS = "climb_target";
 	public static final String CLIMB_DELAY = "climb_delay";
 	public static final String CLIMB_START = "climb_start";
-	static final Object2DoubleMap<Block> CLIMB_SPEED = new Object2DoubleOpenHashMap<>();
-	static double MIN_WAITING_TIME = 0.5D;
+	static final Object2IntMap<Block> CLIMB_SPEED = new Object2IntOpenHashMap<>();
+	public static final IntStat DELAY = new IntStat(10, "min_delay");
 	
 	public EnchantmentClimber()
 	{
-		super(new DefaultData("climber", Rarity.COMMON, 3, true, 14, 8, 30), EnumEnchantmentType.ARMOR_LEGS, new EntityEquipmentSlot[]{EntityEquipmentSlot.LEGS});
+		super(new DefaultData("climber", Rarity.UNCOMMON, 3, true, 14, 8, 30), EnumEnchantmentType.ARMOR_LEGS, new EntityEquipmentSlot[]{EntityEquipmentSlot.LEGS});
 		setCategory("utils");
 	}
 	
@@ -36,9 +37,9 @@ public class EnchantmentClimber extends UniqueEnchantment
 	public void loadData(Configuration config)
 	{
 		CLIMB_SPEED.clear();
-		CLIMB_SPEED.defaultReturnValue(config.get(getConfigName(), "climb_default", 0.25D).getDouble());
-		MIN_WAITING_TIME = config.get(getConfigName(), "climb_min_waiting", 0.5D).getDouble();
-		String[] blocks = config.get(getConfigName(), "climb_speed", new String[]{"minecraft:ladder;0.1", "minecraft:vine;0.25"}).getStringList();
+		CLIMB_SPEED.defaultReturnValue(config.get(getConfigName(), "default_delay", 5).getInt());
+		DELAY.handleConfig(config, getConfigName());
+		String[] blocks = config.get(getConfigName(), "climb_speed", new String[]{"minecraft:ladder;2", "minecraft:vine;5"}).getStringList();
 		for(int i = 0;i<blocks.length;i++)
 		{
 			String[] split = blocks[i].split(";");
@@ -46,7 +47,7 @@ public class EnchantmentClimber extends UniqueEnchantment
 			try
 			{
 				Block block = Block.getBlockFromName(split[0]);
-				if(block != null && block != Blocks.AIR) CLIMB_SPEED.put(block, Double.parseDouble(split[1]));
+				if(block != null && block != Blocks.AIR) CLIMB_SPEED.put(block, Integer.parseInt(split[1]));
 			}
 			catch(Exception e) { e.printStackTrace(); }
 		}
@@ -55,7 +56,7 @@ public class EnchantmentClimber extends UniqueEnchantment
 	public static int getClimbTime(int level, List<Block> blocksToClimb)
 	{
 		double totalTime = 0D;
-		for(Block block : blocksToClimb) totalTime += CLIMB_SPEED.getDouble(block);
-		return Math.max((int)(((totalTime / level) + MIN_WAITING_TIME) * 20), 2);
+		for(Block block : blocksToClimb) totalTime += CLIMB_SPEED.getInt(block);
+		return Math.max((int)(((totalTime / level) + DELAY.get())), 2);
 	}
 }

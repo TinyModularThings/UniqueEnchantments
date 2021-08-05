@@ -14,7 +14,7 @@ public class EnchantmentEnderMarksmen extends UniqueEnchantment
 	
 	public EnchantmentEnderMarksmen()
 	{
-		super(new DefaultData("endermarksmen", Rarity.VERY_RARE, 1, true, 28, 2, 16), EnumEnchantmentType.BOW, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("endermarksmen", Rarity.VERY_RARE, 5, true, 28, 25, 16), EnumEnchantmentType.BOW, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
 	
 	@Override

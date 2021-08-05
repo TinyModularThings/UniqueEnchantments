@@ -12,11 +12,11 @@ import uniquee.utils.DoubleStat;
 
 public class EnchantmentSpartanWeapon extends UniqueEnchantment
 {
-	public static final DoubleStat SCALAR = new DoubleStat(0.1D, "scalar");
+	public static final DoubleStat EXTRA_DAMAGE = new DoubleStat(0.05D, "scalar");
 
 	public EnchantmentSpartanWeapon()
 	{
-		super(new DefaultData("spartanweapon", Rarity.RARE, 5, true, 11, 3, 10), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("spartanweapon", Rarity.UNCOMMON, 5, true, 25, 3, 50), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
 	
 	@Override
@@ -34,6 +34,6 @@ public class EnchantmentSpartanWeapon extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration entry)
 	{
-		SCALAR.handleConfig(entry, getConfigName());
+		EXTRA_DAMAGE.handleConfig(entry, getConfigName());
 	}
 }

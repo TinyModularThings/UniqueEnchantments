@@ -13,7 +13,7 @@ public class EnchantmentAresBlessing extends UniqueEnchantment implements IBless
 	
 	public EnchantmentAresBlessing()
 	{
-		super(new DefaultData("aresblessing", Rarity.VERY_RARE, 1, true, 28, 2, 32), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
+		super(new DefaultData("aresblessing", Rarity.VERY_RARE, 3, true, 28, 2, 45), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
 	}
 	
 	@Override

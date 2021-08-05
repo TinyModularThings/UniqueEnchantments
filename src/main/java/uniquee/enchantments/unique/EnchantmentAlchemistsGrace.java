@@ -10,8 +10,9 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemAxe;
+import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTool;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
@@ -27,13 +28,13 @@ public class EnchantmentAlchemistsGrace extends UniqueEnchantment implements IGr
 	
 	public EnchantmentAlchemistsGrace()
 	{
-		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, 4, true, 20, 3, 18), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, 4, true, 18, 6, 40), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
 	}
 	
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof ItemTool || EnumEnchantmentType.BOW.canEnchantItem(stack.getItem());
+		return stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemHoe || EnumEnchantmentType.BOW.canEnchantItem(stack.getItem());
 	}
 	
 	@Override

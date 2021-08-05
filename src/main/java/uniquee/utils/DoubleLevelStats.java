@@ -46,4 +46,10 @@ public class DoubleLevelStats
 	{
 		return (float)(base / (this.level * level));
 	}
+	
+	public float getLogDevided(int level)
+	{
+		return (float)(base / (this.level * Math.log(level)));
+
+	}
 }

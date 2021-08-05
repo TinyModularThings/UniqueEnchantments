@@ -44,7 +44,9 @@ import uniquee.enchantments.complex.EnchantmentSpartanWeapon;
 import uniquee.enchantments.complex.EnchantmentSwiftBlade;
 import uniquee.enchantments.curse.EnchantmentDeathsOdium;
 import uniquee.enchantments.curse.EnchantmentPestilencesOdium;
-import uniquee.enchantments.simple.EnchantmentAdvancedDamage;
+import uniquee.enchantments.simple.EnchantmentAmelioratedBaneOfArthropod;
+import uniquee.enchantments.simple.EnchantmentAmelioratedSharpness;
+import uniquee.enchantments.simple.EnchantmentAmelioratedSmite;
 import uniquee.enchantments.simple.EnchantmentBerserk;
 import uniquee.enchantments.simple.EnchantmentBoneCrusher;
 import uniquee.enchantments.simple.EnchantmentEnderEyes;
@@ -79,9 +81,9 @@ public class UniqueEnchantments
 	static List<IToggleEnchantment> ENCHANTMENTS = new ObjectArrayList<IToggleEnchantment>();
 	//Simple
 	public static Enchantment BERSERKER = new EnchantmentBerserk();
-	public static Enchantment ADV_SHARPNESS = new EnchantmentAdvancedDamage(0);
-	public static Enchantment ADV_SMITE = new EnchantmentAdvancedDamage(1);
-	public static Enchantment ADV_BANE_OF_ARTHROPODS = new EnchantmentAdvancedDamage(2);
+	public static Enchantment ADV_SHARPNESS = new EnchantmentAmelioratedSharpness();
+	public static Enchantment ADV_SMITE = new EnchantmentAmelioratedSmite();
+	public static Enchantment ADV_BANE_OF_ARTHROPODS = new EnchantmentAmelioratedBaneOfArthropod();
 	public static Enchantment VITAE = new EnchantmentVitae();
 	public static Enchantment SWIFT = new EnchantmentSwift();
 	public static Enchantment SAGES_BLESSING = new EnchantmentSagesBlessing();

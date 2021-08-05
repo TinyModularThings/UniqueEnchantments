@@ -108,10 +108,10 @@ public class UtilsHandler
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.FAMINES_ODIUM, player);
 		if(level > 0)
 		{
-			int duration = (int)(EnchantmentFaminesOdium.DELAY * (1 - Math.log10(level)));
+			int duration = (int)(EnchantmentFaminesOdium.DELAY.get() * (1 - Math.log10(level)));
 			if(time % duration == 0)
 			{
-				Int2FloatMap.Entry entry = EnchantmentFaminesOdium.consumeRandomItem(player.inventory, EnchantmentFaminesOdium.NURISHMENT * level);
+				Int2FloatMap.Entry entry = EnchantmentFaminesOdium.consumeRandomItem(player.inventory, EnchantmentFaminesOdium.NURISHMENT.getFloat(level));
 				if(entry != null)
 				{
 					player.getFoodStats().addStats(entry.getIntKey(), entry.getFloatValue());
@@ -119,7 +119,7 @@ public class UtilsHandler
 				}
 				else
 				{
-					player.attackEntityFrom(DamageSource.MAGIC, EnchantmentFaminesOdium.DAMAGE * duration);
+					player.attackEntityFrom(DamageSource.MAGIC, EnchantmentFaminesOdium.DAMAGE.getFloat(duration));
 				}
 			}
 		}
@@ -129,7 +129,7 @@ public class UtilsHandler
 	public void onHeal(LivingHealEvent event)
 	{
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
-		if(level > 0 && event.getEntity().getEntityWorld().rand.nextDouble() < EnchantmentPhanesRegret.CHANCE * level)
+		if(level > 0 && event.getEntity().getEntityWorld().rand.nextDouble() < EnchantmentPhanesRegret.CHANCE.get(level))
 		{
 			event.setCanceled(true);
 		}
@@ -296,7 +296,7 @@ public class UtilsHandler
 							NBTTagCompound nbt = new NBTTagCompound();
 							rocket.writeEntityToNBT(nbt);
 							int time = nbt.getInteger("LifeTime");
-							time += time * EnchantmentRocketMan.FLIGHT_TIME.getAsDouble(level);
+							time += time * EnchantmentRocketMan.FLIGHT_TIME.getAsDouble(level) * Math.log(2.8 + (level/16D));
 							nbt.setInteger("LifeTime", time);
 							rocket.readEntityFromNBT(nbt);
 						}

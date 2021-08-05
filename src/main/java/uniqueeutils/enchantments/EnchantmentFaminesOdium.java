@@ -9,16 +9,18 @@ import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
+import uniquee.utils.DoubleStat;
+import uniquee.utils.IntStat;
 
 public class EnchantmentFaminesOdium extends UniqueEnchantment
 {
-	public static int DELAY = 1200;
-	public static float NURISHMENT = 0.2F;
-	public static float DAMAGE = 0.00625F;
+	public static final IntStat DELAY = new IntStat(1200, "delay");
+	public static final DoubleStat NURISHMENT = new DoubleStat(0.2D, "nurishment");
+	public static final DoubleStat DAMAGE = new DoubleStat(0.00625D, "damage");
 	
 	public EnchantmentFaminesOdium()
 	{
-		super(new DefaultData("famines_odium", Rarity.UNCOMMON, 1, true, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
+		super(new DefaultData("famines_odium", Rarity.UNCOMMON, 2, true, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
 		setCategory("utils");
 	}
 	
@@ -31,9 +33,9 @@ public class EnchantmentFaminesOdium extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		DELAY = config.get(getConfigName(), "delay", 1200).getInt();
-		NURISHMENT = (float)config.get(getConfigName(), "nurishment", 0.2F).getDouble();
-		DAMAGE = (float)config.get(getConfigName(), "damage", 0.00625F).getDouble();
+		DELAY.handleConfig(config, getConfigName());
+		NURISHMENT.handleConfig(config, getConfigName());
+		DAMAGE.handleConfig(config, getConfigName());
 	}
 	
 	public static Int2FloatMap.Entry consumeRandomItem(IInventory inventory, float effect)

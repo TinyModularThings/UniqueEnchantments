@@ -17,7 +17,7 @@ public class EnchantmentWarriorsGrace extends UniqueEnchantment implements IGrac
 
 	public EnchantmentWarriorsGrace()
 	{
-		super(new DefaultData("warriorsgrace", Rarity.VERY_RARE, 1, true, 22, 2, 30), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("warriorsgrace", Rarity.RARE, 1, true, 22, 2, 5), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override

@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquee.enchantments.UniqueEnchantment;
 import uniquee.enchantments.type.IBlessingEnchantment;
-import uniquee.utils.IntStat;
+import uniquee.utils.DoubleStat;
 
 public class EnchantmentMidasBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
@@ -28,12 +28,11 @@ public class EnchantmentMidasBlessing extends UniqueEnchantment implements IBles
 		}
 	};
 	public static String GOLD_COUNTER = "gold_storage";
-	public static final IntStat LEVEL_SCALAR = new IntStat(6, "level_scalar");
-	public static final IntStat BASE_COST = new IntStat(2, "gold_cost");
+	public static final DoubleStat GOLD_COST = new DoubleStat(1D, "gold_cost");
 	
 	public EnchantmentMidasBlessing()
 	{
-		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 3, true, 22, 2, 75), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 4, true, 14, 6, 75), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
 	}
 	
 	@Override
@@ -51,8 +50,7 @@ public class EnchantmentMidasBlessing extends UniqueEnchantment implements IBles
 	@Override
 	public void loadData(Configuration config)
 	{
-		LEVEL_SCALAR.handleConfig(config, getConfigName());
-		BASE_COST.handleConfig(config, getConfigName());
+		GOLD_COST.handleConfig(config, getConfigName());
 		VALID_ITEMS.clear();
 		String[] items = config.get(getConfigName(), "optional_gold_items", new String[0], "Optional Items that can be used as gold replacement. No meta-nbt support").getStringList();
 		for(int i = 0,m=items.length;i<m;i++)

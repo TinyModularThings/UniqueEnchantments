@@ -107,6 +107,7 @@ import uniquee.enchantments.curse.EnchantmentDeathsOdium;
 import uniquee.enchantments.curse.EnchantmentPestilencesOdium;
 import uniquee.enchantments.simple.EnchantmentBerserk;
 import uniquee.enchantments.simple.EnchantmentBoneCrusher;
+import uniquee.enchantments.simple.EnchantmentEnderEyes;
 import uniquee.enchantments.simple.EnchantmentFocusImpact;
 import uniquee.enchantments.simple.EnchantmentRange;
 import uniquee.enchantments.simple.EnchantmentSagesBlessing;
@@ -198,7 +199,7 @@ public class EntityEvents
 			if(player.getHealth() < player.getMaxHealth())
 			{
 				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.NATURES_GRACE, player.getItemStackFromSlot(EntityEquipmentSlot.CHEST));
-				if(level > 0 && player.world.getTotalWorldTime() % Math.max(MathHelper.floor(Math.sqrt(EnchantmentNaturesGrace.DELAY.get() / level)), 1) == 0)
+				if(level > 0 && player.world.getTotalWorldTime() % Math.max((int)(EnchantmentNaturesGrace.DELAY.get() / Math.log(level+1.1D)), 1) == 0)
 				{
 					if(player.getCombatTracker().getBestAttacker() == null && hasBlockCount(player.world, player.getPosition(), 4, EnchantmentNaturesGrace.FLOWERS))
 					{
@@ -481,7 +482,7 @@ public class EntityEvents
 			double value = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getBaseValue();
 			if(value * value < player.getDistanceSqToCenter(event.getPos()))
 			{
-				event.setNewSpeed(event.getNewSpeed() * (1F - EnchantmentRange.REDUCTION.getDevided(level)));
+				event.setNewSpeed(event.getNewSpeed() * EnchantmentRange.REDUCTION.getLogDevided(level));
 			}
 		}
 	}
@@ -566,7 +567,7 @@ public class EntityEvents
 			int gold = getInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, 0);
 			if(gold > 0 && isGem(event.getState()))
 			{
-				gold -= (int)(Math.ceil((double)EnchantmentMidasBlessing.LEVEL_SCALAR.get() / (double)midas) + EnchantmentMidasBlessing.BASE_COST.get());
+				gold -= (int)(Math.pow(EnchantmentMidasBlessing.GOLD_COST.get()+midas, 2)/midas);
 				setInt(stack, EnchantmentMidasBlessing.GOLD_COUNTER, Math.max(0, gold));
 				int multiplier = 1 + midas;
 				List<ItemStack> newDrops = new ObjectArrayList<ItemStack>();
@@ -734,7 +735,7 @@ public class EntityEvents
 				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (1F + (float)Math.log10(attr.getAttributeValue() / EnchantmentSwiftBlade.SCALAR.get() * level)));
+					event.setAmount(event.getAmount() * (1F + (float)Math.log10(10D + (1.6 + Math.log(Math.max(0.25D, attr.getAttributeValue())) / EnchantmentSwiftBlade.SCALAR.get()) * Math.log(level*level))));
 				}
 			}
 			level = enchantments.getInt(UniqueEnchantments.FOCUS_IMPACT);
@@ -790,20 +791,6 @@ public class EntityEvents
 				}
 			}
 		}
-		if(entity instanceof EntityPlayer)
-		{
-			EntityPlayer player = (EntityPlayer)entity;
-			ItemStack stack = player.getHeldItemMainhand();
-			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.RANGE, stack);
-			if(level > 0)
-			{
-				double value = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getBaseValue();
-				if(value * value < player.getDistanceSq(event.getEntity()))
-				{
-					event.setAmount(event.getAmount() * (1F - EnchantmentRange.REDUCTION.getDevided(level)));
-				}
-			}
-		}
 	}
 	
 	@SubscribeEvent
@@ -816,7 +803,11 @@ public class EntityEvents
 			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.SPARTAN_WEAPON, base.getHeldItemMainhand());
 			if(level > 0 && base.getHeldItemOffhand().getItem() instanceof ItemShield)
 			{
-				event.setAmount(event.getAmount() + (event.getAmount()*(EnchantmentSpartanWeapon.SCALAR.getFloat()*level)));
+				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
+				if(attr != null)
+				{
+					event.setAmount((float)(event.getAmount() + EnchantmentSpartanWeapon.EXTRA_DAMAGE.getFloat()*Math.log((event.getAmount()*event.getAmount())/attr.getAttributeValue())*level));
+				}
 			}
 			level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
 			if(level > 0)
@@ -851,7 +842,7 @@ public class EntityEvents
 				if(level > 0 && stack.isItemStackDamageable())
 				{
 					float damage = event.getAmount();
-					stack.damageItem((int)(damage * (EnchantmentAresBlessing.SCALAR.get() / level)), event.getEntityLiving());
+					stack.damageItem((int)(damage * EnchantmentAresBlessing.SCALAR.get() / Math.log(level+1)), event.getEntityLiving());
 					event.setCanceled(true);
 					return;
 				}	
@@ -897,7 +888,7 @@ public class EntityEvents
 		if(level > 0 && stack.getTagCompound().getBoolean(EnchantmentIcarusAegis.FLYING_TAG) && event.getDistance() > 3F)
 		{
 			int feathers = getInt(stack, EnchantmentIcarusAegis.FEATHER_TAG, 0);
-			int consume = (int)Math.max(Math.ceil((double)EnchantmentIcarusAegis.SCALAR.get() / (double)level), 4D);
+			int consume = (int)(EnchantmentIcarusAegis.SCALAR.get() / Math.log(2D + level));
 			if(feathers >= consume)
 			{
 				feathers -= consume;
@@ -1051,7 +1042,7 @@ public class EntityEvents
 				ItemStack stack = player.getItemStackFromSlot(slot.getKey());
 				arrow.pickupStatus = PickupStatus.DISALLOWED;
 				player.addItemStackToInventory(getArrowStack(arrow));
-				int needed = Math.min((int)(level*EnchantmentEnderMarksmen.SCALAR.get()), stack.getItemDamage());
+				int needed = Math.min(MathHelper.floor(Math.log(2.8D+level)*EnchantmentEnderMarksmen.SCALAR.get()), stack.getItemDamage());
 				if(needed > 0)
 				{
 					stack.damageItem(-needed, player);
@@ -1072,7 +1063,15 @@ public class EntityEvents
 		{
 			ENDERMEN_TO_BLOCK.set(null);
 			event.setCanceled(true);
+			return;
 		}
+		EntityLivingBase living = event.getEntityLiving();
+        IAttributeInstance iattributeinstance = living.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
+        double distance = iattributeinstance == null ? 16.0D : iattributeinstance.getAttributeValue();
+        if(living.getEntityWorld().getNearestAttackablePlayer(living.posX, living.posY, living.posZ, distance, distance, null, EnchantmentEnderEyes.getPlayerFilter(living)) != null)
+        {
+        	event.setCanceled(true);
+        }
 	}
 	
 	@SubscribeEvent
