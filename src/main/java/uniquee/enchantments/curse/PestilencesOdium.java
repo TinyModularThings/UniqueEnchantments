@@ -16,11 +16,6 @@ public class PestilencesOdium extends UniqueEnchantment
 	{
 		super(new DefaultData("pestilences_odium", Rarity.RARE, 2, false, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
 		addStats(RADIUS, DELAY, DAMAGE_PER_TICK);
+		setCurse();
 	}
-		
-	@Override
-	public boolean isCurse()
-	{
-		return true;
-	}	
 }

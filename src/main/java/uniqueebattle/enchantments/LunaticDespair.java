@@ -17,12 +17,7 @@ public class LunaticDespair extends UniqueEnchantment
 		super(new DefaultData("lunatic_despair", Rarity.VERY_RARE, 2, true, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
 		setCategory("battle");
 		addStats(BONUS_DAMAGE, SELF_DAMAGE);
-	}
-	
-	@Override
-	public boolean isCurse()
-	{
-		return true;
+		setCurse();
 	}
 	
 	@Override

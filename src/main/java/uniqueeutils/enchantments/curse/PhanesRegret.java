@@ -14,11 +14,6 @@ public class PhanesRegret extends UniqueEnchantment
 		super(new DefaultData("phanes_regret", Rarity.UNCOMMON, 2, true, 10, 2, 75), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
 		setCategory("utils");
 		addStats(CHANCE);
-	}
-	
-	@Override
-	public boolean isCurse()
-	{
-		return true;
+		setCurse();
 	}
 }

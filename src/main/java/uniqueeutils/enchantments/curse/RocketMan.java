@@ -16,12 +16,7 @@ public class RocketMan extends UniqueEnchantment
 		super(new DefaultData("rocketman", Rarity.VERY_RARE, 3, true, 25, 4, 20), EnumEnchantmentType.ARMOR_CHEST, EntityEquipmentSlot.CHEST);
 		setCategory("utils");
 		addStats(FLIGHT_TIME);
-	}
-	
-	@Override
-	public boolean isCurse()
-	{
-		return true;
+		setCurse();
 	}
 	
 	@Override

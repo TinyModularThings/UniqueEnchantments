@@ -25,6 +25,7 @@ import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -53,8 +54,10 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -105,6 +108,7 @@ import uniquee.enchantments.unique.Ecological;
 import uniquee.enchantments.unique.EnderMarksmen;
 import uniquee.enchantments.unique.EndestReap;
 import uniquee.enchantments.unique.FastFood;
+import uniquee.enchantments.unique.Grimoire;
 import uniquee.enchantments.unique.IcarusAegis;
 import uniquee.enchantments.unique.IfritsGrace;
 import uniquee.enchantments.unique.MidasBlessing;
@@ -135,10 +139,26 @@ public class EntityEvents
 				}
 			}
 		}
+		else if(entity instanceof EntityItem)
+		{
+			if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.GRIMOIRE, ((EntityItem)entity).getItem()) > 0)
+			{
+				entity.setEntityInvulnerable(true);
+			}
+		}
 	}
 	
 	@SubscribeEvent
-	public void onEntityUpdate(PlayerTickEvent event)
+	public void onAnvilRepair(AnvilUpdateEvent event)
+	{
+		if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.GRIMOIRE, event.getLeft()) > 0)
+		{
+			event.setCanceled(true);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onPlayerTick(PlayerTickEvent event)
 	{
 		if(event.phase == Phase.START)
 		{
@@ -156,6 +176,18 @@ public class EntityEvents
 					if(player.getCombatTracker().getBestAttacker() == null && StackUtils.hasBlockCount(player.world, player.getPosition(), 4, NaturesGrace.FLOWERS))
 					{
 						player.heal(NaturesGrace.HEALING.getAsFloat(level));
+					}
+				}
+			}
+			if(player.world.getTotalWorldTime() % 1200 == 0)
+			{
+				EntityEquipmentSlot[] slots = MiscUtil.getEquipmentSlotsFor(UniqueEnchantments.GRIMOIRE);
+				for(int i = 0;i<slots.length;i++)
+				{
+					int level = container.getEnchantment(UniqueEnchantments.GRIMOIRE, slots[i]);
+					if(level > 0)
+					{
+						Grimoire.applyGrimore(player.getItemStackFromSlot(slots[i]), level, player);
 					}
 				}
 			}
@@ -289,6 +321,15 @@ public class EntityEvents
 					equipStack.damageItem(-1, player);
 				}
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onItemDespawn(ItemExpireEvent event)
+	{
+		if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.GRIMOIRE, event.getEntityItem().getItem()) > 0)
+		{
+			event.setExtraLife(10000);
 		}
 	}
 	
@@ -536,7 +577,7 @@ public class EntityEvents
 				}
 				if(smelted > 0)
 				{
-					stored -= MathHelper.ceil((smelted * (ore ? 5 : 1) * IfritsGrace.BASE_COST.get() * extra) / level);
+					stored -= MathHelper.ceil((smelted * (ore ? 5 : 1) * IfritsGrace.BASE_CONSUMTION.get() * extra) / level);
 					StackUtils.setInt(stack, IfritsGrace.LAVA_COUNT, Math.max(0, stored));
 				}
 			}
@@ -596,7 +637,7 @@ public class EntityEvents
 	}
 	
 	@SubscribeEvent
-	public void onEntityAttack(LivingHurtEvent event)
+	public void onArmorDamage(LivingHurtEvent event)
 	{
 		Entity entity = event.getSource().getTrueSource();
 		if(entity instanceof EntityLivingBase)

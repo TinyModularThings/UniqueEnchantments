@@ -22,12 +22,7 @@ public class FaminesOdium extends UniqueEnchantment
 		super(new DefaultData("famines_odium", Rarity.UNCOMMON, 2, true, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
 		setCategory("utils");
 		addStats(DELAY, NURISHMENT, DAMAGE);
-	}
-	
-	@Override
-	public boolean isCurse()
-	{
-		return true;
+		setCurse();
 	}
 	
 	public static Int2FloatMap.Entry consumeRandomItem(IInventory inventory, float effect)

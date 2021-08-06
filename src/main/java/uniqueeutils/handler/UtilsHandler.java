@@ -26,6 +26,7 @@ import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -39,6 +40,8 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -56,6 +59,8 @@ import uniquebase.utils.HarvestEntry;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniqueeutils.UniqueEnchantmentsUtils;
+import uniqueeutils.enchantments.complex.Ambrosia;
+import uniqueeutils.enchantments.complex.BouncyDudes;
 import uniqueeutils.enchantments.complex.Climber;
 import uniqueeutils.enchantments.complex.SleipnirsGrace;
 import uniqueeutils.enchantments.curse.FaminesOdium;
@@ -151,6 +156,37 @@ public class UtilsHandler
 				{
 					player.addExhaustion(0.06F);
 				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onFall(LivingFallEvent event)
+	{
+		ItemStack stack = event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.FEET);
+		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.BOUNCY_DUDES, stack);
+		if(level > 0)
+		{
+			int damage = MathHelper.floor(((event.getDistance()-2)*BouncyDudes.DURABILITY_LOSS.get()/(level+MiscUtil.getEnchantmentLevel(Enchantments.FEATHER_FALLING, stack))));
+			if(damage > 0)
+			{
+				stack.damageItem(damage, event.getEntityLiving());
+			}
+			event.getEntityLiving().motionY = event.getDistance() * (1D/(1D+Math.log10(1+event.getDistance())));
+			event.setCanceled(true);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEaten(LivingEntityUseItemEvent.Finish event)
+	{
+		if(event.getEntityLiving() instanceof EntityPlayer)
+		{
+			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.AMBROSIA, event.getItem());
+			if(level > 0)
+			{
+				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(Math.pow(1+((EntityPlayer)event.getEntityLiving()).experienceLevel*level, 6)) * Ambrosia.DURATION_MULTIPLIER.get()));
+				event.getEntityLiving().addPotionEffect(new PotionEffect(UniqueEnchantmentsUtils.SATURATION, duration, Math.min(20, level)));
 			}
 		}
 	}

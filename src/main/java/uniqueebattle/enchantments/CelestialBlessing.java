@@ -8,9 +8,9 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
-import uniquee.UniqueEnchantments;
 
 public class CelestialBlessing extends UniqueEnchantment
 {
@@ -27,7 +27,7 @@ public class CelestialBlessing extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.CLIMATE_TRANQUILITY);
+		addIncompats(new ResourceLocation("uniquee", "climate_tranquility"));
 	}
 	
 	@Override

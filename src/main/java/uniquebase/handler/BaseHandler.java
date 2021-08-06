@@ -54,6 +54,7 @@ public class BaseHandler
 			}
 		}
 	}
+	
 	@SubscribeEvent
 	public void onBlockClick(RightClickBlock event)
 	{

@@ -1,15 +1,17 @@
-package uniquee.handler;
+package uniquebase.handler;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.ConfigElement;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.client.config.ConfigGuiType;
@@ -21,7 +23,7 @@ import net.minecraftforge.fml.client.config.GuiConfigEntries.IConfigEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import uniquee.UniqueEnchantments;
+import uniquebase.api.BaseUEMod;
 
 @SideOnly(Side.CLIENT)
 public class ConfigHandler implements IModGuiFactory
@@ -53,7 +55,6 @@ public class ConfigHandler implements IModGuiFactory
 	
 	public static class UEGuiConfig extends GuiConfig
 	{
-		
 		public UEGuiConfig(GuiScreen parentScreen)
 		{
 			super(parentScreen, getElements(), "UE", false, false, "UE Classic Config");
@@ -62,13 +63,16 @@ public class ConfigHandler implements IModGuiFactory
 		static List<IConfigElement> getElements()
 		{
 			List<IConfigElement> elements = new ArrayList<IConfigElement>();
-			for(String entry : UniqueEnchantments.CONFIG.getCategoryNames())
+			for(BaseUEMod mod : BaseUEMod.getMods())
 			{
-				if(entry.contains("."))
+				for(String entry : mod.getConfig().getCategoryNames())
 				{
-					continue;
+					if(entry.contains("."))
+					{
+						continue;
+					}
+					elements.add(new UECategoryElement(UEEntry.class, entry.substring(0, 1).toUpperCase() + entry.substring(1), mod.getConfig()));
 				}
-				elements.add(new UECategoryElement(UEEntry.class, entry.substring(0, 1).toUpperCase() + entry.substring(1)));
 			}
 			return elements;
 		}
@@ -86,11 +90,13 @@ public class ConfigHandler implements IModGuiFactory
 		protected GuiScreen buildChildScreen()
 		{
 			String cat = "general";
+			List<IConfigElement> elements = new ObjectArrayList<>();
 			if(configElement instanceof UECategoryElement)
 			{
 				cat = ((UECategoryElement)configElement).category;
+				elements.addAll(new UEConfigElement(((UECategoryElement)configElement).config.getCategory(cat.toLowerCase())).getChildElements());
 			}
-			return new GuiConfig(owningScreen, new UEConfigElement(UniqueEnchantments.CONFIG.getCategory(cat.toLowerCase())).getChildElements(), this.owningScreen.modID, cat, false, false, cat);
+			return new GuiConfig(owningScreen, elements, this.owningScreen.modID, cat, false, false, cat);
 		}
 	}
 	
@@ -144,14 +150,16 @@ public class ConfigHandler implements IModGuiFactory
 	public static class UECategoryElement extends DummyConfigElement
 	{
 		String category;
-		
-		public UECategoryElement(Class<? extends IConfigEntry> customListEntryClass, String cat)
+		Configuration config;
+
+		public UECategoryElement(Class<? extends IConfigEntry> customListEntryClass, String cat, Configuration config)
 		{
 			super(cat, null, ConfigGuiType.CONFIG_CATEGORY, cat);
 			this.childElements = new ArrayList<IConfigElement>();
 			this.configEntryClass = customListEntryClass;
 			isProperty = false;
 			category = cat;
+			this.config = config;
 		}
 	}
 }

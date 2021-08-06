@@ -1,9 +1,9 @@
 [
 {
-  "modid": "${modid}",
+  "modid": "uniquebase",
   "name": "${name}",
   "description": "${description}",
-  "version": "1.8.0",
+  "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",

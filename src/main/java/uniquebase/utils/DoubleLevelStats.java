@@ -37,7 +37,7 @@ public class DoubleLevelStats implements IStat
 		return base + (this.level * level);
 	}
 	
-	public float getAsFloat(int level)
+	public float getAsFloat(float level)
 	{
 		return (float)(base + (this.level * level));
 	}
@@ -50,6 +50,10 @@ public class DoubleLevelStats implements IStat
 	public float getLogDevided(int level)
 	{
 		return (float)(base / (this.level * Math.log(level)));
-
+	}
+	
+	public float getLogValue(double log, int level)
+	{
+		return (float)(base * Math.log(this.level * level * log));
 	}
 }

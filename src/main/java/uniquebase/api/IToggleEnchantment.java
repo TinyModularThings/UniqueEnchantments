@@ -10,4 +10,5 @@ public interface IToggleEnchantment
 	public void loadIncompats();
 	
 	public boolean isEnabled();
+	public int getHardCap();
 }

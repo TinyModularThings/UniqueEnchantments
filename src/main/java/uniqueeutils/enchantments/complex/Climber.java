@@ -8,10 +8,10 @@ import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.IntStat;
-import uniquee.UniqueEnchantments;
 
 public class Climber extends UniqueEnchantment
 {
@@ -31,7 +31,7 @@ public class Climber extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.SWIFT);
+		addIncompats(new ResourceLocation("uniquee", "swift"));
 	}
 	
 	@Override

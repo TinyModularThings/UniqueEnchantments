@@ -23,6 +23,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	List<IStat> stats = new ObjectArrayList<>();
 	protected boolean enabled = false;
 	protected boolean activated = false;
+	protected boolean isCurse = false;
 	String configName;
 	String categoryName = "base";
 	
@@ -39,6 +40,17 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	public void addStats(IStat...stats)
 	{
 		this.stats.addAll(ObjectArrayList.wrap(stats));
+	}
+	
+	public void setCurse()
+	{
+		isCurse = true;
+	}
+	
+	@Override
+	public boolean isCurse()
+	{
+		return isCurse;
 	}
 	
 	@Override
@@ -99,6 +111,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	public boolean isEnabled()
 	{
 		return activated;
+	}
+	
+	@Override
+	public int getHardCap()
+	{
+		return actualData.getHardCap();
 	}
 	
 	protected boolean canApplyToItem(ItemStack stack)
@@ -164,6 +182,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		int baseCost;
 		int levelCost;
 		int rangeCost;
+		int hardCap;
 		Set<ResourceLocation> incompats = new ObjectOpenHashSet<>();
 		
 		public DefaultData(DefaultData defaultValues, Configuration config, String configName)
@@ -176,6 +195,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 			baseCost = config.get(configName, "base_cost", defaultValues.getBaseCost()).getInt();
 			levelCost = config.get(configName, "per_level_cost", defaultValues.getLevelCost()).getInt();
 			rangeCost = config.get(configName, "cost_limit", defaultValues.getRangeCost()).getInt();
+			hardCap = config.get(configName, "hard_cap", defaultValues.getHardCap()).getInt();
 			String[] result = config.get(configName, "incompats", defaultValues.getInCompats()).getStringList();
 			for(int i = 0,m=result.length;i<m;i++)
 			{
@@ -205,6 +225,13 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 			this.baseCost = baseCost;
 			this.levelCost = levelCost;
 			this.rangeCost = rangeCost;
+			this.hardCap = 100;
+		}
+		
+		public DefaultData setHardCap(int max)
+		{
+			this.hardCap = max;
+			return this;
 		}
 		
 		public void addIncompats(Enchantment...enchantments)
@@ -248,6 +275,11 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		public int getMaxLevel()
 		{
 			return maxLevel;
+		}
+		
+		public int getHardCap()
+		{
+			return hardCap;
 		}
 		
 		public boolean isTreasure()

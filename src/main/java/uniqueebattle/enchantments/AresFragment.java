@@ -7,9 +7,9 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniquee.UniqueEnchantments;
 
 public class AresFragment extends UniqueEnchantment
 {
@@ -28,7 +28,8 @@ public class AresFragment extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.BERSERKER, UniqueEnchantments.ALCHEMISTS_GRACE, UniqueEnchantments.ENDER_MENDING, Enchantments.MENDING);
+		addIncompats(new ResourceLocation("uniquee", "berserk"), new ResourceLocation("uniquee", "alchemistsgrace"), new ResourceLocation("uniquee", "ender_mending"));
+		addIncompats(Enchantments.MENDING);
 	}
 	
 	@Override

@@ -31,6 +31,11 @@ public class MiscUtil
 {
 	public static final Object2IntMap.Entry<EntityEquipmentSlot> NO_ENCHANTMENT = new AbstractObject2IntMap.BasicEntry<>(null, 0);
 	
+	public static int getHardCap(Enchantment ench)
+	{
+		return ench instanceof IToggleEnchantment ? ((IToggleEnchantment)ench).getHardCap() : Integer.MAX_VALUE;
+	}
+	
 	public static int getEnchantmentLevel(Enchantment ench, ItemStack stack)
 	{
 		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return 0;
@@ -45,7 +50,7 @@ public class MiscUtil
 			{
 				// Only grabbing Level if it is needed. Not wasting CPU Time on
 				// grabbing useless data
-				return tag.getInteger("lvl");
+				return Math.min(tag.getInteger("lvl"), getHardCap(ench));
 			}
 		}
 		return 0;
@@ -82,7 +87,7 @@ public class MiscUtil
 				if(enchantment instanceof IToggleEnchantment && !((IToggleEnchantment)enchantment).isEnabled()) continue;
 				// Only grabbing Level if it is needed. Not wasting CPU Time on
 				// grabbing useless data
-				map.put(enchantment, tag.getInteger("lvl"));
+				map.put(enchantment, Math.min(tag.getInteger("lvl"), getHardCap(enchantment)));
 			}
 		}
 		return map;

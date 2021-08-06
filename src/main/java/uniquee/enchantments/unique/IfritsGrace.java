@@ -26,12 +26,12 @@ public class IfritsGrace extends UniqueEnchantment implements IGraceEnchantment
 		}
 	};
 	public static String LAVA_COUNT = "lava_storage";
-	public static final DoubleStat BASE_COST = new DoubleStat(8, "base_cost");
+	public static final DoubleStat BASE_CONSUMTION = new DoubleStat(8, "base_consumtion");
 	
 	public IfritsGrace()
 	{
 		super(new DefaultData("ifrits_grace", Rarity.RARE, 3, true, 14, 4, 40), EnumEnchantmentType.DIGGER, EntityEquipmentSlot.MAINHAND);
-		addStats(BASE_COST);
+		addStats(BASE_CONSUMTION);
 	}
 	
 	@Override

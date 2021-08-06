@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-	compile "curse.maven:firstaid-276837:2790027"
+//	compile "curse.maven:firstaid-276837:2790027"
 }
 
 processResources {
@@ -50,14 +50,26 @@ processResources {
 
 jar {
     version = uniquee_version
-    exclude "uniqueeutils", "assets/uniqueeutil", "uniqueebattle", "assets/uniqueebattle"
+    exclude "uniqueeutils", "assets/uniqueeutil", "uniqueebattle", "assets/uniqueebattle", "uniquebase"
+}
+
+task baseJar(type: Jar) {
+    baseName = 'Unique Enchantments Base'
+    version = unique_base_version
+    from(sourceSets.main.output) {
+        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueebattle', 'assets/uniqueebattle', 'uniqueeutils', 'assets/uniqueeutil'
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniquebase", 'name':"Unique Enchantments Base", 'description':"Unique Enchantments Base"
+    }
 }
 
 task utilsJar(type: Jar) {
     baseName = 'Unique Enchantments Utils'
     version = unique_utils_version
     from(sourceSets.main.output) {
-        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueebattle', 'assets/uniqueebattle'
+        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueebattle', 'assets/uniqueebattle', 'uniquebase'
     }
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
@@ -69,7 +81,7 @@ task battleJar(type: Jar) {
     baseName = 'Unique Enchantments Battle'
     version = unique_battle_version
     from(sourceSets.main.output) {
-        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueeutils', 'assets/uniqueeutil'
+        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueeutils', 'assets/uniqueeutil', 'uniquebase'
     }
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
@@ -85,9 +97,13 @@ reobf {
     battleJar {
     	spec -> spec.classpath = sourceSets.main.compileClasspath
     }
+    baseJar {
+    	spec -> spec.classpath = sourceSets.main.compileClasspath
+    }
 }
 
 artifacts {
     archives utilsJar
     archives battleJar
+    archives baseJar
 }
