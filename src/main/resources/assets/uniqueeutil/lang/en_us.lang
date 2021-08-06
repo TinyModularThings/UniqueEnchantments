@@ -16,7 +16,13 @@ enchantment.uniqueeutil.mounting_aegis=Mounting Aegis
 enchantment.uniqueeutil.mounting_aegis.desc=Shielding while riding an Entity, will also shield the Entity
 enchantment.uniqueeutil.demeters_blessing=Demeter's Blessing
 enchantment.uniqueeutil.demeters_blessing.desc=Right-clicking a grown seed, will harvest and replant it. Will gain durability from tilling, but lose from harvesting.
+enchantment.uniqueeutil.demeters_soul=Demeter's Soul
+enchantment.uniqueeutil.demeters_soul.desc=Shift+Right-click a seed to claim it. Marked seeds will produce only one crop at a time, but it will be automatically harvested and stored in your Ender Chest.
+
 
 tooltip.uniqueeutil.stored.repair.name=Stored Gems %s
 tooltip.uniqueeutil.climb.start.name=Starting to Climb now
 tooltip.uniqueeutil.climb.fail.name=Top is obstructed
+tooltip.uniqueeutil.crops.added.name=Added Crop To Auto Harvester
+tooltip.uniqueeutil.crops.removed.name=Removed Crop From Auto Harvester
+tooltip.uniqueeutil.crops.full.name=Auto Harvester is full

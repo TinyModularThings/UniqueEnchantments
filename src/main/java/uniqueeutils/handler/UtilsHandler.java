@@ -229,14 +229,14 @@ public class UtilsHandler
 				{
 					if(list.tagCount() >= DemetersSoul.CAP.get(level))
 					{
-						event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqee.crops.full.name"), false);
+						event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.crops.full.name"), false);
 						event.setCancellationResult(EnumActionResult.SUCCESS);
 						event.setCanceled(true);
 						return;
 					}
 					list.appendTag(entry.save());
 				}
-				event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqee.crops."+(found ? "removed" : "added")+".name"), false);
+				event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.crops."+(found ? "removed" : "added")+".name"), false);
 				event.setCancellationResult(EnumActionResult.SUCCESS);
 				event.setCanceled(true);
 				return;
