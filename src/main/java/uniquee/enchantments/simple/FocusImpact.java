@@ -4,18 +4,18 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
 
 public class FocusImpact extends UniqueEnchantment
 {
-	public static final DoubleStat SCALAR = new DoubleStat(1.05D, "scalar");
+	public static final DoubleStat BASE_SPEED = new DoubleStat(1.05D, "base_speed");
 	
 	public FocusImpact()
 	{
-		super(new DefaultData("focus_impact", Rarity.RARE, 3, false, 2, 8, 17), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("focus_impact", Rarity.RARE, 3, false, 2, 8, 17), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND);
+		addStats(BASE_SPEED);
 	}
 	
 	@Override
@@ -28,12 +28,5 @@ public class FocusImpact extends UniqueEnchantment
 	public void loadIncompats()
 	{
 		addIncompats(UniqueEnchantments.SWIFT_BLADE);
-	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		SCALAR.handleConfig(config, getConfigName());
-	}
-	
+	}	
 }

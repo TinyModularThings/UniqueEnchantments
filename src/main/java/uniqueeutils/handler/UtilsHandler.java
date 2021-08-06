@@ -51,18 +51,18 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
-import uniquee.api.crops.CropHarvestRegistry;
-import uniquee.handler.EntityEvents;
-import uniquee.utils.HarvestEntry;
-import uniquee.utils.MiscUtil;
+import uniquebase.api.crops.CropHarvestRegistry;
+import uniquebase.utils.HarvestEntry;
+import uniquebase.utils.MiscUtil;
+import uniquebase.utils.StackUtils;
 import uniqueeutils.UniqueEnchantmentsUtils;
-import uniqueeutils.enchantments.Climber;
-import uniqueeutils.enchantments.DemetersSoul;
-import uniqueeutils.enchantments.FaminesOdium;
-import uniqueeutils.enchantments.PhanesRegret;
-import uniqueeutils.enchantments.RocketMan;
-import uniqueeutils.enchantments.SleipnirsGrace;
-import uniqueeutils.enchantments.ThickPick;
+import uniqueeutils.enchantments.complex.Climber;
+import uniqueeutils.enchantments.complex.SleipnirsGrace;
+import uniqueeutils.enchantments.curse.FaminesOdium;
+import uniqueeutils.enchantments.curse.PhanesRegret;
+import uniqueeutils.enchantments.curse.RocketMan;
+import uniqueeutils.enchantments.simple.ThickPick;
+import uniqueeutils.enchantments.unique.DemetersSoul;
 
 @SuppressWarnings("deprecation")
 public class UtilsHandler
@@ -97,7 +97,7 @@ public class UtilsHandler
 					double maxTime = Math.min(SleipnirsGrace.CAP.getAsDouble(level) * 20, time - lastTime);
 					IAttributeInstance attri = horse.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED);
 					attri.removeModifier(SleipnirsGrace.SPEED_MOD);
-					attri.applyModifier(new AttributeModifier(SleipnirsGrace.SPEED_MOD, "Sleipnirs Grace", Math.log10(1 + ((maxTime / SleipnirsGrace.LIMITER) * level)), 2));
+					attri.applyModifier(new AttributeModifier(SleipnirsGrace.SPEED_MOD, "Sleipnirs Grace", Math.log10(1 + ((maxTime / SleipnirsGrace.LIMITER.get()) * level)), 2));
 				}
 			}
 		}
@@ -289,7 +289,7 @@ public class UtilsHandler
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.THICK_PICK, held);
 		if(level > 0 && event.getState().getBlockHardness(player.world, event.getPos()) >= 20)
 		{
-			int amount = EntityEvents.getInt(held, ThickPick.TAG, 0);
+			int amount = StackUtils.getInt(held, ThickPick.TAG, 0);
 			if(amount > 0)
 			{
 				event.setNewSpeed(event.getNewSpeed() * ThickPick.MINING_SPEED.getAsFloat(level));
@@ -309,10 +309,10 @@ public class UtilsHandler
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.THICK_PICK, held);
 		if(level > 0)
 		{
-			int amount = EntityEvents.getInt(held, ThickPick.TAG, 0);
+			int amount = StackUtils.getInt(held, ThickPick.TAG, 0);
 			if(amount > 0)
 			{
-				EntityEvents.setInt(held, ThickPick.TAG, amount-1);
+				StackUtils.setInt(held, ThickPick.TAG, amount-1);
 			}
 		}
 	}

@@ -17,10 +17,10 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.api.filters.IGraceEnchantment;
+import uniquebase.utils.MiscUtil;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.type.IGraceEnchantment;
-import uniquee.utils.MiscUtil;
 
 public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
@@ -28,7 +28,7 @@ public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantm
 	
 	public AlchemistsGrace()
 	{
-		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, 4, true, 18, 6, 40), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, 4, true, 18, 6, 40), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND);
 	}
 	
 	@Override

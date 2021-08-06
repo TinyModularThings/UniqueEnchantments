@@ -8,10 +8,9 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleLevelStats;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleLevelStats;
 
 public class CelestialBlessing extends UniqueEnchantment
 {
@@ -20,8 +19,9 @@ public class CelestialBlessing extends UniqueEnchantment
 	
 	public CelestialBlessing()
 	{
-		super(new DefaultData("celestial_blessing", Rarity.UNCOMMON, 3, false, 14, 5, 15), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("celestial_blessing", Rarity.UNCOMMON, 3, false, 14, 5, 15), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND);
 		setCategory("battle");
+		addStats(SPEED_BONUS);
 	}
 	
 	@Override
@@ -35,11 +35,4 @@ public class CelestialBlessing extends UniqueEnchantment
 	{
 		return stack.getItem() instanceof ItemBow || stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemHoe;
 	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		SPEED_BONUS.handleConfig(config, getConfigName());
-	}
-	
 }

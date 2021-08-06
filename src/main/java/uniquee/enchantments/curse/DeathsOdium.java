@@ -4,10 +4,9 @@ import java.util.UUID;
 
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraftforge.common.config.Configuration;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
-import uniquee.utils.IntStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
+import uniquebase.utils.IntStat;
 
 public class DeathsOdium extends UniqueEnchantment
 {
@@ -31,20 +30,13 @@ public class DeathsOdium extends UniqueEnchantment
 	public DeathsOdium()
 	{
 		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 2, false, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
+		addStats(DELAY, MAX_STORAGE, DAMAGE_FACTOR, BASE_LOSS);
 	}
 	
 	@Override
 	public boolean isCurse()
 	{
 		return true;
-	}
-	
-	@Override
-	public void loadData(Configuration config) 
-	{
-		DELAY.handleConfig(config, getConfigName());
-		MAX_STORAGE.handleConfig(config, getConfigName());
-		DAMAGE_FACTOR.handleConfig(config, getConfigName());
 	}
 	
 	public static UUID getForSlot(EntityEquipmentSlot slot)

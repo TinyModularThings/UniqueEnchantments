@@ -5,9 +5,8 @@ import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 
 public class AmelioratedSharpness extends UniqueEnchantment
 {
@@ -15,7 +14,8 @@ public class AmelioratedSharpness extends UniqueEnchantment
 	
 	public AmelioratedSharpness()
 	{
-		super(new DefaultData("all", Rarity.RARE, 5, true, 15, 5, 40), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("all", Rarity.RARE, 5, true, 15, 5, 40), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND);
+		addStats(BONUS_DAMAGE);
 	}
 	
 	@Override
@@ -23,13 +23,7 @@ public class AmelioratedSharpness extends UniqueEnchantment
 	{
 		return stack.getItem() instanceof ItemAxe;
 	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		BONUS_DAMAGE.handleConfig(config, getConfigName());
-	}
-	
+		
     @Override
 	public float calcDamageByCreature(int level, EnumCreatureAttribute creatureType)
     {

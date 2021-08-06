@@ -3,9 +3,8 @@ package uniquee.enchantments.simple;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraftforge.common.config.Configuration;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 
 public class AmelioratedSmite extends UniqueEnchantment
 {
@@ -13,13 +12,8 @@ public class AmelioratedSmite extends UniqueEnchantment
 
 	public AmelioratedSmite()
 	{
-		super(new DefaultData("undead", Rarity.RARE, 5, true, 6, 4, 30), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
-	}
-
-	@Override
-	public void loadData(Configuration config)
-	{
-		BONUS_DAMAGE.handleConfig(config, getConfigName());
+		super(new DefaultData("undead", Rarity.RARE, 5, true, 6, 4, 30), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND);
+		addStats(BONUS_DAMAGE);
 	}
 	
     @Override

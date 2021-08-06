@@ -5,11 +5,10 @@ import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.api.filters.IGraceEnchantment;
+import uniquebase.utils.DoubleStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.type.IGraceEnchantment;
-import uniquee.utils.DoubleStat;
 
 public class WarriorsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
@@ -17,7 +16,8 @@ public class WarriorsGrace extends UniqueEnchantment implements IGraceEnchantmen
 
 	public WarriorsGrace()
 	{
-		super(new DefaultData("warriorsgrace", Rarity.RARE, 1, true, 22, 2, 5), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("warriorsgrace", Rarity.RARE, 1, true, 22, 2, 5), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND);
+		addStats(DURABILITY_GAIN);
 	}
 	
 	@Override
@@ -30,11 +30,5 @@ public class WarriorsGrace extends UniqueEnchantment implements IGraceEnchantmen
 	public void loadIncompats()
 	{
 		addIncompats(UniqueEnchantments.ECOLOGICAL, UniqueEnchantments.ALCHEMISTS_GRACE, UniqueEnchantments.NATURES_GRACE, Enchantments.MENDING, Enchantments.UNBREAKING);
-	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		DURABILITY_GAIN.handleConfig(config, getConfigName());
 	}
 }

@@ -21,7 +21,7 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import uniquee.utils.MiscUtil;
+import uniquebase.utils.MiscUtil;
 import uniqueebattle.UniqueEnchantmentsBattle;
 import uniqueebattle.enchantments.AresFragment;
 import uniqueebattle.enchantments.CelestialBlessing;

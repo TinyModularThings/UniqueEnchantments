@@ -7,12 +7,11 @@ import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraftforge.common.config.Configuration;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.api.filters.IGraceEnchantment;
+import uniquebase.utils.DoubleLevelStats;
+import uniquebase.utils.IntStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.type.IGraceEnchantment;
-import uniquee.utils.DoubleLevelStats;
-import uniquee.utils.IntStat;
 
 public class NaturesGrace extends UniqueEnchantment implements IGraceEnchantment
 {
@@ -27,19 +26,13 @@ public class NaturesGrace extends UniqueEnchantment implements IGraceEnchantment
 	};	
 	public NaturesGrace()
 	{
-		super(new DefaultData("naturesgrace", Rarity.RARE, 2, true, 10, 6, 10), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
+		super(new DefaultData("naturesgrace", Rarity.RARE, 2, true, 10, 6, 10), EnumEnchantmentType.ARMOR_CHEST, EntityEquipmentSlot.CHEST);
+		addStats(HEALING, DELAY);
 	}
 	
 	@Override
 	public void loadIncompats()
 	{
 		addIncompats(UniqueEnchantments.ARES_BLESSING, UniqueEnchantments.ALCHEMISTS_GRACE, UniqueEnchantments.WARRIORS_GRACE);
-	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		HEALING.handleConfig(config, getConfigName());
-		DELAY.handleConfig(config, getConfigName());
 	}
 }

@@ -5,9 +5,8 @@ import java.util.UUID;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleLevelStats;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleLevelStats;
 
 public class Range extends UniqueEnchantment
 {
@@ -17,19 +16,13 @@ public class Range extends UniqueEnchantment
 	
 	public Range()
 	{
-		super(new DefaultData("ranged", Rarity.COMMON, 4, false, 12, 8, 75), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("ranged", Rarity.COMMON, 4, false, 12, 8, 75), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND);
+		addStats(RANGE, REDUCTION);
 	}
 	
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
 		return EnumEnchantmentType.DIGGER.canEnchantItem(stack.getItem());
-	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		RANGE.handleConfig(config, getConfigName());
-		REDUCTION.handleConfig(config, getConfigName());
 	}
 }

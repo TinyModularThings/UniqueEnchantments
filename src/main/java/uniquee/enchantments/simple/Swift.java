@@ -4,9 +4,8 @@ import java.util.UUID;
 
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraftforge.common.config.Configuration;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleLevelStats;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleLevelStats;
 
 public class Swift extends UniqueEnchantment
 {
@@ -15,12 +14,7 @@ public class Swift extends UniqueEnchantment
 	
 	public Swift()
 	{
-		super(new DefaultData("swift", Rarity.UNCOMMON, 2, false, 14, 12, 10), EnumEnchantmentType.ARMOR_LEGS, new EntityEquipmentSlot[]{EntityEquipmentSlot.LEGS});
-	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		SPEED_BONUS.handleConfig(config, getConfigName());
+		super(new DefaultData("swift", Rarity.UNCOMMON, 2, false, 14, 12, 10), EnumEnchantmentType.ARMOR_LEGS, EntityEquipmentSlot.LEGS);
+		addStats(SPEED_BONUS);
 	}
 }

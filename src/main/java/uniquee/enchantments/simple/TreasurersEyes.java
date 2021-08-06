@@ -2,10 +2,9 @@ package uniquee.enchantments.simple;
 
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraftforge.common.config.Configuration;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleLevelStats;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleLevelStats;
 
 public class TreasurersEyes extends UniqueEnchantment
 {
@@ -13,19 +12,13 @@ public class TreasurersEyes extends UniqueEnchantment
 	
 	public TreasurersEyes()
 	{
-		super(new DefaultData("treasurers_eyes", Rarity.RARE, 3, true, 22, 6, 75), EnumEnchantmentType.ARMOR_HEAD, new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD});
+		super(new DefaultData("treasurers_eyes", Rarity.RARE, 3, true, 22, 6, 75), EnumEnchantmentType.ARMOR_HEAD, EntityEquipmentSlot.HEAD);
+		addStats(RANGE);
 	}
 	
 	@Override
 	public void loadIncompats()
 	{
 		addIncompats(UniqueEnchantments.ENDER_EYES);
-	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		RANGE.handleConfig(config, getConfigName());
-	}
-	
+	}	
 }

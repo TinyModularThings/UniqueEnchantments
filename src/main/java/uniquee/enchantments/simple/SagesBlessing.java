@@ -4,11 +4,10 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.api.filters.IBlessingEnchantment;
+import uniquebase.utils.DoubleStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.type.IBlessingEnchantment;
-import uniquee.utils.DoubleStat;
 
 public class SagesBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
@@ -16,7 +15,8 @@ public class SagesBlessing extends UniqueEnchantment implements IBlessingEnchant
 	
 	public SagesBlessing()
 	{
-		super(new DefaultData("sages_blessing", Rarity.COMMON, 5, false, 5, 5, 20), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("sages_blessing", Rarity.COMMON, 5, false, 5, 5, 20), EnumEnchantmentType.DIGGER, EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND);
+		addStats(XP_BOOST);
 	}
 	
 	@Override
@@ -29,12 +29,5 @@ public class SagesBlessing extends UniqueEnchantment implements IBlessingEnchant
 	public void loadIncompats()
 	{
 		addIncompats(UniqueEnchantments.FAST_FOOD, Enchantments.SILK_TOUCH);
-	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		XP_BOOST.handleConfig(config, getConfigName());
-	}
-	
+	}	
 }

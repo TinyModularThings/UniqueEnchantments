@@ -11,9 +11,9 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import uniquebase.utils.MiscUtil;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.simple.TreasurersEyes;
-import uniquee.utils.MiscUtil;
 
 public class EnchantmentLayer implements LayerRenderer<EntityLivingBase>
 {

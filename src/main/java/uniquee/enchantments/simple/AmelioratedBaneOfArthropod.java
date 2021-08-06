@@ -10,10 +10,9 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.common.config.Configuration;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
-import uniquee.utils.IntLevelStats;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
+import uniquebase.utils.IntLevelStats;
 
 public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 {
@@ -22,7 +21,8 @@ public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 	
 	public AmelioratedBaneOfArthropod()
 	{
-		super(new DefaultData("arthropods", Rarity.RARE, 5, true, 6, 4, 30), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("arthropods", Rarity.RARE, 5, true, 6, 4, 30), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND);
+		addStats(BONUS_DAMAGE, SLOW_DURATION);
 	}
 	
 	@Override
@@ -30,14 +30,7 @@ public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 	{
 		return stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemHoe;
 	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		BONUS_DAMAGE.handleConfig(config, getConfigName());
-		SLOW_DURATION.handleConfig(config, getConfigName());
-	}
-	
+		
     @Override
 	public float calcDamageByCreature(int level, EnumCreatureAttribute creatureType)
     {

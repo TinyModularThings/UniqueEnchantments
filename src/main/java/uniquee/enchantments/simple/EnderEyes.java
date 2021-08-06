@@ -7,27 +7,21 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.common.config.Configuration;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.MiscUtil;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.MiscUtil;
 
 public class EnderEyes extends UniqueEnchantment
 {
 	public EnderEyes()
 	{
-		super(new DefaultData("ender_eyes", Rarity.UNCOMMON, 1, false, 10, 2, 5), EnumEnchantmentType.ARMOR_HEAD, new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD});
+		super(new DefaultData("ender_eyes", Rarity.UNCOMMON, 1, false, 10, 2, 5), EnumEnchantmentType.ARMOR_HEAD, EntityEquipmentSlot.HEAD);
 	}
 	
 	@Override
 	public void loadIncompats()
 	{
 		addIncompats(UniqueEnchantments.TREASURERS_EYES);
-	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
 	}
 	
 	public static Predicate<EntityPlayer> getPlayerFilter(EntityLivingBase living)

@@ -8,11 +8,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraftforge.common.config.Configuration;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
+import uniquebase.utils.IntStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
-import uniquee.utils.IntStat;
 
 public class Ecological extends UniqueEnchantment
 {
@@ -24,11 +23,12 @@ public class Ecological extends UniqueEnchantment
 		}
 	};
 	public static final IntStat SPEED = new IntStat(220, "speed");
-	public static final DoubleStat SCALE = new DoubleStat(1.85D, "scale");
+	public static final DoubleStat SPEED_SCALE = new DoubleStat(1.85D, "speed_scale");
 	
 	public Ecological()
 	{
 		super(new DefaultData("ecological", Rarity.RARE, 3, true, 4, 8, 10), EnumEnchantmentType.BREAKABLE, EntityEquipmentSlot.values());
+		addStats(SPEED, SPEED_SCALE);
 	}
 	
 	@Override
@@ -36,12 +36,4 @@ public class Ecological extends UniqueEnchantment
 	{
 		addIncompats(UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.ENDERMARKSMEN, Enchantments.MENDING, Enchantments.INFINITY);
 	}
-		
-	@Override
-	public void loadData(Configuration config)
-	{
-		SPEED.handleConfig(config, getConfigName());
-		SCALE.handleConfig(config, getConfigName());
-	}
-	
 }

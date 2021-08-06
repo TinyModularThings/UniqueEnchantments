@@ -11,9 +11,9 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.type.IGraceEnchantment;
-import uniquee.utils.DoubleStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.api.filters.IGraceEnchantment;
+import uniquebase.utils.DoubleStat;
 
 public class IfritsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
@@ -26,11 +26,12 @@ public class IfritsGrace extends UniqueEnchantment implements IGraceEnchantment
 		}
 	};
 	public static String LAVA_COUNT = "lava_storage";
-	public static final DoubleStat SCALAR = new DoubleStat(8, "scalar");
+	public static final DoubleStat BASE_COST = new DoubleStat(8, "base_cost");
 	
 	public IfritsGrace()
 	{
-		super(new DefaultData("ifrits_grace", Rarity.RARE, 3, true, 14, 4, 40), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("ifrits_grace", Rarity.RARE, 3, true, 14, 4, 40), EnumEnchantmentType.DIGGER, EntityEquipmentSlot.MAINHAND);
+		addStats(BASE_COST);
 	}
 	
 	@Override
@@ -42,7 +43,6 @@ public class IfritsGrace extends UniqueEnchantment implements IGraceEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		SCALAR.handleConfig(config, getConfigName());
 		LAVA_ITEMS.clear();
 		LAVA_ITEMS.put(Items.LAVA_BUCKET, 250);
 		LAVA_ITEMS.put(Items.MAGMA_CREAM, 20);

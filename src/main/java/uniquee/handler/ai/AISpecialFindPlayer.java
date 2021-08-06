@@ -14,8 +14,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import uniquebase.utils.MiscUtil;
 import uniquee.UniqueEnchantments;
-import uniquee.utils.MiscUtil;
 
 @SuppressWarnings("deprecation")
 public class AISpecialFindPlayer extends EntityAINearestAttackableTarget<EntityPlayer>

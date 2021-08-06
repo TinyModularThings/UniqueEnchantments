@@ -12,11 +12,11 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import uniquebase.utils.MiscUtil;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.curse.DeathsOdium;
 import uniquee.enchantments.unique.AresBlessing;
 import uniquee.enchantments.unique.PhoenixBlessing;
-import uniquee.utils.MiscUtil;
 
 public class FirstAidHandler
 {
@@ -36,7 +36,7 @@ public class FirstAidHandler
 				if(level > 0 && stack.isItemStackDamageable())
 				{
 					float damage = event.getUndistributedDamage();
-					stack.damageItem((int)(damage * AresBlessing.SCALAR.get() / Math.log(level+1)), event.getEntityLiving());
+					stack.damageItem((int)(damage * AresBlessing.BASE_DAMAGE.get() / Math.log(level+1)), event.getEntityLiving());
 					event.setCanceled(true);
 					return;
 				}	

@@ -12,9 +12,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.type.IBlessingEnchantment;
-import uniquee.utils.DoubleStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.api.filters.IBlessingEnchantment;
+import uniquebase.utils.DoubleStat;
 
 public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
@@ -32,7 +32,8 @@ public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchant
 	
 	public MidasBlessing()
 	{
-		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 4, true, 14, 6, 75), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 4, true, 14, 6, 75), EnumEnchantmentType.DIGGER, EntityEquipmentSlot.MAINHAND);
+		addStats(GOLD_COST);
 	}
 	
 	@Override
@@ -50,7 +51,6 @@ public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchant
 	@Override
 	public void loadData(Configuration config)
 	{
-		GOLD_COST.handleConfig(config, getConfigName());
 		VALID_ITEMS.clear();
 		String[] items = config.get(getConfigName(), "optional_gold_items", new String[0], "Optional Items that can be used as gold replacement. No meta-nbt support").getStringList();
 		for(int i = 0,m=items.length;i<m;i++)
@@ -63,5 +63,4 @@ public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchant
 			VALID_ITEMS.add(item);
 		}
 	}
-	
 }

@@ -12,12 +12,12 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraftforge.common.config.Configuration;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.IntLevelStats;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.IntLevelStats;
 
 public class SmartAss extends UniqueEnchantment
 {
-	public static final IntLevelStats STATS = new IntLevelStats("range", 2, 3);
+	public static final IntLevelStats RANGE = new IntLevelStats("range", 2, 3);
 	static final Set<Block> BLOCKS = new ObjectOpenHashSet<>();
 	public static final Predicate<IBlockState> VALID_STATES = new Predicate<IBlockState>(){
 		@Override
@@ -30,14 +30,14 @@ public class SmartAss extends UniqueEnchantment
 	
 	public SmartAss()
 	{
-		super(new DefaultData("smart_ass", Rarity.RARE, 3, false, 28, 6, 40), EnumEnchantmentType.DIGGER, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("smart_ass", Rarity.RARE, 3, false, 28, 6, 40), EnumEnchantmentType.DIGGER, EntityEquipmentSlot.MAINHAND);
+		addStats(RANGE);
 	}
 	
 	@Override
 	public void loadData(Configuration config)
 	{
 		BLOCKS.clear();
-		STATS.handleConfig(config, getConfigName());
 		String[] list = config.get(getConfigName(), "valid_blocks", new String[0], "Valid Blocks that use that feature. Registry names. Example: minecraft:dirt, minecraft:stone").getStringList();
 		for(int i = 0;i<list.length;i++)
 		{

@@ -7,13 +7,12 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 
 public class IcarusAegis extends UniqueEnchantment
 {
-	public static final DoubleStat SCALAR = new DoubleStat(24D, "scalar");
+	public static final DoubleStat BASE_CONSUMPTION = new DoubleStat(24D, "base_consumtion");
 	public static String FEATHER_TAG = "feathers";
 	public static String FLYING_TAG = "flying";
 	public static ToIntFunction<ItemStack> VALIDATOR = new ToIntFunction<ItemStack>(){
@@ -26,19 +25,13 @@ public class IcarusAegis extends UniqueEnchantment
 	
 	public IcarusAegis()
 	{
-		super(new DefaultData("icarus_aegis", Rarity.VERY_RARE, 3, true, 16, 4, 10), EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
+		super(new DefaultData("icarus_aegis", Rarity.VERY_RARE, 3, true, 16, 4, 10), EnumEnchantmentType.ARMOR_CHEST, EntityEquipmentSlot.CHEST);
+		addStats(BASE_CONSUMPTION);
 	}
-		
+	
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack)
 	{
 		return enabled && stack.getItem() instanceof ItemElytra;
 	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		SCALAR.handleConfig(config, getConfigName());
-	}
-	
 }

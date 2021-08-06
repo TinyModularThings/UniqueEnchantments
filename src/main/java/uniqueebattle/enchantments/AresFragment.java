@@ -7,10 +7,9 @@ import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
 
 public class AresFragment extends UniqueEnchantment
 {
@@ -21,8 +20,9 @@ public class AresFragment extends UniqueEnchantment
 	
 	public AresFragment()
 	{
-		super(new DefaultData("ares_fragment", Rarity.RARE, 4, true, 25, 35, 10), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND});
+		super(new DefaultData("ares_fragment", Rarity.RARE, 4, true, 25, 35, 10), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND);
 		setCategory("battle");
+		addStats(ARMOR_PERCENTAGE, BASE_CHANCE, CHANCE_MULT, DURABILITY_SCALING);
 	}
 	
 	@Override
@@ -35,14 +35,5 @@ public class AresFragment extends UniqueEnchantment
 	protected boolean canApplyToItem(ItemStack stack)
 	{
 		return stack.getItem() instanceof ItemBow || stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemHoe;
-	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		ARMOR_PERCENTAGE.handleConfig(config, getConfigName());
-		BASE_CHANCE.handleConfig(config, getConfigName());
-		CHANCE_MULT.handleConfig(config, getConfigName());
-		DURABILITY_SCALING.handleConfig(config, getConfigName());
 	}
 }

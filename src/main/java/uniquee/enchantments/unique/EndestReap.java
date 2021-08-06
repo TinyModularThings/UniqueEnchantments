@@ -12,9 +12,9 @@ import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
 
 public class EndestReap extends UniqueEnchantment
 {
@@ -26,7 +26,8 @@ public class EndestReap extends UniqueEnchantment
 	
 	public EndestReap()
 	{
-		super(new DefaultData("endest_reap", Rarity.VERY_RARE, 4, true, 30, 15, 20), EnumEnchantmentType.WEAPON, new EntityEquipmentSlot[]{EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND});
+		super(new DefaultData("endest_reap", Rarity.VERY_RARE, 4, true, 30, 15, 20), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND);
+		addStats(BONUS_DAMAGE_LEVEL, REAP_MULTIPLIER);
 	}
 	
 	@Override
@@ -44,8 +45,6 @@ public class EndestReap extends UniqueEnchantment
 	@Override
 	public void loadData(Configuration config)
 	{
-		BONUS_DAMAGE_LEVEL.handleConfig(config, getConfigName());
-		REAP_MULTIPLIER.handleConfig(config, getConfigName());
 		String[] result = config.get(getConfigName(), "validMobs", new String[]{"minecraft:ender_dragon", "minecraft:wither", "minecraft:shulker", "minecraft:elder_guardian", "minecraft:ravager", "minecraft:evoker"}).getStringList();
 		VALID_MOBS.clear();
 		for(int i = 0;i<result.length;i++)

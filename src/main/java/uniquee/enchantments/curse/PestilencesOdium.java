@@ -2,10 +2,9 @@ package uniquee.enchantments.curse;
 
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraftforge.common.config.Configuration;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
-import uniquee.utils.IntStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
+import uniquebase.utils.IntStat;
 
 public class PestilencesOdium extends UniqueEnchantment
 {
@@ -16,20 +15,12 @@ public class PestilencesOdium extends UniqueEnchantment
 	public PestilencesOdium()
 	{
 		super(new DefaultData("pestilences_odium", Rarity.RARE, 2, false, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
+		addStats(RADIUS, DELAY, DAMAGE_PER_TICK);
 	}
 		
 	@Override
 	public boolean isCurse()
 	{
 		return true;
-	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		RADIUS.handleConfig(config, getConfigName());
-		DELAY.handleConfig(config, getConfigName());
-		DAMAGE_PER_TICK.handleConfig(config, getConfigName());
-	}
-	
+	}	
 }

@@ -4,9 +4,8 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Configuration;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 
 public class LunaticDespair extends UniqueEnchantment
 {
@@ -17,6 +16,7 @@ public class LunaticDespair extends UniqueEnchantment
 	{
 		super(new DefaultData("lunatic_despair", Rarity.VERY_RARE, 2, true, 10, 4, 40), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
 		setCategory("battle");
+		addStats(BONUS_DAMAGE, SELF_DAMAGE);
 	}
 	
 	@Override
@@ -29,12 +29,5 @@ public class LunaticDespair extends UniqueEnchantment
 	protected boolean canApplyToItem(ItemStack stack)
 	{
 		return stack.getItem() instanceof ItemHoe;
-	}
-	
-	@Override
-	public void loadData(Configuration config)
-	{
-		BONUS_DAMAGE.handleConfig(config, getConfigName());
-		SELF_DAMAGE.handleConfig(config, getConfigName());
 	}
 }
