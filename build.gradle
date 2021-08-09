@@ -53,17 +53,26 @@ jar {
     exclude "uniqueeutils", "assets/uniqueeutil", "uniqueebattle", "assets/uniqueebattle", "uniquebase"
 }
 
-task baseJar(type: Jar) {
-    baseName = 'Unique Enchantments Base'
-    version = unique_base_version
-    from(sourceSets.main.output) {
-        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueebattle', 'assets/uniqueebattle', 'uniqueeutils', 'assets/uniqueeutil'
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniquebase", 'name':"Unique Enchantments Base", 'description':"Unique Enchantments Base"
-    }
+task baseJar(type: Jar, dependsOn: reobf) {
+  baseName = 'wtf'
+  version = unique_base_version
+  classifier = 'base'
+  from(project.ext.jarFile) {
+    include '**/uniquebase/*'
+  }
 }
+
+//task baseJar(type: Jar) {
+//    baseName = 'Unique Enchantments Base'
+//    version = unique_base_version
+//    from(sourceSets.main.output) {
+//        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueebattle', 'assets/uniqueebattle', 'uniqueeutils', 'assets/uniqueeutil'
+//    }
+//    from(sourceSets.main.resources.srcDirs) {
+//        include 'mcmod.info'
+//        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniquebase", 'name':"Unique Enchantments Base", 'description':"Unique Enchantments Base"
+//    }
+//}
 
 task utilsJar(type: Jar) {
     baseName = 'Unique Enchantments Utils'
