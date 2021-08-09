@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-//	compile "curse.maven:firstaid-276837:2790027"
+	compile "curse.maven:firstaid-276837:2790027"
 }
 
 processResources {
@@ -89,6 +89,18 @@ task battleJar(type: Jar) {
     }
 }
 
+task fatJar(type: Jar) {
+    baseName = 'Unique Enchantments Fat'
+    version = unique_base_version
+    from(sourceSets.main.output) {
+        exclude 'mcmod.info'
+    }
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniquebase", 'name':"Unique Enchantments Base", 'description':"Unique Enchantments Base"
+    }
+}
+
 
 reobf {
     utilsJar {
@@ -100,10 +112,14 @@ reobf {
     baseJar {
     	spec -> spec.classpath = sourceSets.main.compileClasspath
     }
+    fatJar {
+    	spec -> spec.classpath = sourceSets.main.compileClasspath
+    }
 }
 
 artifacts {
     archives utilsJar
     archives battleJar
     archives baseJar
+	archives fatJar
 }

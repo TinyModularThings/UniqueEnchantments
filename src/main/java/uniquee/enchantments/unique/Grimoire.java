@@ -19,8 +19,8 @@ public class Grimoire extends UniqueEnchantment
 	public static final String GRIMOIRE_LEVEL = "grimoire_level";
 	public static final String GRIMOIRE_STORAGE = "grimoire_storage";
 	public static final String GRIMOIRE_OWNER = "grimoire_owner";
-	public static final DoubleStat LEVEL_SCALING = new DoubleStat(1D, "level_scaling");
-	public static final DoubleStat STEP_SKIP = new DoubleStat(4D, "step_skip");
+	public static final DoubleStat LEVEL_SCALING = new DoubleStat(0.9D, "level_scaling");
+	public static final DoubleStat STEP_SKIP = new DoubleStat(5D, "step_skip");
 	
 	public Grimoire()
 	{
@@ -39,7 +39,7 @@ public class Grimoire extends UniqueEnchantment
 	{
 		NBTTagCompound compound = stack.getTagCompound();
 		if(compound == null) compound = new NBTTagCompound();
-		int nextLevel = Math.max(0, MathHelper.floor(Math.log(player.experienceLevel*level)*LEVEL_SCALING.get()-STEP_SKIP.get()));
+		int nextLevel = Math.max(0, MathHelper.floor(Math.log((player.experienceLevel+1)*level)*LEVEL_SCALING.get()-STEP_SKIP.get()));
 		int grimoreCount = compound.hasKey(GRIMOIRE_STORAGE) ? compound.getTagList("GRIMOIRE_STORAGE", 10).tagCount() : 0;
 		int enchCount = compound.hasKey("ench") ? compound.getTagList("ench", 10).tagCount() : 0;
 		if(compound.getInteger(GRIMOIRE_LEVEL) != nextLevel || grimoreCount != enchCount)

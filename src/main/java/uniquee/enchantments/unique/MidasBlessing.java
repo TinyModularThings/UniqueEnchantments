@@ -28,11 +28,11 @@ public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchant
 		}
 	};
 	public static String GOLD_COUNTER = "gold_storage";
-	public static final DoubleStat GOLD_COST = new DoubleStat(1D, "gold_cost");
+	public static final DoubleStat GOLD_COST = new DoubleStat(1.5D, "gold_cost");
 	
 	public MidasBlessing()
 	{
-		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 4, true, 14, 6, 75), EnumEnchantmentType.DIGGER, EntityEquipmentSlot.MAINHAND);
+		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 3, true, 14, 6, 75), EnumEnchantmentType.DIGGER, EntityEquipmentSlot.MAINHAND);
 		addStats(GOLD_COST);
 	}
 	

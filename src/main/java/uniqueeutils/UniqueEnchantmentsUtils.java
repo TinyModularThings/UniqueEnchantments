@@ -25,7 +25,7 @@ import uniqueeutils.enchantments.unique.MountingAegis;
 import uniqueeutils.handler.UtilsHandler;
 import uniqueeutils.potion.SaturationPotion;
 
-@Mod(modid = "uniqueeutil", name = "Unique Util Enchantments", version = "1.0.0", dependencies = "required-after:uniquee@[1.9.0,);")
+@Mod(modid = "uniqueeutil", name = "Unique Util Enchantments", version = "1.0.0", dependencies = "required-after:uniquebase@[1.0.0,);")
 public class UniqueEnchantmentsUtils extends BaseUEMod
 {
 	public static Enchantment SLEIPNIRS_GRACE;
@@ -46,7 +46,7 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	public void onPreInit(FMLPreInitializationEvent event)
 	{
 		ForgeRegistries.POTIONS.register(SATURATION.setRegistryName("saturation"));
-		init("uniqueeutil", new File(event.getModConfigurationDirectory(), "UniqueEnchantmentsUtils.cfg"));
+		init("uniqueeutil", new File(event.getModConfigurationDirectory(), "UniqueEnchantments_Utils.cfg"));
 		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);
 		BaseHandler.INSTANCE.registerAnvilHelper(THICK_PICK, ThickPick.VALIDATOR, ThickPick.TAG);
 		BaseHandler.INSTANCE.registerStorageTooltip(THICK_PICK, "tooltip.uniqueeutil.stored.repair.name", ThickPick.TAG);

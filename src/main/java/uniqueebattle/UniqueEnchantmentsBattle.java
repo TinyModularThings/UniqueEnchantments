@@ -16,7 +16,7 @@ import uniqueebattle.enchantments.IfritsJudgement;
 import uniqueebattle.enchantments.LunaticDespair;
 import uniqueebattle.handler.BattleHandler;
 
-@Mod(modid = "uniqueebattle", name = "Unique Battle Enchantments", version = "1.0.0", dependencies = "required-after:uniquee@[1.9.0,);")
+@Mod(modid = "uniqueebattle", name = "Unique Battle Enchantments", version = "1.0.0", dependencies = "required-after:uniquebase@[1.0.0,);")
 public class UniqueEnchantmentsBattle extends BaseUEMod
 {
 	public static Enchantment LUNATIC_DESPAIR;
@@ -29,7 +29,7 @@ public class UniqueEnchantmentsBattle extends BaseUEMod
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent event)
 	{
-		init("uniqueebattle", new File(event.getModConfigurationDirectory(), "UniqueEnchantmentsBattle.cfg"));
+		init("uniqueebattle", new File(event.getModConfigurationDirectory(), "UniqueEnchantments_Battle.cfg"));
 		MinecraftForge.EVENT_BUS.register(BattleHandler.INSTANCE);
 	}
 

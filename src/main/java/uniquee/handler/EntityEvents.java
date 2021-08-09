@@ -647,7 +647,7 @@ public class EntityEvents
 			int level = enchantments.getInt(UniqueEnchantments.BERSERKER);
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() * (float)(1D + ((1-(base.getMaxHealth() / Berserk.MIN_HEALTH.getMax(base.getHealth(), 1D))) * Berserk.PERCENTUAL_DAMAGE.get() * Math.log10(level+1))));
+				event.setAmount(event.getAmount() * (float)(1D + ((1-(Berserk.MIN_HEALTH.getMax(base.getHealth(), 1D)/base.getMaxHealth())) * Berserk.PERCENTUAL_DAMAGE.get() * Math.log10(level+1))));
 			}
 			level = enchantments.getInt(UniqueEnchantments.SWIFT_BLADE);
 			if(level > 0)
@@ -681,7 +681,7 @@ public class EntityEvents
 				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 				float amount = event.getAmount();
 				double damage = (1F + Math.pow(PerpetualStrike.PER_HIT.get(count)/Math.log(2.8D+attr.getAttributeValue()), 1.4D)-1F)*level*PerpetualStrike.PER_HIT_LEVEL.get();
-				double multiplier = Math.log10(10+(damage/Math.log(2.8+event.getAmount())) * PerpetualStrike.MULTIPLIER.get());
+				double multiplier = Math.log10(10+(damage/Math.log10(1+event.getAmount())) * PerpetualStrike.MULTIPLIER.get());
 				amount += damage;
 				amount *= multiplier;
 				event.setAmount(amount);
@@ -707,7 +707,7 @@ public class EntityEvents
 				level = enchantments.getInt(UniqueEnchantments.BONE_CRUSH);
 				if(level > 0 && BoneCrusher.isNotArmored((AbstractSkeleton)event.getEntityLiving()))
 				{
-					event.setAmount((float)(event.getAmount() * (1F + Math.log10(BoneCrusher.BONUS_DAMAGE.getFloat(level)))));
+					event.setAmount((float)(event.getAmount() * (1F + Math.log10(1F+BoneCrusher.BONUS_DAMAGE.getFloat(level)))));
 				}
 			}
 		}
@@ -726,13 +726,13 @@ public class EntityEvents
 				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount((float)(event.getAmount() + SpartanWeapon.EXTRA_DAMAGE.getFloat()*Math.log((event.getAmount()*event.getAmount())/attr.getAttributeValue())*level));
+					event.setAmount((float)(event.getAmount() * SpartanWeapon.EXTRA_DAMAGE.getFloat()*Math.log((event.getAmount()*event.getAmount())/attr.getAttributeValue())*level));
 				}
 			}
 			level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
 			if(level > 0)
 			{
-				 event.setAmount(event.getAmount() * (float)(1D + ((level * EndestReap.BONUS_DAMAGE_LEVEL.get()) + (level * base.getEntityData().getInteger(EndestReap.REAP_STORAGE) * EndestReap.REAP_MULTIPLIER.get()))));
+				 event.setAmount(event.getAmount() + (1F + (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + EndestReap.REAP_MULTIPLIER.getFloat(level * base.getEntityData().getInteger(EndestReap.REAP_STORAGE)))));
 			}
 		}
 		if(event.getSource() == DamageSource.FLY_INTO_WALL)

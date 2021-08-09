@@ -135,7 +135,7 @@ public class BattleHandler
 					if(data.getString(IfritsJudgement.FLAG_JUDGEMENT_ID).equalsIgnoreCase(id))
 					{
 						found = true;
-						data.setInteger(IfritsJudgement.FLAG_JUDGEMENT_COUNT, data.getInteger(IfritsJudgement.FLAG_JUDGEMENT_ID)+1);
+						data.setInteger(IfritsJudgement.FLAG_JUDGEMENT_COUNT, data.getInteger(IfritsJudgement.FLAG_JUDGEMENT_COUNT)+1);
 						break;
 					}
 				}
@@ -158,7 +158,7 @@ public class BattleHandler
 		if(entity instanceof EntityLivingBase)
 		{
 			EntityLivingBase source = (EntityLivingBase)entity;
-			Object2IntMap.Entry<EntityEquipmentSlot> found = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.IFRITS_BLESSING, source);
+			Object2IntMap.Entry<EntityEquipmentSlot> found = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
 			if(found.getIntValue() > 0)
 			{
 				NBTTagList list = event.getEntityLiving().getEntityData().getTagList(IfritsJudgement.FLAG_JUDGEMENT_ID, 10);
@@ -167,17 +167,18 @@ public class BattleHandler
 				{
 					max = Math.max(max, list.getCompoundTagAt(i).getInteger(IfritsJudgement.FLAG_JUDGEMENT_COUNT));
 				}
+				System.out.println("Test: "+max);
 				if(max > 6)
 				{
-					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_BLESSING, source);
+					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
 					source.attackEntityFrom(DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * (float)Math.log(2.8*combined*0.0625D)));
-					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue())));
+					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));
 				}
 				else if(max > 4)
 				{
-					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_BLESSING, source);
+					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
 					source.attackEntityFrom(DamageSource.LAVA, IfritsJudgement.FIRE_DAMAGE.getAsFloat(found.getIntValue() * (float)Math.log(2.8*combined*0.0625D)));
-					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue())));					
+					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));					
 				}
 				else if(max > 0)
 				{
@@ -198,10 +199,10 @@ public class BattleHandler
 			int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.LUNATIC_DESPAIR, source);
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() + LunaticDespair.BONUS_DAMAGE.getFloat((float)Math.log(2.8D+level)));
-				source.attackEntityFrom(DamageSource.GENERIC, LunaticDespair.SELF_DAMAGE.getFloat(level) * (float)Math.log(2.8+level));
+				event.setAmount(event.getAmount() * LunaticDespair.BONUS_DAMAGE.getFloat((float)Math.log(2.8D+level)));
+				source.attackEntityFrom(DamageSource.GENERIC, LunaticDespair.SELF_DAMAGE.getFloat((float)Math.log(2.8+level)));
 				source.hurtResistantTime = 0;
-				source.attackEntityFrom(DamageSource.MAGIC, (level * 0.25F));
+				source.attackEntityFrom(DamageSource.MAGIC, LunaticDespair.SELF_MAGIC_DAMAGE.getFloat((float)Math.log(2.8+level)));
 			}
 		}
 	}
@@ -234,7 +235,7 @@ public class BattleHandler
 		level = enchantments.getInt(UniqueEnchantmentsBattle.GOLEM_SOUL);
 		if(level > 0)
 		{
-			mods.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(GolemSoul.SPEED_MOD, "speed_loss", Math.pow(1-GolemSoul.SPEED.get(), level), 2));
+			mods.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(GolemSoul.SPEED_MOD, "speed_loss", (Math.pow(1-GolemSoul.SPEED.get(), level)-1), 2));
 			mods.put(SharedMonsterAttributes.KNOCKBACK_RESISTANCE.getName(), new AttributeModifier(GolemSoul.KNOCKBACK_MOD, "knockback_boost", GolemSoul.KNOCKBACK.get(level), 0));
 		}
 		return mods;

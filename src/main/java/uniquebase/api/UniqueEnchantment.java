@@ -159,8 +159,8 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	@Override
 	public final void loadFromConfig(Configuration config)
 	{
-		enabled = config.get(getConfigName(), "enabled", true).getBoolean();
-		activated = config.get(getConfigName(), "activated", true).getBoolean();
+		enabled = config.get(getConfigName(), "enabled", true, "If the Enchantment is Obtainable").getBoolean();
+		activated = config.get(getConfigName(), "activated", true, "If the Enchantment has any effect").getBoolean();
 		actualData = new DefaultData(defaults, config, getConfigName());
 		for(int i = 0,m=stats.size();i<m;i++)
 		{
@@ -188,15 +188,15 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		public DefaultData(DefaultData defaultValues, Configuration config, String configName)
 		{
 			name = defaultValues.getName();
-			minLevel = config.get(configName, "min_level", defaultValues.getMinLevel()).getInt();
-			maxLevel = config.get(configName, "max_level", defaultValues.getMaxLevel()).getInt();
-			rare = RARITIES[config.get(configName, "rarity", defaultValues.getRarity().ordinal()).getInt()];
-			isTreasure = config.get(configName, "treasure", defaultValues.isTreasure()).getBoolean();
-			baseCost = config.get(configName, "base_cost", defaultValues.getBaseCost()).getInt();
-			levelCost = config.get(configName, "per_level_cost", defaultValues.getLevelCost()).getInt();
-			rangeCost = config.get(configName, "cost_limit", defaultValues.getRangeCost()).getInt();
-			hardCap = config.get(configName, "hard_cap", defaultValues.getHardCap()).getInt();
-			String[] result = config.get(configName, "incompats", defaultValues.getInCompats()).getStringList();
+			minLevel = config.get(configName, "min_level", defaultValues.getMinLevel(), "Minimum Enchantment Level").getInt();
+			maxLevel = config.get(configName, "max_level", defaultValues.getMaxLevel(), "Maximum Enchantment Level").getInt();
+			rare = RARITIES[config.get(configName, "rarity", defaultValues.getRarity().ordinal(), "Rarity of the Enchantment").getInt()];
+			isTreasure = config.get(configName, "treasure", defaultValues.isTreasure(), "If the Enchantment is a Treasure").getBoolean();
+			baseCost = config.get(configName, "base_cost", defaultValues.getBaseCost(), "Minimum Level for Enchanting").getInt();
+			levelCost = config.get(configName, "per_level_cost", defaultValues.getLevelCost(), "Increase of levels per Enchantment Level").getInt();
+			rangeCost = config.get(configName, "cost_limit", defaultValues.getRangeCost(), "The Additional Upper Range of Required Levels").getInt();
+			hardCap = config.get(configName, "hard_cap", defaultValues.getHardCap(), "Hard Limit of where the Enchantment will be capped even if the level is higher").getInt();
+			String[] result = config.get(configName, "incompats", defaultValues.getInCompats(), "Enchantments that are not compatible with this Enchantment").getStringList();
 			for(int i = 0,m=result.length;i<m;i++)
 			{
 				try

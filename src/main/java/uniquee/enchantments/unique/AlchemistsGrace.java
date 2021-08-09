@@ -10,9 +10,9 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTool;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
@@ -34,7 +34,7 @@ public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantm
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemHoe || EnumEnchantmentType.BOW.canEnchantItem(stack.getItem());
+		return stack.getItem() instanceof ItemTool || stack.getItem() instanceof ItemHoe || EnumEnchantmentType.BOW.canEnchantItem(stack.getItem());
 	}
 	
 	@Override
@@ -75,7 +75,7 @@ public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantm
 	public void loadData(Configuration config)
 	{
 		EFFECTS.clear();
-		String[] potions = config.getStringList("effects", getConfigName(), new String[]{"minecraft:regeneration;1;0;10;true;false", "minecraft:speed;1;0;60;true;true", "minecraft:haste;2;0;40;true;true", "minecraft:speed;2;1;70;true;true","minecraft:resistance;3;0;20;true;false", "minecraft:haste;3;1;60;true;true", "minecraft:strength;4;0;20;true;false", "minecraft:resistance;4;1;25;true;false","minecraft:fire_resistance;4;0;30;false;true", "minecraft:strength;5;1;30;true;false"}, "Which Potion Effects should be applied. Format: Potion;StartEnchantmentLvL;StartPotionLvL;PotionLvLPerEnchantLvL;BaseDuration;Fighting;Mining");
+		String[] potions = config.getStringList("effects", getConfigName(), new String[]{"minecraft:regeneration;1;0;0.25;10;true;false", "minecraft:speed;1;0;1.0;60;true;true", "minecraft:haste;2;0;1.0;40;true;true", "minecraft:speed;2;1;0.5;70;true;true", "minecraft:resistance;3;0;1.0;20;true;false", "minecraft:haste;3;1;0.5;60;true;true", "minecraft:strength;4;0;1.0;20;true;false", "minecraft:resistance;4;1;0.25;25;true;false", "minecraft:fire_resistance;4;0;1.0;30;false;true", "minecraft:strength;5;1;0.2;30;true;false"}, "Which Potion Effects should be applied. Format: Potion;StartEnchantmentLvL;StartPotionLvL;PotionLvLPerEnchantLvL;BaseDuration;Fighting;Mining");
 		for(String s : potions)
 		{
 			String[] split = s.split(";");
