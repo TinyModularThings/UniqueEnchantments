@@ -39,96 +39,77 @@ dependencies {
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniquee", 'name':"Unique Enchantments", 'description':"A Set of Unique Enchantments"
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
 }
 
 jar {
-    version = uniquee_version
-    exclude "uniqueeutils", "assets/uniqueeutil", "uniqueebattle", "assets/uniqueebattle", "uniquebase"
 }
 
-task baseJar(type: Jar, dependsOn: reobf) {
-  baseName = 'wtf'
+task baseJar(type: Jar, dependsOn: reobfJar) {
+  baseName = 'Unique Enchantments Base'
   version = unique_base_version
-  classifier = 'base'
-  from(project.ext.jarFile) {
-    include '**/uniquebase/*'
+  from(zipTree(jar.archivePath)) {
+    include '**/META_INF/**/*'
+    include '**/uniquebase/**/*'
+    include 'pack.mcmeta'
   }
+  from(zipTree(jar.archivePath)) {
+    include 'mcmod.info'
+    expand 'version':unique_base_version, 'mcversion':project.minecraft.version, 'modid':"uniquebase", 'name':"Unique Enchantments Base", 'description':"Unique Enchantments Base Mod"
+  }
+  includeEmptyDirs = false
 }
 
-//task baseJar(type: Jar) {
-//    baseName = 'Unique Enchantments Base'
-//    version = unique_base_version
-//    from(sourceSets.main.output) {
-//        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueebattle', 'assets/uniqueebattle', 'uniqueeutils', 'assets/uniqueeutil'
-//    }
-//    from(sourceSets.main.resources.srcDirs) {
-//        include 'mcmod.info'
-//        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniquebase", 'name':"Unique Enchantments Base", 'description':"Unique Enchantments Base"
-//    }
-//}
-
-task utilsJar(type: Jar) {
-    baseName = 'Unique Enchantments Utils'
-    version = unique_utils_version
-    from(sourceSets.main.output) {
-        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueebattle', 'assets/uniqueebattle', 'uniquebase'
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniqueeutils", 'name':"Unique Enchantments Utilities", 'description':"A Set of Unique Utility Enchantments"
-    }
+task mainJar(type: Jar, dependsOn: reobfJar) {
+  baseName = 'Unique Enchantments'
+  version = uniquee_version
+  from(zipTree(jar.archivePath)) {
+    include '**/META_INF/**/*'
+    include '**/uniquee/**/*'
+    include '**/assets/uniquee/**/*'
+    include 'pack.mcmeta'
+  }
+  from(zipTree(jar.archivePath)) {
+    include 'mcmod.info'
+    expand 'version':uniquee_version, 'mcversion':project.minecraft.version, 'modid':"uniquee", 'name':"Unique Enchantments", 'description':"A Set of Unique Enchantments"
+  }
+  includeEmptyDirs = false
 }
 
-task battleJar(type: Jar) {
-    baseName = 'Unique Enchantments Battle'
-    version = unique_battle_version
-    from(sourceSets.main.output) {
-        exclude 'uniquee', 'assets/uniquee', 'mcmod.info', 'uniqueeutils', 'assets/uniqueeutil', 'uniquebase'
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniqueebattle", 'name':"Unique Enchantments Battle", 'description':"A Set of Unique Battle Enchantments"
-    }
+task utilsJar(type: Jar, dependsOn: reobfJar) {
+  baseName = 'Unique Enchantments Utils'
+  version = unique_utils_version
+  from(zipTree(jar.archivePath)) {
+    include '**/META_INF/**/*'
+    include '**/uniqueeutils/**/*'
+    include '**/assets/uniqueeutil/**/*'
+    include 'pack.mcmeta'
+  }
+  from(zipTree(jar.archivePath)) {
+    include 'mcmod.info'
+        expand 'version':unique_utils_version, 'mcversion':project.minecraft.version, 'modid':"uniqueeutils", 'name':"Unique Enchantments Utilities", 'description':"A Set of Unique Utility Enchantments"
+  }
+  includeEmptyDirs = false
 }
 
-task fatJar(type: Jar) {
-    baseName = 'Unique Enchantments Fat'
-    version = unique_base_version
-    from(sourceSets.main.output) {
-        exclude 'mcmod.info'
-    }
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version, 'modid':"uniquebase", 'name':"Unique Enchantments Base", 'description':"Unique Enchantments Base"
-    }
-}
-
-
-reobf {
-    utilsJar {
-    	spec -> spec.classpath = sourceSets.main.compileClasspath
-    }
-    battleJar {
-    	spec -> spec.classpath = sourceSets.main.compileClasspath
-    }
-    baseJar {
-    	spec -> spec.classpath = sourceSets.main.compileClasspath
-    }
-    fatJar {
-    	spec -> spec.classpath = sourceSets.main.compileClasspath
-    }
+task battleJar(type: Jar, dependsOn: reobfJar) {
+  baseName = 'Unique Enchantments Battle'
+  version = unique_battle_version
+  from(zipTree(jar.archivePath)) {
+    include '**/META_INF/**/*'
+    include '**/uniqueebattle/**/*'
+    include '**/assets/uniqueebattle/**/*'
+    include 'pack.mcmeta'
+  }
+  from(zipTree(jar.archivePath)) {
+    include 'mcmod.info'
+    expand 'version':unique_battle_version, 'mcversion':project.minecraft.version, 'modid':"uniqueebattle", 'name':"Unique Enchantments Battle", 'description':"A Set of Unique Battle Enchantments"
+  }
+  includeEmptyDirs = false
 }
 
 artifacts {
+    archives baseJar
+    archives mainJar
     archives utilsJar
     archives battleJar
-    archives baseJar
-	archives fatJar
 }

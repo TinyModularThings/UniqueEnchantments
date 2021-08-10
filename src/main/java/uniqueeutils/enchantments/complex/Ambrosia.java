@@ -13,7 +13,7 @@ import uniquebase.utils.IntStat;
 public class Ambrosia extends UniqueEnchantment
 {
 	public static final IntStat BASE_DURATION = new IntStat(600, "base_duration");
-	public static final IntStat DURATION_MULTIPLIER = new IntStat(75, "duration_multiplier");
+	public static final IntStat DURATION_MULTIPLIER = new IntStat(40, "duration_multiplier");
 	
 	public Ambrosia()
 	{
