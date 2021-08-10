@@ -6,15 +6,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import uniquee.api.BaseUEMod;
 import uniquee.handler.EntityEvents;
-import uniqueeutils.enchantments.ClimberEnchantment;
-import uniqueeutils.enchantments.DemetersBlessingEnchantment;
-import uniqueeutils.enchantments.FaminesOdiumEnchantment;
-import uniqueeutils.enchantments.MountingAegisEnchantment;
-import uniqueeutils.enchantments.PhanesRegretEnchantment;
-import uniqueeutils.enchantments.PoseidonsSoulEnchantment;
-import uniqueeutils.enchantments.RocketManEnchantment;
-import uniqueeutils.enchantments.SleipnirsGraceEnchantment;
-import uniqueeutils.enchantments.ThickPickEnchantment;
+import uniqueeutils.enchantments.Climber;
+import uniqueeutils.enchantments.DemetersBlessing;
+import uniqueeutils.enchantments.FaminesOdium;
+import uniqueeutils.enchantments.MountingAegis;
+import uniqueeutils.enchantments.PhanesRegret;
+import uniqueeutils.enchantments.PoseidonsSoul;
+import uniqueeutils.enchantments.RocketMan;
+import uniqueeutils.enchantments.SleipnirsGrace;
+import uniqueeutils.enchantments.ThickPick;
 import uniqueeutils.handler.UtilsHandler;
 
 //@Mod(modid = "uniqueeutil", name = "Unique Util Enchantments", version = "1.0.0", dependencies = "required-after:uniquee@[1.9.0,);")
@@ -33,18 +33,18 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	
 	public UniqueEnchantmentsUtils()
 	{
-		SLEIPNIRS_GRACE = register(new SleipnirsGraceEnchantment());
-		FAMINES_ODIUM = register(new FaminesOdiumEnchantment());
-		THICK_PICK = register(new ThickPickEnchantment());
-		ROCKET_MAN = register(new RocketManEnchantment());
-		CLIMBER = register(new ClimberEnchantment());
-		PHANES_REGRET = register(new PhanesRegretEnchantment());
-		POSEIDONS_SOUL = register(new PoseidonsSoulEnchantment());
-		MOUNTING_AEGIS = register(new MountingAegisEnchantment());
-		DETEMERS_BLESSING = register(new DemetersBlessingEnchantment());
+		SLEIPNIRS_GRACE = register(new SleipnirsGrace());
+		FAMINES_ODIUM = register(new FaminesOdium());
+		THICK_PICK = register(new ThickPick());
+		ROCKET_MAN = register(new RocketMan());
+		CLIMBER = register(new Climber());
+		PHANES_REGRET = register(new PhanesRegret());
+		POSEIDONS_SOUL = register(new PoseidonsSoul());
+		MOUNTING_AEGIS = register(new MountingAegis());
+		DETEMERS_BLESSING = register(new DemetersBlessing());
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UniqueEnchantment-Utils.toml");
 		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);
-		EntityEvents.INSTANCE.registerAnvilHelper(THICK_PICK, ThickPickEnchantment.VALIDATOR, ThickPickEnchantment.TAG);
-		EntityEvents.INSTANCE.registerStorageTooltip(THICK_PICK, "tooltip.uniqueutil.stored.repair.name", ThickPickEnchantment.TAG);
+		EntityEvents.INSTANCE.registerAnvilHelper(THICK_PICK, ThickPick.VALIDATOR, ThickPick.TAG);
+		EntityEvents.INSTANCE.registerStorageTooltip(THICK_PICK, "tooltip.uniqueutil.stored.repair.name", ThickPick.TAG);
 	}
 }

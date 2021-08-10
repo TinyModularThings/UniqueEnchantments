@@ -22,9 +22,9 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniquee.utils.MiscUtil;
 import uniqueebattle.UniqueEnchantmentsBattle;
-import uniqueebattle.enchantments.EnchantmentAresFragment;
-import uniqueebattle.enchantments.EnchantmentCelestialBlessing;
-import uniqueebattle.enchantments.EnchantmentLunaticDespair;
+import uniqueebattle.enchantments.AresFragment;
+import uniqueebattle.enchantments.CelestialBlessing;
+import uniqueebattle.enchantments.LunaticDespair;
 
 public class BattleHandler
 {
@@ -41,8 +41,8 @@ public class BattleHandler
 			if(level > 0 && source instanceof PlayerEntity)
 			{
 				PlayerEntity player = (PlayerEntity)source;
-				double chance = EnchantmentAresFragment.BASE_CHANCE.get() + ((Math.log(Math.pow(player.experienceLevel, level)) * EnchantmentAresFragment.CHANCE_MULT.get()) / 100D);
-				float damage = (float)Math.log(3 + (level * ((1+event.getEntityLiving().getTotalArmorValue()+event.getEntityLiving().getAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getValue())*EnchantmentAresFragment.ARMOR_PERCENTAGE.get())));
+				double chance = AresFragment.BASE_CHANCE.get() + ((Math.log(Math.pow(player.experienceLevel, level)) * AresFragment.CHANCE_MULT.get()) / 100D);
+				float damage = (float)Math.log(3 + (level * ((1+event.getEntityLiving().getTotalArmorValue()+event.getEntityLiving().getAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getValue())*AresFragment.ARMOR_PERCENTAGE.get())));
 				while(chance > 0)
 				{
 					if(player.world.rand.nextDouble() < chance)
@@ -69,8 +69,8 @@ public class BattleHandler
 			int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.LUNATIC_DESPAIR, source);
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() + (float)(level * EnchantmentLunaticDespair.BONUS_DAMAGE.get()));
-				source.attackEntityFrom(DamageSource.MAGIC, (float)((level * EnchantmentLunaticDespair.SELF_DAMAGE.get()) + (level * 0.25F)));
+				event.setAmount(event.getAmount() + (float)(level * LunaticDespair.BONUS_DAMAGE.get()));
+				source.attackEntityFrom(DamageSource.MAGIC, (float)((level * LunaticDespair.SELF_DAMAGE.get()) + (level * 0.25F)));
 			}
 		}
 	}
@@ -98,7 +98,7 @@ public class BattleHandler
 		int level = enchantments.getInt(UniqueEnchantmentsBattle.CELESTIAL_BLESSING);
 		if(level > 0)
 		{
-			mods.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(EnchantmentCelestialBlessing.SPEED_MOD, "speed_boost", world.isDaytime() ? 0F : EnchantmentCelestialBlessing.SPEED_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL));
+			mods.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(CelestialBlessing.SPEED_MOD, "speed_boost", world.isDaytime() ? 0F : CelestialBlessing.SPEED_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL));
 		}
 		return mods;
 	}

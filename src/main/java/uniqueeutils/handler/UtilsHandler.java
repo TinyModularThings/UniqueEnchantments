@@ -56,13 +56,13 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import uniquee.handler.EntityEvents;
 import uniquee.utils.MiscUtil;
 import uniqueeutils.UniqueEnchantmentsUtils;
-import uniqueeutils.enchantments.ClimberEnchantment;
-import uniqueeutils.enchantments.FaminesOdiumEnchantment;
-import uniqueeutils.enchantments.PhanesRegretEnchantment;
-import uniqueeutils.enchantments.PoseidonsSoulEnchantment;
-import uniqueeutils.enchantments.RocketManEnchantment;
-import uniqueeutils.enchantments.SleipnirsGraceEnchantment;
-import uniqueeutils.enchantments.ThickPickEnchantment;
+import uniqueeutils.enchantments.Climber;
+import uniqueeutils.enchantments.FaminesOdium;
+import uniqueeutils.enchantments.PhanesRegret;
+import uniqueeutils.enchantments.PoseidonsSoul;
+import uniqueeutils.enchantments.RocketMan;
+import uniqueeutils.enchantments.SleipnirsGrace;
+import uniqueeutils.enchantments.ThickPick;
 
 public class UtilsHandler
 {
@@ -87,35 +87,35 @@ public class UtilsHandler
 				if(level > 0)
 				{
 					CompoundNBT nbt = entity.getPersistentData();
-					long lastTime = nbt.getLong(SleipnirsGraceEnchantment.HORSE_NBT);
+					long lastTime = nbt.getLong(SleipnirsGrace.HORSE_NBT);
 					if(lastTime == 0)
 					{
-						nbt.putLong(SleipnirsGraceEnchantment.HORSE_NBT, time);
+						nbt.putLong(SleipnirsGrace.HORSE_NBT, time);
 						lastTime = time;
 					}
-					double maxTime = Math.min(SleipnirsGraceEnchantment.CAP.getAsDouble(level) * 20, time - lastTime);
+					double maxTime = Math.min(SleipnirsGrace.CAP.getAsDouble(level) * 20, time - lastTime);
 					IAttributeInstance attri = horse.getAttributes().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED);
-					attri.removeModifier(SleipnirsGraceEnchantment.SPEED_MOD);
-					attri.applyModifier(new AttributeModifier(SleipnirsGraceEnchantment.SPEED_MOD, "Sleipnirs Grace", Math.log10(1 + ((maxTime / SleipnirsGraceEnchantment.LIMITER.get()) * level)), Operation.MULTIPLY_TOTAL));
+					attri.removeModifier(SleipnirsGrace.SPEED_MOD);
+					attri.applyModifier(new AttributeModifier(SleipnirsGrace.SPEED_MOD, "Sleipnirs Grace", Math.log10(1 + ((maxTime / SleipnirsGrace.LIMITER.get()) * level)), Operation.MULTIPLY_TOTAL));
 				}
 			}
 		}
 		CompoundNBT nbt = player.getPersistentData();
-		if(nbt.contains(ClimberEnchantment.CLIMB_POS) && time >= nbt.getLong(ClimberEnchantment.CLIMB_START) + nbt.getLong(ClimberEnchantment.CLIMB_DELAY))
+		if(nbt.contains(Climber.CLIMB_POS) && time >= nbt.getLong(Climber.CLIMB_START) + nbt.getLong(Climber.CLIMB_DELAY))
 		{
-			nbt.remove(ClimberEnchantment.CLIMB_DELAY);
-			nbt.remove(ClimberEnchantment.CLIMB_START);
-			BlockPos pos = BlockPos.fromLong(nbt.getLong(ClimberEnchantment.CLIMB_POS));
-			nbt.remove(ClimberEnchantment.CLIMB_POS);
+			nbt.remove(Climber.CLIMB_DELAY);
+			nbt.remove(Climber.CLIMB_START);
+			BlockPos pos = BlockPos.fromLong(nbt.getLong(Climber.CLIMB_POS));
+			nbt.remove(Climber.CLIMB_POS);
 			player.setPositionAndUpdate(pos.getX()+0.5F, pos.getY(), pos.getZ() + 0.5F);
 		}
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.FAMINES_ODIUM, player);
 		if(level > 0)
 		{
-			int duration = (int)(FaminesOdiumEnchantment.DELAY.get() * (1 - Math.log10(level)));
+			int duration = (int)(FaminesOdium.DELAY.get() * (1 - Math.log10(level)));
 			if(time % duration == 0)
 			{
-				Int2FloatMap.Entry entry = FaminesOdiumEnchantment.consumeRandomItem(player.inventory, FaminesOdiumEnchantment.NURISHMENT.getFloat() * level);
+				Int2FloatMap.Entry entry = FaminesOdium.consumeRandomItem(player.inventory, FaminesOdium.NURISHMENT.getFloat() * level);
 				if(entry != null)
 				{
 					player.getFoodStats().addStats(entry.getIntKey(), entry.getFloatValue());
@@ -123,7 +123,7 @@ public class UtilsHandler
 				}
 				else
 				{
-					player.attackEntityFrom(DamageSource.MAGIC, FaminesOdiumEnchantment.DAMAGE.getFloat() * duration);
+					player.attackEntityFrom(DamageSource.MAGIC, FaminesOdium.DAMAGE.getFloat() * duration);
 				}
 			}
 		}
@@ -133,7 +133,7 @@ public class UtilsHandler
 	public void onHeal(LivingHealEvent event)
 	{
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
-		if(level > 0 && event.getEntity().getEntityWorld().rand.nextDouble() < PhanesRegretEnchantment.CHANCE.get() * level)
+		if(level > 0 && event.getEntity().getEntityWorld().rand.nextDouble() < PhanesRegret.CHANCE.get() * level)
 		{
 			event.setCanceled(true);
 		}
@@ -148,7 +148,7 @@ public class UtilsHandler
 		BlockRayTraceResult ray = (BlockRayTraceResult)result;
 		World world = event.getEntity().getEntityWorld();
 		BlockState state = world.getBlockState(ray.getPos());
-		if(PoseidonsSoulEnchantment.isValid(state.getBlock()))
+		if(PoseidonsSoul.isValid(state.getBlock()))
 		{
 			ItemStack arrowStack = EntityEvents.getArrowStack(event.getArrow());
 			if(arrowStack.getItem() != Items.TRIDENT) return;
@@ -158,7 +158,7 @@ public class UtilsHandler
 			ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
 			stack.addEnchantment(Enchantments.SILK_TOUCH, 1);
 			Block.spawnAsEntity(world, ray.getPos(), new ItemStack(state.getBlock(), level * (world.rand.nextInt(enchs.getInt(Enchantments.FORTUNE)+1)+1)));
-			MiscUtil.drainExperience((PlayerEntity)event.getArrow().getShooter(), (int)Math.log10(Math.pow(PoseidonsSoulEnchantment.BASE_CONSUMTION.get(), level)));
+			MiscUtil.drainExperience((PlayerEntity)event.getArrow().getShooter(), (int)Math.log10(Math.pow(PoseidonsSoul.BASE_CONSUMTION.get(), level)));
 		}
 	}
 	
@@ -185,9 +185,9 @@ public class UtilsHandler
 					if(!event.getWorld().getBlockState(pos).func_224756_o(event.getWorld(), pos) && !event.getWorld().getBlockState(pos.up()).func_224756_o(event.getWorld(), pos.up()))
 					{
 						CompoundNBT nbt = event.getPlayer().getPersistentData();
-						nbt.putLong(ClimberEnchantment.CLIMB_POS, pos.toLong());
-						nbt.putInt(ClimberEnchantment.CLIMB_DELAY, ClimberEnchantment.getClimbTime(level, blocks));
-						nbt.putLong(ClimberEnchantment.CLIMB_START, event.getWorld().getGameTime());
+						nbt.putLong(Climber.CLIMB_POS, pos.toLong());
+						nbt.putInt(Climber.CLIMB_DELAY, Climber.getClimbTime(level, blocks));
+						nbt.putLong(Climber.CLIMB_START, event.getWorld().getGameTime());
 						event.getPlayer().sendStatusMessage(new TranslationTextComponent("tooltip.uniqueutil.climb.start.name"), true);
 					}
 					else
@@ -227,8 +227,8 @@ public class UtilsHandler
 		if(event.getEntityBeingMounted() instanceof HorseEntity)
 		{
 			HorseEntity horse = (HorseEntity)event.getEntityBeingMounted();
-			horse.getPersistentData().remove(SleipnirsGraceEnchantment.HORSE_NBT);
-			horse.getAttributes().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SleipnirsGraceEnchantment.SPEED_MOD);
+			horse.getPersistentData().remove(SleipnirsGrace.HORSE_NBT);
+			horse.getAttributes().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(SleipnirsGrace.SPEED_MOD);
 		}
 	}
 	
@@ -244,10 +244,10 @@ public class UtilsHandler
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.THICK_PICK, held);
 		if(level > 0 && event.getState().getBlockHardness(player.world, event.getPos()) >= 20)
 		{
-			int amount = EntityEvents.getInt(held, ThickPickEnchantment.TAG, 0);
+			int amount = EntityEvents.getInt(held, ThickPick.TAG, 0);
 			if(amount > 0)
 			{
-				event.setNewSpeed(event.getNewSpeed() * ThickPickEnchantment.MINING_SPEED.getAsFloat(level));
+				event.setNewSpeed(event.getNewSpeed() * ThickPick.MINING_SPEED.getAsFloat(level));
 			}
 		}
 	}
@@ -264,10 +264,10 @@ public class UtilsHandler
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.THICK_PICK, held);
 		if(level > 0)
 		{
-			int amount = EntityEvents.getInt(held, ThickPickEnchantment.TAG, 0);
+			int amount = EntityEvents.getInt(held, ThickPick.TAG, 0);
 			if(amount > 0)
 			{
-				EntityEvents.setInt(held, ThickPickEnchantment.TAG, amount-1);
+				EntityEvents.setInt(held, ThickPick.TAG, amount-1);
 			}
 		}
 	}
@@ -323,7 +323,7 @@ public class UtilsHandler
 							CompoundNBT nbt = new CompoundNBT();
 							rocket.writeAdditional(nbt);
 							int time = nbt.getInt("LifeTime");
-							time += time * RocketManEnchantment.FLIGHT_TIME.getAsDouble(level);
+							time += time * RocketMan.FLIGHT_TIME.getAsDouble(level);
 							nbt.putInt("LifeTime", time);
 							rocket.readAdditional(nbt);
 						}
