@@ -1,0 +1,14 @@
+{
+	"enchantment.uniquebattle.lunatic_despair": "Verzweiflung der Verrueckten",
+	"enchantment.uniquebattle.lunatic_despair.desc": "Teile mehr Schaden aus, jedoch schadest du dir auch selbst",
+	"enchantment.uniquebattle.celestial_blessing": "Himmlischer Segen",
+	"enchantment.uniquebattle.celestial_blessing.desc": "Erhoeht deine Angriffsgeschwindigkeit bei Nacht",
+	"enchantment.uniquebattle.ares_fragment": "Fragment des Ares",
+	"enchantment.uniquebattle.ares_fragment.desc": "Entweder wird dein Schaden erhoeht oder reduziert. Chance skaliert mit Spieler Erfahrung",
+	"enchantment.uniquebattle.golem_soul": "Seele des Golems",
+	"enchantment.unqiuebattle.golem_soul.desc": "Erhoeht deine Rueckstoß Resistenz, reduziert jedoch deine Geschwindigkeit",
+	"enchantment.uniquebattle.ifrits_blessing": "Ifrits Segen",
+	"enchantment.uniquebattle.ifrits_blessing.desc": "Brennende Einheiten erhalten erhoehten Schaden. Schaden ist verdoppelt wenn du auch brennst",
+	"enchantment.uniquebattle.ifrits_judgement": "Ifrits Urteil",
+	"enchantment.uniquebattle.ifrits_judgement.desc": "Schadest du dem selben Gegner mehr als 4x mit dem selben Gegenstand zuendet dich an. Benoetigst du weniger Angriffe erhaelst du eine Belohnung. Shift-Rechtsklick eine Kiste um alle Belohnungen in der Kiste zu erhalten"
+}
