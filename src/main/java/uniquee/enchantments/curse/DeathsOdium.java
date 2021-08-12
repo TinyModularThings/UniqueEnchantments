@@ -4,9 +4,9 @@ import java.util.UUID;
 
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.IntStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
+import uniquebase.utils.IntStat;
 
 public class DeathsOdium extends UniqueEnchantment
 {
@@ -22,27 +22,16 @@ public class DeathsOdium extends UniqueEnchantment
 	public static final UUID LEGGINGS_MOD = UUID.fromString("7155868f-c452-482b-9c35-20d3082cf766");
 	public static final UUID FEET_MOD = UUID.fromString("6d64591f-abda-431f-87da-0622ba33b665");
 	
-	public static IntStat DELAY = new IntStat(200, "collector_time");
-	public static IntStat MAX_STORAGE = new IntStat(5, "curse_storage_cap");
-	public static IntStat DAMAGE_FACTOR = new IntStat(30, "damage_factor");
+	public static final IntStat DELAY = new IntStat(200, "collector_time");
+	public static final IntStat MAX_STORAGE = new IntStat(5, "curse_storage_cap");
+	public static final IntStat DAMAGE_FACTOR = new IntStat(30, "damage_factor");
+	public static final DoubleStat BASE_LOSS = new DoubleStat(1, "base_loss");
 	
 	public DeathsOdium()
 	{
-		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 1, false, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
-	}
-	
-	@Override
-	public boolean isCurse()
-	{
-		return true;
-	}
-	
-	@Override
-	public void loadData(Builder config) 
-	{
-		DELAY.handleConfig(config);
-		MAX_STORAGE.handleConfig(config);
-		DAMAGE_FACTOR.handleConfig(config);
+		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 2, false, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
+		addStats(DELAY, MAX_STORAGE, DAMAGE_FACTOR, BASE_LOSS);
+		setCurse();
 	}
 	
 	public static UUID getForSlot(EquipmentSlotType slot)

@@ -6,17 +6,17 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.EquipmentSlotType.Group;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 
 public class BoneCrusher extends UniqueEnchantment
 {
-	public static DoubleStat SCALAR = new DoubleStat(0.2D, "scalar");
+	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(0.15D, "bonus_damage");
 	
 	public BoneCrusher()
 	{
-		super(new DefaultData("bone_crusher", Rarity.VERY_RARE, 2, true, 18, 5, 50), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(new DefaultData("bone_crusher", Rarity.VERY_RARE, 4, true, 2, 8, 20), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		addStats(BONUS_DAMAGE);
 	}
 	
 	@Override
@@ -35,11 +35,5 @@ public class BoneCrusher extends UniqueEnchantment
 			}
 		}
 		return true;
-	}
-
-	@Override
-	public void loadData(Builder config)
-	{
-		SCALAR.handleConfig(config);
 	}
 }

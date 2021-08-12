@@ -5,21 +5,18 @@ import java.util.function.ToIntFunction;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.LootBonusEnchantment;
-import net.minecraft.enchantment.SilkTouchEnchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.Tags;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.type.IBlessingEnchantment;
-import uniquee.utils.IntStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.api.filters.IBlessingEnchantment;
+import uniquebase.utils.DoubleStat;
 
 public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
@@ -39,12 +36,12 @@ public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchant
 	};
 	public static Tag<Block> MIDIAS = new BlockTags.Wrapper(new ResourceLocation("uniquee", "midias_blessing"));
 	public static String GOLD_COUNTER = "gold_storage";
-	public static IntStat LEVEL_SCALAR = new IntStat(6, "level_scalar");
-	public static IntStat BASE_COST = new IntStat(2, "base_cost");
+	public static final DoubleStat GOLD_COST = new DoubleStat(1.5D, "gold_cost");
 	
 	public MidasBlessing()
 	{
-		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 3, true, 22, 2, 75), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 3, true, 14, 6, 75), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
+		addStats(GOLD_COST);
 	}
 	
 	@Override
@@ -68,17 +65,8 @@ public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchant
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	public void loadIncompats()
 	{
-		return ench instanceof LootBonusEnchantment || ench instanceof SilkTouchEnchantment || ench instanceof IfritsGrace ? false : super.canApplyTogether(ench);
+		addIncompats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH);
 	}
-
-	@Override
-	public void loadData(Builder config)
-	{
-		LEVEL_SCALAR.handleConfig(config);
-		BASE_COST.handleConfig(config);
-	}
-	
-	
 }

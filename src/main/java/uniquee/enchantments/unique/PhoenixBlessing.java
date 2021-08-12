@@ -4,15 +4,18 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.type.IBlessingEnchantment;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.api.filters.IBlessingEnchantment;
+import uniquebase.utils.DoubleLevelStats;
 
 public class PhoenixBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
+	public static final DoubleLevelStats RANGE = new DoubleLevelStats("range", 3D, 0.25D);
+	
 	public PhoenixBlessing()
 	{
-		super(new DefaultData("phoenixs_blessing", Rarity.RARE, 1, true, 26, 2, 2), EnchantmentType.ALL, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("phoenixs_blessing", Rarity.RARE, 2, true, 26, 2, 2), EnchantmentType.ALL, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		addStats(RANGE);
 	}
 	
 	@Override
@@ -20,10 +23,4 @@ public class PhoenixBlessing extends UniqueEnchantment implements IBlessingEncha
 	{
 		return enabled.get() && stack.getItem() == Items.TOTEM_OF_UNDYING;
 	}
-
-	@Override
-	public void loadData(Builder config)
-	{
-	}
-	
 }

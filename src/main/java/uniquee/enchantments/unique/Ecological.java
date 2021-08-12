@@ -10,11 +10,10 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
+import uniquebase.utils.IntStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
-import uniquee.utils.IntStat;
 
 public class Ecological extends UniqueEnchantment
 {
@@ -26,26 +25,18 @@ public class Ecological extends UniqueEnchantment
 			return BlockTags.LOGS.contains(t.getBlock()) || BlockTags.LEAVES.contains(t.getBlock()) || ECHOLOGICAL.contains(t.getBlock());
 		}
 	};
-	public static IntStat SPEED = new IntStat(220, "speed");
-	public static DoubleStat SCALE = new DoubleStat(1.85D, "scale");
+	public static final IntStat SPEED = new IntStat(220, "speed");
+	public static final DoubleStat SPEED_SCALE = new DoubleStat(1.85D, "speed_scale");
 	
 	public Ecological()
 	{
-		super(new DefaultData("ecological", Rarity.RARE, 3, true, 22, 2, 40), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		super(new DefaultData("ecological", Rarity.RARE, 3, true, 4, 8, 10), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		addStats(SPEED, SPEED_SCALE);
 	}
 	
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.ENDERMARKSMEN, Enchantments.MENDING, Enchantments.INFINITY);
+		addIncompats(UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.ENDERMARKSMEN, Enchantments.MENDING, Enchantments.INFINITY);
 	}
-
-	@Override
-	public void loadData(Builder config)
-	{
-		SPEED.handleConfig(config);
-		SCALE.handleConfig(config);
-	}
-	
-	
 }

@@ -5,18 +5,18 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
 
 public class SpartanWeapon extends UniqueEnchantment
 {
-	public static DoubleStat SCALAR = new DoubleStat(0.075D, "scalar");
+	public static final DoubleStat EXTRA_DAMAGE = new DoubleStat(0.075D, "scalar");
 
 	public SpartanWeapon()
 	{
-		super(new DefaultData("spartanweapon", Rarity.RARE, 5, true, 11, 3, 10), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("spartanweapon", Rarity.UNCOMMON, 5, true, 25, 3, 50), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		addStats(EXTRA_DAMAGE);
 	}
 	
 	@Override
@@ -28,12 +28,6 @@ public class SpartanWeapon extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.BERSERKER, UniqueEnchantments.PERPETUAL_STRIKE);
-	}
-
-	@Override
-	public void loadData(Builder config)
-	{
-		SCALAR.handleConfig(config);
+		addIncompats(UniqueEnchantments.BERSERKER, UniqueEnchantments.PERPETUAL_STRIKE);
 	}
 }

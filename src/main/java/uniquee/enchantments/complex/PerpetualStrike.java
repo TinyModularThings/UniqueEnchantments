@@ -5,20 +5,22 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
 
 public class PerpetualStrike extends UniqueEnchantment
 {
-	public static DoubleStat SCALAR = new DoubleStat(0.075D, "scalar");
+	public static final DoubleStat PER_HIT = new DoubleStat(0.1D, "bonus_per_hit");
+	public static final DoubleStat PER_HIT_LEVEL = new DoubleStat(1D, "bonus_per_level");
+	public static final DoubleStat MULTIPLIER = new DoubleStat(1.83D, "damage_multiplier");
 	public static final String HIT_COUNT = "strikes";
 	public static final String HIT_ID = "hit_id";
 	
 	public PerpetualStrike()
 	{
-		super(new DefaultData("perpetualstrike", Rarity.VERY_RARE, 3, false, 26, 2, 30), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(new DefaultData("perpetualstrike", Rarity.RARE, 3, false, 16, 6, 4), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		addStats(PER_HIT, MULTIPLIER, PER_HIT_LEVEL);
 	}
 	
 	@Override
@@ -30,12 +32,6 @@ public class PerpetualStrike extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.SPARTAN_WEAPON);
-	}
-	
-	@Override
-	public void loadData(Builder config)
-	{
-		SCALAR.handleConfig(config);
+		addIncompats(UniqueEnchantments.SPARTAN_WEAPON);
 	}
 }

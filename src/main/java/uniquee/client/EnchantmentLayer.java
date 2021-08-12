@@ -15,9 +15,9 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import uniquebase.utils.MiscUtil;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.simple.TreasurersEyes;
-import uniquee.utils.MiscUtil;
 
 public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> extends LayerRenderer<T, M> 
 {

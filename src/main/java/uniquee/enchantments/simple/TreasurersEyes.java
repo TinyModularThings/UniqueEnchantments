@@ -2,24 +2,16 @@ package uniquee.enchantments.simple;
 
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleLevelStats;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleLevelStats;
 
 public class TreasurersEyes extends UniqueEnchantment
 {
-	public static final DoubleLevelStats RANGE = new DoubleLevelStats("range", 5D, 9D);
+	public static final DoubleLevelStats RANGE = new DoubleLevelStats("range", 5D, 5.5D);
 	
 	public TreasurersEyes()
 	{
-		super(new DefaultData("treasurers_eyes", Rarity.RARE, 1, false, 28, 6, 10), EnchantmentType.ARMOR_HEAD, new EquipmentSlotType[]{EquipmentSlotType.HEAD});
+		super(new DefaultData("treasurers_eyes", Rarity.RARE, 3, true, 22, 6, 75), EnchantmentType.ARMOR_HEAD, EquipmentSlotType.HEAD);
+		addStats(RANGE);
 	}
-		
-	@Override
-	public void loadData(Builder config)
-	{
-		RANGE.handleConfig(config);
-	}
-	
-	
 }

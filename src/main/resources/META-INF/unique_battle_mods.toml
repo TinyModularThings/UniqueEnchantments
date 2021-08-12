@@ -10,8 +10,8 @@ loaderVersion="[28,)"
 	A Set of Unique Battle Enchantments
 	'''
 	[[dependencies.uniquebattle]]
-		modId="uniquee"
+		modId="uniquebase"
 		mandatory=true
-		versionRange="[1.9,)"
+		versionRange="[1.0,)"
 		ordering="BEFORE"
 		side="BOTH"

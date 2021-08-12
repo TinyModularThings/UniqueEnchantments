@@ -18,10 +18,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.ForgeRegistries;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.api.filters.IGraceEnchantment;
+import uniquebase.utils.MiscUtil;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.type.IGraceEnchantment;
-import uniquee.utils.MiscUtil;
 
 public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
@@ -30,9 +30,9 @@ public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantm
 	
 	public AlchemistsGrace()
 	{
-		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, 4, true, 20, 3, 18), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, 4, true, 18, 6, 40).setHardCap(33), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
 	}
-		
+	
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
@@ -42,7 +42,7 @@ public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantm
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.NATURES_GRACE);
+		addIncompats(UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.NATURES_GRACE);
 	}
 	
 	public static void applyToEntity(Entity entity, boolean mining, float hitScalar)
@@ -78,7 +78,7 @@ public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantm
 	public void loadData(Builder config)
 	{
 		config.comment("Which Potion Effects should be applied. Format: Potion;StartEnchantmentLvL;StartPotionLvL;PotionLvLPerEnchantLvL;BaseDuration;Fighting;Mining");
-		EFFECT_CONFIG = config.defineList("effects", ObjectArrayList.wrap(new String[]{"minecraft:regeneration;1;0;0.25;0.5;true;false", "minecraft:speed;1;0;1.0;3;true;true", "minecraft:haste;2;0;1.0;2;true;true", "minecraft:speed;2;1;0.5;3.5;true;true", "minecraft:resistance;3;0;1.0;1;true;false", "minecraft:haste;3;1;0.5;3;true;true", "minecraft:strength;4;0;1.0;1;true;false", "minecraft:resistance;4;1;0.25;1.25;true;false", "minecraft:fire_resistance;4;0;1.0;1.5;false;true", "minecraft:strength;5;1;0.2;1.5;true;false"}), (T) -> true);
+		EFFECT_CONFIG = config.defineList("effects", ObjectArrayList.wrap(new String[]{"minecraft:regeneration;1;0;0.25;10;true;false", "minecraft:speed;1;0;1.0;60;true;true", "minecraft:haste;2;0;1.0;40;true;true", "minecraft:speed;2;1;0.5;70;true;true", "minecraft:resistance;3;0;1.0;20;true;false", "minecraft:haste;3;1;0.5;60;true;true", "minecraft:strength;4;0;1.0;20;true;false", "minecraft:resistance;4;1;0.25;25;true;false", "minecraft:fire_resistance;4;0;1.0;30;false;true", "minecraft:strength;5;1;0.2;30;true;false"}), (T) -> true);
 	}
 	
 	@Override
@@ -123,7 +123,7 @@ public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantm
 			baseEnchantment = Integer.parseInt(data[1]);
 			basePotionLevel = Integer.parseInt(data[2]);
 			PotionLevelIncrease = Double.parseDouble(data[3]);
-			baseDuration = (int)(Double.parseDouble(data[4]) * 20);
+			baseDuration = Integer.parseInt(data[4]);
 			fighting = Boolean.parseBoolean(data[5]);
 			mining = Boolean.parseBoolean(data[6]);
 		}
@@ -131,7 +131,7 @@ public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantm
 		public EffectInstance createEffect(int baseLevel, float hitScalar)
 		{
 			int diff = Math.max(0, baseLevel - baseEnchantment);
-			return new EffectInstance(potion, (int)(baseDuration * baseLevel * Math.log(hitScalar+0.5F)), basePotionLevel + (int)(PotionLevelIncrease * diff));
+			return new EffectInstance(potion, (int)(baseDuration * Math.log((hitScalar+0.5F)*baseLevel)), basePotionLevel + (int)(PotionLevelIncrease * diff));
 		}
 		
 		public boolean isValid(boolean mining)

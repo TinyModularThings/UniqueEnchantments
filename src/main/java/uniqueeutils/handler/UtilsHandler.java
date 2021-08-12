@@ -26,6 +26,9 @@ import net.minecraft.item.ElytraItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -45,6 +48,9 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -53,16 +59,21 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
-import uniquee.handler.EntityEvents;
-import uniquee.utils.MiscUtil;
+import uniquebase.api.crops.CropHarvestRegistry;
+import uniquebase.utils.HarvestEntry;
+import uniquebase.utils.MiscUtil;
+import uniquebase.utils.StackUtils;
 import uniqueeutils.UniqueEnchantmentsUtils;
-import uniqueeutils.enchantments.Climber;
-import uniqueeutils.enchantments.FaminesOdium;
-import uniqueeutils.enchantments.PhanesRegret;
-import uniqueeutils.enchantments.PoseidonsSoul;
-import uniqueeutils.enchantments.RocketMan;
-import uniqueeutils.enchantments.SleipnirsGrace;
-import uniqueeutils.enchantments.ThickPick;
+import uniqueeutils.enchantments.complex.Ambrosia;
+import uniqueeutils.enchantments.complex.BouncyDudes;
+import uniqueeutils.enchantments.complex.Climber;
+import uniqueeutils.enchantments.complex.SleipnirsGrace;
+import uniqueeutils.enchantments.curse.FaminesOdium;
+import uniqueeutils.enchantments.curse.PhanesRegret;
+import uniqueeutils.enchantments.curse.RocketMan;
+import uniqueeutils.enchantments.simple.ThickPick;
+import uniqueeutils.enchantments.unique.DemetersSoul;
+import uniqueeutils.enchantments.unique.PoseidonsSoul;
 
 public class UtilsHandler
 {
@@ -93,10 +104,19 @@ public class UtilsHandler
 						nbt.putLong(SleipnirsGrace.HORSE_NBT, time);
 						lastTime = time;
 					}
-					double maxTime = Math.min(SleipnirsGrace.CAP.getAsDouble(level) * 20, time - lastTime);
-					IAttributeInstance attri = horse.getAttributes().getAttributeInstance(SharedMonsterAttributes.MOVEMENT_SPEED);
+					Block block = horse.world.getBlockState(new BlockPos(horse.posX, horse.posY - 0.20000000298023224D,  horse.posZ)).getBlock();
+					double bonus = Math.min(SleipnirsGrace.CAP.get()+level, SleipnirsGrace.GAIN.get((time - lastTime) * level));
+					IAttributeInstance attri = horse.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
 					attri.removeModifier(SleipnirsGrace.SPEED_MOD);
-					attri.applyModifier(new AttributeModifier(SleipnirsGrace.SPEED_MOD, "Sleipnirs Grace", Math.log10(1 + ((maxTime / SleipnirsGrace.LIMITER.get()) * level)), Operation.MULTIPLY_TOTAL));
+					attri.applyModifier(new AttributeModifier(SleipnirsGrace.SPEED_MOD, "Sleipnirs Grace", Math.log10(10 + ((bonus / SleipnirsGrace.MAX.get()) * (block == Blocks.GRASS_PATH ? SleipnirsGrace.PATH_BONUS.get() : level)))-1D, Operation.MULTIPLY_TOTAL));
+				}
+				else
+				{
+					IAttributeInstance attri = horse.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+					if(attri.getModifier(SleipnirsGrace.SPEED_MOD) != null)
+					{
+						attri.removeModifier(SleipnirsGrace.SPEED_MOD);
+					}
 				}
 			}
 		}
@@ -118,7 +138,7 @@ public class UtilsHandler
 				Int2FloatMap.Entry entry = FaminesOdium.consumeRandomItem(player.inventory, FaminesOdium.NURISHMENT.getFloat() * level);
 				if(entry != null)
 				{
-					player.getFoodStats().addStats(entry.getIntKey(), entry.getFloatValue());
+					player.getFoodStats().addStats(MathHelper.ceil(FaminesOdium.NURISHMENT.get(entry.getIntKey() * Math.log(2.8D + level * 0.0625D))), (float)(entry.getFloatValue() * level * Math.log(2.8D + level * 0.0625D)));
 		            player.world.playSound((PlayerEntity)null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 0.5F, player.world.rand.nextFloat() * 0.1F + 0.9F);
 				}
 				else
@@ -127,15 +147,101 @@ public class UtilsHandler
 				}
 			}
 		}
+		int delay = Math.max(1, MathHelper.ceil(DemetersSoul.DELAY.get() / Math.log(10 + DemetersSoul.SCALING.get(MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.DEMETERS_SOUL, player.getHeldItem(Hand.MAIN_HAND))))));
+		if(player.world.getGameTime() % delay == 0)
+		{
+			HarvestEntry entry = DemetersSoul.getNextIndex(player);
+			if(entry != null)
+			{
+				ActionResultType result = entry.harvest(player.world, player);
+				if(result == ActionResultType.FAIL)
+				{
+					ListNBT list = DemetersSoul.getCrops(player);
+					for(int i = 0, m = list.size();i < m;i++)
+					{
+						if(entry.matches(list.getCompound(i)))
+						{
+							list.remove(i--);
+							break;
+						}
+					}
+				}
+				else if(result == ActionResultType.SUCCESS)
+				{
+					player.addExhaustion(0.06F);
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onFall(LivingFallEvent event)
+	{
+		ItemStack stack = event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.FEET);
+		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.BOUNCY_DUDES, stack);
+		if(level > 0)
+		{
+			if(event.getDistance() <= 1.3)
+				return;
+			int damage = MathHelper.floor(((event.getDistance() - 2) * BouncyDudes.DURABILITY_LOSS.get() / (level + MiscUtil.getEnchantmentLevel(Enchantments.FEATHER_FALLING, stack))));
+			if(damage > 0)
+			{
+				stack.damageItem(damage, event.getEntityLiving(), MiscUtil.get(EquipmentSlotType.FEET));
+			}
+			LivingEntity entity = event.getEntityLiving();
+			entity.getPersistentData().putDouble("bounce", entity.getMotion().getY() * -0.735D);
+			event.setCanceled(true);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEntityTick(LivingUpdateEvent event)
+	{
+		if(event.getEntityLiving() instanceof PlayerEntity == event.getEntityLiving().world.isRemote)
+		{
+			CompoundNBT data = event.getEntityLiving().getPersistentData();
+			if(data.contains("bounce"))
+			{
+				Vec3d motion = event.getEntityLiving().getMotion();
+				event.getEntityLiving().setMotion(motion.getX(), data.getDouble("bounce"), motion.getZ());
+				data.remove("bounce");
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEaten(LivingEntityUseItemEvent.Finish event)
+	{
+		if(event.getEntityLiving() instanceof PlayerEntity)
+		{
+			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.AMBROSIA, event.getItem());
+			if(level > 0)
+			{
+				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(Math.pow(1 + ((PlayerEntity)event.getEntityLiving()).experienceLevel * level, 6)) * Ambrosia.DURATION_MULTIPLIER.get()));
+				((PlayerEntity)event.getEntityLiving()).getFoodStats().addStats(2000, 0);
+				event.getEntityLiving().addPotionEffect(new EffectInstance(UniqueEnchantmentsUtils.SATURATION, duration, Math.min(20, level)));
+			}
+		}
 	}
 	
 	@SubscribeEvent
 	public void onHeal(LivingHealEvent event)
 	{
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
-		if(level > 0 && event.getEntity().getEntityWorld().rand.nextDouble() < PhanesRegret.CHANCE.get() * level)
+		if(level > 0)
 		{
-			event.setCanceled(true);
+			double chance = PhanesRegret.CHANCE.get(Math.log(2.8D + Math.pow(level, 3)));
+			if(chance > 1D)
+			{
+				event.getEntityLiving().attackEntityFrom(DamageSource.STARVE, event.getAmount());
+				event.setCanceled(true);
+				return;
+			}
+			if(event.getEntity().getEntityWorld().rand.nextDouble() < chance)
+			{
+				event.setCanceled(true);
+				return;
+			}
 		}
 	}
 	
@@ -150,7 +256,7 @@ public class UtilsHandler
 		BlockState state = world.getBlockState(ray.getPos());
 		if(PoseidonsSoul.isValid(state.getBlock()))
 		{
-			ItemStack arrowStack = EntityEvents.getArrowStack(event.getArrow());
+			ItemStack arrowStack = StackUtils.getArrowStack(event.getArrow());
 			if(arrowStack.getItem() != Items.TRIDENT) return;
 			Object2IntMap<Enchantment> enchs = MiscUtil.getEnchantments(arrowStack);
 			int level = enchs.getInt(UniqueEnchantmentsUtils.POSEIDONS_SOUL);
@@ -158,7 +264,7 @@ public class UtilsHandler
 			ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
 			stack.addEnchantment(Enchantments.SILK_TOUCH, 1);
 			Block.spawnAsEntity(world, ray.getPos(), new ItemStack(state.getBlock(), level * (world.rand.nextInt(enchs.getInt(Enchantments.FORTUNE)+1)+1)));
-			MiscUtil.drainExperience((PlayerEntity)event.getArrow().getShooter(), (int)Math.log10(Math.pow(PoseidonsSoul.BASE_CONSUMTION.get(), level)));
+			MiscUtil.drainExperience((PlayerEntity)event.getArrow().getShooter(), (int)Math.log10(10+Math.pow(PoseidonsSoul.BASE_CONSUMTION.get()+level, level)));
 		}
 	}
 	
@@ -196,6 +302,31 @@ public class UtilsHandler
 					}
 				}
 			}
+			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.DEMETERS_SOUL, event.getItemStack());
+			if(level > 0 && CropHarvestRegistry.INSTANCE.isValid(state.getBlock()) && !event.getWorld().isRemote)
+			{
+				HarvestEntry entry = new HarvestEntry(event.getWorld().getDimension().getType().getId(), event.getPos().toLong());
+				ListNBT list = DemetersSoul.getCrops(event.getPlayer());
+				boolean found = false;
+				for(int i = 0,m=list.size();i<m;i++)
+				{
+					if(entry.matches(list.getCompound(i)))
+					{
+						found = true;
+						list.remove(i--);
+						break;
+					}
+				}
+				if(!found)
+				{
+					list.add(entry.save());
+				}
+				event.getPlayer().sendStatusMessage(new TranslationTextComponent("tooltip.uniqee.crops."+(found ? "removed" : "added")+".name"), false);
+				event.setCancellationResult(ActionResultType.SUCCESS);
+				event.setCanceled(true);
+				return;
+			}
+		
 		}
 		else
 		{
@@ -244,7 +375,7 @@ public class UtilsHandler
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.THICK_PICK, held);
 		if(level > 0 && event.getState().getBlockHardness(player.world, event.getPos()) >= 20)
 		{
-			int amount = EntityEvents.getInt(held, ThickPick.TAG, 0);
+			int amount = StackUtils.getInt(held, ThickPick.TAG, 0);
 			if(amount > 0)
 			{
 				event.setNewSpeed(event.getNewSpeed() * ThickPick.MINING_SPEED.getAsFloat(level));
@@ -264,10 +395,10 @@ public class UtilsHandler
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.THICK_PICK, held);
 		if(level > 0)
 		{
-			int amount = EntityEvents.getInt(held, ThickPick.TAG, 0);
+			int amount = StackUtils.getInt(held, ThickPick.TAG, 0);
 			if(amount > 0)
 			{
-				EntityEvents.setInt(held, ThickPick.TAG, amount-1);
+				StackUtils.setInt(held, ThickPick.TAG, amount-1);
 			}
 		}
 	}

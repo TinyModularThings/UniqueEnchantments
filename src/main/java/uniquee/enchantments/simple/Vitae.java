@@ -4,9 +4,8 @@ import java.util.UUID;
 
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 
 public class Vitae extends UniqueEnchantment
 {
@@ -19,7 +18,8 @@ public class Vitae extends UniqueEnchantment
 	
 	public Vitae()
 	{
-		super(new DefaultData("vitae", Rarity.VERY_RARE, 5, false, 10, 2, 7), EnchantmentType.ARMOR, new EquipmentSlotType[]{EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET});
+		super(new DefaultData("vitae", Rarity.RARE, 5, false, 18, 8, 5), EnchantmentType.ARMOR, EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET);
+		addStats(HEALTH_BOOST);
 	}
 	
 	public static UUID getForSlot(EquipmentSlotType slot)
@@ -34,11 +34,4 @@ public class Vitae extends UniqueEnchantment
 			
 		}
 	}
-	
-	@Override
-	public void loadData(Builder config)
-	{
-		HEALTH_BOOST.handleConfig(config);
-	}
-	
 }

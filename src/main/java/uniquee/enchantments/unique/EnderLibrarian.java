@@ -4,14 +4,13 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import uniquee.enchantments.UniqueEnchantment;
+import uniquebase.api.UniqueEnchantment;
 
 public class EnderLibrarian extends UniqueEnchantment
 {
 	public EnderLibrarian()
 	{
-		super(new DefaultData("ender_librarian", Rarity.VERY_RARE, 1, true, 24, 3, 10), EnchantmentType.FISHING_ROD, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("ender_librarian", Rarity.VERY_RARE, 1, true, 24, 3, 10), EnchantmentType.FISHING_ROD, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 	}
 	
 	@Override
@@ -19,7 +18,4 @@ public class EnderLibrarian extends UniqueEnchantment
 	{
 		return enabled.get() && stack.getItem() instanceof FilledMapItem;
 	}
-	
-	@Override
-	public void loadData(Builder config){}
 }

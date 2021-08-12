@@ -2,34 +2,20 @@ package uniquee.enchantments.curse;
 
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
-import uniquee.utils.IntStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
+import uniquebase.utils.IntStat;
 
 public class PestilencesOdium extends UniqueEnchantment
 {
-	public static DoubleStat RADIUS = new DoubleStat(7, "radius");
-	public static IntStat DELAY = new IntStat(300, "delay");
-	public static DoubleStat DAMAGE_PER_TICK = new DoubleStat(0.25F, "damage_per_tick");
+	public static final DoubleStat RADIUS = new DoubleStat(7, "radius");
+	public static final IntStat DELAY = new IntStat(300, "delay");
+	public static final DoubleStat DAMAGE_PER_TICK = new DoubleStat(0.25F, "damage_per_tick");
 	
 	public PestilencesOdium()
 	{
-		super(new DefaultData("pestilences_odium", Rarity.RARE, 1, false, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
-	}
-	
-	@Override
-	public boolean isCurse()
-	{
-		return true;
-	}
-	
-	@Override
-	public void loadData(Builder config)
-	{
-		RADIUS.handleConfig(config);
-		DELAY.handleConfig(config);
-		DAMAGE_PER_TICK.handleConfig(config);
-	}
-	
+		super(new DefaultData("pestilences_odium", Rarity.RARE, 2, false, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
+		addStats(RADIUS, DELAY, DAMAGE_PER_TICK);
+		setCurse();
+	}	
 }

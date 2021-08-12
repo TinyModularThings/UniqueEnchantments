@@ -6,10 +6,8 @@ import java.util.function.ToIntFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.LootBonusEnchantment;
-import net.minecraft.enchantment.SilkTouchEnchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -18,9 +16,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.ForgeRegistries;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.type.IGraceEnchantment;
-import uniquee.utils.IntStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.api.filters.IGraceEnchantment;
+import uniquebase.utils.DoubleStat;
 
 public class IfritsGrace extends UniqueEnchantment implements IGraceEnchantment
 {
@@ -33,12 +31,19 @@ public class IfritsGrace extends UniqueEnchantment implements IGraceEnchantment
 		}
 	};
 	public static String LAVA_COUNT = "lava_storage";
-	public static IntStat SCALAR = new IntStat(10, "scalar");
+	public static final DoubleStat BASE_CONSUMTION = new DoubleStat(8, "base_consumtion");
 	static ConfigValue<List<? extends String>> ITEMS;
 
 	public IfritsGrace()
 	{
-		super(new DefaultData("ifrits_grace", Rarity.RARE, 3, true, 14, 4, 40), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(new DefaultData("ifrits_grace", Rarity.RARE, 3, true, 14, 4, 40), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
+		addStats(BASE_CONSUMTION);
+	}
+	
+	@Override
+	public void loadIncompats()
+	{
+		addIncompats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH);
 	}
 	
 	@Override
@@ -56,15 +61,8 @@ public class IfritsGrace extends UniqueEnchantment implements IGraceEnchantment
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
-	{
-		return ench instanceof LootBonusEnchantment || ench instanceof SilkTouchEnchantment || ench instanceof MidasBlessing ? false : super.canApplyTogether(ench);
-	}
-
-	@Override
 	public void loadData(Builder config)
 	{
-		SCALAR.handleConfig(config);
 		LAVA_ITEMS.put(Items.LAVA_BUCKET, 250);
 		LAVA_ITEMS.put(Items.MAGMA_CREAM, 20);
 		ITEMS = config.defineList("lava_items", ObjectArrayList.wrap(new String[]{Items.LAVA_BUCKET.getRegistryName().toString()+";"+250, Items.MAGMA_CREAM.getRegistryName().toString()+";"+20}), (T) -> true);

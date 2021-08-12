@@ -2,17 +2,20 @@ package uniquee.compat;
 
 import ichttt.mods.firstaid.api.event.FirstAidLivingDamageEvent;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import uniquebase.utils.MiscUtil;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.curse.DeathsOdium;
 import uniquee.enchantments.unique.AresBlessing;
-import uniquee.utils.MiscUtil;
+import uniquee.enchantments.unique.PhoenixBlessing;
 
 public class FirstAidHandler
 {
@@ -31,7 +34,7 @@ public class FirstAidHandler
 				if(level > 0 && stack.isDamageable())
 				{
 					float damage = event.getUndistributedDamage();
-					stack.damageItem((int)(damage * (AresBlessing.SCALAR.get() / level)), event.getEntityLiving(), MiscUtil.get(EquipmentSlotType.CHEST));
+					stack.damageItem((int)(damage * (AresBlessing.BASE_DAMAGE.get() / Math.log(1+level))), event.getEntityLiving(), MiscUtil.get(EquipmentSlotType.CHEST));
 					event.setCanceled(true);
 					return;
 				}	
@@ -48,6 +51,11 @@ public class FirstAidHandler
 	            living.addPotionEffect(new EffectInstance(Effects.ABSORPTION, 100, 1));
 	            living.world.setEntityState(living, (byte)35);
 	            living.getItemStackFromSlot(slot.getKey()).shrink(1);
+	            for(LivingEntity entry : living.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(living.getPosition()).grow(PhoenixBlessing.RANGE.getAsDouble(slot.getIntValue()))))
+	            {
+	            	if(entry == living) continue;
+	            	entry.setFire(600000);
+	            }
 			}
 		}
 	}

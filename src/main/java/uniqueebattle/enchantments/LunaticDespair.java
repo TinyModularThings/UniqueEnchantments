@@ -4,25 +4,21 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeConfigSpec;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 
 public class LunaticDespair extends UniqueEnchantment
 {
-	public static DoubleStat BONUS_DAMAGE = new DoubleStat(0.2D, "bonus_damage");
-	public static DoubleStat SELF_DAMAGE = new DoubleStat(0.25D, "self_damage");
+	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(0.2D, "bonus_damage");
+	public static final DoubleStat SELF_DAMAGE = new DoubleStat(0.25D, "self_damage");
+	public static final DoubleStat SELF_MAGIC_DAMAGE = new DoubleStat(0.25D, "self_magic_damage");
 	
 	public LunaticDespair()
 	{
 		super(new DefaultData("lunatic_despair", Rarity.UNCOMMON, 1, true, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
+		addStats(BONUS_DAMAGE, SELF_DAMAGE, SELF_MAGIC_DAMAGE);
 		setCategory("battle");
-	}
-	
-	@Override
-	public boolean isCurse()
-	{
-		return true;
+		setCurse();
 	}
 	
 	@Override
@@ -31,10 +27,4 @@ public class LunaticDespair extends UniqueEnchantment
 		return stack.getItem() instanceof HoeItem;
 	}
 	
-	@Override
-	public void loadData(ForgeConfigSpec.Builder config)
-	{
-		BONUS_DAMAGE.handleConfig(config);
-		SELF_DAMAGE.handleConfig(config);
-	}
 }

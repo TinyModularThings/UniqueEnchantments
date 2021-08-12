@@ -2,9 +2,8 @@ package uniquee.enchantments.unique;
 
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.IntLevelStats;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.IntLevelStats;
 
 public class Cloudwalker extends UniqueEnchantment
 {
@@ -15,12 +14,7 @@ public class Cloudwalker extends UniqueEnchantment
 	
 	public Cloudwalker()
 	{
-		super(new DefaultData("cloudwalker", Rarity.RARE, 4, true, 16, 3, 16), EnchantmentType.ARMOR_FEET, new EquipmentSlotType[]{EquipmentSlotType.FEET});
-	}
-	
-	@Override
-	public void loadData(Builder config)
-	{
-		TICKS.handleConfig(config);
+		super(new DefaultData("cloudwalker", Rarity.RARE, 4, true, 12, 4, 16), EnchantmentType.ARMOR_FEET, EquipmentSlotType.FEET);
+		addStats(TICKS);
 	}
 }

@@ -11,8 +11,8 @@ import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
+import uniquebase.utils.MiscUtil;
 import uniquee.UniqueEnchantments;
-import uniquee.utils.MiscUtil;
 
 public class SpecialFindPlayerAI extends NearestAttackableTargetGoal<PlayerEntity>
 {

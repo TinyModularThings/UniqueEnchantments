@@ -1,23 +1,28 @@
 package uniqueeutils;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.potion.Effect;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import uniquee.api.BaseUEMod;
-import uniquee.handler.EntityEvents;
-import uniqueeutils.enchantments.Climber;
-import uniqueeutils.enchantments.DemetersBlessing;
-import uniqueeutils.enchantments.FaminesOdium;
-import uniqueeutils.enchantments.MountingAegis;
-import uniqueeutils.enchantments.PhanesRegret;
-import uniqueeutils.enchantments.PoseidonsSoul;
-import uniqueeutils.enchantments.RocketMan;
-import uniqueeutils.enchantments.SleipnirsGrace;
-import uniqueeutils.enchantments.ThickPick;
+import uniquebase.api.BaseUEMod;
+import uniquebase.handler.BaseHandler;
+import uniqueeutils.enchantments.complex.Ambrosia;
+import uniqueeutils.enchantments.complex.BouncyDudes;
+import uniqueeutils.enchantments.complex.Climber;
+import uniqueeutils.enchantments.complex.DemetersBlessing;
+import uniqueeutils.enchantments.complex.SleipnirsGrace;
+import uniqueeutils.enchantments.curse.FaminesOdium;
+import uniqueeutils.enchantments.curse.PhanesRegret;
+import uniqueeutils.enchantments.curse.RocketMan;
+import uniqueeutils.enchantments.simple.ThickPick;
+import uniqueeutils.enchantments.unique.DemetersSoul;
+import uniqueeutils.enchantments.unique.MountingAegis;
+import uniqueeutils.enchantments.unique.PoseidonsSoul;
 import uniqueeutils.handler.UtilsHandler;
+import uniqueeutils.potion.SaturationEffect;
 
-//@Mod(modid = "uniqueeutil", name = "Unique Util Enchantments", version = "1.0.0", dependencies = "required-after:uniquee@[1.9.0,);")
 @Mod("uniqueutil")
 public class UniqueEnchantmentsUtils extends BaseUEMod
 {
@@ -30,8 +35,29 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	public static Enchantment POSEIDONS_SOUL;
 	public static Enchantment MOUNTING_AEGIS;
 	public static Enchantment DETEMERS_BLESSING;
+	public static Enchantment DEMETERS_SOUL;
+	public static Enchantment AMBROSIA;
+	public static Enchantment BOUNCY_DUDES;
+	
+	public static Effect SATURATION;
 	
 	public UniqueEnchantmentsUtils()
+	{
+		SATURATION = new SaturationEffect();
+		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Effect.class, this::registerPotion);
+		init(FMLJavaModLoadingContext.get().getModEventBus(), "UniqueEnchantment-Utils.toml");
+		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);
+		BaseHandler.INSTANCE.registerAnvilHelper(THICK_PICK, ThickPick.VALIDATOR, ThickPick.TAG);
+		BaseHandler.INSTANCE.registerStorageTooltip(THICK_PICK, "tooltip.uniqueutil.stored.repair.name", ThickPick.TAG);
+	}
+	
+	public void registerPotion(RegistryEvent.Register<Effect> event)
+	{
+		event.getRegistry().register(SATURATION);
+	}
+	
+	@Override
+	protected void loadEnchantments()
 	{
 		SLEIPNIRS_GRACE = register(new SleipnirsGrace());
 		FAMINES_ODIUM = register(new FaminesOdium());
@@ -41,10 +67,9 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 		PHANES_REGRET = register(new PhanesRegret());
 		POSEIDONS_SOUL = register(new PoseidonsSoul());
 		MOUNTING_AEGIS = register(new MountingAegis());
-		DETEMERS_BLESSING = register(new DemetersBlessing());
-		init(FMLJavaModLoadingContext.get().getModEventBus(), "UniqueEnchantment-Utils.toml");
-		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);
-		EntityEvents.INSTANCE.registerAnvilHelper(THICK_PICK, ThickPick.VALIDATOR, ThickPick.TAG);
-		EntityEvents.INSTANCE.registerStorageTooltip(THICK_PICK, "tooltip.uniqueutil.stored.repair.name", ThickPick.TAG);
+		DETEMERS_BLESSING = register(new DemetersBlessing());		
+		DEMETERS_SOUL = register(new DemetersSoul());
+		AMBROSIA = register(new Ambrosia());
+		BOUNCY_DUDES = register(new BouncyDudes());	
 	}
 }

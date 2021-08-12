@@ -28,10 +28,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import uniquee.api.BaseUEMod;
-import uniquee.api.crops.CropHarvestRegistry;
+import uniquebase.api.BaseUEMod;
+import uniquebase.api.IToggleEnchantment;
+import uniquebase.api.crops.CropHarvestRegistry;
+import uniquebase.handler.BaseHandler;
 import uniquee.client.EnchantmentLayer;
-import uniquee.enchantments.IToggleEnchantment;
 import uniquee.enchantments.complex.EnderMending;
 import uniquee.enchantments.complex.Momentum;
 import uniquee.enchantments.complex.PerpetualStrike;
@@ -40,7 +41,9 @@ import uniquee.enchantments.complex.SpartanWeapon;
 import uniquee.enchantments.complex.SwiftBlade;
 import uniquee.enchantments.curse.DeathsOdium;
 import uniquee.enchantments.curse.PestilencesOdium;
-import uniquee.enchantments.simple.AdvancedDamage;
+import uniquee.enchantments.simple.AmelioratedBaneOfArthropod;
+import uniquee.enchantments.simple.AmelioratedSharpness;
+import uniquee.enchantments.simple.AmelioratedSmite;
 import uniquee.enchantments.simple.Berserk;
 import uniquee.enchantments.simple.BoneCrusher;
 import uniquee.enchantments.simple.EnderEyes;
@@ -54,7 +57,6 @@ import uniquee.enchantments.unique.AlchemistsGrace;
 import uniquee.enchantments.unique.AresBlessing;
 import uniquee.enchantments.unique.ClimateTranquility;
 import uniquee.enchantments.unique.Cloudwalker;
-import uniquee.enchantments.unique.DemetersSoul;
 import uniquee.enchantments.unique.Ecological;
 import uniquee.enchantments.unique.EnderLibrarian;
 import uniquee.enchantments.unique.EnderMarksmen;
@@ -109,7 +111,6 @@ public class UniqueEnchantments extends BaseUEMod
 	public static Enchantment IFRIDS_GRACE;
 	public static Enchantment ICARUS_AEGIS;
 	public static Enchantment ENDER_LIBRARIAN;
-	public static Enchantment DEMETERS_SOUL;
 	public static Enchantment ENDEST_REAP;
 	
 	//Curses
@@ -121,11 +122,34 @@ public class UniqueEnchantments extends BaseUEMod
 	public static ForgeConfigSpec CONFIG;
 	
 	public UniqueEnchantments()
+	{	
+		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
+		
+		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		init(bus, "UniqueEnchantment.toml");
+		bus.register(this);
+		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
+		MinecraftForge.EVENT_BUS.register(this);
+		bus.addGenericListener(Effect.class, this::loadPotion);
+
+		BaseHandler.INSTANCE.registerStorageTooltip(MIDAS_BLESSING, "tooltip.uniqee.stored.gold.name", MidasBlessing.GOLD_COUNTER);
+		BaseHandler.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniqee.stored.lava.name", IfritsGrace.LAVA_COUNT);
+		BaseHandler.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniqee.stored.feather.name", IcarusAegis.FEATHER_TAG);
+		BaseHandler.INSTANCE.registerStorageTooltip(ENDER_MENDING, "tooltip.uniqee.stored.repair.name", EnderMending.ENDER_TAG);
+		BaseHandler.INSTANCE.registerStorageTooltip(ENDEST_REAP, "tooltip.uniquee.stored.reap.name", EndestReap.REAP_STORAGE);
+		
+		BaseHandler.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessing.VALIDATOR, MidasBlessing.GOLD_COUNTER);
+		BaseHandler.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGrace.VALIDATOR, IfritsGrace.LAVA_COUNT);
+		BaseHandler.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, IcarusAegis.VALIDATOR, IcarusAegis.FEATHER_TAG);
+	}
+    
+	@Override
+	protected void loadEnchantments()
 	{
 		BERSERKER = register(new Berserk());
-		ADV_SHARPNESS = register(new AdvancedDamage(0));
-		ADV_SMITE = register(new AdvancedDamage(1));
-		ADV_BANE_OF_ARTHROPODS = register(new AdvancedDamage(2));
+		ADV_SHARPNESS = register(new AmelioratedSharpness());
+		ADV_SMITE = register(new AmelioratedSmite());
+		ADV_BANE_OF_ARTHROPODS = register(new AmelioratedBaneOfArthropod());
 		VITAE = register(new Vitae());
 		SWIFT = register(new Swift());
 		SAGES_BLESSING = register(new SagesBlessing());
@@ -156,32 +180,12 @@ public class UniqueEnchantments extends BaseUEMod
 		IFRIDS_GRACE = register(new IfritsGrace());
 		ICARUS_AEGIS = register(new IcarusAegis());
 		ENDER_LIBRARIAN = register(new EnderLibrarian());
-		DEMETERS_SOUL = register(new DemetersSoul());
 		ENDEST_REAP = register(new EndestReap());
 		
 		PESTILENCES_ODIUM = register(new PestilencesOdium());
 		DEATHS_ODIUM = register(new DeathsOdium());
-		
-		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
-		
-		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-		init(bus, "UniqueEnchantment.toml");
-		bus.register(this);
-		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
-		MinecraftForge.EVENT_BUS.register(this);
-		bus.addGenericListener(Effect.class, this::loadPotion);
-
-		EntityEvents.INSTANCE.registerStorageTooltip(MIDAS_BLESSING, "tooltip.uniqee.stored.gold.name", MidasBlessing.GOLD_COUNTER);
-		EntityEvents.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniqee.stored.lava.name", IfritsGrace.LAVA_COUNT);
-		EntityEvents.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniqee.stored.feather.name", IcarusAegis.FEATHER_TAG);
-		EntityEvents.INSTANCE.registerStorageTooltip(ENDER_MENDING, "tooltip.uniqee.stored.repair.name", EnderMending.ENDER_TAG);
-		EntityEvents.INSTANCE.registerStorageTooltip(ENDEST_REAP, "tooltip.uniquee.stored.reap.name", EndestReap.REAP_STORAGE);
-		
-		EntityEvents.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessing.VALIDATOR, MidasBlessing.GOLD_COUNTER);
-		EntityEvents.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGrace.VALIDATOR, IfritsGrace.LAVA_COUNT);
-		EntityEvents.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, IcarusAegis.VALIDATOR, IcarusAegis.FEATHER_TAG);
 	}
-    
+	
     @SubscribeEvent
 	public void postInit(FMLCommonSetupEvent setup) 
 	{

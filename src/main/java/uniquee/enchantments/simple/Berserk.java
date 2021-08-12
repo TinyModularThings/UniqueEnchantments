@@ -4,18 +4,19 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
 
 public class Berserk extends UniqueEnchantment
 {
-	public static DoubleStat SCALAR = new DoubleStat(0.125D, "scalar");
+	public static final DoubleStat PERCENTUAL_DAMAGE = new DoubleStat(0.503D, "percentual_damage");
+	public static final DoubleStat MIN_HEALTH = new DoubleStat(1D, "min_health");
 	
 	public Berserk()
 	{
-		super(new DefaultData("berserk", Rarity.RARE, 1, false, 20, 2, 22), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND});
+		super(new DefaultData("berserk", Rarity.RARE, 2, false, 10, 8, 22), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		addStats(MIN_HEALTH, PERCENTUAL_DAMAGE);
 	}
 	
 	@Override
@@ -27,12 +28,6 @@ public class Berserk extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.SWIFT_BLADE, UniqueEnchantments.SPARTAN_WEAPON);
-	}
-
-	@Override
-	public void loadData(Builder config)
-	{
-		SCALAR.handleConfig(config);
+		addIncompats(UniqueEnchantments.SWIFT_BLADE, UniqueEnchantments.SPARTAN_WEAPON);
 	}
 }

@@ -4,21 +4,21 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.api.filters.IBlessingEnchantment;
+import uniquebase.utils.DoubleStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.enchantments.type.IBlessingEnchantment;
-import uniquee.utils.DoubleStat;
 
 public class SagesBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
-	public static DoubleStat XP_BOOST = new DoubleStat(0.2D, "xp_boost");
+	public static final DoubleStat XP_BOOST = new DoubleStat(0.2D, "xp_boost");
 	
 	public SagesBlessing()
 	{
-		super(new DefaultData("sages_blessing", Rarity.COMMON, 5, false, 10, 4, 10), EnchantmentType.DIGGER, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("sages_blessing", Rarity.COMMON, 5, false, 5, 5, 20), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		addStats(XP_BOOST);
 	}
-		
+	
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
@@ -28,13 +28,6 @@ public class SagesBlessing extends UniqueEnchantment implements IBlessingEnchant
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.FAST_FOOD, Enchantments.SILK_TOUCH);
-	}
-
-	@Override
-	public void loadData(Builder config)
-	{
-		XP_BOOST.handleConfig(config);
-	}
-	
+		addIncompats(UniqueEnchantments.FAST_FOOD, Enchantments.SILK_TOUCH);
+	}	
 }

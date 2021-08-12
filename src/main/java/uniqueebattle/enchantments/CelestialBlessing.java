@@ -8,26 +8,26 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeConfigSpec;
-import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleLevelStats;
+import net.minecraft.util.ResourceLocation;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleLevelStats;
 
 public class CelestialBlessing extends UniqueEnchantment
 {
 	public static final UUID SPEED_MOD = UUID.fromString("ce9b483d-1091-4f34-b09b-b05cc867c8db");
-	public static final DoubleLevelStats SPEED_BONUS = new DoubleLevelStats("speed_bonus", 0.02D, 0.06D);
+	public static final DoubleLevelStats SPEED_BONUS = new DoubleLevelStats("speed_bonus", 0.08D, 0.04D);
 	
 	public CelestialBlessing()
 	{
-		super(new DefaultData("celestial_blessing", Rarity.UNCOMMON, 3, false, 14, 5, 15), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("celestial_blessing", Rarity.UNCOMMON, 3, false, 14, 5, 15), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		addStats(SPEED_BONUS);
 		setCategory("battle");
 	}
 	
 	@Override
 	public void loadIncompats()
 	{
-		addIncomats(UniqueEnchantments.CLIMATE_TRANQUILITY);
+		addIncompats(new ResourceLocation("uniquee", "climate_tranquility"));
 	}
 	
 	@Override
@@ -35,11 +35,4 @@ public class CelestialBlessing extends UniqueEnchantment
 	{
 		return stack.getItem() instanceof BowItem || stack.getItem() instanceof AxeItem || stack.getItem() instanceof HoeItem;
 	}
-	
-	@Override
-	public void loadData(ForgeConfigSpec.Builder config)
-	{
-		SPEED_BONUS.handleConfig(config);
-	}
-	
 }

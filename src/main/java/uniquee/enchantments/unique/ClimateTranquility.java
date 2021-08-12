@@ -15,26 +15,26 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleLevelStats;
+import uniquebase.utils.EnchantmentContainer;
+import uniquebase.utils.IntStat;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.UniqueEnchantment;
-import uniquee.utils.DoubleStat;
-import uniquee.utils.IntStat;
-import uniquee.utils.MiscUtil;
 
 public class ClimateTranquility extends UniqueEnchantment
 {
-	public static UUID SPEED_UUID = UUID.fromString("7b8a3791-8f94-4127-82b2-26418679d551");
-	public static DoubleStat SPEED_SCALE = new DoubleStat(0.1D, "speed_scale");
-	public static IntStat SLOW_TIME = new IntStat(30, "slow_time");
+	public static final UUID SPEED_UUID = UUID.fromString("7b8a3791-8f94-4127-82b2-26418679d551");
+	public static final DoubleLevelStats SPEED_BONUS = new DoubleLevelStats("speed_bonus", 0.1D, 0.03D);
+	public static final IntStat SLOW_TIME = new IntStat(30, "slow_duration");
 	
-	public static UUID ATTACK_UUID = UUID.fromString("b47bd399-5ad0-4f1d-a0eb-0a9146ff1734");
-	public static DoubleStat ATTACK_SCALE = new DoubleStat(0.1D, "attack_scale");
-	public static IntStat BURN_TIME = new IntStat(1, "burn_time");
+	public static final UUID ATTACK_UUID = UUID.fromString("b47bd399-5ad0-4f1d-a0eb-0a9146ff1734");
+	public static final DoubleLevelStats ATTACK_BONUS = new DoubleLevelStats("attack_bonus", 0.1D, 0.03D);
+	public static final IntStat BURN_TIME = new IntStat(1, "burn_time");
 	
 	public ClimateTranquility()
 	{
-		super(new DefaultData("climate_tranquility", Rarity.RARE, 3, true, 20, 2, 12), EnchantmentType.WEAPON, new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND});
+		super(new DefaultData("climate_tranquility", Rarity.RARE, 3, true, 20, 7, 30), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		addStats(SPEED_BONUS, SLOW_TIME, ATTACK_BONUS, BURN_TIME);
 	}
 	
 	@Override
@@ -42,21 +42,10 @@ public class ClimateTranquility extends UniqueEnchantment
 	{
 		return stack.getItem() instanceof AxeItem || EnchantmentType.BOW.canEnchantItem(stack.getItem());
 	}
-		
-	@Override
-	public void loadData(Builder config)
-	{
-		SPEED_SCALE.handleConfig(config);
-		SLOW_TIME.handleConfig(config);
-		
-		ATTACK_SCALE.handleConfig(config);
-		BURN_TIME.handleConfig(config);
-	}
 	
-	
-	public static void onClimate(PlayerEntity player)
+	public static void onClimate(PlayerEntity player, EnchantmentContainer container)
 	{
-		Object2IntMap.Entry<EquipmentSlotType> slot = MiscUtil.getEnchantedItem(UniqueEnchantments.CLIMATE_TRANQUILITY, player);
+		Object2IntMap.Entry<EquipmentSlotType> slot = container.getEnchantedItem(UniqueEnchantments.CLIMATE_TRANQUILITY);
 		AbstractAttributeMap map = player.getAttributes();
 		IAttributeInstance speed = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 		IAttributeInstance damage = map.getAttributeInstance(SharedMonsterAttributes.ATTACK_DAMAGE);
@@ -72,7 +61,7 @@ public class ClimateTranquility extends UniqueEnchantment
 		boolean hasCold = effects.contains(BiomeDictionary.Type.COLD);
 		if(hasHot && !hasCold)
 		{
-			AttributeModifier speedMod = new AttributeModifier(SPEED_UUID, "Climate Boost", (SPEED_SCALE.get() * level), Operation.MULTIPLY_TOTAL);
+			AttributeModifier speedMod = new AttributeModifier(SPEED_UUID, "Climate Boost", SPEED_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL);
 			if(!speed.hasModifier(speedMod))
 			{
 				speed.applyModifier(speedMod);
@@ -84,7 +73,7 @@ public class ClimateTranquility extends UniqueEnchantment
 		}
 		if(hasCold && !hasHot)
 		{
-			AttributeModifier damageMod = new AttributeModifier(ATTACK_UUID, "Climate Boost", (ATTACK_SCALE.get() * level), Operation.MULTIPLY_TOTAL);
+			AttributeModifier damageMod = new AttributeModifier(ATTACK_UUID, "Climate Boost", ATTACK_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL);
 			if(!damage.hasModifier(damageMod))
 			{
 				damage.applyModifier(damageMod);
