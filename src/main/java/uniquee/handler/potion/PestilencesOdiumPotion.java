@@ -5,7 +5,7 @@ import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectType;
 import net.minecraft.util.DamageSource;
-import uniquee.enchantments.curse.PestilencesOdiumEnchantment;
+import uniquee.enchantments.curse.PestilencesOdium;
 
 public class PestilencesOdiumPotion extends Effect
 {
@@ -23,10 +23,9 @@ public class PestilencesOdiumPotion extends Effect
 		{
 			return;
 		}
-		if(entityLivingBaseIn.world.getGameTime() % Math.max(1, (PestilencesOdiumEnchantment.DELAY.get() / Math.max(1, amplifier))) == 0)
+		if(entityLivingBaseIn.world.getGameTime() % Math.max(1, (PestilencesOdium.DELAY.get() / Math.max(1, amplifier))) == 0)
 		{
-			float value = PestilencesOdiumEnchantment.DAMAGE_PER_TICK.getFloat() * amplifier;
-			System.out.println("Value: "+value);
+			float value = PestilencesOdium.DAMAGE_PER_TICK.getFloat() * amplifier;
 			entityLivingBaseIn.attackEntityFrom(DamageSource.MAGIC, value);
 		}
 	}

@@ -3,7 +3,7 @@ loaderVersion="[28,)"
 license="MIT License"
 [[mods]]
 	modId="uniqueutil"
-	version="1.0.0"
+	version="${version}"
 	displayName="Unique Util Enchantments"
 	credits="Thanks Xaikii for the Mod Design, Thanks to Speiger for the Code"
 	authors="Speiger, Xaikii"
@@ -11,8 +11,8 @@ license="MIT License"
 	A Set of Unique Utility Enchantments
 	'''
 	[[dependencies.uniqueutil]]
-		modId="uniquee"
+		modId="uniquebase"
 		mandatory=true
-		versionRange="[1.9,)"
-		ordering="AFTER"
+		versionRange="[${base_version},)"
+		ordering="BEFORE"
 		side="BOTH"

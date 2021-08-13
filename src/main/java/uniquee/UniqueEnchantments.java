@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.Effect;
@@ -25,43 +24,46 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import uniquee.api.BaseUEMod;
-import uniquee.api.crops.CropHarvestRegistry;
+import uniquebase.api.BaseUEMod;
+import uniquebase.api.crops.CropHarvestRegistry;
+import uniquebase.handler.BaseHandler;
 import uniquee.client.EnchantmentLayer;
-import uniquee.enchantments.complex.EnderMendingEnchantment;
-import uniquee.enchantments.complex.MomentumEnchantment;
-import uniquee.enchantments.complex.PerpetualStrikeEnchantment;
-import uniquee.enchantments.complex.SmartAssEnchantment;
-import uniquee.enchantments.complex.SpartanWeaponEnchantment;
-import uniquee.enchantments.complex.SwiftBladeEnchantment;
-import uniquee.enchantments.curse.DeathsOdiumEnchantment;
-import uniquee.enchantments.curse.PestilencesOdiumEnchantment;
-import uniquee.enchantments.simple.AdvancedDamageEnchantment;
-import uniquee.enchantments.simple.BerserkEnchantment;
-import uniquee.enchantments.simple.BoneCrusherEnchantment;
-import uniquee.enchantments.simple.EnderEyesEnchantment;
-import uniquee.enchantments.simple.FocusImpactEnchantment;
-import uniquee.enchantments.simple.RangeEnchantment;
-import uniquee.enchantments.simple.SagesBlessingEnchantment;
-import uniquee.enchantments.simple.SwiftEnchantment;
-import uniquee.enchantments.simple.TreasurersEyesEnchantment;
-import uniquee.enchantments.simple.VitaeEnchantment;
-import uniquee.enchantments.unique.AlchemistsGraceEnchantment;
-import uniquee.enchantments.unique.AresBlessingEnchantment;
-import uniquee.enchantments.unique.ClimateTranquilityEnchantment;
-import uniquee.enchantments.unique.CloudwalkerEnchantment;
-import uniquee.enchantments.unique.DemetersSoulEnchantment;
-import uniquee.enchantments.unique.EcologicalEnchantment;
-import uniquee.enchantments.unique.EnderLibrarianEnchantment;
-import uniquee.enchantments.unique.EnderMarksmenEnchantment;
-import uniquee.enchantments.unique.EndestReapEnchantment;
-import uniquee.enchantments.unique.FastFoodEnchantment;
-import uniquee.enchantments.unique.IcarusAegisEnchantment;
-import uniquee.enchantments.unique.IfritsGraceEnchantment;
-import uniquee.enchantments.unique.MidasBlessingEnchantment;
-import uniquee.enchantments.unique.NaturesGraceEnchantment;
-import uniquee.enchantments.unique.PhoenixBlessingEnchantment;
-import uniquee.enchantments.unique.WarriorsGraceEnchantment;
+import uniquee.enchantments.complex.EnderMending;
+import uniquee.enchantments.complex.Momentum;
+import uniquee.enchantments.complex.PerpetualStrike;
+import uniquee.enchantments.complex.SmartAss;
+import uniquee.enchantments.complex.SpartanWeapon;
+import uniquee.enchantments.complex.SwiftBlade;
+import uniquee.enchantments.curse.DeathsOdium;
+import uniquee.enchantments.curse.PestilencesOdium;
+import uniquee.enchantments.simple.AmelioratedBaneOfArthropod;
+import uniquee.enchantments.simple.AmelioratedSharpness;
+import uniquee.enchantments.simple.AmelioratedSmite;
+import uniquee.enchantments.simple.Berserk;
+import uniquee.enchantments.simple.BoneCrusher;
+import uniquee.enchantments.simple.EnderEyes;
+import uniquee.enchantments.simple.FocusImpact;
+import uniquee.enchantments.simple.Range;
+import uniquee.enchantments.simple.SagesBlessing;
+import uniquee.enchantments.simple.Swift;
+import uniquee.enchantments.simple.TreasurersEyes;
+import uniquee.enchantments.simple.Vitae;
+import uniquee.enchantments.unique.AlchemistsGrace;
+import uniquee.enchantments.unique.AresBlessing;
+import uniquee.enchantments.unique.ClimateTranquility;
+import uniquee.enchantments.unique.Cloudwalker;
+import uniquee.enchantments.unique.Ecological;
+import uniquee.enchantments.unique.EnderLibrarian;
+import uniquee.enchantments.unique.EnderMarksmen;
+import uniquee.enchantments.unique.EndestReap;
+import uniquee.enchantments.unique.FastFood;
+import uniquee.enchantments.unique.Grimoire;
+import uniquee.enchantments.unique.IcarusAegis;
+import uniquee.enchantments.unique.IfritsGrace;
+import uniquee.enchantments.unique.MidasBlessing;
+import uniquee.enchantments.unique.NaturesGrace;
+import uniquee.enchantments.unique.PhoenixBlessing;
+import uniquee.enchantments.unique.WarriorsGrace;
 import uniquee.handler.EntityEvents;
 import uniquee.handler.LootModifier;
 import uniquee.handler.potion.PestilencesOdiumPotion;
@@ -69,7 +71,6 @@ import uniquee.handler.potion.PestilencesOdiumPotion;
 @Mod("uniquee")
 public class UniqueEnchantments extends BaseUEMod
 {
-	public static final EnchantmentType ALL_TYPES = EnchantmentType.create("ANY", T -> true);
 	public static Enchantment BERSERKER;
 	public static Enchantment ADV_SHARPNESS;
 	public static Enchantment ADV_SMITE;
@@ -108,6 +109,7 @@ public class UniqueEnchantments extends BaseUEMod
 	public static Enchantment ENDER_LIBRARIAN;
 	public static Enchantment DEMETERS_SOUL;
 	public static Enchantment ENDEST_REAP;
+	public static Enchantment GRIMOIRE;
 	
 	//Curses
 	public static Enchantment PESTILENCES_ODIUM;
@@ -119,46 +121,6 @@ public class UniqueEnchantments extends BaseUEMod
 	
 	public UniqueEnchantments()
 	{
-		BERSERKER = register(new BerserkEnchantment());
-		ADV_SHARPNESS = register(new AdvancedDamageEnchantment(0));
-		ADV_SMITE = register(new AdvancedDamageEnchantment(1));
-		ADV_BANE_OF_ARTHROPODS = register(new AdvancedDamageEnchantment(2));
-		VITAE = register(new VitaeEnchantment());
-		SWIFT = register(new SwiftEnchantment());
-		SAGES_BLESSING = register(new SagesBlessingEnchantment());
-		ENDER_EYES = register(new EnderEyesEnchantment());
-		FOCUS_IMPACT = register(new FocusImpactEnchantment());
-		BONE_CRUSH = register(new BoneCrusherEnchantment());
-		RANGE = register(new RangeEnchantment());
-		TREASURERS_EYES = register(new TreasurersEyesEnchantment());
-		
-		SWIFT_BLADE = register(new SwiftBladeEnchantment());
-		SPARTAN_WEAPON = register(new SpartanWeaponEnchantment());
-		PERPETUAL_STRIKE = register(new PerpetualStrikeEnchantment());
-		CLIMATE_TRANQUILITY = register(new ClimateTranquilityEnchantment());
-		MOMENTUM = register(new MomentumEnchantment());
-		ENDER_MENDING = register(new EnderMendingEnchantment());
-		SMART_ASS = register(new SmartAssEnchantment());
-
-		WARRIORS_GRACE = register(new WarriorsGraceEnchantment());
-		ENDERMARKSMEN = register(new EnderMarksmenEnchantment());
-		ARES_BLESSING = register(new AresBlessingEnchantment());
-		ALCHEMISTS_GRACE = register(new AlchemistsGraceEnchantment());
-		CLOUD_WALKER = register(new CloudwalkerEnchantment());
-		FAST_FOOD = register(new FastFoodEnchantment());
-		NATURES_GRACE = register(new NaturesGraceEnchantment());
-		ECOLOGICAL = register(new EcologicalEnchantment());
-		PHOENIX_BLESSING = register(new PhoenixBlessingEnchantment());
-		MIDAS_BLESSING = register(new MidasBlessingEnchantment());
-		IFRIDS_GRACE = register(new IfritsGraceEnchantment());
-		ICARUS_AEGIS = register(new IcarusAegisEnchantment());
-		ENDER_LIBRARIAN = register(new EnderLibrarianEnchantment());
-		DEMETERS_SOUL = register(new DemetersSoulEnchantment());
-		ENDEST_REAP = register(new EndestReapEnchantment());
-		
-		PESTILENCES_ODIUM = register(new PestilencesOdiumEnchantment());
-		DEATHS_ODIUM = register(new DeathsOdiumEnchantment());
-		
 		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
 		
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -169,17 +131,61 @@ public class UniqueEnchantments extends BaseUEMod
 		bus.addGenericListener(Effect.class, this::loadPotion);
 		bus.addGenericListener(GlobalLootModifierSerializer.class, this::loadLoot);
 
-		EntityEvents.INSTANCE.registerStorageTooltip(MIDAS_BLESSING, "tooltip.uniqee.stored.gold.name", MidasBlessingEnchantment.GOLD_COUNTER);
-		EntityEvents.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniqee.stored.lava.name", IfritsGraceEnchantment.LAVA_COUNT);
-		EntityEvents.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniqee.stored.feather.name", IcarusAegisEnchantment.FEATHER_TAG);
-		EntityEvents.INSTANCE.registerStorageTooltip(ENDER_MENDING, "tooltip.uniqee.stored.repair.name", EnderMendingEnchantment.ENDER_TAG);
-		EntityEvents.INSTANCE.registerStorageTooltip(ENDEST_REAP, "tooltip.uniquee.stored.reap.name", EndestReapEnchantment.REAP_STORAGE);
+		BaseHandler.INSTANCE.registerStorageTooltip(MIDAS_BLESSING, "tooltip.uniqee.stored.gold.name", MidasBlessing.GOLD_COUNTER);
+		BaseHandler.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniqee.stored.lava.name", IfritsGrace.LAVA_COUNT);
+		BaseHandler.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniqee.stored.feather.name", IcarusAegis.FEATHER_TAG);
+		BaseHandler.INSTANCE.registerStorageTooltip(ENDER_MENDING, "tooltip.uniqee.stored.repair.name", EnderMending.ENDER_TAG);
+		BaseHandler.INSTANCE.registerStorageTooltip(ENDEST_REAP, "tooltip.uniquee.stored.reap.name", EndestReap.REAP_STORAGE);
 		
-		EntityEvents.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessingEnchantment.VALIDATOR, MidasBlessingEnchantment.GOLD_COUNTER);
-		EntityEvents.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGraceEnchantment.VALIDATOR, IfritsGraceEnchantment.LAVA_COUNT);
-		EntityEvents.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, IcarusAegisEnchantment.VALIDATOR, IcarusAegisEnchantment.FEATHER_TAG);
+		BaseHandler.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessing.VALIDATOR, MidasBlessing.GOLD_COUNTER);
+		BaseHandler.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGrace.VALIDATOR, IfritsGrace.LAVA_COUNT);
+		BaseHandler.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, IcarusAegis.VALIDATOR, IcarusAegis.FEATHER_TAG);
 	}
     
+	@Override
+	protected void loadEnchantments()
+	{
+		BERSERKER = register(new Berserk());
+		ADV_SHARPNESS = register(new AmelioratedSharpness());
+		ADV_SMITE = register(new AmelioratedSmite());
+		ADV_BANE_OF_ARTHROPODS = register(new AmelioratedBaneOfArthropod());
+		VITAE = register(new Vitae());
+		SWIFT = register(new Swift());
+		SAGES_BLESSING = register(new SagesBlessing());
+		ENDER_EYES = register(new EnderEyes());
+		FOCUS_IMPACT = register(new FocusImpact());
+		BONE_CRUSH = register(new BoneCrusher());
+		RANGE = register(new Range());
+		TREASURERS_EYES = register(new TreasurersEyes());
+		
+		SWIFT_BLADE = register(new SwiftBlade());
+		SPARTAN_WEAPON = register(new SpartanWeapon());
+		PERPETUAL_STRIKE = register(new PerpetualStrike());
+		CLIMATE_TRANQUILITY = register(new ClimateTranquility());
+		MOMENTUM = register(new Momentum());
+		ENDER_MENDING = register(new EnderMending());
+		SMART_ASS = register(new SmartAss());
+
+		WARRIORS_GRACE = register(new WarriorsGrace());
+		ENDERMARKSMEN = register(new EnderMarksmen());
+		ARES_BLESSING = register(new AresBlessing());
+		ALCHEMISTS_GRACE = register(new AlchemistsGrace());
+		CLOUD_WALKER = register(new Cloudwalker());
+		FAST_FOOD = register(new FastFood());
+		NATURES_GRACE = register(new NaturesGrace());
+		ECOLOGICAL = register(new Ecological());
+		PHOENIX_BLESSING = register(new PhoenixBlessing());
+		MIDAS_BLESSING = register(new MidasBlessing());
+		IFRIDS_GRACE = register(new IfritsGrace());
+		ICARUS_AEGIS = register(new IcarusAegis());
+		ENDER_LIBRARIAN = register(new EnderLibrarian());
+		ENDEST_REAP = register(new EndestReap());
+		GRIMOIRE = register(new Grimoire());
+		
+		PESTILENCES_ODIUM = register(new PestilencesOdium());
+		DEATHS_ODIUM = register(new DeathsOdium());
+	}
+	
     @SubscribeEvent
 	public void postInit(FMLCommonSetupEvent setup) 
 	{

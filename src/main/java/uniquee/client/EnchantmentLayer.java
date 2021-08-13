@@ -18,9 +18,9 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import uniquebase.utils.MiscUtil;
 import uniquee.UniqueEnchantments;
-import uniquee.enchantments.simple.TreasurersEyesEnchantment;
-import uniquee.utils.MiscUtil;
+import uniquee.enchantments.simple.TreasurersEyes;
 
 public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> extends LayerRenderer<T, M> 
 {
@@ -36,7 +36,7 @@ public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> 
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.TREASURERS_EYES, player.getItemStackFromSlot(EquipmentSlotType.HEAD));
 		if(level > 0)
 		{
-			double maxDistance = TreasurersEyesEnchantment.RANGE.getAsDouble(level);
+			double maxDistance = TreasurersEyes.RANGE.getAsDouble(level);
 			maxDistance *= maxDistance;
 			return player.getDistanceSq(base) <= maxDistance;
 		}

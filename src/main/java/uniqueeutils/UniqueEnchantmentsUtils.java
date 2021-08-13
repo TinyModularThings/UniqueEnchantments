@@ -1,21 +1,27 @@
 package uniqueeutils;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.potion.Effect;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import uniquee.api.BaseUEMod;
-import uniquee.handler.EntityEvents;
-import uniqueeutils.enchantments.ClimberEnchantment;
-import uniqueeutils.enchantments.DemetersBlessingEnchantment;
-import uniqueeutils.enchantments.FaminesOdiumEnchantment;
-import uniqueeutils.enchantments.MountingAegisEnchantment;
-import uniqueeutils.enchantments.PhanesRegretEnchantment;
-import uniqueeutils.enchantments.PoseidonsSoulEnchantment;
-import uniqueeutils.enchantments.RocketManEnchantment;
-import uniqueeutils.enchantments.SleipnirsGraceEnchantment;
-import uniqueeutils.enchantments.ThickPickEnchantment;
+import uniquebase.api.BaseUEMod;
+import uniquebase.handler.BaseHandler;
+import uniqueeutils.enchantments.complex.Ambrosia;
+import uniqueeutils.enchantments.complex.BouncyDudes;
+import uniqueeutils.enchantments.complex.Climber;
+import uniqueeutils.enchantments.complex.DemetersBlessing;
+import uniqueeutils.enchantments.complex.SleipnirsGrace;
+import uniqueeutils.enchantments.curse.FaminesOdium;
+import uniqueeutils.enchantments.curse.PhanesRegret;
+import uniqueeutils.enchantments.curse.RocketMan;
+import uniqueeutils.enchantments.simple.ThickPick;
+import uniqueeutils.enchantments.unique.DemetersSoul;
+import uniqueeutils.enchantments.unique.MountingAegis;
+import uniqueeutils.enchantments.unique.PoseidonsSoul;
 import uniqueeutils.handler.UtilsHandler;
+import uniqueeutils.potion.SaturationEffect;
 
 @Mod("uniqueutil")
 public class UniqueEnchantmentsUtils extends BaseUEMod
@@ -29,21 +35,41 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	public static Enchantment POSEIDONS_SOUL;
 	public static Enchantment MOUNTING_AEGIS;
 	public static Enchantment DETEMERS_BLESSING;
+	public static Enchantment DEMETERS_SOUL;
+	public static Enchantment AMBROSIA;
+	public static Enchantment BOUNCY_DUDES;
+	
+	public static Effect SATURATION;
 	
 	public UniqueEnchantmentsUtils()
 	{
-		SLEIPNIRS_GRACE = register(new SleipnirsGraceEnchantment());
-		FAMINES_ODIUM = register(new FaminesOdiumEnchantment());
-		THICK_PICK = register(new ThickPickEnchantment());
-		ROCKET_MAN = register(new RocketManEnchantment());
-		CLIMBER = register(new ClimberEnchantment());
-		PHANES_REGRET = register(new PhanesRegretEnchantment());
-		POSEIDONS_SOUL = register(new PoseidonsSoulEnchantment());
-		MOUNTING_AEGIS = register(new MountingAegisEnchantment());
-		DETEMERS_BLESSING = register(new DemetersBlessingEnchantment());
+		SATURATION = new SaturationEffect();
+		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Effect.class, this::registerPotion);
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UniqueEnchantment-Utils.toml");
 		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);
-		EntityEvents.INSTANCE.registerAnvilHelper(THICK_PICK, ThickPickEnchantment.VALIDATOR, ThickPickEnchantment.TAG);
-		EntityEvents.INSTANCE.registerStorageTooltip(THICK_PICK, "tooltip.uniqueutil.stored.repair.name", ThickPickEnchantment.TAG);
+		BaseHandler.INSTANCE.registerAnvilHelper(THICK_PICK, ThickPick.VALIDATOR, ThickPick.TAG);
+		BaseHandler.INSTANCE.registerStorageTooltip(THICK_PICK, "tooltip.uniqueutil.stored.repair.name", ThickPick.TAG);
+	}
+	
+	public void registerPotion(RegistryEvent.Register<Effect> event)
+	{
+		event.getRegistry().register(SATURATION);
+	}
+	
+	@Override
+	protected void loadEnchantments()
+	{
+		SLEIPNIRS_GRACE = register(new SleipnirsGrace());
+		FAMINES_ODIUM = register(new FaminesOdium());
+		THICK_PICK = register(new ThickPick());
+		ROCKET_MAN = register(new RocketMan());
+		CLIMBER = register(new Climber());
+		PHANES_REGRET = register(new PhanesRegret());
+		POSEIDONS_SOUL = register(new PoseidonsSoul());
+		MOUNTING_AEGIS = register(new MountingAegis());
+		DETEMERS_BLESSING = register(new DemetersBlessing());		
+		DEMETERS_SOUL = register(new DemetersSoul());
+		AMBROSIA = register(new Ambrosia());
+		BOUNCY_DUDES = register(new BouncyDudes());	
 	}
 }
