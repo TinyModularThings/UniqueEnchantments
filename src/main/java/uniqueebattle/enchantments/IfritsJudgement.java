@@ -4,6 +4,7 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.ResourceLocation;
@@ -33,6 +34,6 @@ public class IfritsJudgement extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemTool || stack.getItem() instanceof ItemBow;
+		return stack.getItem() instanceof ItemAxe || stack.getItem() instanceof ItemTool || stack.getItem() instanceof ItemBow || stack.getItem() instanceof ItemHoe;
 	}
 }

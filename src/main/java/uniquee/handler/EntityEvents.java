@@ -664,7 +664,7 @@ public class EntityEvents
 				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (1F + (float)Math.log10(Math.pow(FocusImpact.BASE_SPEED.get() / (attr.getAttributeValue()), 2D)*Math.log(6+level))));
+					event.setAmount(event.getAmount() * (1F + (float)Math.log10(Math.pow(FocusImpact.BASE_SPEED.get() / attr.getAttributeValue(), 2D)*Math.log(6+level))));
 				}
 			}
 			level = enchantments.getInt(UniqueEnchantments.PERPETUAL_STRIKE);

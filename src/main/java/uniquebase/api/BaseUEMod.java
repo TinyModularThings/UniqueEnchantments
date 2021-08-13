@@ -9,6 +9,8 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
@@ -51,6 +53,10 @@ public abstract class BaseUEMod
 			}
 		}
 		loadConfig();
+		ModContainer baseContainer = Loader.instance().getIndexedModList().get("uniquebase");
+		ModContainer current = Loader.instance().activeModContainer();
+		baseContainer.getMetadata().childMods.add(current);
+		current.getMetadata().parentMod = baseContainer;
 	}
 	
 	protected abstract void addEnchantments();

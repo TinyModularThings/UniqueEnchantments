@@ -22,11 +22,11 @@ import uniquee.UniqueEnchantments;
 
 public class ClimateTranquility extends UniqueEnchantment
 {
-	public static UUID SPEED_UUID = UUID.fromString("7b8a3791-8f94-4127-82b2-26418679d551");
+	public static final UUID SPEED_UUID = UUID.fromString("7b8a3791-8f94-4127-82b2-26418679d551");
 	public static final DoubleLevelStats SPEED_BONUS = new DoubleLevelStats("speed_bonus", 0.1D, 0.03D);
 	public static final IntStat SLOW_TIME = new IntStat(30, "slow_duration");
 	
-	public static UUID ATTACK_UUID = UUID.fromString("b47bd399-5ad0-4f1d-a0eb-0a9146ff1734");
+	public static final UUID ATTACK_UUID = UUID.fromString("b47bd399-5ad0-4f1d-a0eb-0a9146ff1734");
 	public static final DoubleLevelStats ATTACK_BONUS = new DoubleLevelStats("attack_bonus", 0.1D, 0.03D);
 	public static final IntStat BURN_TIME = new IntStat(1, "burn_time");
 	

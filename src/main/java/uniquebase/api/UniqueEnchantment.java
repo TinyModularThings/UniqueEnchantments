@@ -42,9 +42,10 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		this.stats.addAll(ObjectArrayList.wrap(stats));
 	}
 	
-	public void setCurse()
+	public UniqueEnchantment setCurse()
 	{
 		isCurse = true;
+		return this;
 	}
 	
 	@Override

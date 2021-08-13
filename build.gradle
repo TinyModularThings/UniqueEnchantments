@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-	compile "curse.maven:firstaid-276837:2790027"
+//	compile "curse.maven:firstaid-276837:2790027"
 }
 
 processResources {
@@ -46,7 +46,7 @@ jar {
 
 task baseJar(type: Jar, dependsOn: reobfJar) {
   baseName = 'Unique Enchantments Base'
-  version = unique_base_version
+  version = minecraft_version+"-"+unique_base_version
   from(zipTree(jar.archivePath)) {
     include '**/META_INF/**/*'
     include '**/uniquebase/**/*'
@@ -61,7 +61,7 @@ task baseJar(type: Jar, dependsOn: reobfJar) {
 
 task mainJar(type: Jar, dependsOn: reobfJar) {
   baseName = 'Unique Enchantments'
-  version = uniquee_version
+  version = minecraft_version+"-"+uniquee_version
   from(zipTree(jar.archivePath)) {
     include '**/META_INF/**/*'
     include '**/uniquee/**/*'
@@ -77,7 +77,7 @@ task mainJar(type: Jar, dependsOn: reobfJar) {
 
 task utilsJar(type: Jar, dependsOn: reobfJar) {
   baseName = 'Unique Enchantments Utils'
-  version = unique_utils_version
+  version = minecraft_version+"-"+unique_utils_version
   from(zipTree(jar.archivePath)) {
     include '**/META_INF/**/*'
     include '**/uniqueeutils/**/*'
@@ -93,7 +93,7 @@ task utilsJar(type: Jar, dependsOn: reobfJar) {
 
 task battleJar(type: Jar, dependsOn: reobfJar) {
   baseName = 'Unique Enchantments Battle'
-  version = unique_battle_version
+  version = minecraft_version+"-"+unique_battle_version
   from(zipTree(jar.archivePath)) {
     include '**/META_INF/**/*'
     include '**/uniqueebattle/**/*'

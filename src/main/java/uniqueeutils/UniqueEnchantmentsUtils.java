@@ -67,5 +67,4 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 		AMBROSIA = register(new Ambrosia());
 		BOUNCY_DUDES = register(new BouncyDudes());
 	}
-	
 }

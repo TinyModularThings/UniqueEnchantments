@@ -40,7 +40,7 @@ public class Grimoire extends UniqueEnchantment
 		NBTTagCompound compound = stack.getTagCompound();
 		if(compound == null) compound = new NBTTagCompound();
 		int nextLevel = Math.max(0, MathHelper.floor(Math.log((player.experienceLevel+1)*level)*LEVEL_SCALING.get()-STEP_SKIP.get()));
-		int grimoreCount = compound.hasKey(GRIMOIRE_STORAGE) ? compound.getTagList("GRIMOIRE_STORAGE", 10).tagCount() : 0;
+		int grimoreCount = compound.hasKey(GRIMOIRE_STORAGE) ? compound.getTagList(GRIMOIRE_STORAGE, 10).tagCount() : 0;
 		int enchCount = compound.hasKey("ench") ? compound.getTagList("ench", 10).tagCount() : 0;
 		if(compound.getInteger(GRIMOIRE_LEVEL) != nextLevel || grimoreCount != enchCount)
 		{
