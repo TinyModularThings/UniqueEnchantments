@@ -70,7 +70,7 @@ enchantment.uniquee.ender_librarian=Ender Librarian
 enchantment.uniquee.ender_librarian.desc=Shift-rightclicking with a Map will teleport you in a random spot in the Map Treasuremap will teleport you more precise to the Location. The Item will be consumed
 enchantment.uniquee.endest_reap=Endest Reap
 enchantment.uniquee.endest_reap.desc=Deals bonus magic damage for every Reaped Stack. Gains a Stack for every 'higher being'
-enchantment.uniquee.grimoire=$6Grimoire
+enchantment.uniquee.grimoire=Grimoire
 enchantment.uniquee.grimoire.desc=Improves Enchantments by Player's Knowledge
 
 //Curse
