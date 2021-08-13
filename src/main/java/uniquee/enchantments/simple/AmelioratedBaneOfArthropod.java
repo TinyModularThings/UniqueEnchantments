@@ -16,7 +16,7 @@ import uniquebase.utils.IntLevelStats;
 
 public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 {
-	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(1D, "bonus_damage");
+	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(3D, "bonus_damage");
 	public static final IntLevelStats SLOW_DURATION = new IntLevelStats("slow_duration", 40, 15);
 	
 	public AmelioratedBaneOfArthropod()

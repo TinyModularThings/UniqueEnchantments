@@ -167,13 +167,13 @@ public class BattleHandler
 				{
 					max = Math.max(max, list.getCompoundTagAt(i).getInteger(IfritsJudgement.FLAG_JUDGEMENT_COUNT));
 				}
-				if(max > 6)
+				if(max > IfritsJudgement.LAVA_HITS.get())
 				{
 					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
 					source.attackEntityFrom(DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * (float)Math.log(2.8*combined*0.0625D)));
 					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));
 				}
-				else if(max > 4)
+				else if(max > IfritsJudgement.FIRE_HITS.get())
 				{
 					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
 					source.attackEntityFrom(DamageSource.IN_FIRE, IfritsJudgement.FIRE_DAMAGE.getAsFloat(found.getIntValue() * (float)Math.log(2.8*combined*0.0625D)));

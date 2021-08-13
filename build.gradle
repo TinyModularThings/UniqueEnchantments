@@ -11,7 +11,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.0"
+version = "1.12.2-"+new Date().format("dd")+new Random().nextInt()
 group = "uniquee"
 archivesBaseName = "Unique Enchantments"
 
@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-//	compile "curse.maven:firstaid-276837:2790027"
+	compile "curse.maven:firstaid-276837:2790027"
 }
 
 processResources {
