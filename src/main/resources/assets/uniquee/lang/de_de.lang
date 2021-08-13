@@ -1,0 +1,91 @@
+//Simple
+enchantment.uniquee.berserk=Berserker
+enchantment.uniquee.berserk.desc=Je geringer dein aktuelles Leben desto hoeher dein Schaden
+enchantment.uniquee.all=Restorierte Schaerfe
+enchantment.uniquee.all.desc=Eine verbesserte Version der 'Schaerfe' Verzauberung
+enchantment.uniquee.undead=Restorierter Bann
+enchantment.uniquee.undead.desc=Eine verbesserte Version der 'Bann' Verzauberung
+enchantment.uniquee.arthropods=Restorierte Nemesis der Gliederfueßer
+enchantment.uniquee.arthropods.desc=Eine verbesserte Version der 'Nemesis der Gliederfueßer' Verzauberung
+enchantment.uniquee.vitae=Leben
+enchantment.uniquee.vitae.desc=Erhoeht deine Lebenspunkte
+enchantment.uniquee.swift=Geschwind
+enchantment.uniquee.swift.desc=Verbessert deine Bewegungsgeschwindigkeit macht dich aber noch schneller hungrig
+enchantment.uniquee.sages_blessing=Segen des Weisen
+enchantment.uniquee.sages_blessing.desc=Erhoeht deine erhaltene Erfahrung jedoch wirst du schneller hungrig
+enchantment.uniquee.ender_eyes=Auge der Ender
+enchantment.uniquee.ender_eyes.desc=Endermen greifen dich nicht mehr an beim angucken
+enchantment.uniquee.focus_impact=Fokusierter Stoß
+enchantment.uniquee.focus_impact.desc=Je niedrige die Angriffsgeschwindigkeit desto hoeher dein Schaden
+enchantment.uniquee.bone_crusher=Knochenzermalmer
+enchantment.uniquee.bone_crusher.desc=Erhoehter Schaden und Pluenderung gegen oberkoerper-freie Skelette
+enchantment.uniquee.ranged=Reichweite
+enchantment.uniquee.ranged.desc=Erhoeht deine Reichweite außerhalb des Kampfes reduziert jedoch Abbau Geschwindigkeit wenn diese Reichweite verwendet wird
+enchantment.uniquee.treasurers_eyes=Auge des Schatzmeisters
+enchantment.uniquee.treasurers_eyes.desc=Erlaubt es dir andere Einheiten mit besonderen Verzauberungen mit Partikeln zu sehen
+
+
+//Complex
+enchantment.uniquee.swiftblade=Rasche Klinge
+enchantment.uniquee.swiftblade.desc=Je hoeher die Angriffsgeschwindigkeit desto hoeher dein Schaden
+enchantment.uniquee.spartanweapon=Waffe der Spartaner
+enchantment.uniquee.spartanweapon.desc=Teile zusaetzlichen magischen Schaden aus wenn du einen Schild traegst
+enchantment.uniquee.perpetualstrike=Immer wiederkehrender Schlag
+enchantment.uniquee.perpetualstrike.desc=Erhoeht deinen Schaden mit jedem aufeinanderfolgenden Angriff auf das selbe Ziel
+enchantment.uniquee.climate_tranquility=Klimatische Heiterkeit
+enchantment.uniquee.climate_tranquility.desc=Deine Waffe reagiert auf die vorhandene Temperatur und kriegt entsprechende Bonis
+enchantment.uniquee.momentum=Impuls
+enchantment.uniquee.momentum.desc=Laengeranhaltendes Abbauen erhoeht deine Abbaugeschwindigkeit
+enchantment.uniquee.ender_mending=Reparatur der Ender
+enchantment.uniquee.ender_mending.desc=Eine verbesserte Version der 'Reparatur' Verzauberung speichert ueberschueßige Erfahrungspunkte und verteilt diese an jeden Gegenstand mit 'Reparatur' oder 'Reparatur der Ender'
+enchantment.uniquee.smart_ass=Klugscheißer
+enchantment.uniquee.smart_ass.desc=Abbauen von Kies Sand oder Baumstaemmen baut den obersten Block zuerst ab
+
+//Unique
+enchantment.uniquee.warriorsgrace=Grazie der Krieger
+enchantment.uniquee.warriorsgrace.desc=Das toeten einer Einheit fuellt die Haltbarkeit skalierend mit dem maximalen Leben der Einheit
+enchantment.uniquee.naturesgrace=Grazie der Natur
+enchantment.uniquee.naturesgrace.desc=Regeneriere Leben durch Stehenbleiben in Nahe von Natur solange du nicht kuerzlich gekaempft hast
+enchantment.uniquee.fastfood=Schnelles Fressen
+enchantment.uniquee.fastfood.desc=Tiere geben nun keine Gegenstaende mehr sondern saetigen dich direkt
+enchantment.uniquee.endermarksmen=Scharfschuetze der Ender
+enchantment.uniquee.endermarksmen.desc=Triffst du eine Einheit mit dem Bogen erhaelst du dein Pfeil zurueck und Haltbarkeit wird erhoeht
+enchantment.uniquee.cloudwalker=Wolkengaenger
+enchantment.uniquee.cloudwalker.desc=Ducken um den Modus aus-/anzuschalten. Solange es aktiv ist kannst du nicht mehr fallen. Jedoch hat alles sein Ende
+enchantment.uniquee.aresblessing=Segen des Ares
+enchantment.uniquee.aresblessing.desc=Schaden der dich toeten wuerde wird nun an Haltbarkeit abgezogen mit Ausnahme von Magischen & Fallschaden
+enchantment.uniquee.alchemistsgrace=Grazie des Alchemisten
+enchantment.uniquee.alchemistsgrace.desc=Das Abbauen von Bloecken oder das Schlagen von Einheiten verleiht dir Trank-Effekte
+enchantment.uniquee.ecological=Oekologisch
+enchantment.uniquee.ecological.desc=Solange du in Naehe von Natur bist regenerierst du Haltbarkeit
+enchantment.uniquee.phoenixs_blessing=Segen des Phoenix
+enchantment.uniquee.phoenixs_blessing.desc=Wenn du stirbst erhalst du volles Leben und Saettigung
+enchantment.uniquee.midas_blessing=Segen des Midas
+enchantment.uniquee.midas_blessing.desc=Shift-Linksklick einen Amboss um dein gesamtes Gold zu konsumieren. Wenn du einen Ore abbaust erhoeht sich die Beute
+enchantment.uniquee.ifrits_grace=Grazie des Ifrits
+enchantment.uniquee.ifrits_grace.desc=Shift-Linksklick einen Amboss um deine Magma/Lava-relevanten Gegenstaende zu konsumieren. Deine Beute wird nun automatisch geschmolzen wenn moeglich
+enchantment.uniquee.icarus_aegis=Schutz des Icarus
+enchantment.uniquee.icarus_aegis.desc=Shift-Linksklick einen Amboss um deine Federn zu konsumieren. Fallschaden wird nun negiert im Tausch fuer Federn die konsumiert werden
+enchantment.uniquee.ender_librarian=Bibliothekar der Ender
+enchantment.uniquee.ender_librarian.desc=Shift-Rechtsklick mit einer Karte teleportiert dich an einen zufaelligen Ort auf der Karte. Eine Schatzkarte schickt dich genauer ans Ziel. Die Karte wird dabei konsumiert
+enchantment.uniquee.endest_reap=Finale Ernte
+enchantment.uniquee.endest_reap.desc=Teile zusaetzlichen magischen Schaden aus fuer jede 'Ernte'
+enchantment.uniquee.grimoire=Zauberbuch
+enchantment.uniquee.grimoire.desc=Verzauberungen verbessern sich desto schlauer der Spieler wird
+
+//Curse
+enchantment.uniquee.pestilences_odium=Abscheu der Pestilenz
+enchantment.uniquee.pestilences_odium.desc=Jede nicht-unfreundliche Einheit in deiner Naehe erhaelt durchegehnd Schaden
+enchantment.uniquee.deaths_odium=Abscheu des Todes
+enchantment.uniquee.deaths_odium.desc=Sterben mit diesem Fluch aktiv reduziert dein maximales Leben um 1
+
+//Potion
+potion.uniquee.uniquepestilences_odium=Abscheu der Pestilenz
+
+//Tooltips
+tooltip.uniqee.stored.gold.name=Gespeichertes Gold: %s
+tooltip.uniqee.stored.lava.name=Gespeicherte Lava: %s
+tooltip.uniqee.stored.feather.name=Gespeicherte Federn: %s
+tooltip.uniqee.stored.repair.name=Gespeicherte Reparaturen: %s
+tooltip.uniquee.stored.reap.name=Gespeicherte Ernte: %s
+
