@@ -39,19 +39,21 @@ public class Grimoire extends UniqueEnchantment
 		CompoundNBT compound = stack.getTag();
 		if(compound == null) compound = new CompoundNBT();
 		int nextLevel = Math.max(0, MathHelper.floor(Math.log((player.experienceLevel+1)*level)*LEVEL_SCALING.get()-STEP_SKIP.get()));
-		int grimoreCount = compound.contains(GRIMOIRE_STORAGE) ? compound.getList("GRIMOIRE_STORAGE", 10).size() : 0;
-		int enchCount = compound.contains("ench") ? compound.getList("ench", 10).size() : 0;
+		int grimoreCount = compound.contains(GRIMOIRE_STORAGE) ? compound.getList(GRIMOIRE_STORAGE, 10).size() : 0;
+		int enchCount = compound.contains("Enchantments") ? compound.getList("Enchantments", 10).size() : 0;
+		System.out.println(nextLevel);
+		compound.remove(GRIMOIRE_LEVEL);
 		if(compound.getInt(GRIMOIRE_LEVEL) != nextLevel || grimoreCount != enchCount)
 		{
 			compound.putInt(GRIMOIRE_LEVEL, nextLevel);
 			if(compound.contains(GRIMOIRE_STORAGE))
 			{
-				compound.put("ench", compound.get(GRIMOIRE_STORAGE));
+				compound.put("Enchantments", compound.get(GRIMOIRE_STORAGE));
 				compound.remove(GRIMOIRE_STORAGE);
 			}
-			ListNBT ench = compound.getList("ench", 10);
+			ListNBT ench = compound.getList("Enchantments", 10);
 			compound.put(GRIMOIRE_STORAGE, ench);
-			compound.remove("ench");
+			compound.remove("Enchantments");
 			ListNBT list = new ListNBT();
 			String exclusion = UniqueEnchantments.GRIMOIRE.getRegistryName().toString();
 			for(int i = 0,m=ench.size();i<m;i++)
@@ -63,7 +65,7 @@ public class Grimoire extends UniqueEnchantment
 				copy.putShort("lvl", (short)(enchantment.getShort("lvl") + (exclusion.equals(id) ? 0 : nextLevel)));
 				list.add(copy);
 			}
-			compound.put("ench", list);
+			compound.put("Enchantments", list);
 		}
 		if(compound.contains(GRIMOIRE_OWNER))
 		{

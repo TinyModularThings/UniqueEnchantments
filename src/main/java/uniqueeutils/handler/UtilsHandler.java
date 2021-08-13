@@ -319,9 +319,16 @@ public class UtilsHandler
 				}
 				if(!found)
 				{
+					if(list.size() >= DemetersSoul.CAP.get(level))
+					{
+						event.getPlayer().sendStatusMessage(new TranslationTextComponent("tooltip.uniqueeutil.crops.full.name"), false);
+						event.setCancellationResult(ActionResultType.SUCCESS);
+						event.setCanceled(true);
+						return;
+					}
 					list.add(entry.save());
 				}
-				event.getPlayer().sendStatusMessage(new TranslationTextComponent("tooltip.uniqee.crops."+(found ? "removed" : "added")+".name"), false);
+				event.getPlayer().sendStatusMessage(new TranslationTextComponent("tooltip.uniqueutil.crops."+(found ? "removed" : "added")+".name"), false);
 				event.setCancellationResult(ActionResultType.SUCCESS);
 				event.setCanceled(true);
 				return;

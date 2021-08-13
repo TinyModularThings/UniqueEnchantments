@@ -61,7 +61,7 @@ jar {
 
 task baseJar(type: Jar, dependsOn: reobf) {
   baseName = 'Unique Enchantments Base'
-  version = unique_base_version
+  version = minecraft_version+"-"+unique_base_version
   from(zipTree(jar.archivePath)) {
     include 'META_INF/MANIFEST.MF'
     include '**/uniquebase/**/*'
@@ -70,13 +70,14 @@ task baseJar(type: Jar, dependsOn: reobf) {
   from(zipTree(jar.archivePath)) {
     	include 'META-INF/unique_base_mods.toml'
     	rename 'unique_base_mods.toml', 'mods.toml'
+   		expand 'version':unique_base_version
   }
   includeEmptyDirs = false
 }
 
 task mainJar(type: Jar, dependsOn: reobf) {
   baseName = 'Unique Enchantments'
-  version = uniquee_version
+  version = minecraft_version+"-"+uniquee_version
   from(zipTree(jar.archivePath)) {
     include 'META_INF/MANIFEST.MF'
     include '**/uniquee/**/*'
@@ -86,13 +87,14 @@ task mainJar(type: Jar, dependsOn: reobf) {
   from(zipTree(jar.archivePath)) {
     	include 'META-INF/uniquee_mods.toml'
    		rename 'uniquee_mods.toml', 'mods.toml'
+   		expand 'version':uniquee_version, 'base_version':unique_base_version
   }
   includeEmptyDirs = false
 }
 
 task utilsJar(type: Jar, dependsOn: reobf) {
   baseName = 'Unique Enchantments Utils'
-  version = unique_utils_version
+  version = minecraft_version+"-"+unique_utils_version
   from(zipTree(jar.archivePath)) {
     include 'META_INF/MANIFEST.MF'
     include '**/uniqueeutils/**/*'
@@ -102,13 +104,14 @@ task utilsJar(type: Jar, dependsOn: reobf) {
   from(zipTree(jar.archivePath)) {
     	include 'META-INF/unique_utils_mods.toml'
    		rename 'unique_utils_mods.toml', 'mods.toml'
+   		expand 'version':unique_utils_version, 'base_version':unique_base_version
   }
   includeEmptyDirs = false
 }
 
 task battleJar(type: Jar, dependsOn: reobf) {
   baseName = 'Unique Enchantments Battle'
-  version = unique_battle_version
+  version = minecraft_version+"-"+unique_battle_version
   from(zipTree(jar.archivePath)) {
     include 'META_INF/MANIFEST.MF'
     include '**/uniqueebattle/**/*'
@@ -118,6 +121,7 @@ task battleJar(type: Jar, dependsOn: reobf) {
   from(zipTree(jar.archivePath)) {
     	include 'META-INF/unique_battle_mods.toml'
    		rename 'unique_battle_mods.toml', 'mods.toml'
+   		expand 'version':unique_battle_version, 'base_version':unique_base_version
   }
   includeEmptyDirs = false
 }

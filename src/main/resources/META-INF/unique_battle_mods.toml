@@ -2,7 +2,7 @@ modLoader="javafml"
 loaderVersion="[28,)"
 [[mods]]
 	modId="uniquebattle"
-	version="1.0.0"
+	version="${version}"
 	displayName="Unique Battle Enchantments"
 	credits="Thanks Xaikii for the Mod Design, Thanks to Speiger for the Code"
 	authors="Speiger, Xaikii"
@@ -12,6 +12,6 @@ loaderVersion="[28,)"
 	[[dependencies.uniquebattle]]
 		modId="uniquebase"
 		mandatory=true
-		versionRange="[1.0,)"
+		versionRange="[${base_version},)"
 		ordering="BEFORE"
 		side="BOTH"

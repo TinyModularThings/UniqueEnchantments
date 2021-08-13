@@ -2,7 +2,7 @@ modLoader="javafml"
 loaderVersion="[28,)"
 [[mods]]
 	modId="uniquebase"
-	version="1.0.0"
+	version="${version}"
 	displayName="Unique Enchantments Base"
 	credits="Thanks Xaikii for the Mod Design, Thanks to Speiger for the Code"
 	authors="Speiger, Xaikii"
