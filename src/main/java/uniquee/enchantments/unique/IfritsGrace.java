@@ -41,12 +41,6 @@ public class IfritsGrace extends UniqueEnchantment implements IGraceEnchantment
 	}
 	
 	@Override
-	public void loadIncompats()
-	{
-		addIncompats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH);
-	}
-	
-	@Override
 	public boolean isAllowedOnBooks()
 	{
 		//Disabled do to forge bugs
@@ -58,6 +52,12 @@ public class IfritsGrace extends UniqueEnchantment implements IGraceEnchantment
 	{
 		//Disabled do to forge bugs
 		return false;
+	}
+	
+	@Override
+	public void loadIncompats()
+	{
+		addIncompats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH);
 	}
 	
 	@Override

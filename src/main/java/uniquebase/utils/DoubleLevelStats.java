@@ -48,7 +48,7 @@ public class DoubleLevelStats implements IStat
 		return getBase() + (getLevel() * level);
 	}
 	
-	public float getAsFloat(int level)
+	public float getAsFloat(float level)
 	{
 		return (float)(getBase() + (getLevel() * level));
 	}

@@ -8,9 +8,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
+import uniquebase.utils.IdStat;
 import uniquee.UniqueEnchantments;
 
 public class Grimoire extends UniqueEnchantment
@@ -20,11 +23,12 @@ public class Grimoire extends UniqueEnchantment
 	public static final String GRIMOIRE_OWNER = "grimoire_owner";
 	public static final DoubleStat LEVEL_SCALING = new DoubleStat(0.95D, "level_scaling");
 	public static final DoubleStat STEP_SKIP = new DoubleStat(5D, "step_skip");
+	public static final IdStat INCOMPATS = new IdStat("ignored_enchantments", ForgeRegistries.ENCHANTMENTS);
 	
 	public Grimoire()
 	{
 		super(new DefaultData("grimoire", Rarity.VERY_RARE, 5, true, 70, 36, 20), EnchantmentType.ALL, EquipmentSlotType.values());
-		addStats(LEVEL_SCALING, STEP_SKIP);
+		addStats(LEVEL_SCALING, STEP_SKIP, INCOMPATS);
 		setCurse();
 	}
 	
@@ -62,7 +66,7 @@ public class Grimoire extends UniqueEnchantment
 				String id = enchantment.getString("id");
 				CompoundNBT copy = new CompoundNBT();
 				copy.putString("id", id);
-				copy.putShort("lvl", (short)(enchantment.getShort("lvl") + (exclusion.equals(id) ? 0 : nextLevel)));
+				copy.putShort("lvl", (short)(enchantment.getShort("lvl") + (exclusion.equals(id) || INCOMPATS.contains(ResourceLocation.tryCreate(id)) ? 0 : nextLevel)));
 				list.add(copy);
 			}
 			compound.put("Enchantments", list);

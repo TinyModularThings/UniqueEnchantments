@@ -26,7 +26,6 @@ public class PestilencesOdiumPotion extends Effect
 		if(entityLivingBaseIn.world.getGameTime() % Math.max(1, (PestilencesOdium.DELAY.get() / Math.max(1, amplifier))) == 0)
 		{
 			float value = PestilencesOdium.DAMAGE_PER_TICK.getFloat() * amplifier;
-			System.out.println("Value: "+value);
 			entityLivingBaseIn.attackEntityFrom(DamageSource.MAGIC, value);
 		}
 	}

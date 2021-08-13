@@ -27,6 +27,7 @@ import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
@@ -165,6 +166,43 @@ public class BattleHandler
 				source.attackEntityFrom(DamageSource.GENERIC, LunaticDespair.SELF_DAMAGE.getFloat((float)Math.log(2.8+level)));
 				source.hurtResistantTime = 0;
 				source.attackEntityFrom(DamageSource.MAGIC, LunaticDespair.SELF_MAGIC_DAMAGE.getFloat((float)Math.log(2.8+level)));
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEntityDeath(LivingDeathEvent event)
+	{
+		Entity entity = event.getSource().getTrueSource();
+		if(entity instanceof LivingEntity)
+		{
+			LivingEntity source = (LivingEntity)entity;
+			Object2IntMap.Entry<EquipmentSlotType> found = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
+			if(found.getIntValue() > 0)
+			{
+				ListNBT list = event.getEntityLiving().getPersistentData().getList(IfritsJudgement.FLAG_JUDGEMENT_ID, 10);
+				int max = 0;
+				for(int i = 0,m=list.size();i<m;i++)
+				{
+					max = Math.max(max, list.getCompound(i).getInt(IfritsJudgement.FLAG_JUDGEMENT_COUNT));
+				}
+				if(max > IfritsJudgement.LAVA_HITS.get())
+				{
+					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
+					source.attackEntityFrom(DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * (float)Math.log(2.8*combined*0.0625D)));
+					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));
+				}
+				else if(max > IfritsJudgement.FIRE_HITS.get())
+				{
+					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
+					source.attackEntityFrom(DamageSource.IN_FIRE, IfritsJudgement.FIRE_DAMAGE.getAsFloat(found.getIntValue() * (float)Math.log(2.8*combined*0.0625D)));
+					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));					
+				}
+				else if(max > 0)
+				{
+					CompoundNBT compound = source.getPersistentData();
+					compound.putInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT, compound.getInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT)+1);
+				}
 			}
 		}
 	}

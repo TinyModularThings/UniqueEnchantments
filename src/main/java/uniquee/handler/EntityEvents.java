@@ -560,12 +560,7 @@ public class EntityEvents
 		{
 			LivingEntity base = (LivingEntity)entity;
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(base.getHeldItemMainhand());
-			int level = enchantments.getInt(UniqueEnchantments.BERSERKER);
-			if(level > 0)
-			{
-				event.setAmount(event.getAmount() * (float)(1D + ((1-(base.getMaxHealth() / Berserk.MIN_HEALTH.getMax(base.getHealth(), 1D))) * Berserk.PERCENTUAL_DAMAGE.get() * Math.log10(level+1))));			
-			}
-			level = enchantments.getInt(UniqueEnchantments.SWIFT_BLADE);
+			int level = enchantments.getInt(UniqueEnchantments.SWIFT_BLADE);
 			if(level > 0)
 			{
 				IAttributeInstance attr = base.getAttributes().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
@@ -582,26 +577,6 @@ public class EntityEvents
 				{
 					event.setAmount(event.getAmount() * (1F + (float)Math.log10(Math.pow(FocusImpact.BASE_SPEED.get() / attr.getValue(), 2D)*Math.log(6+level))));
 				}
-			}
-			level = enchantments.getInt(UniqueEnchantments.PERPETUAL_STRIKE);
-			if(level > 0)
-			{
-				ItemStack held = base.getHeldItemMainhand();
-				int count = StackUtils.getInt(held, PerpetualStrike.HIT_COUNT, 0);
-				int lastEntity = StackUtils.getInt(held, PerpetualStrike.HIT_ID, 0);
-				if(lastEntity != event.getEntityLiving().getEntityId())
-				{
-					count = 0;
-					StackUtils.setInt(held, PerpetualStrike.HIT_ID, event.getEntityLiving().getEntityId());
-				}
-				IAttributeInstance attr = base.getAttribute(SharedMonsterAttributes.ATTACK_SPEED);
-				float amount = event.getAmount();
-				double damage = (1F + Math.pow(PerpetualStrike.PER_HIT.get(count)/Math.log(2.8D+attr.getValue()), 1.4D)-1F)*level*PerpetualStrike.PER_HIT_LEVEL.get();
-				double multiplier = Math.log10(10+(damage/Math.log10(1+event.getAmount())) * PerpetualStrike.MULTIPLIER.get());
-				amount += damage;
-				amount *= multiplier;
-				event.setAmount(amount);
-				StackUtils.setInt(held, PerpetualStrike.HIT_COUNT, count+1);
 			}
 			level = MiscUtil.getEnchantedItem(UniqueEnchantments.CLIMATE_TRANQUILITY, base).getIntValue();
 			if(level > 0)
@@ -626,6 +601,31 @@ public class EntityEvents
 					event.setAmount((float)(event.getAmount() * (1F + Math.log10(1F+BoneCrusher.BONUS_DAMAGE.getFloat(level)))));
 				}
 			}
+			level = enchantments.getInt(UniqueEnchantments.BERSERKER);
+			if(level > 0)
+			{
+				event.setAmount(event.getAmount() * (float)(1D + ((1-(Berserk.MIN_HEALTH.getMax(base.getHealth(), 1D)/base.getMaxHealth())) * Berserk.PERCENTUAL_DAMAGE.get() * Math.log10(level+1))));
+			}
+			level = enchantments.getInt(UniqueEnchantments.PERPETUAL_STRIKE);
+			if(level > 0)
+			{
+				ItemStack held = base.getHeldItemMainhand();
+				int count = StackUtils.getInt(held, PerpetualStrike.HIT_COUNT, 0);
+				int lastEntity = StackUtils.getInt(held, PerpetualStrike.HIT_ID, 0);
+				if(lastEntity != event.getEntityLiving().getEntityId())
+				{
+					count = 0;
+					StackUtils.setInt(held, PerpetualStrike.HIT_ID, event.getEntityLiving().getEntityId());
+				}
+				IAttributeInstance attr = base.getAttribute(SharedMonsterAttributes.ATTACK_SPEED);
+				float amount = event.getAmount();
+				double damage = (1F + Math.pow(PerpetualStrike.PER_HIT.get(count)/Math.log(2.8D+attr.getValue()), 1.4D)-1F)*level*PerpetualStrike.PER_HIT_LEVEL.get();
+				double multiplier = Math.log10(10+(damage/Math.log10(1+event.getAmount())) * PerpetualStrike.MULTIPLIER.get());
+				amount += damage;
+				amount *= multiplier;
+				event.setAmount(amount);
+				StackUtils.setInt(held, PerpetualStrike.HIT_COUNT, count+1);
+			}
 		}
 	}
 	
@@ -648,7 +648,7 @@ public class EntityEvents
 			level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
 			if(level > 0)
 			{
-				 event.setAmount(event.getAmount() + (1F + (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getInt(EndestReap.REAP_STORAGE)))));
+				 event.setAmount(event.getAmount() + (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getInt(EndestReap.REAP_STORAGE))));
 			}
 		}
 		if(event.getSource() == DamageSource.FLY_INTO_WALL)

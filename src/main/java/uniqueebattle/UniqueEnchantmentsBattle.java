@@ -23,6 +23,7 @@ public class UniqueEnchantmentsBattle extends BaseUEMod
 	public static Enchantment IFRITS_BLESSING;
 	public static Enchantment IFRITS_JUDGEMENT;
 	public static Enchantment GOLEM_SOUL;
+	
 	public UniqueEnchantmentsBattle()
 	{
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UniqueEnchantment-Battle.toml");
