@@ -39,6 +39,7 @@ import uniquebase.utils.MiscUtil;
 import uniqueebattle.UniqueEnchantmentsBattle;
 import uniqueebattle.enchantments.AresFragment;
 import uniqueebattle.enchantments.CelestialBlessing;
+import uniqueebattle.enchantments.GolemSoul;
 import uniqueebattle.enchantments.IfritsBlessing;
 import uniqueebattle.enchantments.IfritsJudgement;
 import uniqueebattle.enchantments.LunaticDespair;
@@ -192,6 +193,12 @@ public class BattleHandler
 		if(level > 0)
 		{
 			mods.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(CelestialBlessing.SPEED_MOD, "speed_boost", world.isDaytime() ? 0F : CelestialBlessing.SPEED_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL));
+		}
+		level = enchantments.getInt(UniqueEnchantmentsBattle.GOLEM_SOUL);
+		if(level > 0)
+		{
+			mods.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(GolemSoul.SPEED_MOD, "speed_loss", (Math.pow(1-GolemSoul.SPEED.get(), level)-1), Operation.MULTIPLY_TOTAL));
+			mods.put(SharedMonsterAttributes.KNOCKBACK_RESISTANCE.getName(), new AttributeModifier(GolemSoul.KNOCKBACK_MOD, "knockback_boost", GolemSoul.KNOCKBACK.get(level), Operation.ADDITION));
 		}
 		return mods;
 	}

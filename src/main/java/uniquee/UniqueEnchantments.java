@@ -62,6 +62,7 @@ import uniquee.enchantments.unique.EnderLibrarian;
 import uniquee.enchantments.unique.EnderMarksmen;
 import uniquee.enchantments.unique.EndestReap;
 import uniquee.enchantments.unique.FastFood;
+import uniquee.enchantments.unique.Grimoire;
 import uniquee.enchantments.unique.IcarusAegis;
 import uniquee.enchantments.unique.IfritsGrace;
 import uniquee.enchantments.unique.MidasBlessing;
@@ -112,6 +113,7 @@ public class UniqueEnchantments extends BaseUEMod
 	public static Enchantment ICARUS_AEGIS;
 	public static Enchantment ENDER_LIBRARIAN;
 	public static Enchantment ENDEST_REAP;
+	public static Enchantment GRIMOIRE;
 	
 	//Curses
 	public static Enchantment PESTILENCES_ODIUM;
@@ -181,6 +183,7 @@ public class UniqueEnchantments extends BaseUEMod
 		ICARUS_AEGIS = register(new IcarusAegis());
 		ENDER_LIBRARIAN = register(new EnderLibrarian());
 		ENDEST_REAP = register(new EndestReap());
+		GRIMOIRE = register(new Grimoire());
 		
 		PESTILENCES_ODIUM = register(new PestilencesOdium());
 		DEATHS_ODIUM = register(new DeathsOdium());

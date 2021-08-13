@@ -107,6 +107,7 @@ import uniquee.enchantments.unique.Ecological;
 import uniquee.enchantments.unique.EnderMarksmen;
 import uniquee.enchantments.unique.EndestReap;
 import uniquee.enchantments.unique.FastFood;
+import uniquee.enchantments.unique.Grimoire;
 import uniquee.enchantments.unique.IcarusAegis;
 import uniquee.enchantments.unique.NaturesGrace;
 import uniquee.enchantments.unique.PhoenixBlessing;
@@ -178,6 +179,18 @@ public class EntityEvents
 				if(level > 0)
 				{
 					StackUtils.setInt(player.getHeldItemMainhand(), EndestReap.REAP_STORAGE, player.getPersistentData().getInt(EndestReap.REAP_STORAGE));
+				}
+			}
+			if(player.world.getGameTime() % 1200 == 0)
+			{
+				EquipmentSlotType[] slots = MiscUtil.getEquipmentSlotsFor(UniqueEnchantments.GRIMOIRE);
+				for(int i = 0;i<slots.length;i++)
+				{
+					int level = container.getEnchantment(UniqueEnchantments.GRIMOIRE, slots[i]);
+					if(level > 0)
+					{
+						Grimoire.applyGrimore(player.getItemStackFromSlot(slots[i]), level, player);
+					}
 				}
 			}
 			if(player.world.getGameTime() % 30 == 0)
