@@ -13,7 +13,7 @@ public class EnderMarksmen extends UniqueEnchantment
 	
 	public EnderMarksmen()
 	{
-		super(new DefaultData("endermarksmen", Rarity.VERY_RARE, 5, true, 28, 25, 16), EnchantmentType.BOW, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("endermarksmen", Rarity.VERY_RARE, 5, true, false, 28, 25, 16), EnchantmentType.BOW, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(EXTRA_DURABILITY);
 	}
 			

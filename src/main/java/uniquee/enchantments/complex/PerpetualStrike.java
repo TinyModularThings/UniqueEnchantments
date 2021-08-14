@@ -19,7 +19,7 @@ public class PerpetualStrike extends UniqueEnchantment
 	
 	public PerpetualStrike()
 	{
-		super(new DefaultData("perpetualstrike", Rarity.RARE, 3, false, 16, 6, 4), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("perpetualstrike", Rarity.RARE, 3, false, true, 16, 6, 4), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
 		addStats(PER_HIT, MULTIPLIER, PER_HIT_LEVEL);
 	}
 	

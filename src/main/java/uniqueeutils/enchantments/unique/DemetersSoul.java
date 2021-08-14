@@ -24,7 +24,7 @@ public class DemetersSoul extends UniqueEnchantment
 	
 	public DemetersSoul()
 	{
-		super(new DefaultData("demeters_soul", Rarity.VERY_RARE, 3, true, 20, 10, 40), EnchantmentType.BREAKABLE, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("demeters_soul", Rarity.VERY_RARE, 3, true, false, 20, 10, 40), EnchantmentType.BREAKABLE, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(DELAY, SCALING, CAP);
 	}
 	

@@ -19,7 +19,7 @@ public class SleipnirsGrace extends UniqueEnchantment
 	
 	public SleipnirsGrace()
 	{
-		super(new DefaultData("sleipnirs_grace", Rarity.RARE, 10, true, 20, 14, 75), EnchantmentType.ARMOR_CHEST);
+		super(new DefaultData("sleipnirs_grace", Rarity.RARE, 10, true, true, 20, 14, 75), EnchantmentType.ARMOR_CHEST);
 		setCategory("utils");
 		addStats(CAP, GAIN, MAX, PATH_BONUS);
 	}

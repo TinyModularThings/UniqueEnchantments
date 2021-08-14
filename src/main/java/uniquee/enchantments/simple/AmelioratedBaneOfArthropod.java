@@ -21,7 +21,7 @@ public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 	
 	public AmelioratedBaneOfArthropod()
 	{
-		super(new DefaultData("arthropods", Rarity.RARE, 5, true, 6, 4, 30), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("arthropods", Rarity.RARE, 5, true, false, 6, 4, 30), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
 		addStats(BONUS_DAMAGE, SLOW_DURATION);
 	}
 	

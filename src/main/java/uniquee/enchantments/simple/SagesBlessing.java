@@ -15,7 +15,7 @@ public class SagesBlessing extends UniqueEnchantment implements IBlessingEnchant
 	
 	public SagesBlessing()
 	{
-		super(new DefaultData("sages_blessing", Rarity.COMMON, 5, false, 5, 5, 20), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("sages_blessing", Rarity.COMMON, 5, false, false, 5, 5, 20), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(XP_BOOST);
 	}
 	

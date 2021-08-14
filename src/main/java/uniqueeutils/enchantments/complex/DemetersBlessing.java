@@ -11,7 +11,7 @@ public class DemetersBlessing extends UniqueEnchantment
 {
 	public DemetersBlessing()
 	{
-		super(new DefaultData("demeters_blessing", Rarity.VERY_RARE, 2, false, 12, 8, 75), EnchantmentType.BREAKABLE, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("demeters_blessing", Rarity.VERY_RARE, 2, false, true, 12, 8, 75), EnchantmentType.BREAKABLE, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		setCategory("utils");
 	}
 	

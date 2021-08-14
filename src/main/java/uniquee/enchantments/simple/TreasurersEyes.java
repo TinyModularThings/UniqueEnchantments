@@ -11,7 +11,7 @@ public class TreasurersEyes extends UniqueEnchantment
 	
 	public TreasurersEyes()
 	{
-		super(new DefaultData("treasurers_eyes", Rarity.RARE, 3, true, 22, 6, 75), EnchantmentType.ARMOR_HEAD, EquipmentSlotType.HEAD);
+		super(new DefaultData("treasurers_eyes", Rarity.RARE, 3, true, true, 22, 6, 75), EnchantmentType.ARMOR_HEAD, EquipmentSlotType.HEAD);
 		addStats(RANGE);
 	}
 }

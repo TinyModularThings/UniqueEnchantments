@@ -19,7 +19,7 @@ public class EnderMending extends UniqueEnchantment
 	
 	public EnderMending()
 	{
-		super(new DefaultData("ender_mending", Rarity.VERY_RARE, 3, true, 20, 10, 5), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		super(new DefaultData("ender_mending", Rarity.VERY_RARE, 3, true, false, 20, 10, 5), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
 		addStats(ABSORBTION_RATIO, ABSORBTION_CAP, LIMIT);
 	}
 	

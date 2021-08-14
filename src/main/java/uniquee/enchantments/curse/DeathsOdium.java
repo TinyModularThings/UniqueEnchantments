@@ -29,7 +29,7 @@ public class DeathsOdium extends UniqueEnchantment
 	
 	public DeathsOdium()
 	{
-		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 2, false, 10, 4, 40), BaseUEMod.ALL_TYPES, EquipmentSlotType.values());
+		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 2, false, true, 10, 4, 40), BaseUEMod.ALL_TYPES, EquipmentSlotType.values());
 		addStats(DELAY, MAX_STORAGE, DAMAGE_FACTOR, BASE_LOSS);
 		setCurse();
 	}

@@ -16,7 +16,7 @@ public class GolemSoul extends UniqueEnchantment
 	
 	public GolemSoul()
 	{
-		super(new DefaultData("golem_soul", Rarity.COMMON, 4, false, 16, 3, 50), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
+		super(new DefaultData("golem_soul", Rarity.COMMON, 4, false, true, 16, 3, 50), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
 		setCategory("battle");
 		addStats(KNOCKBACK, SPEED);
 	}

@@ -16,7 +16,7 @@ public class Ambrosia extends UniqueEnchantment
 	
 	public Ambrosia()
 	{
-		super(new DefaultData("ambrosia", Rarity.RARE, 4, true, 8, 12, 10), EnchantmentType.BREAKABLE, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("ambrosia", Rarity.RARE, 4, true, true, 8, 12, 10), EnchantmentType.BREAKABLE, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		setCategory("utils");
 	}
 	

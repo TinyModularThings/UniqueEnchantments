@@ -25,7 +25,7 @@ public class IcarusAegis extends UniqueEnchantment
 	
 	public IcarusAegis()
 	{
-		super(new DefaultData("icarus_aegis", Rarity.VERY_RARE, 3, true, 16, 4, 10), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
+		super(new DefaultData("icarus_aegis", Rarity.VERY_RARE, 3, true, false, 16, 4, 10), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
 		addStats(BASE_CONSUMPTION);
 	}
 	

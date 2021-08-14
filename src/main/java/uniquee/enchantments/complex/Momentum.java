@@ -16,7 +16,7 @@ public class Momentum extends UniqueEnchantment
 	
 	public Momentum()
 	{
-		super(new DefaultData("momentum", Rarity.RARE, 3, true, 10, 5, 75), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("momentum", Rarity.RARE, 3, true, true, 10, 5, 75), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
 		addStats(SPEED, CAP, MAX_DELAY);
 	}	
 }

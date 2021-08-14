@@ -72,6 +72,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	}
 	
 	@Override
+	public boolean canVillagerTrade()
+	{
+		return values.isTradeable();
+	}
+	
+	@Override
 	public int getMinEnchantability(int enchantmentLevel)
 	{
 		return values.getLevelCost(enchantmentLevel);
@@ -183,6 +189,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		String name;
 		Rarity rare;
 		boolean isTreasure;
+		boolean isTradeable;
 		int baseCost;
 		int levelCost;
 		int rangeCost;
@@ -190,6 +197,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		
 		EnumValue<Rarity> rare_Config;
 		BooleanValue isTreasure_Config;
+		BooleanValue isTradeable_Config;
 		IntValue baseCost_Config;
 		IntValue levelCost_Config;
 		IntValue rangeCost_Config;
@@ -198,18 +206,19 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		IntValue hardCap_Config;
 		IdStat incompats = new IdStat("incompats", ForgeRegistries.ENCHANTMENTS);
 		
-		public DefaultData(String name, Rarity rare, int maxLevel, boolean isTreasure, int baseCost, int levelCost, int rangeCost)
+		public DefaultData(String name, Rarity rare, int maxLevel, boolean isTreasure, boolean isTradeable, int baseCost, int levelCost, int rangeCost)
 		{
-			this(name, rare, 1, maxLevel, isTreasure, baseCost, levelCost, rangeCost);
+			this(name, rare, 1, maxLevel, isTreasure, isTradeable, baseCost, levelCost, rangeCost);
 		}
 		
-		public DefaultData(String name, Rarity rare, int minLevel, int maxLevel, boolean isTreasure, int baseCost, int levelCost, int rangeCost)
+		public DefaultData(String name, Rarity rare, int minLevel, int maxLevel, boolean isTreasure, boolean isTradeable, int baseCost, int levelCost, int rangeCost)
 		{
 			this.name = name;
 			this.rare = rare;
 			this.minLevel = minLevel;
 			this.maxLevel = maxLevel;
 			this.isTreasure = isTreasure;
+			this.isTradeable = isTradeable;
 			this.baseCost = baseCost;
 			this.levelCost = levelCost;
 			this.rangeCost = rangeCost;
@@ -225,6 +234,8 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 			rare_Config = config.defineEnum("rarity", rare);
 			config.comment("If the Enchantment is a Treasure");
 			isTreasure_Config = config.define("treasure", isTreasure);
+			config.comment("If the Enchantment is Tradeable by Villagers");
+			isTradeable_Config = config.define("tradeable", isTradeable);
 			config.comment("Minimum Level for Enchanting");
 			baseCost_Config = config.defineInRange("base_cost", baseCost, 0, Integer.MAX_VALUE);
 			config.comment("Increase of levels per Enchantment Level");
@@ -287,6 +298,11 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		public boolean isTreasure()
 		{
 			return isTreasure_Config != null ? isTreasure_Config.get() : isTreasure;
+		}
+		
+		public boolean isTradeable()
+		{
+			return isTradeable_Config != null ? isTradeable_Config.get() : isTradeable;
 		}
 
 		public int getBaseCost()

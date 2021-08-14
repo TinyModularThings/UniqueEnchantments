@@ -29,7 +29,7 @@ public class SmartAss extends UniqueEnchantment
 	
 	public SmartAss()
 	{
-		super(new DefaultData("smart_ass", Rarity.RARE, 3, false, 28, 6, 40), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("smart_ass", Rarity.RARE, 3, false, true, 28, 6, 40), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
 		addStats(RANGE);
 	}
 }

@@ -13,7 +13,7 @@ public class FastFood extends UniqueEnchantment
 
 	public FastFood()
 	{
-		super(new DefaultData("fastfood", Rarity.RARE, 2, true, 14, 6, 10), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("fastfood", Rarity.RARE, 2, true, true, 14, 6, 10), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(NURISHMENT, SATURATION);
 	}
 }

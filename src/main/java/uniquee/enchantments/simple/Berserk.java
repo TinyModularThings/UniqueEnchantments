@@ -15,7 +15,7 @@ public class Berserk extends UniqueEnchantment
 	
 	public Berserk()
 	{
-		super(new DefaultData("berserk", Rarity.RARE, 2, false, 10, 8, 22), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("berserk", Rarity.RARE, 2, false, true, 10, 8, 22), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
 		addStats(MIN_HEALTH, PERCENTUAL_DAMAGE);
 	}
 	

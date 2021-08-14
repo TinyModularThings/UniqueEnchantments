@@ -27,7 +27,7 @@ public class Grimoire extends UniqueEnchantment
 
 	public Grimoire()
 	{
-		super(new DefaultData("grimoire", Rarity.VERY_RARE, 5, true, 70, 36, 20), BaseUEMod.ALL_TYPES, EquipmentSlotType.values());
+		super(new DefaultData("grimoire", Rarity.VERY_RARE, 5, true, false, 70, 36, 20), BaseUEMod.ALL_TYPES, EquipmentSlotType.values());
 		addStats(LEVEL_SCALING, STEP_SKIP, INCOMPATS);
 		setCurse();
 	}

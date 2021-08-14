@@ -20,7 +20,7 @@ public class AresFragment extends UniqueEnchantment
 	
 	public AresFragment()
 	{
-		super(new DefaultData("ares_fragment", Rarity.RARE, 4, true, 25, 35, 10), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("ares_fragment", Rarity.RARE, 4, true, false, 25, 35, 10), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
 		addStats(ARMOR_PERCENTAGE, BASE_CHANCE, CHANCE_MULT, DURABILITY_SCALING);
 		setCategory("battle");
 	}

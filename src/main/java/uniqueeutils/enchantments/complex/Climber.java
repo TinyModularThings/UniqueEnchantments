@@ -27,7 +27,7 @@ public class Climber extends UniqueEnchantment
 	
 	public Climber()
 	{
-		super(new DefaultData("climber", Rarity.UNCOMMON, 3, true, 14, 8, 30), EnchantmentType.ARMOR_LEGS, EquipmentSlotType.LEGS);
+		super(new DefaultData("climber", Rarity.UNCOMMON, 3, true, true, 14, 8, 30), EnchantmentType.ARMOR_LEGS, EquipmentSlotType.LEGS);
 		setCategory("utils");
 		addStats(DELAY);
 	}

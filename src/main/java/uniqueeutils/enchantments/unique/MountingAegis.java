@@ -10,7 +10,7 @@ public class MountingAegis extends UniqueEnchantment
 {
 	public MountingAegis()
 	{
-		super(new DefaultData("mounting_aegis", Rarity.RARE, 1, true, 24, 4, 20), BaseUEMod.ALL_TYPES, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("mounting_aegis", Rarity.RARE, 1, true, true, 24, 4, 20), BaseUEMod.ALL_TYPES, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		setCategory("utils");
 	}
 	

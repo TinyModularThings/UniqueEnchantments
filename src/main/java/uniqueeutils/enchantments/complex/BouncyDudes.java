@@ -11,7 +11,7 @@ public class BouncyDudes extends UniqueEnchantment
 	
 	public BouncyDudes()
 	{
-		super(new DefaultData("bouncy_dudes", Rarity.VERY_RARE, 5, true, 15, 5, 10), EnchantmentType.ARMOR_FEET, EquipmentSlotType.FEET);
+		super(new DefaultData("bouncy_dudes", Rarity.VERY_RARE, 5, true, false, 15, 5, 10), EnchantmentType.ARMOR_FEET, EquipmentSlotType.FEET);
 		setCategory("utils");
 		addStats(DURABILITY_LOSS);
 	}

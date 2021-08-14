@@ -18,7 +18,7 @@ public class IfritsJudgement extends UniqueEnchantment
 	public static final String FLAG_JUDGEMENT_ID = "judge_id";
 	public static final String FLAG_JUDGEMENT_COUNT = "judge_count";
 	public static final String FLAG_JUDGEMENT_LOOT = "judge_loot";
-	public static final ResourceLocation JUDGEMENT_LOOT = new ResourceLocation("uniqueebattle", "judge_loot");
+	public static final ResourceLocation JUDGEMENT_LOOT = new ResourceLocation("uniquebattle", "judge_loot");
 
 	public static final DoubleLevelStats FIRE_DAMAGE = new DoubleLevelStats("fire_damage", 0.4D, 0.1D);
 	public static final DoubleLevelStats LAVA_DAMAGE = new DoubleLevelStats("lava_damage", 0.4D, 0.1D);
@@ -28,7 +28,7 @@ public class IfritsJudgement extends UniqueEnchantment
 	
 	public IfritsJudgement()
 	{
-		super(new DefaultData("ifrits_judgement", Rarity.COMMON, 2, false, 10, 4, 40), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("ifrits_judgement", Rarity.COMMON, 2, false, false, 10, 4, 40), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		setCategory("battle");
 		setCurse();
 		addStats(FIRE_DAMAGE, LAVA_DAMAGE, DURATION, LAVA_HITS, FIRE_HITS);

@@ -14,7 +14,7 @@ public class PestilencesOdium extends UniqueEnchantment
 	
 	public PestilencesOdium()
 	{
-		super(new DefaultData("pestilences_odium", Rarity.RARE, 2, false, 10, 4, 40), BaseUEMod.ALL_TYPES, EquipmentSlotType.values());
+		super(new DefaultData("pestilences_odium", Rarity.RARE, 2, false, true, 10, 4, 40), BaseUEMod.ALL_TYPES, EquipmentSlotType.values());
 		addStats(RADIUS, DELAY, DAMAGE_PER_TICK);
 		setCurse();
 	}	

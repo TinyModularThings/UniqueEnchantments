@@ -54,11 +54,9 @@ public class BattleHandler
 	@SubscribeEvent
 	public void onBlockClick(RightClickBlock event)
 	{
-		System.out.println("Count: ");
 		if(event.getWorld() instanceof ServerWorld)
 		{
 			int count = event.getPlayer().getPersistentData().getInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT);
-			System.out.println("Count: "+count);
 			if(count > 0)
 			{
 				TileEntity tile = event.getWorld().getTileEntity(event.getPos());
@@ -69,6 +67,7 @@ public class BattleHandler
 				LootContext.Builder builder = (new LootContext.Builder((ServerWorld)event.getWorld())).withRandom(event.getWorld().getRandom()).withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(event.getPos())).withLuck(event.getPlayer().getLuck()).withParameter(LootParameters.THIS_ENTITY, event.getPlayer());
 				table.recursiveGenerate(builder.build(LootParameterSets.CHEST), T -> ItemHandlerHelper.insertItem(handler, T, false));
 				event.getPlayer().getPersistentData().putInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT, count-1);
+				if(event.getPlayer().isSneaking()) event.setCanceled(true);
 			}
 		}
 	}

@@ -35,7 +35,7 @@ public class ClimateTranquility extends UniqueEnchantment
 	
 	public ClimateTranquility()
 	{
-		super(new DefaultData("climate_tranquility", Rarity.RARE, 3, true, 20, 7, 30), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("climate_tranquility", Rarity.RARE, 3, true, true, 20, 7, 30), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(SPEED_BONUS, SLOW_TIME, ATTACK_BONUS, BURN_TIME);
 	}
 	

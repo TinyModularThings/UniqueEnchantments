@@ -30,7 +30,7 @@ public class Ecological extends UniqueEnchantment
 	
 	public Ecological()
 	{
-		super(new DefaultData("ecological", Rarity.RARE, 3, true, 4, 8, 10), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		super(new DefaultData("ecological", Rarity.RARE, 3, true, true, 4, 8, 10), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
 		addStats(SPEED, SPEED_SCALE);
 	}
 	

@@ -40,7 +40,7 @@ public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchant
 	
 	public MidasBlessing()
 	{
-		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 3, true, 14, 6, 75), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 3, true, false, 14, 6, 75), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
 		addStats(GOLD_COST);
 	}
 	

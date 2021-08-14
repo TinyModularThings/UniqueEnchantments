@@ -15,7 +15,7 @@ public class IfritsBlessing extends UniqueEnchantment
 	
 	public IfritsBlessing()
 	{
-		super(new DefaultData("ifrits_blessing", Rarity.COMMON, 5, false, 12, 2, 60), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("ifrits_blessing", Rarity.COMMON, 5, false, true, 12, 2, 60), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		setCategory("battle");
 		addStats(BONUS_DAMAGE);
 	}

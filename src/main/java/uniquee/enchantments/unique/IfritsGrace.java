@@ -36,7 +36,7 @@ public class IfritsGrace extends UniqueEnchantment implements IGraceEnchantment
 
 	public IfritsGrace()
 	{
-		super(new DefaultData("ifrits_grace", Rarity.RARE, 3, true, 14, 4, 40), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("ifrits_grace", Rarity.RARE, 3, true, true, 14, 4, 40), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
 		addStats(BASE_CONSUMTION);
 	}
 	

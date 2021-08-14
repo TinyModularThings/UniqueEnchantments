@@ -14,7 +14,7 @@ public class PhoenixBlessing extends UniqueEnchantment implements IBlessingEncha
 	
 	public PhoenixBlessing()
 	{
-		super(new DefaultData("phoenixs_blessing", Rarity.RARE, 2, true, 26, 2, 2), BaseUEMod.ALL_TYPES, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("phoenixs_blessing", Rarity.RARE, 2, true, true, 26, 2, 2), BaseUEMod.ALL_TYPES, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(RANGE);
 	}
 	

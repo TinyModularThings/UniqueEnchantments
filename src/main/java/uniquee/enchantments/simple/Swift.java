@@ -14,7 +14,7 @@ public class Swift extends UniqueEnchantment
 	
 	public Swift()
 	{
-		super(new DefaultData("swift", Rarity.UNCOMMON, 2, false, 14, 12, 10), EnchantmentType.ARMOR_LEGS, EquipmentSlotType.LEGS);
+		super(new DefaultData("swift", Rarity.UNCOMMON, 2, false, false, 14, 12, 10), EnchantmentType.ARMOR_LEGS, EquipmentSlotType.LEGS);
 		addStats(SPEED_BONUS);
 	}
 }
