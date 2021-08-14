@@ -12,7 +12,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "1.14.4-"+new Date().format("dd")+"-"+new Random().nextInt()
+version = "1.14.4-"+new Date().format("dd")+"-"+Math.abs(new Random().nextInt())
 group = "uniquee"
 archivesBaseName = "Unique Enchantments"
 

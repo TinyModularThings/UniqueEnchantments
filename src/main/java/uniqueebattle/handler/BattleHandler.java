@@ -65,6 +65,7 @@ public class BattleHandler
 				LootContext.Builder builder = (new LootContext.Builder((ServerWorld)event.getWorld())).withRandom(event.getWorld().getRandom()).withParameter(LootParameters.POSITION, event.getPos()).withLuck(event.getPlayer().getLuck()).withParameter(LootParameters.THIS_ENTITY, event.getPlayer());
 				table.generate(builder.build(LootParameterSets.CHEST), T -> ItemHandlerHelper.insertItem(handler, T, false));
 				event.getPlayer().getPersistentData().putInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT, count-1);
+				if(event.getPlayer().isSneaking()) event.setCanceled(true);
 			}
 		}
 	}
