@@ -50,7 +50,7 @@ public class BattleHandler
 	{
 		if(event.getWorld() instanceof WorldServer)
 		{
-			int count = event.getEntityPlayer().getEntityData().getInteger(IfritsJudgement.FLAG_JUDGEMENT_LOOT);
+			int count = event.getEntityPlayer().getEntityData().getInteger(IfritsJudgement.FLAG_JUDGEMENT_LOOT)+1;
 			if(count > 0)
 			{
 				TileEntity tile = event.getWorld().getTileEntity(event.getPos());
@@ -64,6 +64,7 @@ public class BattleHandler
 						ItemHandlerHelper.insertItem(handler, stack, false);
 					}
 					event.getEntityPlayer().getEntityData().setInteger(IfritsJudgement.FLAG_JUDGEMENT_LOOT, count-1);
+					if(event.getEntityPlayer().isSneaking()) event.setCanceled(true);
 				}
 			}
 		}
