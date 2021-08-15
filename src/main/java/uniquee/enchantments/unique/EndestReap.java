@@ -4,6 +4,8 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.HoeItem;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -22,7 +24,13 @@ public class EndestReap extends UniqueEnchantment
 		super(new DefaultData("endest_reap", Rarity.VERY_RARE, 4, true, 30, 15, 20), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(BONUS_DAMAGE_LEVEL, REAP_MULTIPLIER, VALID_ENTITIES);
 	}
-
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() instanceof HoeItem;
+	}
+	
 	@Override
 	public void loadIncompats()
 	{

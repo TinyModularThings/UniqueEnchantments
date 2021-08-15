@@ -17,7 +17,7 @@ public class PoseidonsSoul extends UniqueEnchantment
 	
 	public PoseidonsSoul()
 	{
-		super(new DefaultData("poseidons_soul", Rarity.RARE, 3, true, 24, 4, 75), EnchantmentType.TRIDENT, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("poseidons_soul", Rarity.RARE, 3, true, 24, 4, 75).setHardCap(40), EnchantmentType.TRIDENT, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(BASE_CONSUMTION);
 		setCategory("utils");
 	}
