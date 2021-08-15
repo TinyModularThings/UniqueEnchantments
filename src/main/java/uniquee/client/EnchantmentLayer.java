@@ -51,7 +51,7 @@ public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> 
 		if(!canSeeEffects(entity)) return;
 		if(time % 14 == 0 && MiscUtil.getEnchantmentLevel(UniqueEnchantments.ARES_BLESSING, entity.getItemStackFromSlot(EquipmentSlotType.CHEST)) > 0)
 		{
-			spawnParticle(ParticleTypes.HEART, entity.world, entity.getBoundingBox(), 0F, 0.8F, 0F);
+			spawnParticle(ParticleTypes.ANGRY_VILLAGER, entity.world, entity.getBoundingBox(), 0F, 0.8F, 0F);
 		}
 		if(time % 2 == 0)
 		{
