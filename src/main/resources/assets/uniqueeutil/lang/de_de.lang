@@ -20,8 +20,8 @@ enchantment.uniqueeutil.demeters_soul=Demeters Seele
 enchantment.uniqueeutil.demeters_soul.desc=Shift-Rechtsklicke einen Samen um ihn zu markieren. Markierte Samen werden im Intervall geerntet, haben nur 1 Produkt und werden automatisch in die Ender Kiste gelegt
 enchantment.uniqueeutil.ambrosia=Ambrosia
 enchantment.uniqueeutil.ambrosia.desc=Essen und Traenke werden zum schmackhafsten, dass du jemals gemampft hast
-enchantment.uniqueeutil.bouncy_dudes=Federnde Dinger
-enchantment.uniqueeutil.bouncy_dudes.desc=Beim fallen wirst du nun federn. Fall Schaden wird zu Haltbarkeit konvertiert
+enchantment.uniqueeutil.essence_of_slime=Essenz des Schleims
+enchantment.uniqueeutil.essence_of_slime.desc=Beim fallen wirst du nun federn. Fall Schaden wird zu Haltbarkeit konvertiert
 
 tooltip.uniqueeutil.stored.repair.name=Gespeicherte Juwelen %s
 tooltip.uniqueeutil.climb.start.name=Beginne zu klettern

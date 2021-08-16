@@ -20,8 +20,8 @@ enchantment.uniqueeutil.demeters_soul=Demeter's Soul
 enchantment.uniqueeutil.demeters_soul.desc=Shift-rightclicking a seed to active. Marked seeds will only produce 1 product and will automatically be harvested and stored into your Ender Chest
 enchantment.uniqueeutil.ambrosia=Ambrosia
 enchantment.uniqueeutil.ambrosia.desc=Food and Potions will turn into the best thing you've ever tasted
-enchantment.uniqueeutil.bouncy_dudes=Bouncy Dudes
-enchantment.uniqueeutil.bouncy_dudes.desc=You will now bounce when falling. Fall Damage is converted into Durability Loss
+enchantment.uniqueeutil.essence_of_slime=Essence of Slime
+enchantment.uniqueeutil.essence_of_slime.desc=You will now bounce when falling. Fall Damage is converted into Durability Loss
 
 tooltip.uniqueeutil.stored.repair.name=Stored Gems %s
 tooltip.uniqueeutil.climb.start.name=Starting to Climb now
