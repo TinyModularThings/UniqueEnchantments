@@ -33,7 +33,7 @@ enchantment.uniquee.spartanweapon.desc=You deal bonus magic damage while wieldin
 enchantment.uniquee.perpetualstrike=Perpetual Strike
 enchantment.uniquee.perpetualstrike.desc=Your damage increases with every consecutive hit on the same Target
 enchantment.uniquee.climate_tranquility=Climate Tranquility
-enchantment.uniquee.climate_tranquility.desc=Weapons will react to temperature and and receive effects of the counterpart.
+enchantment.uniquee.climate_tranquility.desc=Weapons will react to temperature and receive effects of the counterpart.
 enchantment.uniquee.momentum=Momentum
 enchantment.uniquee.momentum.desc=Continued mining will further increase your Mining Speed per Block mined. Accelerates faster with higher levels and Block Hardness
 enchantment.uniquee.ender_mending=Ender Mending
@@ -77,7 +77,7 @@ enchantment.uniquee.grimoire.desc=Improves Enchantments by Player's Knowledge. A
 enchantment.uniquee.pestilences_odium=Pestilence's Odium
 enchantment.uniquee.pestilences_odium.desc=Non-Hostile Entities in your area will be continuously damaged
 enchantment.uniquee.deaths_odium=Death's Odium
-enchantment.uniquee.deaths_odium.desc=Dieing while having this Curse in an active slot will cause you to lose a Base HP. Lost Base HP will be granted back as long as this Enchantment is on an active Slot..
+enchantment.uniquee.deaths_odium.desc=Dieing while having this Curse in an active slot will cause you to lose some Base HP. Lost Base HP will be granted back as long as this Enchantment is on an active Slot..
 
 //Potion
 potion.uniquee.uniquepestilences_odium=Pestilence's Odium
