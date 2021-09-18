@@ -83,9 +83,9 @@ enchantment.uniquee.deaths_odium.desc=Dieing while having this Curse in an activ
 potion.uniquee.uniquepestilences_odium=Pestilence's Odium
 
 //Tooltips
-tooltip.uniqee.stored.gold.name=Stored Gold: %s
-tooltip.uniqee.stored.lava.name=Stored Lava: %s
-tooltip.uniqee.stored.feather.name=Stored Feathers: %s
-tooltip.uniqee.stored.repair.name=Stored Repairs: %s
+tooltip.uniquee.stored.gold.name=Stored Gold: %s
+tooltip.uniquee.stored.lava.name=Stored Lava: %s
+tooltip.uniquee.stored.feather.name=Stored Feathers: %s
+tooltip.uniquee.stored.repair.name=Stored Repairs: %s
 tooltip.uniquee.stored.reap.name=Stored Reap: %s
 

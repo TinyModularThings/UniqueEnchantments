@@ -25,6 +25,7 @@ enchantment.uniqueeutil.essence_of_slime.desc=Beim fallen wirst du nun federn. F
 
 tooltip.uniqueeutil.stored.repair.name=Gespeicherte Juwelen %s
 tooltip.uniqueeutil.climb.start.name=Beginne zu klettern
+tooltip.uniqueeutil.climb.start.name=Klettern wird neugestartet
 tooltip.uniqueeutil.climb.fail.name=Das Ziel ist versperrt
-tooltip.uniqeuetil.crops.added.name=Samen zur Automatischen Ernte hinzugefuegt
-tooltip.uniqeuetil.crops.removed.name=Samen aus der Automatischen Ernte entfernt
+tooltip.uniqueeutil.crops.added.name=Samen zur Automatischen Ernte hinzugefuegt
+tooltip.uniqueeutil.crops.removed.name=Samen aus der Automatischen Ernte entfernt

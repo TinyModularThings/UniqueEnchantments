@@ -1,0 +1,90 @@
+//Simple
+enchantment.uniquee.berserk=Furie
+enchantment.uniquee.berserk.desc=Moins vous avez de vie, plus vous faites de dégâts
+enchantment.uniquee.all=Tranchant Amélioré
+enchantment.uniquee.all.desc=Une Version Avancée de Tranchant
+enchantment.uniquee.undead=Châtiment Amélioré
+enchantment.uniquee.undead.desc=Une Version Avancée de Châtiment
+enchantment.uniquee.arthropods=Fléau des arthropodes Amélioré
+enchantment.uniquee.arthropods.desc=Une Version Avancée de Fléau des arthropodes
+enchantment.uniquee.vitae=Vitalité
+enchantment.uniquee.vitae.desc=Vous donne plus de coeurs
+enchantment.uniquee.swift=Agilité
+enchantment.uniquee.swift.desc=Vous donne plus de Vitesse mais consomme plus de nourriture
+enchantment.uniquee.sages_blessing=Bénédiction du Sage
+enchantment.uniquee.sages_blessing.desc=Augmente l'XP mais vous vous épuisez plus rapidement petit à petit
+enchantment.uniquee.ender_eyes=Yeux de l'End
+enchantment.uniquee.ender_eyes.desc=Regarder un Enderman le fera se téléporter et ne les énerve pas
+enchantment.uniquee.focus_impact=Précision d'Impact
+enchantment.uniquee.focus_impact.desc=Vous ferez plus de dégâts si vous attaquez lentement
+enchantment.uniquee.bone_crusher=Briseur D'os
+enchantment.uniquee.bone_crusher.desc=Augemente les dégâts et le butin contre les entités squelettiques
+enchantment.uniquee.ranged=Portée
+enchantment.uniquee.ranged.desc=Augmente la portée mais réduit la Vitesse de Minage quand le bonus est utilisé
+enchantment.uniquee.treasurers_eyes=Yeux de trésorier
+enchantment.uniquee.treasurers_eyes.desc=Avec cet enchantement vous aurez des Enchantements Spéciaux sur les entités en fonctions des enchantements. Seulement certains enchantements ont des effets
+
+
+//Complex
+enchantment.uniquee.swiftblade=Lame agile	
+enchantment.uniquee.swiftblade.desc=Plus vous attaquez rapidement, plus vous ferez de dégâts
+enchantment.uniquee.spartanweapon=Arme Spartiate
+enchantment.uniquee.spartanweapon.desc=Vous faites des dégâts magiques bonus en tenant un Bouclier
+enchantment.uniquee.perpetualstrike=Frappe Perpetuelle
+enchantment.uniquee.perpetualstrike.desc=Votre dégât augemente avec tout les dégâts consecutives sur la même Cible
+enchantment.uniquee.climate_tranquility=Effet de Climature
+enchantment.uniquee.climate_tranquility.desc=L'arme réagit à la température et reçoit les effets en contrepartie
+enchantment.uniquee.momentum=Élan
+enchantment.uniquee.momentum.desc=Miner constamment accéléra petit à petit votre Vitesse de Minage
+enchantment.uniquee.ender_mending=Délicatesse de l'Ender
+enchantment.uniquee.ender_mending.desc=Une version améliorée de Délicatesse qui stoquera l'expérience en plus pour l'améliorer plus tard. L'expérience sera divisée avec tout les outils qui ont cet enchantement
+enchantment.uniquee.smart_ass=Intelligence
+enchantment.uniquee.smart_ass.desc=Miner du Bois, du Sable et du Gravier va casser le bloc au dessus en premier
+
+//Unique
+enchantment.uniquee.warriorsgrace=Grâce du Guerrier
+enchantment.uniquee.warriorsgrace.desc=Tuer une entité va remplir la durabilité en fonction de la vie de l'entité
+enchantment.uniquee.naturesgrace=Grâce de la Nature
+enchantment.uniquee.naturesgrace.desc=Rester à côté des feuilles restorera votre vie tant que je joueur n'est pas reçu de dégât trop récemment
+enchantment.uniquee.fastfood=Nourriture Rapide
+enchantment.uniquee.fastfood.desc=Les animaux ne vont pas donner du butin mais remplira votre faim, cet enchantement est mélangé avec Butin et le feu
+enchantment.uniquee.endermarksmen=Tireur de l'End
+enchantment.uniquee.endermarksmen.desc=Toucher une cible avec un arc replira votre durabilité et vous redonnera votre flèche
+enchantment.uniquee.cloudwalker=Marcheur des Nuages
+enchantment.uniquee.cloudwalker.desc=Vous accrouper vous fera léviter pendant un moment, en utilisant de la durabilité
+enchantment.uniquee.aresblessing=Bénédiction d'Ares
+enchantment.uniquee.aresblessing.desc=les dégâts mortels seront converti en perte de durabilité de l'armure, les dégâts de chute et les dégâts magiques pourront tojours vous tuer
+enchantment.uniquee.alchemistsgrace=Grâce de l'alchimiste
+enchantment.uniquee.alchemistsgrace.desc=Tapper un ennemi ou des blocs vous donnera des effets de potion
+enchantment.uniquee.ecological=Ecologique
+enchantment.uniquee.ecological.desc=Rester à côté de bois ou de feuilles fera réparer lentement votre outil
+enchantment.uniquee.phoenixs_blessing=Bénédiction du Phoenix
+enchantment.uniquee.phoenixs_blessing.desc=Si vous mourrez, vous serait réanimé avec toute votre vie et votre faim et les ennemis proches brûleront
+enchantment.uniquee.midas_blessing=Bénédiction de Midas
+enchantment.uniquee.midas_blessing.desc=Faire clic droit en étant accroupi sur une enclume consommera tout votre Or dans votre inventaire. Miner un minerai d'Or consommera cet Or mais donnera deux minerais 
+enchantment.uniquee.ifrits_grace=Grâce d'Ifrit
+enchantment.uniquee.ifrits_grace.desc=Faire clic droit en étant accroupi sur une enclume consommera tout les objets de lave ou de magna dans votre inventaire. Miner un bloc consommera de la lave mais fera chauffer automatiquement les blocs
+enchantment.uniquee.icarus_aegis=Pied de plume
+enchantment.uniquee.icarus_aegis.desc=Faire clic droit en étant accroupi sur une enclume consommera toutes vos dans votre inventaire. Vous ne prendrez plus de dégât de chute
+enchantment.uniquee.ender_librarian=Libraire de l'End
+enchantment.uniquee.ender_librarian.desc=Faire clic droit en étant accroupi avec une carte vous téléportera à un endroit aléatoire de la carte, vous pouvez utiliser des bannières pour vous téléporter dessus
+enchantment.uniquee.endest_reap=Endest Reap
+enchantment.uniquee.endest_reap.desc=Deals bonus magic damage for every Reaped Stack. Gains a Stack for every 'higher being'
+enchantment.uniquee.grimoire=Grimoire
+enchantment.uniquee.grimoire.desc=Améliore les informations d'enchantements. Dès que cet enchantement est ajouté, tout les enchantements ajoutés après seront retirables
+
+//Curse
+enchantment.uniquee.pestilences_odium=Pestilence d'Odium
+enchantment.uniquee.pestilences_odium.desc=Les entités non-hostiles proche de vous prenderont des dégâts
+enchantment.uniquee.deaths_odium=Mort d'Odium
+enchantment.uniquee.deaths_odium.desc=Mourir avec cet malédiction dans un item actif vous fera perdre de la vie permanente. Vous retrouverez la vie quand vous aurez l'enchentement dans un item actif
+
+//Potion
+potion.uniquee.uniquepestilences_odium=Pestilence d'Odium
+
+//Tooltips
+tooltip.uniquee.stored.gold.name=Or stocké: %s
+tooltip.uniquee.stored.lava.name=Lave stockée: %s
+tooltip.uniquee.stored.feather.name=Plume stockée: %s
+tooltip.uniquee.stored.repair.name=Réparation stockée: %s
+tooltip.uniquee.stored.reap.name=Récolte stockée: %s
