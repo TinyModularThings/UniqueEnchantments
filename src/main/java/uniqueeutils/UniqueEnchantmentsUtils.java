@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import uniquebase.api.BaseUEMod;
 import uniquebase.handler.BaseHandler;
 import uniqueeutils.enchantments.complex.Ambrosia;
-import uniqueeutils.enchantments.complex.BouncyDudes;
+import uniqueeutils.enchantments.complex.EssenceOfSlime;
 import uniqueeutils.enchantments.complex.Climber;
 import uniqueeutils.enchantments.complex.DemetersBlessing;
 import uniqueeutils.enchantments.complex.SleipnirsGrace;
@@ -38,7 +38,7 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	public static Enchantment DETEMERS_BLESSING;
 	public static Enchantment DEMETERS_SOUL;
 	public static Enchantment AMBROSIA;
-	public static Enchantment BOUNCY_DUDES;
+	public static Enchantment ESSENCE_OF_SLIME;
 	
 	public static Potion SATURATION = new SaturationPotion();
 
@@ -65,6 +65,6 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 		DETEMERS_BLESSING = register(new DemetersBlessing());
 		DEMETERS_SOUL = register(new DemetersSoul());
 		AMBROSIA = register(new Ambrosia());
-		BOUNCY_DUDES = register(new BouncyDudes());
+		ESSENCE_OF_SLIME = register(new EssenceOfSlime());
 	}
 }

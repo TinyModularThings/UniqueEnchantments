@@ -11,7 +11,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -82,27 +81,15 @@ public class BattleHandler
 			if(level > 0 && source instanceof EntityPlayer)
 			{
 				EntityPlayer player = (EntityPlayer)source;
-				double chance = AresFragment.BASE_CHANCE.get() + (AresFragment.CHANCE_MULT.get(Math.log(Math.pow(player.experienceLevel, level))) / 100D);
-				float damage = (float)Math.log(3 + (level * ((1+event.getEntityLiving().getTotalArmorValue()+event.getEntityLiving().getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue())*AresFragment.ARMOR_PERCENTAGE.get())));
-				int i = 0;
-				while(chance > 0)
-				{
-					if(player.world.rand.nextDouble() < chance)
-					{
-						event.setAmount(event.getAmount() * damage);
-					}
-					else if(damage != 0F)
-					{
-						event.setAmount(event.getAmount() / damage);
-					}
-					chance -= 1D;
-					i++;
-				}
-				if(i > 0)
-				{
-					int durability = MathHelper.ceil(Math.log(AresFragment.DURABILITY_SCALING.get(player.experienceLevel * level))/(1D+MiscUtil.getEnchantmentLevel(Enchantments.UNBREAKING, source.getHeldItemMainhand())));
-					source.getHeldItemMainhand().damageItem(i*durability, source);
-				}
+				int maxRolls = MathHelper.floor(Math.sqrt(level*player.experienceLevel)*AresFragment.BASE_ROLL_MULTIPLIER.get()) + AresFragment.BASE_ROLL.get();
+				int posRolls = 1+source.world.rand.nextInt(maxRolls);
+				int negRolls = maxRolls - posRolls;
+				EntityLivingBase enemy = event.getEntityLiving();
+				double toughness = enemy.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue();
+				double speed = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).getAttributeValue();
+				float damageFactor = (float)(Math.log(1+Math.sqrt(player.experienceLevel*level*level)*(1+(enemy.getTotalArmorValue()+toughness*2.5)*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
+				event.setAmount(event.getAmount() * (1F * (1F+(damageFactor*posRolls))) / (1F+(damageFactor*negRolls)));
+				source.getHeldItemMainhand().damageItem(MathHelper.ceil((Math.sqrt(Math.abs(posRolls-negRolls) / Math.pow(AresFragment.DURABILITY_REDUCTION_SCALING.get(), 1+(level/100D))) * (((posRolls * Math.pow(AresFragment.DURABILITY_DISTRIBUTION.get(), -1D))-(negRolls * AresFragment.DURABILITY_DISTRIBUTION.get())) / AresFragment.DURABILITY_ANTI_SCALING.get()))/speed), source);
 			}
 			if(event.getEntityLiving().isBurning())
 			{

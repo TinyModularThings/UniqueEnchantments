@@ -1,5 +1,10 @@
 package uniquebase.utils;
 
+import java.util.AbstractMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -14,10 +19,17 @@ public class EnchantmentContainer
 	Object2IntLinkedOpenHashMap<Enchantment> combinedEnchantments = null;
 	int checkedSlots = 0;
 	EntityLivingBase base;
+	AllIterable iter = new AllIterable();
 	
 	public EnchantmentContainer(EntityLivingBase base)
 	{
 		this.base = base;
+	}
+	
+	public Iterable<Map.Entry<EntityEquipmentSlot, Object2IntMap<Enchantment>>> getAll()
+	{
+		triggerAll();
+		return iter;
 	}
 	
 	public int getEnchantment(Enchantment ench, EntityEquipmentSlot slot)
@@ -42,7 +54,7 @@ public class EnchantmentContainer
 		return MiscUtil.NO_ENCHANTMENT;
 	}
 	
-	public int getCombinedEnchantment(Enchantment ench)
+	protected void triggerAll()
 	{
 		if(combinedEnchantments == null)
 		{
@@ -66,6 +78,37 @@ public class EnchantmentContainer
 				}
 			}
 		}
+	}
+	
+	public int getCombinedEnchantment(Enchantment ench)
+	{
+		triggerAll();
 		return combinedEnchantments.getInt(ench);
+	}
+	
+	private class AllIterable implements Iterable<Map.Entry<EntityEquipmentSlot, Object2IntMap<Enchantment>>>
+	{
+		@Override
+		public Iterator<Entry<EntityEquipmentSlot, Object2IntMap<Enchantment>>> iterator()
+		{
+			return new AllIterator();
+		}
+	}
+	
+	private class AllIterator implements Iterator<Map.Entry<EntityEquipmentSlot, Object2IntMap<Enchantment>>>
+	{
+		EntityEquipmentSlot[] slots = EntityEquipmentSlot.values();
+		int i = 0;
+		@Override
+		public boolean hasNext()
+		{
+			return i < slots.length;
+		}
+
+		@Override
+		public Entry<EntityEquipmentSlot, Object2IntMap<Enchantment>> next()
+		{
+			return new AbstractMap.SimpleEntry<>(slots[i], enchantments[i++]);
+		}
 	}
 }

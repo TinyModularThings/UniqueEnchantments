@@ -2,12 +2,14 @@ package uniquee.enchantments.simple;
 
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemHoe;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
+import uniquee.UniqueEnchantments;
 
 public class AmelioratedSmite extends UniqueEnchantment
 {
@@ -17,6 +19,13 @@ public class AmelioratedSmite extends UniqueEnchantment
 	{
 		super(new DefaultData("undead", Rarity.RARE, 5, true, 6, 4, 30), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND);
 		addStats(BONUS_DAMAGE);
+	}
+	
+	@Override
+	public void loadIncompats()
+	{
+		addIncompats(Enchantments.SHARPNESS, Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS);
+		addIncompats(UniqueEnchantments.ADV_SHARPNESS, UniqueEnchantments.ADV_BANE_OF_ARTHROPODS);
 	}
 	
 	@Override

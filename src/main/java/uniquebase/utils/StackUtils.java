@@ -1,6 +1,7 @@
 package uniquebase.utils;
 
 import java.util.List;
+import java.util.Random;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
@@ -122,6 +123,33 @@ public class StackUtils
 			}
 		}
 		return false;
+	}
+	
+	public static int evenDistribute(int xpPoints, Random rand, List<ItemStack> items, ObjIntFunction<ItemStack> consumer)
+	{
+		int left = xpPoints;
+		while(left >= items.size() && items.size() > 0)
+		{
+			int xpPerItem = left / items.size();
+			for(int i = 0;i<items.size();i++)
+			{
+				int consumed = consumer.apply(items.get(i), xpPerItem);
+				if(consumed <= xpPerItem) items.remove(i--);
+				left-=consumed;
+			}
+		}
+		if(!items.isEmpty())
+		{
+			int startIndex = rand.nextInt(items.size());
+			while(left > 0 && items.size() > 0)
+			{
+				int consumed = consumer.apply(items.get(startIndex), 1);
+				if(consumed <= 0) items.remove(startIndex--);
+				left-=consumed;
+				startIndex = ++startIndex % items.size();
+			}
+		}
+		return xpPoints - left;
 	}
 	
 	public static int consumeItems(EntityPlayer player, ToIntFunction<ItemStack> validator, int limit)

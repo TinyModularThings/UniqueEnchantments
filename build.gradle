@@ -33,7 +33,7 @@ repositories {
 }
 
 dependencies {
-	compile "curse.maven:firstaid-276837:2790027"
+//	compile "curse.maven:firstaid-276837:2790027"
 }
 
 processResources {

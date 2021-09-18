@@ -8,9 +8,11 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import uniquebase.api.BaseUEMod;
+import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
 
 @Mod(modid = "uniquebase", name = "Unique Enchantments Base", version = "1.0.0", guiFactory = "uniquebase.handler.ConfigHandler")
@@ -20,6 +22,12 @@ public class UniqueEnchantmentsBase
 	public void onPreInit(FMLPreInitializationEvent event)
 	{
 		MinecraftForge.EVENT_BUS.register(BaseHandler.INSTANCE);
+	}
+	
+	@EventHandler
+	public void onPostInit(FMLPostInitializationEvent event)
+	{
+		CropHarvestRegistry.INSTANCE.init();
 	}
 	
 	@EventHandler

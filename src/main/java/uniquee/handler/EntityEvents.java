@@ -7,8 +7,6 @@ import java.util.UUID;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.Block;
@@ -26,6 +24,7 @@ import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -191,24 +190,12 @@ public class EntityEvents
 					}
 				}
 			}
+			if(player.world.getTotalWorldTime() % 400 == 0)
+			{
+				EnderMending.shareXP(player, container);				
+			}
 			if(player.world.getTotalWorldTime() % 100 == 0)
 			{
-				EntityEquipmentSlot[] slots = MiscUtil.getEquipmentSlotsFor(UniqueEnchantments.ENDER_MENDING);
-				for(int i = 0;i<slots.length;i++)
-				{
-					ItemStack stack = player.getItemStackFromSlot(slots[i]);
-					int level = container.getEnchantment(UniqueEnchantments.ENDER_MENDING, slots[i]);
-					if(level > 0 && stack.isItemDamaged())
-					{
-						int stored = StackUtils.getInt(stack, EnderMending.ENDER_TAG, 0);
-						if(stored > 0)
-						{
-							int toRemove = Math.min(stack.getItemDamage(), stored);
-							stack.setItemDamage(stack.getItemDamage() - toRemove);
-							StackUtils.setInt(stack, EnderMending.ENDER_TAG, stored - toRemove);
-						}
-					}
-				}
 				int level = container.getEnchantment(UniqueEnchantments.ENDEST_REAP, EntityEquipmentSlot.MAINHAND);
 				if(level > 0)
 				{
@@ -341,87 +328,57 @@ public class EntityEvents
 		{
 			return;
 		}
-		int maxLevel = 0;
-		Object2BooleanMap<ItemStack> values = new Object2BooleanLinkedOpenHashMap<ItemStack>();
-		int foundItems = 0;
+		List<ItemStack> all = new ObjectArrayList<>();
+		List<ItemStack> ender = new ObjectArrayList<>();
 		EntityEquipmentSlot[] slots = MiscUtil.getEquipmentSlotsFor(UniqueEnchantments.ENDER_MENDING);
 		for(int i = 0;i<slots.length;i++)
 		{
 			ItemStack stack = player.getItemStackFromSlot(slots[i]);
-			if(stack.isEmpty())
-			{
-				continue;
-			}
+			if(stack.isEmpty()) continue;
 			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDER_MENDING, stack);
 			if(level > 0)
 			{
-				values.put(stack, true);
-				foundItems++;
-				maxLevel = Math.max(maxLevel, level);
+				all.add(stack);
+				ender.add(stack);
 			}
 			else if(stack.isItemDamaged() && MiscUtil.getEnchantmentLevel(Enchantments.MENDING, stack) > 0)
 			{
-				values.put(stack, false);
+				all.add(stack);
 			}
 		}
-		if(values.isEmpty() || foundItems <= 0)
-		{
-			return;
-		}
-		int xp = event.getOrb().xpValue;
-		int totalXP = (int)((xp * 1F - Math.min(EnderMending.ABSORBTION_RATIO.getAsFloat(maxLevel), EnderMending.ABSORBTION_CAP.get())) * 2);
-		xp -= (totalXP / 2);
+		if(ender.size() <= 0) return;
+		EntityXPOrb orb = event.getOrb();
+		int xp = orb.xpValue;
+		int totalXP = xp * 2;
 		int usedXP = 0;
-		for(Object2BooleanMap.Entry<ItemStack> entry : values.object2BooleanEntrySet())
+		usedXP += StackUtils.evenDistribute(totalXP, orb.world.rand, all, (stack, i) -> {
+			int used = Math.min(i, stack.getItemDamage());
+            stack.setItemDamage(stack.getItemDamage() - used);
+            return used;
+		});
+		if(usedXP >= totalXP)
 		{
-			ItemStack stack = entry.getKey();
-			if(stack.isItemDamaged())
-			{
-				int used = Math.min(totalXP - usedXP, stack.getItemDamage());
-                stack.setItemDamage(stack.getItemDamage() - used);
-                usedXP += used;
-                if(usedXP >= totalXP)
-                {
-                	break;
-                }
-			}
-		}
-		if(totalXP <= usedXP)
-		{
-			player.onItemPickup(event.getOrb(), 1);
-			event.getOrb().setDead();
+			orb.xpValue = 0;
+			player.onItemPickup(orb, 1);
+			orb.setDead();
 			event.setCanceled(true);
-			player.addExperience(xp);
 			return;
 		}
-		totalXP -= usedXP;
-		usedXP = 0;
-		int perItem = Math.max(1, totalXP / foundItems);
-		for(Object2BooleanMap.Entry<ItemStack> entry : values.object2BooleanEntrySet())
-		{
-			if(entry.getBooleanValue())
-			{
-				ItemStack stack = entry.getKey();
-				int stored = StackUtils.getInt(stack, EnderMending.ENDER_TAG, 0);
-				int left = Math.min(Math.min(totalXP - usedXP, perItem), EnderMending.LIMIT.get() - stored);
-				if(left <= 0)
-				{
-					continue;
-				}
-				usedXP+=left;
-				StackUtils.setInt(stack, EnderMending.ENDER_TAG, stored + left);
-			}
-		}
-		perItem = totalXP - usedXP;
-		if(perItem > 0)
-		{
-			player.addExperience(perItem / 2);
-		}
+		usedXP += StackUtils.evenDistribute(totalXP - usedXP, orb.world.rand, ender, (stack, i) -> {
+			int max = MathHelper.ceil(EnderMending.LIMIT.get() * Math.pow(EnderMending.LIMIT_MULTIPLIER.get(), Math.sqrt(MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDER_MENDING, stack))));
+			int stored = StackUtils.getInt(stack, EnderMending.ENDER_TAG, 0);
+			int left = Math.min(i, max - stored);
+			StackUtils.setInt(stack, EnderMending.ENDER_TAG, stored + left);
+			return left;
+		});
+		int left = (totalXP - usedXP) / 2;
 		player.onItemPickup(event.getOrb(), 1);
 		event.getOrb().setDead();
 		event.setCanceled(true);
-		player.addExperience(xp);
+		if(left > 0) player.addExperience(left);
 	}
+	
+
 	
 	@SubscribeEvent
 	public void onBreakSpeed(BreakSpeed event)
@@ -439,13 +396,15 @@ public class EntityEvents
 			NBTTagCompound nbt = player.getEntityData();
 			long worldTime = player.world.getTotalWorldTime();
 			long time = nbt.getLong(Momentum.LAST_MINE);
-			int count = nbt.getInteger(Momentum.COUNT);
+			double count = nbt.getDouble(Momentum.COUNT);
 			if(worldTime - time > Momentum.MAX_DELAY.get() || worldTime < time)
 			{
 				count = 0;
-				nbt.setInteger(Momentum.COUNT, 0);
+				nbt.setDouble(Momentum.COUNT, 0);
 			}
-			event.setNewSpeed(event.getNewSpeed() * (float)Math.log10(10D + (Momentum.SPEED.get(count)) / level));
+			double flat = Momentum.SPEED.get(count)/Math.pow((1+event.getNewSpeed()), 0.25D);
+			double percent = 1 + (Math.sqrt(Momentum.SPEED_MULTIPLIER.get(count))/level);
+			event.setNewSpeed((float)((event.getNewSpeed() + flat) * percent));
 			nbt.setLong(Momentum.LAST_MINE, worldTime);
 		}
 		level = ench.getInt(UniqueEnchantments.RANGE);
@@ -519,9 +478,10 @@ public class EntityEvents
 		level = enchs.getInt(UniqueEnchantments.MOMENTUM);
 		if(level > 0)
 		{
-			int max = Math.min((int)Math.pow(Momentum.CAP.get(level), 2), 65536);
+			double cap = Momentum.CAP.get() * Math.pow(Momentum.CAP_MULTIPLIER.get(level), 2);
+			double extra = Math.min(1000, event.getState().getBlockHardness(event.getWorld(), event.getPos())) * Math.pow(1 + ((level * level) / 100), 1+(level/100));
 			NBTTagCompound nbt = event.getPlayer().getEntityData();
-			nbt.setInteger(Momentum.COUNT, Math.min(max, nbt.getInteger(Momentum.COUNT) + level));
+			nbt.setDouble(Momentum.COUNT, Math.min(nbt.getDouble(Momentum.COUNT) + extra, cap));
 		}
 	}
 	
@@ -837,15 +797,19 @@ public class EntityEvents
 				}
 			}
 			Entity killed = event.getEntity();
-			if(killed != null && EndestReap.isValid(killed) && base instanceof EntityPlayer)
+			if(killed != null && base instanceof EntityPlayer)
 			{
-				level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
-				if(level > 0)
+				int amount = EndestReap.isValid(killed);
+				if(amount > 0)
 				{
-					NBTTagCompound nbt = entity.getEntityData();
-					int result = Math.min(nbt.getInteger(EndestReap.REAP_STORAGE)+1, ((EntityPlayer)base).experienceLevel);
-					nbt.setInteger(EndestReap.REAP_STORAGE, result);
-					StackUtils.setInt(base.getHeldItemMainhand(), EndestReap.REAP_STORAGE, result);
+					level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
+					if(level > 0)
+					{
+						NBTTagCompound nbt = entity.getEntityData();
+						int result = Math.min(nbt.getInteger(EndestReap.REAP_STORAGE)+amount, ((EntityPlayer)base).experienceLevel);
+						nbt.setInteger(EndestReap.REAP_STORAGE, result);
+						StackUtils.setInt(base.getHeldItemMainhand(), EndestReap.REAP_STORAGE, result);
+					}
 				}
 			}
 		}
@@ -890,7 +854,7 @@ public class EntityEvents
 	{
 		if(event.getItem().getItem() == Items.COOKIE && MiscUtil.getEnchantmentLevel(UniqueEnchantments.DEATHS_ODIUM, event.getItem()) > 0)
 		{
-			event.getEntityLiving().setDead();
+			event.getEntityLiving().onKillCommand();
 		}
 	}
 	
@@ -935,8 +899,10 @@ public class EntityEvents
 			int level = slot.getIntValue();
 			if(level > 0)
 			{
+				int looting = base.world.rand.nextInt(1+MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, base.getItemStackFromSlot(slot.getKey())));
+				int burning = event.getEntityLiving().isBurning() ? 2 : 1;
 				level *= (base.world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, base.getItemStackFromSlot(slot.getKey()))+1)+1);
-				base.getFoodStats().addStats(FastFood.NURISHMENT.get(level), (FastFood.SATURATION.getFloat() * level));
+				base.getFoodStats().addStats(FastFood.NURISHMENT.get(level+looting) * burning, FastFood.SATURATION.getFloat(level+looting) * burning);
 				event.setCanceled(true);
 			}
 		}

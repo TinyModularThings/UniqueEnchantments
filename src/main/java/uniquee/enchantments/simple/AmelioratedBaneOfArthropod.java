@@ -4,6 +4,7 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemAxe;
@@ -13,6 +14,7 @@ import net.minecraft.potion.PotionEffect;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntLevelStats;
+import uniquee.UniqueEnchantments;
 
 public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 {
@@ -23,6 +25,13 @@ public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 	{
 		super(new DefaultData("arthropods", Rarity.RARE, 5, true, 6, 4, 30), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND);
 		addStats(BONUS_DAMAGE, SLOW_DURATION);
+	}
+	
+	@Override
+	public void loadIncompats()
+	{
+		addIncompats(Enchantments.SHARPNESS, Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS);
+		addIncompats(UniqueEnchantments.ADV_SHARPNESS, UniqueEnchantments.ADV_SMITE);
 	}
 	
 	@Override

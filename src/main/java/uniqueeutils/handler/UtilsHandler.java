@@ -61,7 +61,7 @@ import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniqueeutils.UniqueEnchantmentsUtils;
 import uniqueeutils.enchantments.complex.Ambrosia;
-import uniqueeutils.enchantments.complex.BouncyDudes;
+import uniqueeutils.enchantments.complex.EssenceOfSlime;
 import uniqueeutils.enchantments.complex.Climber;
 import uniqueeutils.enchantments.complex.SleipnirsGrace;
 import uniqueeutils.enchantments.curse.FaminesOdium;
@@ -174,18 +174,18 @@ public class UtilsHandler
 	public void onFall(LivingFallEvent event)
 	{
 		ItemStack stack = event.getEntityLiving().getItemStackFromSlot(EntityEquipmentSlot.FEET);
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.BOUNCY_DUDES, stack);
+		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.ESSENCE_OF_SLIME, stack);
 		if(level > 0)
 		{
 			if(event.getDistance() <= 1.3)
 				return;
-			int damage = MathHelper.floor(((event.getDistance() - 2) * BouncyDudes.DURABILITY_LOSS.get() / (level + MiscUtil.getEnchantmentLevel(Enchantments.FEATHER_FALLING, stack))));
+			int damage = MathHelper.floor(((event.getDistance() - 2) * EssenceOfSlime.DURABILITY_LOSS.get() / Math.sqrt(level + MiscUtil.getEnchantmentLevel(Enchantments.FEATHER_FALLING, stack))));
 			if(damage > 0)
 			{
 				stack.damageItem(damage, event.getEntityLiving());
 			}
 			EntityLivingBase entity = event.getEntityLiving();
-			entity.getEntityData().setDouble("bounce", entity.motionY * -0.735D);
+			entity.getEntityData().setDouble("bounce", entity.motionY/Math.log10(15.5D+EssenceOfSlime.FALL_DISTANCE_MULTIPLIER.get(entity.motionY)) * -1D);
 			event.setCanceled(true);
 		}
 	}
@@ -263,10 +263,11 @@ public class UtilsHandler
 					if(!event.getWorld().getBlockState(pos).isBlockNormalCube() && !event.getWorld().getBlockState(pos.up()).isBlockNormalCube())
 					{
 						NBTTagCompound nbt = event.getEntityPlayer().getEntityData();
+						boolean wasClimbing = nbt.getLong(Climber.CLIMB_START) != 0;
 						nbt.setLong(Climber.CLIMB_POS, pos.toLong());
 						nbt.setInteger(Climber.CLIMB_DELAY, Climber.getClimbTime(level, blocks));
 						nbt.setLong(Climber.CLIMB_START, event.getWorld().getTotalWorldTime());
-						event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.climb.start.name"), true);
+						event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.climb."+(wasClimbing ? "re" : "")+"start.name"), true);
 					}
 					else
 					{
