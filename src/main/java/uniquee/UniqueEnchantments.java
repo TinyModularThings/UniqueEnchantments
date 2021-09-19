@@ -68,7 +68,7 @@ import uniquee.enchantments.unique.WarriorsGrace;
 import uniquee.handler.EntityEvents;
 import uniquee.handler.potion.PotionPestilencesOdium;
 
-@Mod(modid = "uniquee", name = "Unique Enchantments", version = "2.0.0", dependencies = "required-after:uniquebase@[1.0.0,);")
+@Mod(modid = "uniquee", name = "Unique Enchantments", version = "2.0.1", dependencies = "required-after:uniquebase@[1.0.0,);")
 public class UniqueEnchantments extends BaseUEMod
 {
 	static List<IToggleEnchantment> ENCHANTMENTS = new ObjectArrayList<IToggleEnchantment>();

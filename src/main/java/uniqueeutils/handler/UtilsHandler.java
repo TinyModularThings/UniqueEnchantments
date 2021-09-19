@@ -267,7 +267,9 @@ public class UtilsHandler
 						nbt.setLong(Climber.CLIMB_POS, pos.toLong());
 						nbt.setInteger(Climber.CLIMB_DELAY, Climber.getClimbTime(level, blocks));
 						nbt.setLong(Climber.CLIMB_START, event.getWorld().getTotalWorldTime());
-						event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.climb."+(wasClimbing ? "re" : "")+"start.name"), true);
+						if(!event.getWorld().isRemote) event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.climb."+(wasClimbing ? "re" : "")+"start.name"), true);
+						event.setCancellationResult(EnumActionResult.SUCCESS);
+						event.setCanceled(true);
 					}
 					else
 					{

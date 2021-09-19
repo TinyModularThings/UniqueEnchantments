@@ -49,7 +49,7 @@ public class BattleHandler
 	{
 		if(event.getWorld() instanceof WorldServer)
 		{
-			int count = event.getEntityPlayer().getEntityData().getInteger(IfritsJudgement.FLAG_JUDGEMENT_LOOT)+1;
+			int count = event.getEntityPlayer().getEntityData().getInteger(IfritsJudgement.FLAG_JUDGEMENT_LOOT);
 			if(count > 0)
 			{
 				TileEntity tile = event.getWorld().getTileEntity(event.getPos());

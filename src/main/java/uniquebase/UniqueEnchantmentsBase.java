@@ -15,7 +15,7 @@ import uniquebase.api.BaseUEMod;
 import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
 
-@Mod(modid = "uniquebase", name = "Unique Enchantments Base", version = "1.0.0", guiFactory = "uniquebase.handler.ConfigHandler")
+@Mod(modid = "uniquebase", name = "Unique Enchantments Base", version = "1.0.1", guiFactory = "uniquebase.handler.ConfigHandler")
 public class UniqueEnchantmentsBase
 {
 	@EventHandler

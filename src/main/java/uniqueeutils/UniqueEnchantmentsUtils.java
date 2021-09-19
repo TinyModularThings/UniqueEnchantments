@@ -25,7 +25,7 @@ import uniqueeutils.enchantments.unique.MountingAegis;
 import uniqueeutils.handler.UtilsHandler;
 import uniqueeutils.potion.SaturationPotion;
 
-@Mod(modid = "uniqueeutil", name = "Unique Util Enchantments", version = "1.0.0", dependencies = "required-after:uniquebase@[1.0.0,);")
+@Mod(modid = "uniqueeutil", name = "Unique Util Enchantments", version = "1.0.1", dependencies = "required-after:uniquebase@[1.0.0,);")
 public class UniqueEnchantmentsUtils extends BaseUEMod
 {
 	public static Enchantment SLEIPNIRS_GRACE;

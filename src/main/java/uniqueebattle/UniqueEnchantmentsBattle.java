@@ -16,7 +16,7 @@ import uniqueebattle.enchantments.IfritsJudgement;
 import uniqueebattle.enchantments.LunaticDespair;
 import uniqueebattle.handler.BattleHandler;
 
-@Mod(modid = "uniqueebattle", name = "Unique Battle Enchantments", version = "1.0.0", dependencies = "required-after:uniquebase@[1.0.0,);")
+@Mod(modid = "uniqueebattle", name = "Unique Battle Enchantments", version = "1.0.1", dependencies = "required-after:uniquebase@[1.0.0,);")
 public class UniqueEnchantmentsBattle extends BaseUEMod
 {
 	public static Enchantment LUNATIC_DESPAIR;
