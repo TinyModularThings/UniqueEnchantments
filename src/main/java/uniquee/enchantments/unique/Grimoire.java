@@ -23,7 +23,7 @@ public class Grimoire extends UniqueEnchantment
 	public static final String GRIMOIRE_LEVEL = "grimoire_level";
 	public static final String GRIMOIRE_STORAGE = "grimoire_storage";
 	public static final String GRIMOIRE_OWNER = "grimoire_owner";
-	public static final DoubleStat LEVEL_SCALING = new DoubleStat(0.95D, "level_scaling");
+	public static final DoubleStat LEVEL_SCALING = new DoubleStat(0.9D, "level_scaling");
 	public static final DoubleStat STEP_SKIP = new DoubleStat(5D, "step_skip");
 	public static final IntStat START_LEVEL = new IntStat(50, "start_level");
 	public static final ShortSet INCOMPATS = new ShortLinkedOpenHashSet();

@@ -12,7 +12,7 @@ import uniquee.UniqueEnchantments;
 
 public class AmelioratedSharpness extends UniqueEnchantment
 {
-	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(1D, "bonus_damage");
+	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(1D, "bonus_attack_damage");
 	
 	public AmelioratedSharpness()
 	{

@@ -22,8 +22,8 @@ public class Ecological extends UniqueEnchantment
 			return t.getBlock() instanceof BlockLog || t.getBlock() instanceof BlockLeaves;
 		}
 	};
-	public static final IntStat SPEED = new IntStat(220, "speed");
-	public static final DoubleStat SPEED_SCALE = new DoubleStat(1.85D, "speed_scale");
+	public static final IntStat SPEED = new IntStat(220, "baseDuration");
+	public static final DoubleStat SPEED_SCALE = new DoubleStat(16D, "scalingReduction");
 	
 	public Ecological()
 	{

@@ -283,7 +283,7 @@ public class EntityEvents
 				if(!player.isCreative())
 				{
 					StackUtils.setInt(stack, Cloudwalker.TIMER, value-1);
-					if(player.world.getTotalWorldTime() % 20 == 0)
+					if(player.world.getTotalWorldTime() % (20*Math.sqrt(level.getIntValue())) == 0)
 					{
 						stack.damageItem(1, player);
 					}
@@ -301,7 +301,7 @@ public class EntityEvents
 		{
 			level = container.getEnchantment(UniqueEnchantments.ECOLOGICAL, slots[i]);
 			ItemStack equipStack = player.getItemStackFromSlot(slots[i]); 
-			if(level > 0 && equipStack.isItemDamaged() && player.world.getTotalWorldTime() % Math.max(1, (int)(Ecological.SPEED.get() / Math.log10(1.2D + Math.pow(player.experienceLevel, level) / Ecological.SPEED_SCALE.get()))) == 0)
+			if(level > 0 && equipStack.isItemDamaged() && player.world.getTotalWorldTime() % Math.max(1, (int)(Ecological.SPEED.get() / Math.log10(10.0D + (player.experienceLevel*level) / Ecological.SPEED_SCALE.get()))) == 0)
 			{
 				if((cache == null ? cache = StackUtils.hasBlockCount(player.world, player.getPosition(), 1, Ecological.STATES) : cache.booleanValue()))
 				{
@@ -610,7 +610,7 @@ public class EntityEvents
 				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (1F + (float)Math.log10(10D + (1.6 + Math.log(Math.max(0.25D, attr.getAttributeValue())) / SwiftBlade.BASE_SPEED.get()) * Math.log(level*level))));
+					event.setAmount(event.getAmount() * (float)Math.log10(10D + (1.6 + Math.log(Math.max(0.25D, attr.getAttributeValue())) / SwiftBlade.BASE_SPEED.get()) * Math.log(level*level)));
 				}
 			}
 			level = enchantments.getInt(UniqueEnchantments.FOCUS_IMPACT);
@@ -619,7 +619,7 @@ public class EntityEvents
 				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (1F + (float)Math.log10(Math.pow(FocusImpact.BASE_SPEED.get() / attr.getAttributeValue(), 2D)*Math.log(6+level))));
+					event.setAmount(event.getAmount() * (1F + (float)Math.log10((FocusImpact.BASE_SPEED.get() / attr.getAttributeValue(), 2D)*Math.log(6+level))));
 				}
 			}
 			level = MiscUtil.getEnchantedItem(UniqueEnchantments.CLIMATE_TRANQUILITY, base).getIntValue();
