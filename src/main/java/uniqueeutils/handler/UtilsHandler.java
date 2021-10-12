@@ -128,7 +128,7 @@ public class UtilsHandler
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.FAMINES_ODIUM, player);
 		if(level > 0)
 		{
-			int duration = (int)(FaminesOdium.DELAY.get() * (1 - Math.log10(level)));
+			int duration = (int)(FaminesOdium.DELAY.get() / Math.sqrt(level, 0.125D));
 			if(time % duration == 0)
 			{
 				Int2FloatMap.Entry entry = FaminesOdium.consumeRandomItem(player.inventory, FaminesOdium.NURISHMENT.getFloat(level));
@@ -212,7 +212,7 @@ public class UtilsHandler
 			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.AMBROSIA, event.getItem());
 			if(level > 0)
 			{
-				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(Math.pow(1 + ((EntityPlayer)event.getEntityLiving()).experienceLevel * level, 6)) * Ambrosia.DURATION_MULTIPLIER.get()));
+				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(Math.pow(1 + ((EntityPlayer)event.getEntityLiving()).experienceLevel * level, 5)) * Ambrosia.DURATION_MULTIPLIER.get()));
 				((EntityPlayer)event.getEntityLiving()).getFoodStats().addStats(2000, 0);
 				event.getEntityLiving().addPotionEffect(new PotionEffect(UniqueEnchantmentsUtils.SATURATION, duration, Math.min(20, level)));
 			}

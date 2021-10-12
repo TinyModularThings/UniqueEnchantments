@@ -10,7 +10,7 @@ import uniquee.UniqueEnchantments;
 
 public class FocusImpact extends UniqueEnchantment
 {
-	public static final DoubleStat BASE_SPEED = new DoubleStat(1.05D, "base_speed");
+	public static final DoubleStat BASE_SPEED = new DoubleStat(1.2D, "attack_speed_comparison");
 	
 	public FocusImpact()
 	{

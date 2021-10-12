@@ -12,7 +12,7 @@ public class Range extends UniqueEnchantment
 {
 	public static final UUID RANGE_MOD = UUID.fromString("3b35b821-d4d7-4aa3-8c64-e9849f43516a");
 	public static final DoubleLevelStats RANGE = new DoubleLevelStats("range", 0.8D, 0.3D);
-	public static final DoubleLevelStats REDUCTION = new DoubleLevelStats("reduction", 1D, 2D);
+	public static final DoubleLevelStats REDUCTION = new DoubleLevelStats("mining_fatique", 1D, 2D);
 	
 	public Range()
 	{
