@@ -158,10 +158,7 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onPlayerTick(PlayerTickEvent event)
 	{
-		if(event.phase == Phase.START)
-		{
-			return;
-		}
+		if(event.phase == Phase.START) return;
 		EntityPlayer player = event.player;
 		EnchantmentContainer container = new EnchantmentContainer(player);
 		if(event.side == Side.SERVER)
@@ -282,7 +279,7 @@ public class EntityEvents
 				if(!player.isCreative())
 				{
 					StackUtils.setInt(stack, Cloudwalker.TIMER, value-1);
-					if(player.world.getTotalWorldTime() % (20*Math.sqrt(level)) == 0)
+					if(player.world.getTotalWorldTime() % Math.min(1, (int)(20 * Math.sqrt(level))) == 0)
 					{
 						stack.damageItem(1, player);
 					}
@@ -848,7 +845,7 @@ public class EntityEvents
 				return;
 			}
 			event.getEntityLiving().getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, nbt);
-			nbt.setFloat(DeathsOdium.CURSE_STORAGE, toRemove - (float)(DeathsOdium.BASE_LOSS.get(Math.log(2.8D + (maxLevel/16D)))));
+			nbt.setFloat(DeathsOdium.CURSE_STORAGE, toRemove - (float)Math.ceil(Math.sqrt(DeathsOdium.BASE_LOSS.get(maxLevel))));
 		}
 	}
 	
@@ -867,7 +864,7 @@ public class EntityEvents
 	{
 		if(event.getItem().getItem() == Items.COOKIE && MiscUtil.getEnchantmentLevel(UniqueEnchantments.DEATHS_ODIUM, event.getItem()) > 0)
 		{
-			event.getEntityLiving().getEntityData().setBoolean(DeathsOdium.CURSE_RESET, true);
+			event.getEntityLiving().getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).setBoolean(DeathsOdium.CURSE_RESET, true);
 			event.getEntityLiving().onKillCommand();
 		}
 	}
@@ -1016,7 +1013,7 @@ public class EntityEvents
 			int value = StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0);
 			if(value > 0)
 			{
-				mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(DeathsOdium.getForSlot(slot), "Death Odiums Restore", DeathsOdium.BASE_LOSS.get(value)*Math.log(2.8D*value*level), 0));
+				mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(DeathsOdium.getForSlot(slot), "Death Odiums Restore", DeathsOdium.BASE_LOSS.get(value), 0));
 			}
 		}
 		return mods;

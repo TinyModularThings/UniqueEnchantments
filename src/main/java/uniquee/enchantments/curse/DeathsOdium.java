@@ -3,7 +3,9 @@ package uniquee.enchantments.curse;
 import java.util.UUID;
 
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
@@ -34,7 +36,13 @@ public class DeathsOdium extends UniqueEnchantment
 		addStats(DELAY, MAX_STORAGE, DAMAGE_FACTOR, BASE_LOSS);
 		setCurse();
 	}
-		
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() == Items.COOKIE;
+	}
+	
 	public static UUID getForSlot(EntityEquipmentSlot slot)
 	{
 		switch(slot)

@@ -9,7 +9,6 @@ import net.minecraft.block.BlockAnvil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.Tuple;
@@ -81,28 +80,5 @@ public class BaseHandler
 				}
 			}
 		}
-	}
-	
-	public static int getXP(EntityPlayer player)
-	{
-		return getXPForLvl(player.experienceLevel) + (int)(player.experience * player.xpBarCap());
-	}
-	
-	public static int getXPForLvl(int level) 
-	{
-		if (level < 0) return Integer.MAX_VALUE;
-		if (level <= 15)return level * level + 6 * level;
-		if (level <= 30)return (int) (((level * level) * 2.5D) - (40.5D * level) + 360.0D);
-		return (int) (((level * level) * 4.5D) - (162.5D * level) + 2220.0D);
-	}
-
-	public static int getLvlForXP(int totalXP)
-	{
-		int result = 0;
-		while (getXPForLvl(result) <= totalXP) 
-		{
-			result++;
-		}
-		return --result;
 	}
 }
