@@ -1,10 +1,8 @@
 package uniquee;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map.Entry;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
@@ -25,7 +23,6 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import uniquebase.api.BaseUEMod;
-import uniquebase.api.IToggleEnchantment;
 import uniquebase.handler.BaseHandler;
 import uniquee.client.EnchantmentLayer;
 import uniquee.compat.FirstAidHandler;
@@ -71,7 +68,6 @@ import uniquee.handler.potion.PotionPestilencesOdium;
 @Mod(modid = "uniquee", name = "Unique Enchantments", version = "2.0.1", dependencies = "required-after:uniquebase@[1.0.0,);")
 public class UniqueEnchantments extends BaseUEMod
 {
-	static List<IToggleEnchantment> ENCHANTMENTS = new ObjectArrayList<IToggleEnchantment>();
 	//Simple
 	public static Enchantment BERSERKER;
 	public static Enchantment ADV_SHARPNESS;

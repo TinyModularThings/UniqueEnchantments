@@ -14,7 +14,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -235,7 +234,7 @@ public class EntityEvents
 				}
 			}
 			NBTTagCompound data = event.player.getEntityData();
-			if(data.hasKey(DeathsOdium.CURSE_DAMAGE) && data.getLong(DeathsOdium.CRUSE_TIMER) < event.player.world.getTotalWorldTime())
+			if(data.hasKey(DeathsOdium.CURSE_DAMAGE) && data.getLong(DeathsOdium.CURSE_TIMER) < event.player.world.getTotalWorldTime())
 			{
 				int total = MathHelper.floor(data.getFloat(DeathsOdium.CURSE_DAMAGE) / DeathsOdium.DAMAGE_FACTOR.get());
 				if(total > 0)
@@ -500,7 +499,7 @@ public class EntityEvents
 			int gold = StackUtils.getInt(stack, MidasBlessing.GOLD_COUNTER, 0);
 			if(gold > 0 && StackUtils.isGem(event.getState()))
 			{
-				gold -= (int)(Math.pow(MidasBlessing.GOLD_COST.get()+midas, 2)/midas);
+				gold -= (int)(Math.pow(MidasBlessing.GOLD_COST.getAsDouble(midas), 2)/midas);
 				StackUtils.setInt(stack, MidasBlessing.GOLD_COUNTER, Math.max(0, gold));
 				int multiplier = 1 + midas;
 				List<ItemStack> newDrops = new ObjectArrayList<ItemStack>();
@@ -663,7 +662,7 @@ public class EntityEvents
 				}
 				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 				float amount = event.getAmount();
-				double damage = (1F + Math.pow(PerpetualStrike.PER_HIT.get(count)/Math.log(2.8D+attr.getAttributeValue()), 1.4D)-1F)*level*PerpetualStrike.PER_HIT_LEVEL.get();
+				double damage = (1F + Math.pow(PerpetualStrike.PER_HIT.get(count)/Math.log(2.8D+(attr == null ? 1D : attr.getAttributeValue())), 1.4D)-1F)*level*PerpetualStrike.PER_HIT_LEVEL.get();
 				double multiplier = Math.log10(10+(damage/Math.log10(1+event.getAmount())) * PerpetualStrike.MULTIPLIER.get());
 				amount += damage;
 				amount *= multiplier;
@@ -737,7 +736,7 @@ public class EntityEvents
 				{
 					((EntityPlayer)living).getFoodStats().addStats(Short.MAX_VALUE, 1F);
 				}
-				living.getEntityData().setLong(DeathsOdium.CRUSE_TIMER, living.getEntityWorld().getTotalWorldTime() + DeathsOdium.DELAY.get());
+				living.getEntityData().setLong(DeathsOdium.CURSE_TIMER, living.getEntityWorld().getTotalWorldTime() + DeathsOdium.DELAY.get());
                 living.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 600, 2));
                 living.addPotionEffect(new PotionEffect(MobEffects.ABSORPTION, 100, 1));
                 living.world.setEntityState(living, (byte)35);
@@ -750,10 +749,10 @@ public class EntityEvents
 	            }
 			}
 		}
-		if(entity instanceof EntityLiving)
+		if(entity instanceof EntityPlayer)
 		{
 			NBTTagCompound compound = entity.getEntityData();
-			if(compound.getLong(DeathsOdium.CRUSE_TIMER) >= entity.world.getTotalWorldTime())
+			if(compound.getLong(DeathsOdium.CURSE_TIMER) >= entity.world.getTotalWorldTime())
 			{
 				compound.setFloat(DeathsOdium.CURSE_DAMAGE, compound.getFloat(DeathsOdium.CURSE_DAMAGE)+event.getAmount());
 			}
@@ -834,6 +833,20 @@ public class EntityEvents
 				instance.removeModifier(mod);
 			}
 			NBTTagCompound nbt = event.getEntityLiving().getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+			if(nbt.getBoolean(DeathsOdium.CURSE_RESET))
+			{
+				nbt.removeTag(DeathsOdium.CURSE_RESET);
+				nbt.removeTag(DeathsOdium.CURSE_STORAGE);
+				for(EntityEquipmentSlot slot : EntityEquipmentSlot.values())
+				{
+					ItemStack stack = event.getEntityLiving().getItemStackFromSlot(slot);
+					if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.DEATHS_ODIUM, stack) > 0)
+					{
+						stack.getTagCompound().removeTag(DeathsOdium.CURSE_STORAGE);
+					}
+				}
+				return;
+			}
 			event.getEntityLiving().getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, nbt);
 			nbt.setFloat(DeathsOdium.CURSE_STORAGE, toRemove - (float)(DeathsOdium.BASE_LOSS.get(Math.log(2.8D + (maxLevel/16D)))));
 		}
@@ -843,7 +856,7 @@ public class EntityEvents
 	public void onRespawn(PlayerEvent.Clone event)
 	{
 		float f = event.getEntityPlayer().getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG).getFloat(DeathsOdium.CURSE_STORAGE);
-		if(f != 0)
+		if(f != 0F)
 		{
 			event.getEntityLiving().getAttributeMap().getAttributeInstance(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier(DeathsOdium.REMOVE_UUID, "odiums_curse", f, 0));
 		}
@@ -854,6 +867,7 @@ public class EntityEvents
 	{
 		if(event.getItem().getItem() == Items.COOKIE && MiscUtil.getEnchantmentLevel(UniqueEnchantments.DEATHS_ODIUM, event.getItem()) > 0)
 		{
+			event.getEntityLiving().getEntityData().setBoolean(DeathsOdium.CURSE_RESET, true);
 			event.getEntityLiving().onKillCommand();
 		}
 	}

@@ -19,6 +19,7 @@ import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.EnchantmentContainer;
 import uniquebase.utils.IntStat;
+import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquee.UniqueEnchantments;
 
@@ -85,17 +86,16 @@ public class EnderMending extends UniqueEnchantment
 		}
 		if(hasSlot == null) return;
 		List<ItemStack> found = new ObjectArrayList<>();
-		for(Entry<EntityEquipmentSlot, Object2IntMap<Enchantment>> entry : container.getAll())
+		for(int i = 0,m=player.inventory.getSizeInventory();i<m;i++)
 		{
-			ItemStack stack = player.getItemStackFromSlot(entry.getKey());
-			if(stack.isItemDamaged())
+			ItemStack stack = player.inventory.getStackInSlot(i);
+			if(stack.isEmpty() || !stack.isItemDamaged()) continue;
+			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
+			for(Enchantment ench : enchantments.keySet())
 			{
-				for(Enchantment ench : entry.getValue().keySet())
-				{
-					if(!VALID_ENCHANTMENTS.contains(Enchantment.getEnchantmentID(ench))) continue;
-					found.add(stack);
-					break;
-				}
+				if(!VALID_ENCHANTMENTS.contains(Enchantment.getEnchantmentID(ench))) continue;
+				found.add(stack);
+				break;
 			}
 		}
 		int last = stored;

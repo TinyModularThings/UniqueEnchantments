@@ -146,6 +146,7 @@ public class StackUtils
 				int consumed = consumer.apply(items.get(startIndex), 1);
 				if(consumed <= 0) items.remove(startIndex--);
 				left-=consumed;
+				if(items.isEmpty()) break;
 				startIndex = ++startIndex % items.size();
 			}
 		}
