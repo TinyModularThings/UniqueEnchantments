@@ -26,7 +26,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import uniquebase.api.BaseUEMod;
-import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
 import uniquee.client.EnchantmentLayer;
 import uniquee.enchantments.complex.EnderMending;
@@ -128,10 +127,10 @@ public class UniqueEnchantments extends BaseUEMod
 		MinecraftForge.EVENT_BUS.register(this);
 		bus.addGenericListener(Effect.class, this::loadPotion);
 
-		BaseHandler.INSTANCE.registerStorageTooltip(MIDAS_BLESSING, "tooltip.uniqee.stored.gold.name", MidasBlessing.GOLD_COUNTER);
-		BaseHandler.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniqee.stored.lava.name", IfritsGrace.LAVA_COUNT);
-		BaseHandler.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniqee.stored.feather.name", IcarusAegis.FEATHER_TAG);
-		BaseHandler.INSTANCE.registerStorageTooltip(ENDER_MENDING, "tooltip.uniqee.stored.repair.name", EnderMending.ENDER_TAG);
+		BaseHandler.INSTANCE.registerStorageTooltip(MIDAS_BLESSING, "tooltip.uniquee.stored.gold.name", MidasBlessing.GOLD_COUNTER);
+		BaseHandler.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniquee.stored.lava.name", IfritsGrace.LAVA_COUNT);
+		BaseHandler.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniquee.stored.feather.name", IcarusAegis.FEATHER_TAG);
+		BaseHandler.INSTANCE.registerStorageTooltip(ENDER_MENDING, "tooltip.uniquee.stored.repair.name", EnderMending.ENDER_TAG);
 		BaseHandler.INSTANCE.registerStorageTooltip(ENDEST_REAP, "tooltip.uniquee.stored.reap.name", EndestReap.REAP_STORAGE);
 		
 		BaseHandler.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessing.VALIDATOR, MidasBlessing.GOLD_COUNTER);
@@ -186,7 +185,6 @@ public class UniqueEnchantments extends BaseUEMod
     @SubscribeEvent
 	public void postInit(FMLCommonSetupEvent setup) 
 	{
-		CropHarvestRegistry.INSTANCE.init();
 		if(ModList.get().isLoaded("firstaid"))
 		{
 			try

@@ -16,7 +16,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.api.filters.IBlessingEnchantment;
-import uniquebase.utils.DoubleStat;
+import uniquebase.utils.DoubleLevelStats;
 
 public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchantment
 {
@@ -36,7 +36,7 @@ public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchant
 	};
 	public static Tag<Block> MIDIAS = new BlockTags.Wrapper(new ResourceLocation("uniquee", "midias_blessing"));
 	public static String GOLD_COUNTER = "gold_storage";
-	public static final DoubleStat GOLD_COST = new DoubleStat(1.5D, "gold_cost");
+	public static final DoubleLevelStats GOLD_COST = new DoubleLevelStats("gold_cost", 1D, 1D);
 	
 	public MidasBlessing()
 	{

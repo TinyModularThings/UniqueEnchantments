@@ -1,6 +1,7 @@
 package uniquee.enchantments.simple;
 
 import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -13,6 +14,7 @@ import net.minecraft.potion.Effects;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntLevelStats;
+import uniquee.UniqueEnchantments;
 
 public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 {
@@ -23,6 +25,13 @@ public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 	{
 		super(new DefaultData("arthropods", Rarity.RARE, 5, true, 6, 4, 30), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
 		addStats(BONUS_DAMAGE, SLOW_DURATION);
+	}
+	
+	@Override
+	public void loadIncompats()
+	{
+		addIncompats(Enchantments.SHARPNESS, Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS);
+		addIncompats(UniqueEnchantments.ADV_SHARPNESS, UniqueEnchantments.ADV_SMITE);
 	}
 	
 	@Override

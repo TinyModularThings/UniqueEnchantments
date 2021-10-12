@@ -98,7 +98,7 @@ task utilsJar(type: Jar, dependsOn: reobf) {
   from(zipTree(jar.archivePath)) {
     include 'META_INF/MANIFEST.MF'
     include '**/uniqueeutils/**/*'
-    include '**/assets/uniqueeutil/**/*'
+    include '**/assets/uniqueutil/**/*'
     include 'pack.mcmeta'
   }
   from(zipTree(jar.archivePath)) {
@@ -115,7 +115,7 @@ task battleJar(type: Jar, dependsOn: reobf) {
   from(zipTree(jar.archivePath)) {
     include 'META_INF/MANIFEST.MF'
     include '**/uniqueebattle/**/*'
-    include '**/assets/uniqueebattle/**/*'
+    include '**/assets/uniquebattle/**/*'
     include 'pack.mcmeta'
   }
   from(zipTree(jar.archivePath)) {

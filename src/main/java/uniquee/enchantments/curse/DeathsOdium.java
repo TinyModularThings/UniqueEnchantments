@@ -11,8 +11,9 @@ import uniquebase.utils.IntStat;
 public class DeathsOdium extends UniqueEnchantment
 {
 	public static final String CURSE_STORAGE = "curse_storage";
-	public static final String CRUSE_TIMER = "curse_regain_timer";
+	public static final String CURSE_TIMER = "curse_regain_timer";
 	public static final String CURSE_DAMAGE = "curse_regain_damage";
+	public static final String CURSE_RESET = "curse_reset";
 	public static final UUID REMOVE_UUID = UUID.fromString("1a74e7ff-3914-4e57-8f59-aed5c17c04a0");
 	public static final UUID GENERAL_MOD = UUID.fromString("f598685c-c107-4ba0-b537-2a9c03582186");
 	public static final UUID MAIN_HAND_MOD = UUID.fromString("fbd9ead3-fdd8-45c8-a029-644b9a5c72cf");

@@ -14,6 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IdStat;
+import uniquebase.utils.IntStat;
 import uniquee.UniqueEnchantments;
 
 public class Grimoire extends UniqueEnchantment
@@ -21,14 +22,15 @@ public class Grimoire extends UniqueEnchantment
 	public static final String GRIMOIRE_LEVEL = "grimoire_level";
 	public static final String GRIMOIRE_STORAGE = "grimoire_storage";
 	public static final String GRIMOIRE_OWNER = "grimoire_owner";
-	public static final DoubleStat LEVEL_SCALING = new DoubleStat(0.95D, "level_scaling");
+	public static final DoubleStat LEVEL_SCALING = new DoubleStat(0.9D, "level_scaling");
 	public static final DoubleStat STEP_SKIP = new DoubleStat(5D, "step_skip");
+	public static final IntStat START_LEVEL = new IntStat(50, "start_level");
 	public static final IdStat INCOMPATS = new IdStat("ignored_enchantments", ForgeRegistries.ENCHANTMENTS);
 	
 	public Grimoire()
 	{
 		super(new DefaultData("grimoire", Rarity.VERY_RARE, 5, true, 70, 36, 20), EnchantmentType.ALL, EquipmentSlotType.values());
-		addStats(LEVEL_SCALING, STEP_SKIP, INCOMPATS);
+		addStats(LEVEL_SCALING, STEP_SKIP, INCOMPATS, START_LEVEL);
 		setCurse();
 	}
 	
@@ -36,13 +38,14 @@ public class Grimoire extends UniqueEnchantment
 	public void loadIncompats()
 	{
 		addIncompats(Enchantments.MENDING, UniqueEnchantments.ENDER_MENDING);
+		INCOMPATS.addDefault(Enchantments.FORTUNE, Enchantments.EFFICIENCY, Enchantments.LOOTING, UniqueEnchantments.MIDAS_BLESSING, UniqueEnchantments.ENDEST_REAP, Enchantments.MENDING, Enchantments.SILK_TOUCH);
 	}
-	
+		
 	public static void applyGrimore(ItemStack stack, int level, PlayerEntity player)
 	{
 		CompoundNBT compound = stack.getTag();
 		if(compound == null) compound = new CompoundNBT();
-		int nextLevel = Math.max(0, MathHelper.floor(Math.log((player.experienceLevel+1)*level)*LEVEL_SCALING.get()-STEP_SKIP.get()));
+		int nextLevel = Math.max(0, MathHelper.floor(Math.log((Math.max(1, START_LEVEL.get())+player.experienceLevel)*level)*LEVEL_SCALING.get()-STEP_SKIP.get()));
 		int grimoreCount = compound.contains(GRIMOIRE_STORAGE) ? compound.getList(GRIMOIRE_STORAGE, 10).size() : 0;
 		int enchCount = compound.contains("Enchantments") ? compound.getList("Enchantments", 10).size() : 0;
 		System.out.println(nextLevel);

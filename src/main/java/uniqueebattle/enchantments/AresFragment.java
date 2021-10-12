@@ -10,19 +10,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
+import uniquebase.utils.IntStat;
 
 public class AresFragment extends UniqueEnchantment
 {
 	public static final DoubleStat ARMOR_PERCENTAGE = new DoubleStat(0.6D, "armor_percentage");
-	public static final DoubleStat BASE_CHANCE = new DoubleStat(0.5D, "base_chance");
-	public static final DoubleStat CHANCE_MULT = new DoubleStat(3.258D, "chance_multiplier");
-	public static final DoubleStat DURABILITY_SCALING = new DoubleStat(1D, "durability_scaling");
+	public static final IntStat BASE_ROLL = new IntStat(10, "base_roll");
+	public static final DoubleStat BASE_ROLL_MULTIPLIER = new DoubleStat(1D, "base_roll_multiplier");
+	public static final DoubleStat DURABILITY_DISTRIBUTION = new DoubleStat(0.6D, "durability_distribution");
+	public static final DoubleStat DURABILITY_REDUCTION_SCALING = new DoubleStat(1.3D, "durability_reduction_scaling");
+	public static final IntStat DURABILITY_ANTI_SCALING = new IntStat(11, "durability_anti_scaling");
 	
 	public AresFragment()
 	{
 		super(new DefaultData("ares_fragment", Rarity.RARE, 4, true, 25, 35, 10), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
-		addStats(ARMOR_PERCENTAGE, BASE_CHANCE, CHANCE_MULT, DURABILITY_SCALING);
 		setCategory("battle");
+		addStats(ARMOR_PERCENTAGE, BASE_ROLL, BASE_ROLL_MULTIPLIER, DURABILITY_REDUCTION_SCALING, DURABILITY_ANTI_SCALING, DURABILITY_DISTRIBUTION);
 	}
 	
 	@Override

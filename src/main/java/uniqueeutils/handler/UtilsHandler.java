@@ -65,8 +65,8 @@ import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniqueeutils.UniqueEnchantmentsUtils;
 import uniqueeutils.enchantments.complex.Ambrosia;
-import uniqueeutils.enchantments.complex.BouncyDudes;
 import uniqueeutils.enchantments.complex.Climber;
+import uniqueeutils.enchantments.complex.EssenceOfSlime;
 import uniqueeutils.enchantments.complex.SleipnirsGrace;
 import uniqueeutils.enchantments.curse.FaminesOdium;
 import uniqueeutils.enchantments.curse.PhanesRegret;
@@ -132,7 +132,7 @@ public class UtilsHandler
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.FAMINES_ODIUM, player);
 		if(level > 0)
 		{
-			int duration = (int)(FaminesOdium.DELAY.get() * (1 - Math.log10(level)));
+			int duration = (int)Math.max((FaminesOdium.DELAY.get() / Math.pow(level, 0.125D)), 1);
 			if(time % duration == 0)
 			{
 				Int2FloatMap.Entry entry = FaminesOdium.consumeRandomItem(player.inventory, FaminesOdium.NURISHMENT.getFloat() * level);
@@ -178,18 +178,18 @@ public class UtilsHandler
 	public void onFall(LivingFallEvent event)
 	{
 		ItemStack stack = event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.FEET);
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.BOUNCY_DUDES, stack);
+		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.ESSENCE_OF_SLIME, stack);
 		if(level > 0)
 		{
 			if(event.getDistance() <= 1.3)
 				return;
-			int damage = MathHelper.floor(((event.getDistance() - 2) * BouncyDudes.DURABILITY_LOSS.get() / (level + MiscUtil.getEnchantmentLevel(Enchantments.FEATHER_FALLING, stack))));
+			int damage = MathHelper.floor(((event.getDistance() - 2) * EssenceOfSlime.DURABILITY_LOSS.get() / Math.sqrt(level + MiscUtil.getEnchantmentLevel(Enchantments.FEATHER_FALLING, stack))));
 			if(damage > 0)
 			{
 				stack.damageItem(damage, event.getEntityLiving(), MiscUtil.get(EquipmentSlotType.FEET));
 			}
 			LivingEntity entity = event.getEntityLiving();
-			entity.getPersistentData().putDouble("bounce", entity.getMotion().getY() * -0.735D);
+			entity.getPersistentData().putDouble("bounce", entity.getMotion().getY()/Math.log10(15.5D+EssenceOfSlime.FALL_DISTANCE_MULTIPLIER.get(entity.getMotion().getY())) * -1D);
 			event.setCanceled(true);
 		}
 	}
@@ -217,7 +217,7 @@ public class UtilsHandler
 			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.AMBROSIA, event.getItem());
 			if(level > 0)
 			{
-				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(Math.pow(1 + ((PlayerEntity)event.getEntityLiving()).experienceLevel * level, 6)) * Ambrosia.DURATION_MULTIPLIER.get()));
+				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(Math.pow(1 + ((PlayerEntity)event.getEntityLiving()).experienceLevel * level, 5)) * Ambrosia.DURATION_MULTIPLIER.get()));
 				((PlayerEntity)event.getEntityLiving()).getFoodStats().addStats(2000, 0);
 				event.getEntityLiving().addPotionEffect(new EffectInstance(UniqueEnchantmentsUtils.SATURATION, duration, Math.min(20, level)));
 			}
@@ -291,10 +291,12 @@ public class UtilsHandler
 					if(!event.getWorld().getBlockState(pos).func_224756_o(event.getWorld(), pos) && !event.getWorld().getBlockState(pos.up()).func_224756_o(event.getWorld(), pos.up()))
 					{
 						CompoundNBT nbt = event.getPlayer().getPersistentData();
+						boolean wasClimbing = nbt.getLong(Climber.CLIMB_START) != 0;
 						nbt.putLong(Climber.CLIMB_POS, pos.toLong());
 						nbt.putInt(Climber.CLIMB_DELAY, Climber.getClimbTime(level, blocks));
 						nbt.putLong(Climber.CLIMB_START, event.getWorld().getGameTime());
-						event.getPlayer().sendStatusMessage(new TranslationTextComponent("tooltip.uniqueutil.climb.start.name"), true);
+						event.getPlayer().sendStatusMessage(new TranslationTextComponent("tooltip.uniqueutil.climb."+(wasClimbing ? "re" : "")+"start.name"), true);
+						event.setCancellationResult(ActionResultType.SUCCESS);
 					}
 					else
 					{
