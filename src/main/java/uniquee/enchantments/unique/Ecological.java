@@ -7,6 +7,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.CrossbowItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.util.ResourceLocation;
@@ -25,13 +27,19 @@ public class Ecological extends UniqueEnchantment
 			return BlockTags.LOGS.contains(t.getBlock()) || BlockTags.LEAVES.contains(t.getBlock()) || ECHOLOGICAL.contains(t.getBlock());
 		}
 	};
-	public static final IntStat SPEED = new IntStat(220, "speed");
-	public static final DoubleStat SPEED_SCALE = new DoubleStat(1.85D, "speed_scale");
+	public static final IntStat SPEED = new IntStat(220, "baseDuration");
+	public static final DoubleStat SPEED_SCALE = new DoubleStat(16D, "scalingReduction");
 	
 	public Ecological()
 	{
 		super(new DefaultData("ecological", Rarity.RARE, 3, true, true, 4, 8, 10), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
 		addStats(SPEED, SPEED_SCALE);
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() instanceof CrossbowItem;
 	}
 	
 	@Override

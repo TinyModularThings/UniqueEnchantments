@@ -14,7 +14,7 @@ import uniquebase.utils.IntStat;
 public class FaminesOdium extends UniqueEnchantment
 {
 	public static final IntStat DELAY = new IntStat(1200, "delay");
-	public static final DoubleStat NURISHMENT = new DoubleStat(0.2F, "nurishment");
+	public static final DoubleStat NURISHMENT = new DoubleStat(0.2F, "nourishment");
 	public static final DoubleStat DAMAGE = new DoubleStat(0.00625F, "damage");
 	
 	public FaminesOdium()

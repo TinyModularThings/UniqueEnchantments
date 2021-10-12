@@ -46,7 +46,7 @@ public class FirstAidHandler
 				living.heal(living.getMaxHealth());
 				living.clearActivePotions();
 				living.getFoodStats().addStats(Short.MAX_VALUE, 1F);
-				living.getPersistentData().putLong(DeathsOdium.CRUSE_TIMER, living.getEntityWorld().getGameTime() + DeathsOdium.DELAY.get());
+				living.getPersistentData().putLong(DeathsOdium.CURSE_TIMER, living.getEntityWorld().getGameTime() + DeathsOdium.DELAY.get());
 	            living.addPotionEffect(new EffectInstance(Effects.REGENERATION, 600, 1));
 	            living.addPotionEffect(new EffectInstance(Effects.ABSORPTION, 100, 1));
 	            living.world.setEntityState(living, (byte)35);
