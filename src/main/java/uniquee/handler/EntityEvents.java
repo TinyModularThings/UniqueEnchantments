@@ -282,7 +282,7 @@ public class EntityEvents
 				if(!player.isCreative())
 				{
 					StackUtils.setInt(stack, Cloudwalker.TIMER, value-1);
-					if(player.world.getTotalWorldTime() % (20*Math.sqrt(level.getIntValue())) == 0)
+					if(player.world.getTotalWorldTime() % (20*Math.sqrt(level)) == 0)
 					{
 						stack.damageItem(1, player);
 					}
@@ -618,7 +618,7 @@ public class EntityEvents
 				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (1F + (float)Math.log10((FocusImpact.BASE_SPEED.get() / attr.getAttributeValue(), 2D)*Math.log(6+level))));
+					event.setAmount(event.getAmount() * (1F + (float)Math.log10(Math.pow(FocusImpact.BASE_SPEED.get() / attr.getAttributeValue(), 2D)*Math.log(6+level))));
 				}
 			}
 			level = MiscUtil.getEnchantedItem(UniqueEnchantments.CLIMATE_TRANQUILITY, base).getIntValue();

@@ -88,7 +88,7 @@ public class BattleHandler
 				double toughness = enemy.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue();
 				double speed = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).getAttributeValue();
 				float damageFactor = (float)(Math.log(1+Math.sqrt(player.experienceLevel*level*level)*(1+(enemy.getTotalArmorValue()+toughness*2.5)*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
-				event.setAmount(event.getAmount() * ((1F+(damageFactor*posRolls)) / (1F+(damageFactor*negRolls)));
+				event.setAmount(event.getAmount() * ((1F+(damageFactor*posRolls)) / (1F+(damageFactor*negRolls))));
 				source.getHeldItemMainhand().damageItem(MathHelper.ceil((Math.sqrt(Math.abs(posRolls-negRolls) / Math.pow(AresFragment.DURABILITY_REDUCTION_SCALING.get(), 1+(level/100D))) * (((posRolls * Math.pow(AresFragment.DURABILITY_DISTRIBUTION.get(), -1D))-(negRolls * AresFragment.DURABILITY_DISTRIBUTION.get())) / AresFragment.DURABILITY_ANTI_SCALING.get()))/speed), source);
 			}
 			if(event.getEntityLiving().isBurning())
