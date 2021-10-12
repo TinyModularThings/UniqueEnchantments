@@ -116,6 +116,7 @@ task battleJar(type: Jar, dependsOn: reobf) {
     include 'META_INF/MANIFEST.MF'
     include '**/uniqueebattle/**/*'
     include '**/assets/uniquebattle/**/*'
+    include '**/data/uniquebattle/**/*'
     include 'pack.mcmeta'
   }
   from(zipTree(jar.archivePath)) {

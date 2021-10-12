@@ -10,6 +10,7 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -40,6 +41,12 @@ public class EnderMending extends UniqueEnchantment
 	{
 		addIncompats(Enchantments.MENDING, UniqueEnchantments.ENDERMARKSMEN, UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.ECOLOGICAL);
 		VALID_ENCHANTMENTS.addDefault(Enchantments.MENDING, UniqueEnchantments.ENDER_MENDING, UniqueEnchantments.GRIMOIRE);
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() instanceof CrossbowItem;
 	}
 	
 	@Override

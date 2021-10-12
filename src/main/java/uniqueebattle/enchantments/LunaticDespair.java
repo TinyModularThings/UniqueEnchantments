@@ -15,7 +15,7 @@ public class LunaticDespair extends UniqueEnchantment
 	
 	public LunaticDespair()
 	{
-		super(new DefaultData("lunatic_despair", Rarity.UNCOMMON, 1, true, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
+		super(new DefaultData("lunatic_despair", Rarity.VERY_RARE, 2, true, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
 		addStats(BONUS_DAMAGE, SELF_DAMAGE, SELF_MAGIC_DAMAGE);
 		setCategory("battle");
 		setCurse();
