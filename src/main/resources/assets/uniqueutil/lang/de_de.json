@@ -27,6 +27,6 @@
 	"tooltip.uniqueutil.stored.repair.name": "Gespeicherte Juwelen %s",
 	"tooltip.uniqueutil.climb.start.name": "Beginne zu klettern",
 	"tooltip.uniqueutil.climb.fail.name": "Das Ziel ist versperrt",
-	"tooltip.uniqeutil.crops.added.name": "Samen zur Automatischen Ernte hinzugefuegt",
-	"tooltip.uniqeutil.crops.removed.name": "Samen aus der Automatischen Ernte entfernt"
+	"tooltip.uniqueutil.crops.added.name": "Samen zur Automatischen Ernte hinzugefuegt",
+	"tooltip.uniqueutil.crops.removed.name": "Samen aus der Automatischen Ernte entfernt"
 }

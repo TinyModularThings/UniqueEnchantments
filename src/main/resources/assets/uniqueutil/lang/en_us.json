@@ -27,6 +27,6 @@
 	"tooltip.uniqueutil.stored.repair.name": "Stored Gems %s",
 	"tooltip.uniqueutil.climb.start.name": "Starting to Climb now",
 	"tooltip.uniqueutil.climb.fail.name": "Top is obstructed",
-	"tooltip.uniqeutil.crops.added.name": "Added Crop To Auto Harvester",
-	"tooltip.uniqeutil.crops.removed.name": "Removed Crop From Auto Harvester"
+	"tooltip.uniqueutil.crops.added.name": "Added Crop To Auto Harvester",
+	"tooltip.uniqueutil.crops.removed.name": "Removed Crop From Auto Harvester"
 }
