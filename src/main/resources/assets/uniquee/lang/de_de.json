@@ -84,10 +84,10 @@
 	"potion.uniquee.uniquepestilences_odium": "Abscheu der Pestilenz",
 	
 	"//Tooltips": true,
-	"tooltip.uniqee.stored.gold.name": "Gespeichertes Gold: %s",
-	"tooltip.uniqee.stored.lava.name": "Gespeicherte Lava: %s",
-	"tooltip.uniqee.stored.feather.name": "Gespeicherte Federn: %s",
-	"tooltip.uniqee.stored.repair.name": "Gespeicherte Reparaturen: %s",
+	"tooltip.uniquee.stored.gold.name": "Gespeichertes Gold: %s",
+	"tooltip.uniquee.stored.lava.name": "Gespeicherte Lava: %s",
+	"tooltip.uniquee.stored.feather.name": "Gespeicherte Federn: %s",
+	"tooltip.uniquee.stored.repair.name": "Gespeicherte Reparaturen: %s",
 	"tooltip.uniquee.stored.reap.name": "Gespeicherte Ernte: %s"
 	
 }

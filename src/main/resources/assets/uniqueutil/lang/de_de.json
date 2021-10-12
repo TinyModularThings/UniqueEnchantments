@@ -4,7 +4,7 @@
 	"enchantment.uniqueutil.famines_odium": "Abscheu des Hungers",
 	"enchantment.uniqueutil.famines_odium.desc": "Gelegentlich wird Essen aus deinem Inventar konsumiert unabhaengig deines Hungers. Das in diesem Wege konsumierte Essen, hat reduzierte Hunger und Saetigungs Werte. Sollte kein Essen gefunden werden erhaelt der Spieler, Schaden",
 	"enchantment.uniqueutil.thick_pick": "Maechtige Picke",
-	"enchantment.uniqueutil.thick_pick.desc": "Shift-Linksklick einen Amboss um alle Juwelen in deinem Inventar zu konsumieren. Erhoeht deine Abbaugeschwindigkeit bei harten Bloecken im Austausch mit Juwelen",
+	"enchantment.uniqueutil.thick_pick.desc": "Shift-Rechtsklick einen Amboss um alle Juwelen in deinem Inventar zu konsumieren. Erhoeht deine Abbaugeschwindigkeit bei harten Bloecken im Austausch mit Juwelen",
 	"enchantment.uniqueutil.rocketman": "Raketenmann",
 	"enchantment.uniqueutil.rocketman.desc": "Raketen koennen dich nun in den Flugmodus zwingen. Flugdauern durch Raketen ist erhoeht",
 	"enchantment.uniqueutil.climber": "Kletterer",
@@ -27,6 +27,6 @@
 	"tooltip.uniqueutil.stored.repair.name": "Gespeicherte Juwelen %s",
 	"tooltip.uniqueutil.climb.start.name": "Beginne zu klettern",
 	"tooltip.uniqueutil.climb.fail.name": "Das Ziel ist versperrt",
-	"tooltip.uniqeutil.crops.added.name": "Samen zur Automatischen Ernte hinzugefuegt",
-	"tooltip.uniqeutil.crops.removed.name": "Samen aus der Automatischen Ernte entfernt"
+	"tooltip.uniqueutil.crops.added.name": "Samen zur Automatischen Ernte hinzugefuegt",
+	"tooltip.uniqueutil.crops.removed.name": "Samen aus der Automatischen Ernte entfernt"
 }
