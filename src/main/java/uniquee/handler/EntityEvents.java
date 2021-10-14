@@ -8,6 +8,7 @@ import java.util.UUID;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.Block;
@@ -179,6 +180,20 @@ public class EntityEvents
 			}
 			if(player.world.getGameTime() % 100 == 0)
 			{
+				for(Int2ObjectMap.Entry<ItemStack> entry : container.getEnchantedItems(UniqueEnchantments.ENDER_MENDING))
+				{
+					ItemStack stack = entry.getValue();
+					if(stack.isDamaged())
+					{
+						int stored = StackUtils.getInt(stack, EnderMending.ENDER_TAG, 0);
+						if(stored > 0)
+						{
+							int toRemove = Math.min(stack.getDamage(), stored);
+							stack.setDamage(stack.getDamage() - toRemove);
+							StackUtils.setInt(stack, EnderMending.ENDER_TAG, stored - toRemove);
+						}
+					}
+				}
 				int level = container.getEnchantment(UniqueEnchantments.ENDEST_REAP, EquipmentSlotType.MAINHAND);
 				if(level > 0)
 				{

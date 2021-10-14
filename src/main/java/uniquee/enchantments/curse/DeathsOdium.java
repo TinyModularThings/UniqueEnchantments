@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
@@ -33,6 +35,12 @@ public class DeathsOdium extends UniqueEnchantment
 		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 2, false, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
 		addStats(DELAY, MAX_STORAGE, DAMAGE_FACTOR, BASE_LOSS);
 		setCurse();
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() == Items.COOKIE;
 	}
 	
 	public static UUID getForSlot(EquipmentSlotType slot)

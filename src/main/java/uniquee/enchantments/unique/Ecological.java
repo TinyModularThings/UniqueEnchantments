@@ -7,6 +7,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.CrossbowItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.ResourceLocation;
@@ -32,6 +34,12 @@ public class Ecological extends UniqueEnchantment
 	{
 		super(new DefaultData("ecological", Rarity.RARE, 3, true, 4, 8, 10), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
 		addStats(SPEED, SPEED_SCALE);
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() instanceof CrossbowItem;
 	}
 	
 	@Override
