@@ -3,6 +3,8 @@ package uniquee.enchantments.curse;
 import java.util.UUID;
 
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -11,8 +13,9 @@ import uniquebase.utils.IntStat;
 public class DeathsOdium extends UniqueEnchantment
 {
 	public static final String CURSE_STORAGE = "curse_storage";
-	public static final String CRUSE_TIMER = "curse_regain_timer";
+	public static final String CURSE_TIMER = "curse_regain_timer";
 	public static final String CURSE_DAMAGE = "curse_regain_damage";
+	public static final String CURSE_RESET = "curse_reset";
 	public static final UUID REMOVE_UUID = UUID.fromString("1a74e7ff-3914-4e57-8f59-aed5c17c04a0");
 	public static final UUID GENERAL_MOD = UUID.fromString("f598685c-c107-4ba0-b537-2a9c03582186");
 	public static final UUID MAIN_HAND_MOD = UUID.fromString("fbd9ead3-fdd8-45c8-a029-644b9a5c72cf");
@@ -32,6 +35,12 @@ public class DeathsOdium extends UniqueEnchantment
 		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 2, false, true, 10, 4, 40), BaseUEMod.ALL_TYPES, EquipmentSlotType.values());
 		addStats(DELAY, MAX_STORAGE, DAMAGE_FACTOR, BASE_LOSS);
 		setCurse();
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() == Items.COOKIE;
 	}
 	
 	public static UUID getForSlot(EquipmentSlotType slot)

@@ -3,6 +3,7 @@ package uniquee.enchantments.simple;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.api.filters.IBlessingEnchantment;
@@ -22,7 +23,7 @@ public class SagesBlessing extends UniqueEnchantment implements IBlessingEnchant
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return EnchantmentType.WEAPON.canEnchantItem(stack.getItem());
+		return EnchantmentType.WEAPON.canEnchantItem(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
 	}
 	
 	@Override

@@ -50,7 +50,7 @@ public class LootModifier implements IGlobalLootModifier
 				int gold = StackUtils.getInt(stack, MidasBlessing.GOLD_COUNTER, 0);
 				if(gold > 0 && MidasBlessing.IS_GEM.test(state))
 				{
-					gold -= (int)(Math.pow(MidasBlessing.GOLD_COST.get()+midas, 2)/midas);
+					gold -= (int)(Math.pow(MidasBlessing.GOLD_COST.getAsDouble(midas), 2)/midas);
 					StackUtils.setInt(stack, MidasBlessing.GOLD_COUNTER, Math.max(0, gold));
 					int multiplier = 1 + midas;
 					List<ItemStack> newDrops = new ObjectArrayList<ItemStack>();

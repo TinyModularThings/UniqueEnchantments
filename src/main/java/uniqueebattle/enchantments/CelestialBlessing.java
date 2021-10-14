@@ -6,6 +6,7 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.BowItem;
+import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -33,6 +34,6 @@ public class CelestialBlessing extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof BowItem || stack.getItem() instanceof AxeItem || stack.getItem() instanceof HoeItem;
+		return stack.getItem() instanceof BowItem || stack.getItem() instanceof AxeItem || stack.getItem() instanceof HoeItem || stack.getItem() instanceof CrossbowItem;
 	}
 }

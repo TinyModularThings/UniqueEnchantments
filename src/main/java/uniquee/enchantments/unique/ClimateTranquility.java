@@ -13,6 +13,7 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
+import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.registry.Registry;
@@ -42,7 +43,7 @@ public class ClimateTranquility extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof AxeItem || EnchantmentType.BOW.canEnchantItem(stack.getItem());
+		return stack.getItem() instanceof AxeItem || EnchantmentType.BOW.canEnchantItem(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
 	}
 	
 	public static void onClimate(PlayerEntity player, EnchantmentContainer container)
