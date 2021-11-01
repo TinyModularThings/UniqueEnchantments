@@ -41,7 +41,7 @@ public class MiscUtil
 		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return 0;
 		if(stack.isEmpty()) return 0;
 		NBTTagList list = stack.getEnchantmentTagList();
-		if(list.hasNoTags()) return 0;
+		if(list.isEmpty()) return 0;
 		int id = Enchantment.getEnchantmentID(ench);
 		for(int i = 0, m = list.tagCount();i < m;i++)
 		{
@@ -76,7 +76,7 @@ public class MiscUtil
 		// Micro Optimization. If the EnchantmentMap is empty then returning a
 		// EmptyMap is faster then creating a new map. More Performance in
 		// checks.
-		if(list.hasNoTags()) return Object2IntMaps.emptyMap();
+		if(list.isEmpty()) return Object2IntMaps.emptyMap();
 		Object2IntMap<Enchantment> map = new Object2IntOpenHashMap<Enchantment>();
 		for(int i = 0, m = list.tagCount();i < m;i++)
 		{
@@ -183,7 +183,7 @@ public class MiscUtil
 		boolean flag = iblockstate.getBlock().removedByPlayer(iblockstate, world, pos, player, canHarvest);
 		if(flag)
 		{
-			iblockstate.getBlock().onBlockDestroyedByPlayer(world, pos, iblockstate);
+			iblockstate.getBlock().onPlayerDestroy(world, pos, iblockstate);
 		}
 		return flag;
 	}

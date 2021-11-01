@@ -39,7 +39,7 @@ public class DemetersSoul extends UniqueEnchantment
 		NBTTagCompound entityData = player.getEntityData();
 		NBTTagCompound persistent = entityData.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
 		NBTTagList list = persistent.getTagList(ID, 10);
-		if(list.hasNoTags())
+		if(list.isEmpty())
 		{
 			return null;
 		}

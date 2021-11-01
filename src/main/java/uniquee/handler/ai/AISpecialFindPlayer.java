@@ -42,7 +42,7 @@ public class AISpecialFindPlayer extends EntityAINearestAttackableTarget<EntityP
         else
         {
             Vec3d vec3d1 = new Vec3d(enderman.posX - player.posX, enderman.getEntityBoundingBox().minY + enderman.getEyeHeight() - (player.posY + player.getEyeHeight()), enderman.posZ - player.posZ);
-            double d0 = vec3d1.lengthVector();
+            double d0 = vec3d1.length();
             double d1 = player.getLook(1.0F).normalize().dotProduct(vec3d1.normalize());
             return d1 > 1.0D - 0.025D / d0 ? player.canEntityBeSeen(enderman) : false;
         }

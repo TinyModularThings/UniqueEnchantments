@@ -22,7 +22,7 @@ compileJava {
 minecraft {
     version = "1.12.2-14.23.5.2847"
     runDir = "run"
-    mappings = "snapshot_20171003"
+    mappings = "stable_39"
 }
 
 repositories {
@@ -33,6 +33,8 @@ repositories {
 
 dependencies {
 	compile "curse.maven:firstaid-276837:2790027"
+	compile "curse.maven:jei-238222:3040523"
+	compile "curse.maven:enchantment-descriptions-250419:2689502"
 }
 
 processResources {

@@ -1,12 +1,16 @@
 package uniquee.enchantments.unique;
 
+import java.util.List;
+
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
+import uniquebase.api.ICustomItemEnchantment;
 import uniquebase.api.UniqueEnchantment;
 
-public class EnderLibrarian extends UniqueEnchantment
+public class EnderLibrarian extends UniqueEnchantment implements ICustomItemEnchantment
 {	
 	public EnderLibrarian()
 	{
@@ -17,5 +21,11 @@ public class EnderLibrarian extends UniqueEnchantment
 	public boolean canApplyAtEnchantingTable(ItemStack stack)
 	{
 		return enabled && stack.getItem() instanceof ItemMap;
+	}
+
+	@Override
+	public void addCustomItems(List<ItemStack> list)
+	{
+		list.add(new ItemStack(Items.ENCHANTED_BOOK));
 	}
 }

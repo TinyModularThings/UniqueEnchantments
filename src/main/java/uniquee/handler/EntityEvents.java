@@ -903,6 +903,7 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onLootingLevel(LootingLevelEvent event)
 	{
+		if(event.getDamageSource() == null) return;
 		Entity entity = event.getDamageSource().getTrueSource();
 		if(entity instanceof EntityLivingBase && event.getEntityLiving() instanceof AbstractSkeleton)
 		{
