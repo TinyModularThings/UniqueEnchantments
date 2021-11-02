@@ -79,6 +79,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
+import uniquebase.handler.IMathCache;
 import uniquebase.utils.EnchantmentContainer;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
@@ -152,6 +153,7 @@ public class EntityEvents
 	{
 		if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.GRIMOIRE, event.getLeft()) > 0)
 		{
+			event.setCost(Integer.MAX_VALUE);
 			event.setCanceled(true);
 		}
 	}
@@ -167,7 +169,7 @@ public class EntityEvents
 			if(player.getHealth() < player.getMaxHealth())
 			{
 				int level = container.getEnchantment(UniqueEnchantments.NATURES_GRACE, EntityEquipmentSlot.CHEST);
-				if(level > 0 && player.world.getTotalWorldTime() % Math.max((int)(NaturesGrace.DELAY.get() / Math.log(level+1.1D)), 1) == 0)
+				if(level > 0 && player.world.getTotalWorldTime() % Math.max((int)(NaturesGrace.DELAY.get() / IMathCache.LOG101.get(level)), 1) == 0)
 				{
 					if(player.getCombatTracker().getBestAttacker() == null && StackUtils.hasBlockCount(player.world, player.getPosition(), 4, NaturesGrace.FLOWERS))
 					{
@@ -230,7 +232,7 @@ public class EntityEvents
 				int level = container.getCombinedEnchantment(UniqueEnchantments.PESTILENCES_ODIUM);
 				if(level > 0)
 				{
-					List<EntityAgeable> living = player.world.getEntitiesWithinAABB(EntityAgeable.class, new AxisAlignedBB(player.getPosition()).grow(PestilencesOdium.RADIUS.get(Math.log(2.8D+level*0.0625D))));
+					List<EntityAgeable> living = player.world.getEntitiesWithinAABB(EntityAgeable.class, new AxisAlignedBB(player.getPosition()).grow(PestilencesOdium.RADIUS.get(IMathCache.LOG_ADD_MAX.get(level))));
 					for(int i = 0,m=living.size();i<m;i++)
 					{
 						living.get(i).addPotionEffect(new PotionEffect(UniqueEnchantments.PESTILENCES_ODIUM_POTION, 200, level));
@@ -294,7 +296,7 @@ public class EntityEvents
 				if(!player.isCreative())
 				{
 					StackUtils.setInt(stack, Cloudwalker.TIMER, value-1);
-					if(player.world.getTotalWorldTime() % Math.min(1, (int)(20 * Math.sqrt(level))) == 0)
+					if(player.world.getTotalWorldTime() % Math.min(1, (int)(20 * IMathCache.SQRT.get(level))) == 0)
 					{
 						stack.damageItem(1, player);
 					}
@@ -529,7 +531,7 @@ public class EntityEvents
 			int stored = StackUtils.getInt(stack, IfritsGrace.LAVA_COUNT, 0);
 			if(stored > 0)
 			{
-				double extra = (Math.pow(midas, 2D)/level)+1F;
+				double extra = (IMathCache.POW2.get(level)/level)+1D;
 				boolean ore = StackUtils.isOre(event.getState());
 				int smelted = 0;
 				List<ItemStack> stacks = event.getDrops();
@@ -621,7 +623,7 @@ public class EntityEvents
 				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (float)Math.log10(10D + (1.6 + Math.log(Math.max(0.25D, attr.getAttributeValue())) / SwiftBlade.BASE_SPEED.get()) * Math.log(level*level)));
+					event.setAmount(event.getAmount() * (float)Math.log10(10D + (1.6D + Math.log(Math.max(0.25D, attr.getAttributeValue())) / SwiftBlade.BASE_SPEED.get()) * IMathCache.LOG.get(level*level)));
 				}
 			}
 			level = enchantments.getInt(UniqueEnchantments.FOCUS_IMPACT);
@@ -630,7 +632,7 @@ public class EntityEvents
 				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (1F + (float)Math.log10(Math.pow(FocusImpact.BASE_SPEED.get() / attr.getAttributeValue(), 2D)*Math.log(6+level))));
+					event.setAmount(event.getAmount() * (1F + (float)Math.log10(Math.pow(FocusImpact.BASE_SPEED.get() / attr.getAttributeValue(), 2D)*IMathCache.LOG.get(6+level))));
 				}
 			}
 			level = MiscUtil.getEnchantedItem(UniqueEnchantments.CLIMATE_TRANQUILITY, base).getIntValue();
@@ -659,7 +661,7 @@ public class EntityEvents
 			level = enchantments.getInt(UniqueEnchantments.BERSERKER);
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() * (float)(1D + ((1-(Berserk.MIN_HEALTH.getMax(base.getHealth(), 1D)/base.getMaxHealth())) * Berserk.PERCENTUAL_DAMAGE.get() * Math.log10(level+1))));
+				event.setAmount(event.getAmount() * (float)(1D + ((1-(Berserk.MIN_HEALTH.getMax(base.getHealth(), 1D)/base.getMaxHealth())) * Berserk.PERCENTUAL_DAMAGE.get() * IMathCache.LOG10.get(level+1))));
 			}
 			level = enchantments.getInt(UniqueEnchantments.PERPETUAL_STRIKE);
 			if(level > 0)
@@ -733,7 +735,7 @@ public class EntityEvents
 				if(level > 0 && stack.isItemStackDamageable())
 				{
 					float damage = event.getAmount();
-					stack.damageItem((int)(damage * AresBlessing.BASE_DAMAGE.get() / Math.log(level+1)), event.getEntityLiving());
+					stack.damageItem((int)(damage * AresBlessing.BASE_DAMAGE.get() / IMathCache.LOG.get(level+1)), event.getEntityLiving());
 					event.setCanceled(true);
 					return;
 				}	
@@ -779,7 +781,7 @@ public class EntityEvents
 		if(level > 0 && stack.getTagCompound().getBoolean(IcarusAegis.FLYING_TAG) && event.getDistance() > 3F)
 		{
 			int feathers = StackUtils.getInt(stack, IcarusAegis.FEATHER_TAG, 0);
-			int consume = (int)(IcarusAegis.BASE_CONSUMPTION.get() / Math.log(2D + level));
+			int consume = (int)(IcarusAegis.BASE_CONSUMPTION.get() / IMathCache.LOG.get(2 + level));
 			if(feathers >= consume)
 			{
 				feathers -= consume;
@@ -955,7 +957,7 @@ public class EntityEvents
 				ItemStack stack = player.getItemStackFromSlot(slot.getKey());
 				arrow.pickupStatus = PickupStatus.DISALLOWED;
 				player.addItemStackToInventory(StackUtils.getArrowStack(arrow));
-				int needed = Math.min(MathHelper.floor(Math.log(2.8D+level)*EnderMarksmen.EXTRA_DURABILITY.get()), stack.getItemDamage());
+				int needed = Math.min(MathHelper.floor(IMathCache.LOG_ADD.get(level)*EnderMarksmen.EXTRA_DURABILITY.get()), stack.getItemDamage());
 				if(needed > 0)
 				{
 					stack.damageItem(-needed, player);
@@ -1033,28 +1035,5 @@ public class EntityEvents
 			}
 		}
 		return mods;
-	}
-	
-	public static int getXP(EntityPlayer player)
-	{
-		return getXPForLvl(player.experienceLevel) + (int)(player.experience * player.xpBarCap());
-	}
-	
-	public static int getXPForLvl(int level) 
-	{
-		if (level < 0) return Integer.MAX_VALUE;
-		if (level <= 15)return level * level + 6 * level;
-		if (level <= 30)return (int) (((level * level) * 2.5D) - (40.5D * level) + 360.0D);
-		return (int) (((level * level) * 4.5D) - (162.5D * level) + 2220.0D);
-	}
-
-	public static int getLvlForXP(int totalXP)
-	{
-		int result = 0;
-		while (getXPForLvl(result) <= totalXP) 
-		{
-			result++;
-		}
-		return --result;
 	}
 }

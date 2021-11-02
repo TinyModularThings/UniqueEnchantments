@@ -18,11 +18,10 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.api.filters.IGraceEnchantment;
 import uniquebase.utils.MiscUtil;
 import uniquee.UniqueEnchantments;
 
-public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantment
+public class AlchemistsGrace extends UniqueEnchantment
 {
 	public static final List<List<PotionPlan>> EFFECTS = new ObjectArrayList<>();
 	

@@ -8,12 +8,11 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.api.filters.IGraceEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 import uniquebase.utils.IntStat;
 import uniquee.UniqueEnchantments;
 
-public class NaturesGrace extends UniqueEnchantment implements IGraceEnchantment
+public class NaturesGrace extends UniqueEnchantment
 {
 	public static final DoubleLevelStats HEALING = new DoubleLevelStats("healing", 0.6, 0.2);
 	public static final IntStat DELAY = new IntStat(240, "delay");

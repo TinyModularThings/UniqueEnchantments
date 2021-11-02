@@ -14,10 +14,13 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
+import uniquebase.networking.PacketHandler;
 
 @Mod(modid = "uniquebase", name = "Unique Enchantments Base", version = "1.0.1", guiFactory = "uniquebase.handler.ConfigHandler")
 public class UniqueEnchantmentsBase
 {
+	public static final PacketHandler NETWORKING = new PacketHandler();
+	
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent event)
 	{

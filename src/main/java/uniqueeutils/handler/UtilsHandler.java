@@ -56,6 +56,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
 import uniquebase.api.crops.CropHarvestRegistry;
+import uniquebase.handler.IMathCache;
 import uniquebase.utils.HarvestEntry;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
@@ -134,12 +135,13 @@ public class UtilsHandler
 				Int2FloatMap.Entry entry = FaminesOdium.consumeRandomItem(player.inventory, FaminesOdium.NURISHMENT.getFloat(level));
 				if(entry != null)
 				{
-					player.getFoodStats().addStats(MathHelper.ceil(FaminesOdium.NURISHMENT.get(entry.getIntKey() * Math.log(2.8D + level * 0.0625D))), (float)(entry.getFloatValue() * level * Math.log(2.8D + level * 0.0625D)));
+					double value = IMathCache.LOG_ADD_MAX.get(level);
+					player.getFoodStats().addStats(MathHelper.ceil(FaminesOdium.NURISHMENT.get(entry.getIntKey() * value)), (float)(entry.getFloatValue() * level * value));
 					player.world.playSound((EntityPlayer)null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 0.5F, player.world.rand.nextFloat() * 0.1F + 0.9F);
 				}
 				else
 				{
-					player.attackEntityFrom(DamageSource.MAGIC, FaminesOdium.DAMAGE.getFloat(duration * (float)Math.log(2.8D + level * 0.0625D)));
+					player.attackEntityFrom(DamageSource.MAGIC, FaminesOdium.DAMAGE.getFloat(duration * IMathCache.LOG_ADD_MAX.getFloat(level)));
 				}
 			}
 		}
@@ -179,7 +181,7 @@ public class UtilsHandler
 		{
 			if(event.getDistance() <= 1.3)
 				return;
-			int damage = MathHelper.floor(((event.getDistance() - 2) * EssenceOfSlime.DURABILITY_LOSS.get() / Math.sqrt(level + MiscUtil.getEnchantmentLevel(Enchantments.FEATHER_FALLING, stack))));
+			int damage = MathHelper.floor(((event.getDistance() - 2) * EssenceOfSlime.DURABILITY_LOSS.get() / IMathCache.SQRT.get(level + MiscUtil.getEnchantmentLevel(Enchantments.FEATHER_FALLING, stack))));
 			if(damage > 0)
 			{
 				stack.damageItem(damage, event.getEntityLiving());
@@ -212,7 +214,7 @@ public class UtilsHandler
 			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.AMBROSIA, event.getItem());
 			if(level > 0)
 			{
-				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(Math.pow(1 + ((EntityPlayer)event.getEntityLiving()).experienceLevel * level, 5)) * Ambrosia.DURATION_MULTIPLIER.get()));
+				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(IMathCache.POW5.get(1 + ((EntityPlayer)event.getEntityLiving()).experienceLevel * level)) * Ambrosia.DURATION_MULTIPLIER.get()));
 				((EntityPlayer)event.getEntityLiving()).getFoodStats().addStats(2000, 0);
 				event.getEntityLiving().addPotionEffect(new PotionEffect(UniqueEnchantmentsUtils.SATURATION, duration, Math.min(20, level)));
 			}
@@ -225,7 +227,7 @@ public class UtilsHandler
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
 		if(level > 0)
 		{
-			double chance = PhanesRegret.CHANCE.get(Math.log(2.8D + Math.pow(level, 3)));
+			double chance = PhanesRegret.CHANCE.get(IMathCache.LOG_ADD.get(IMathCache.POW3.getInt(level)));
 			if(chance > 1D)
 			{
 				event.getEntityLiving().attackEntityFrom(DamageSource.STARVE, event.getAmount());
@@ -435,7 +437,7 @@ public class UtilsHandler
 							NBTTagCompound nbt = new NBTTagCompound();
 							rocket.writeEntityToNBT(nbt);
 							int time = nbt.getInteger("LifeTime");
-							time += time * RocketMan.FLIGHT_TIME.getAsDouble(level) * Math.log(2.8 + (level / 16D));
+							time += time * RocketMan.FLIGHT_TIME.getAsDouble(level) * IMathCache.LOG_ADD_MAX.get(level);
 							nbt.setInteger("LifeTime", time);
 							rocket.readEntityFromNBT(nbt);
 						}

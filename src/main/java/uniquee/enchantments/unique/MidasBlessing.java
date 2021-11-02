@@ -13,10 +13,9 @@ import net.minecraft.item.ItemPickaxe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.api.filters.IBlessingEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 
-public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchantment
+public class MidasBlessing extends UniqueEnchantment
 {
 	static Set<Item> VALID_ITEMS = new ObjectOpenHashSet<Item>();
 	public static ToIntFunction<ItemStack> VALIDATOR = new ToIntFunction<ItemStack>(){

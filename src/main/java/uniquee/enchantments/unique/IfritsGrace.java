@@ -12,10 +12,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.api.filters.IGraceEnchantment;
 import uniquebase.utils.DoubleStat;
 
-public class IfritsGrace extends UniqueEnchantment implements IGraceEnchantment
+public class IfritsGrace extends UniqueEnchantment
 {
 	public static Object2IntMap<Item> LAVA_ITEMS = new Object2IntOpenHashMap<Item>();
 	public static ToIntFunction<ItemStack> VALIDATOR = new ToIntFunction<ItemStack>(){

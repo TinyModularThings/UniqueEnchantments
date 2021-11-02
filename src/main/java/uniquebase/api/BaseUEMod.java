@@ -26,6 +26,11 @@ public abstract class BaseUEMod
 		MODS.add(this);
 	}
 	
+	public static boolean containsMod(BaseUEMod mod)
+	{
+		return MODS.contains(mod);
+	}
+	
 	public Enchantment register(Enchantment ench)
 	{
 		enchantments.add(ench);
