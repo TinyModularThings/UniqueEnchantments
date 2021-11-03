@@ -24,6 +24,7 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 		for(Enchantment entry : ForgeRegistries.ENCHANTMENTS)
 		{
 			if(ench.isCompatibleWith(entry) && entry.isCompatibleWith(ench)) continue;
+			if(ench == entry) continue;
 			incompats.add(entry);
 		}
 		for(Item item : ForgeRegistries.ITEMS)

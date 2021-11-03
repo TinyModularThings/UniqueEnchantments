@@ -36,12 +36,11 @@ public class EnchantmentWrapper implements IRecipeWrapper
 	public void getIngredients(IIngredients ingridients)
 	{
 		List<List<ItemStack>> list = new ObjectArrayList<>();
-		for(int i = 0;i<6;i++) list.add(new ObjectArrayList<>());
+		for(int i = 0;i<7;i++) list.add(new ObjectArrayList<>());
 		for(int i = 0,m=enchantment.validItems.size();i<m;i++)
 		{
-			list.get(i % 6).add(enchantment.validItems.get(i));
+			list.get(1 + (i % 6)).add(enchantment.validItems.get(i));
 		}
-		list.add(0, new ObjectArrayList<>());
 		for(int i = enchantment.ench.getMinLevel(),m=enchantment.ench.getMaxLevel();i<=m;i++)
 		{
 			ItemStack stack = new ItemStack(Items.ENCHANTED_BOOK);
@@ -88,7 +87,7 @@ public class EnchantmentWrapper implements IRecipeWrapper
 		builder.append("Incompatible with: \n\n");
 		if(enchantment.incompats.isEmpty())
 		{
-			builder.append("Nothing");
+			builder.append("- Nothing");
 		}
 		else
 		{

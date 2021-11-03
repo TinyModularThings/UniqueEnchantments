@@ -1,0 +1,9 @@
+{
+	"resonance_found": {
+		"category": "blocks",
+		"subtitle": "Resonance",
+		"sounds": [
+			{"name": "uniqueeutil:resonance_found", "stream": true }
+		]
+	}
+}

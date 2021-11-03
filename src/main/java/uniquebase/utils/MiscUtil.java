@@ -1,7 +1,10 @@
 package uniquebase.utils;
 
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Set;
+
+import com.google.common.math.DoubleMath;
 
 import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -186,5 +189,45 @@ public class MiscUtil
 			iblockstate.getBlock().onPlayerDestroy(world, pos, iblockstate);
 		}
 		return flag;
+	}
+	
+	public static int drainExperience(EntityPlayer player, int points)
+	{
+		if(player.isCreative())
+		{
+			return points;
+		}
+		int change = Math.min(getXP(player), points);
+		player.experienceTotal -= change;
+		player.experienceLevel = getLvlForXP(player.experienceTotal);
+		player.experience = (float)(player.experienceTotal - getXPForLvl(player.experienceLevel)) / (float)player.xpBarCap();
+		player.onEnchant(ItemStack.EMPTY, 0);
+		return change;
+	}
+	
+	public static int getXP(EntityPlayer player)
+	{
+		return getXPForLvl(player.experienceLevel) + (DoubleMath.roundToInt(player.experience * player.xpBarCap(), RoundingMode.HALF_UP));
+	}
+	
+	public static int getXPForLvl(int level)
+	{
+		if(level < 0)
+			return Integer.MAX_VALUE;
+		if(level <= 15)
+			return level * level + 6 * level;
+		if(level <= 30)
+			return (int)(((level * level) * 2.5D) - (40.5D * level) + 360.0D);
+		return (int)(((level * level) * 4.5D) - (162.5D * level) + 2220.0D);
+	}
+	
+	public static int getLvlForXP(int totalXP)
+	{
+		int result = 0;
+		while(getXPForLvl(result) <= totalXP)
+		{
+			result++;
+		}
+		return --result;
 	}
 }

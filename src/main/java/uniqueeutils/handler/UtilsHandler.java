@@ -2,21 +2,30 @@ package uniqueeutils.handler;
 
 import java.util.List;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityFireworkRocket;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
@@ -27,20 +36,27 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityBeacon;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
@@ -52,6 +68,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -61,15 +78,22 @@ import uniquebase.utils.HarvestEntry;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniqueeutils.UniqueEnchantmentsUtils;
+import uniqueeutils.enchantments.complex.AlchemistsBlessing;
+import uniqueeutils.enchantments.complex.AlchemistsBlessing.ConversionEntry;
 import uniqueeutils.enchantments.complex.Ambrosia;
-import uniqueeutils.enchantments.complex.EssenceOfSlime;
 import uniqueeutils.enchantments.complex.Climber;
+import uniqueeutils.enchantments.complex.EssenceOfSlime;
 import uniqueeutils.enchantments.complex.SleipnirsGrace;
 import uniqueeutils.enchantments.curse.FaminesOdium;
 import uniqueeutils.enchantments.curse.PhanesRegret;
 import uniqueeutils.enchantments.curse.RocketMan;
+import uniqueeutils.enchantments.simple.Adept;
 import uniqueeutils.enchantments.simple.ThickPick;
+import uniqueeutils.enchantments.unique.AnemoiFragment;
 import uniqueeutils.enchantments.unique.DemetersSoul;
+import uniqueeutils.enchantments.unique.Reinforced;
+import uniqueeutils.enchantments.unique.Resonance;
+import uniqueeutils.enchantments.unique.SagesSoul;
 
 @SuppressWarnings("deprecation")
 public class UtilsHandler
@@ -77,13 +101,36 @@ public class UtilsHandler
 	public static UtilsHandler INSTANCE = new UtilsHandler();
 	
 	@SubscribeEvent
+	public void onWorldTick(WorldTickEvent event)
+	{
+		if(event.world.isRemote) return;
+		Resonance.tick(event.world);
+	}
+	
+	@SubscribeEvent
 	public void onPlayerTick(PlayerTickEvent event)
 	{
-		if(event.phase == Phase.START || event.side == Side.CLIENT)
+		if(event.phase == Phase.START)
 		{
 			return;
 		}
 		EntityPlayer player = event.player;
+		ItemStack armor = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+		if(!armor.isEmpty())
+		{
+			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.ANEMOIS_FRAGMENT, armor);
+			if(level > 0 && UniqueEnchantmentsUtils.PROXY.isBoostKeyDown(player))
+			{
+				int amount = StackUtils.getInt(armor, AnemoiFragment.STORAGE, 0);
+				if(amount > 0)
+				{
+					amount -= (int)(AnemoiFragment.CONSUMPTION.get()/Math.sqrt(AnemoiFragment.CONSUMPTION_SCALE.get(level)));
+					StackUtils.setInt(armor, AnemoiFragment.STORAGE, Math.max(0, amount));
+					player.moveRelative(0F, (float)Math.log10(110+Math.pow(AnemoiFragment.BOOST.get(level*player.experienceLevel), 0.125))-2, 0F, 1F);
+				}
+			}
+		}
+		if(event.side == Side.CLIENT) return;
 		long time = player.world.getTotalWorldTime();
 		if(player.isRiding() && time % 20 == 0)
 		{
@@ -113,6 +160,36 @@ public class UtilsHandler
 					if(attri.getModifier(SleipnirsGrace.SPEED_MOD) != null)
 					{
 						attri.removeModifier(SleipnirsGrace.SPEED_MOD);
+					}
+				}
+			}
+		}
+		int tickRate = Math.max(1, (int)(Reinforced.BASE_DURATION.get() / IMathCache.LOG10.get(1000+player.experienceLevel)-2));
+		if(time % tickRate == 0)
+		{
+			InventoryPlayer inv = player.inventory;
+			// I dislike doing that because its causing enough lag IMO... Efficient but the operation is laggy no matter how much you optimize it
+			for(int i = 0,m=inv.getSizeInventory();i<m;i++)
+			{
+				ItemStack stack = inv.getStackInSlot(i);
+				if(stack.isEmpty()) continue;
+				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.REINFORCED, stack);
+				if(level > 0)
+				{
+					int shield = StackUtils.getInt(stack, Reinforced.SHIELD, 0);
+					if(shield > 0 && stack.getItemDamage() > 0)
+					{
+						int damage = stack.getItemDamage();
+						int left = Math.max(0, shield-damage);
+						stack.setItemDamage(Math.max(0, damage-shield));
+						shield = left;
+						StackUtils.setInt(stack, Reinforced.SHIELD, shield);
+					}
+					int max = IMathCache.SQRT.getInt(625+player.experienceLevel*level)*4;
+					if(shield < max)
+					{
+						shield = Math.min(max, shield + MathHelper.ceil(IMathCache.SQRT.get(level)));
+						StackUtils.setInt(stack, Reinforced.SHIELD, shield);						
 					}
 				}
 			}
@@ -227,18 +304,46 @@ public class UtilsHandler
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
 		if(level > 0)
 		{
-			double chance = PhanesRegret.CHANCE.get(IMathCache.LOG_ADD.get(IMathCache.POW3.getInt(level)));
-			if(chance > 1D)
+			event.setAmount((float)(event.getAmount() * (1 - PhanesRegret.REDUCTION.get(Math.log(2.8D+IMathCache.POW3.get(level))))));
+			if(event.getEntityLiving() instanceof EntityPlayer)
 			{
-				event.getEntityLiving().attackEntityFrom(DamageSource.STARVE, event.getAmount());
-				event.setCanceled(true);
-				return;
+				EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+				int toConsume = MathHelper.ceil(Math.sqrt(Math.abs(event.getAmount()*level)));
+				if(toConsume > 0)
+				{
+					if(player.experienceTotal >= toConsume) MiscUtil.drainExperience(player, toConsume);
+					else player.attackEntityFrom(DamageSource.GENERIC, IMathCache.SQRT.getFloat(toConsume));
+				}
 			}
-			if(event.getEntity().getEntityWorld().rand.nextDouble() < chance)
+		}
+	}
+	
+	@SubscribeEvent
+	public void onItemClick(RightClickItem event)
+	{
+		if(event.getEntityPlayer() == null || !event.getEntityPlayer().isSneaking()) return;
+		ItemStack stack = event.getItemStack();
+		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.RESONANCE, stack);
+		if(level > 0)
+		{
+			if(!event.getWorld().isRemote)
 			{
-				event.setCanceled(true);
-				return;
+				NBTTagCompound nbt = event.getEntityPlayer().getEntityData();
+				if(nbt.getLong(Resonance.COOLDOWN_TAG) > event.getWorld().getTotalWorldTime())
+				{
+					int used = nbt.getInteger(Resonance.OVERUSED_TAG);
+					event.getEntityPlayer().attackEntityFrom(DamageSource.MAGIC, 0.5F*used);
+					nbt.setInteger(Resonance.OVERUSED_TAG, used+1);
+				}
+				else
+				{
+					Resonance.addResonance(event.getWorld(), event.getPos(), (int)(Resonance.RANGE.getSqrt(level*IMathCache.SQRT.get(event.getEntityPlayer().experienceLevel))));
+					nbt.setLong(Resonance.COOLDOWN_TAG, event.getWorld().getTotalWorldTime()+600);
+					nbt.setInteger(Resonance.OVERUSED_TAG, 1);
+				}
 			}
+			event.setCanceled(true);
+			event.setCancellationResult(EnumActionResult.SUCCESS);
 		}
 	}
 	
@@ -279,36 +384,106 @@ public class UtilsHandler
 					}
 				}
 			}
-			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.DEMETERS_SOUL, event.getItemStack());
-			if(level > 0 && CropHarvestRegistry.INSTANCE.isValid(state.getBlock()) && !event.getWorld().isRemote)
+			else if(state.getBlock() == Blocks.ANVIL)
 			{
-				HarvestEntry entry = new HarvestEntry(event.getWorld().provider.getDimension(), event.getPos().toLong());
-				NBTTagList list = DemetersSoul.getCrops(event.getEntityPlayer());
-				boolean found = false;
-				for(int i = 0, m = list.tagCount();i < m;i++)
+				ItemStack stack = event.getItemStack();
+				EntityPlayer player = event.getEntityPlayer();
+				Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(stack);
+				int level = ench.getInt(UniqueEnchantmentsUtils.SAGES_SOUL);
+				if(level > 0)
 				{
-					if(entry.matches(list.getCompoundTagAt(i)))
+					int stored = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
+					int required = MiscUtil.getXPForLvl((stored * 2) + 5);
+					if(player.experienceTotal >= required)
 					{
-						found = true;
-						list.removeTag(i--);
-						break;
+						MiscUtil.drainExperience(player, required);
+						StackUtils.setInt(stack, SagesSoul.STORED_XP, stored+5);
+					}
+					else
+					{
+						player.sendMessage(new TextComponentString("Not Enough XP"));
 					}
 				}
-				if(!found)
+			}
+			else if(state.getBlock() == Blocks.BEACON)
+			{
+				Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(event.getItemStack());
+				int level = ench.getInt(UniqueEnchantmentsUtils.ALCHEMISTS_BLESSING);
+				if(level > 0)
 				{
-					if(list.tagCount() >= DemetersSoul.CAP.get(level))
+					TileEntity tile = event.getWorld().getTileEntity(event.getPos());
+					if(tile instanceof TileEntityBeacon)
 					{
-						event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.crops.full.name"), false);
-						event.setCancellationResult(EnumActionResult.SUCCESS);
-						event.setCanceled(true);
-						return;
+						TileEntityBeacon beacon = (TileEntityBeacon)tile;
+						if(beacon.getField(1) == -1) return;
+						World world = beacon.getWorld();
+						BlockPos pos = beacon.getPos().up();
+						List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(beacon.getPos().up()));
+						if(items.isEmpty()) return;
+						int consumed = 0;
+						int xpToSpawn = 0;
+						for(EntityItem item : items)
+						{
+							ItemStack stack = item.getItem();
+							consumed += stack.getCount();
+							item.setDead();
+							item.setInfinitePickupDelay();
+							ConversionEntry entry = AlchemistsBlessing.RECIPES.get(stack.getItem());
+							if(entry == null)
+							{
+								xpToSpawn += stack.getCount();
+								continue;
+							}
+							ItemStack result = entry.generateOutput(world.rand, level-1, Math.min(world.rand.nextInt(Math.max(ench.getInt(Enchantments.FORTUNE), ench.getInt(Enchantments.LOOTING)) + 1), level));
+							if(result.getCount() <= 0) continue;
+							List<ItemStack> newDrops = new ObjectArrayList<ItemStack>();
+							StackUtils.growStack(result, result.getCount() * stack.getCount(), newDrops);
+							for(ItemStack drop : newDrops)
+							{
+								world.spawnEntity(new EntityItem(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, drop));
+							}
+						}
+						if(xpToSpawn > 0) world.spawnEntity(new EntityXPOrb(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, MathHelper.ceil(Math.sqrt(AlchemistsBlessing.BASE_XP_USAGE.get(level))+Math.sqrt(AlchemistsBlessing.LVL_XP_USAGE.get(level*world.rand.nextDouble()))) * xpToSpawn));
+						consumed = MathHelper.ceil(Math.pow((level*consumed*AlchemistsBlessing.CONSUMTION.get()), 0.6505));
+						int stored = StackUtils.getInt(event.getItemStack(), AlchemistsBlessing.STORED_REDSTONE, 0) - consumed;
+						StackUtils.setInt(event.getItemStack(), AlchemistsBlessing.STORED_REDSTONE, Math.max(0, stored));
+						if(stored < 0) event.getItemStack().damageItem(-stored, event.getEntityPlayer());
 					}
-					list.appendTag(entry.save());
 				}
-				event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.crops." + (found ? "removed" : "added") + ".name"), false);
-				event.setCancellationResult(EnumActionResult.SUCCESS);
-				event.setCanceled(true);
-				return;
+			}
+			else
+			{
+				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.DEMETERS_SOUL, event.getItemStack());
+				if(level > 0 && CropHarvestRegistry.INSTANCE.isValid(state.getBlock()) && !event.getWorld().isRemote)
+				{
+					HarvestEntry entry = new HarvestEntry(event.getWorld().provider.getDimension(), event.getPos().toLong());
+					NBTTagList list = DemetersSoul.getCrops(event.getEntityPlayer());
+					boolean found = false;
+					for(int i = 0, m = list.tagCount();i < m;i++)
+					{
+						if(entry.matches(list.getCompoundTagAt(i)))
+						{
+							found = true;
+							list.removeTag(i--);
+							break;
+						}
+					}
+					if(!found)
+					{
+						if(list.tagCount() >= DemetersSoul.CAP.get(level))
+						{
+							event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.crops.full.name"), false);
+							event.setCancellationResult(EnumActionResult.SUCCESS);
+							event.setCanceled(true);
+							return;
+						}
+						list.appendTag(entry.save());
+					}
+					event.getEntityPlayer().sendStatusMessage(new TextComponentTranslation("tooltip.uniqueeutil.crops." + (found ? "removed" : "added") + ".name"), false);
+					event.setCancellationResult(EnumActionResult.SUCCESS);
+					event.setCanceled(true);
+					return;
+				}
 			}
 		}
 		else
@@ -355,7 +530,21 @@ public class UtilsHandler
 		}
 		EntityPlayer player = event.getEntityPlayer();
 		ItemStack held = player.getHeldItemMainhand();
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.THICK_PICK, held);
+		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.ADEPT, player.getItemStackFromSlot(EntityEquipmentSlot.HEAD));
+		if(level > 0)
+		{
+			event.setNewSpeed(event.getNewSpeed() * (player.onGround ? 1F : 5F) * (player.isInsideOfMaterial(Material.WATER) && !EnchantmentHelper.getAquaAffinityModifier(player) ? 5F : 1F));
+			event.setNewSpeed((float)(event.getNewSpeed() * -Math.sqrt(1/(1 + level*level * Adept.SPEED_SCALE.get()))+1));
+		}
+		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(held);
+		level = ench.getInt(UniqueEnchantmentsUtils.SAGES_SOUL);
+		if(level > 0)
+		{
+			double power = SagesSoul.getEnchantPower(held, level);
+			int levels = StackUtils.getInt(held, SagesSoul.STORED_XP, 0);
+			event.setNewSpeed((float)(event.getNewSpeed() + Math.min(25.5D, (-0.5+Math.pow(Math.sqrt(0.25+SagesSoul.MINING_SPEED.get(2*levels)), power))) + (Math.max(25.5, Math.pow((-0.5+Math.sqrt(0.25+2*player.experienceLevel)), power))-25.5D)/16));
+		}
+		level = ench.getInt(UniqueEnchantmentsUtils.THICK_PICK);
 		if(level > 0 && event.getState().getBlockHardness(player.world, event.getPos()) >= 20)
 		{
 			int amount = StackUtils.getInt(held, ThickPick.TAG, 0);
@@ -363,6 +552,22 @@ public class UtilsHandler
 			{
 				event.setNewSpeed(event.getNewSpeed() * ThickPick.MINING_SPEED.getAsFloat(level));
 			}
+		}
+		level = ench.getInt(UniqueEnchantmentsUtils.REINFORCED);
+		if(level > 0)
+		{
+			double base = Reinforced.BASE_REDUCTION.get();
+			event.setNewSpeed((float)(event.getNewSpeed() * Math.pow((base+((1D-base)*0.01D)*level), IMathCache.SQRT.get(level))));
+		}
+	}
+	
+	@SubscribeEvent
+	public void onItemUseTick(LivingEntityUseItemEvent.Tick event)
+	{
+		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.SAGES_SOUL, event.getItem());
+		if(level > 0)
+		{
+			event.setDuration((int)(event.getDuration() * 1/(Math.log10(Math.pow(1000+SagesSoul.DRAW_SPEED.get(StackUtils.getInt(event.getItem(), SagesSoul.STORED_XP, 0)), SagesSoul.getEnchantPower(event.getItem(), level)))-2)));
 		}
 	}
 	
@@ -466,6 +671,64 @@ public class UtilsHandler
 				}
 			}
 		}
+	}
+	
+	@SubscribeEvent
+	public void onEntityDamage(LivingDamageEvent event)
+	{
+		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
+		if(level > 0)
+		{
+			event.setAmount((float)(event.getAmount() * (1 - PhanesRegret.REDUCTION.get(Math.log(2.8D+IMathCache.POW3.get(level))))));
+			if(event.getEntityLiving() instanceof EntityPlayer)
+			{
+				EntityPlayer player = (EntityPlayer)event.getEntityLiving();
+				int toConsume = MathHelper.ceil(Math.sqrt(Math.abs(event.getAmount()*level)));
+				if(toConsume > 0)
+				{
+					if(player.experienceTotal >= toConsume) MiscUtil.drainExperience(player, toConsume);
+					else event.setAmount(event.getAmount() * (float)(Math.log10(100+event.getAmount()*level)-1));
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEquippementSwapped(LivingEquipmentChangeEvent event)
+	{
+		AbstractAttributeMap attribute = event.getEntityLiving().getAttributeMap();
+		Multimap<String, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), event.getEntityLiving(), event.getSlot());
+		if(!mods.isEmpty())
+		{
+			attribute.removeAttributeModifiers(mods);
+		}
+		mods = createModifiersFromStack(event.getTo(),event.getEntityLiving(), event.getSlot());
+		if(!mods.isEmpty())
+		{
+			attribute.applyAttributeModifiers(mods);
+		}
+	}
+	
+	private Multimap<String, AttributeModifier> createModifiersFromStack(ItemStack stack, EntityLivingBase living, EntityEquipmentSlot slot)
+	{
+		Multimap<String, AttributeModifier> mods = HashMultimap.create();
+		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(stack);
+		int level = ench.getInt(UniqueEnchantmentsUtils.REINFORCED);
+		if(level > 0)
+		{
+			double base = Reinforced.BASE_REDUCTION.get();
+			mods.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(Reinforced.SPEED_MOD, "Reinforced Boost", Math.pow((base+((1D-base)*0.01D)*level), IMathCache.SQRT.get(level)), 2));
+		}
+		level = ench.getInt(UniqueEnchantmentsUtils.SAGES_SOUL);
+		if(level > 0)
+		{
+			int levels = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
+			double power = SagesSoul.getEnchantPower(stack, level);
+			mods.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(SagesSoul.ATTACK_MOD, "Sage Attack Boost", Math.pow(-0.5+Math.sqrt(0.25+SagesSoul.ATTACK_SPEED.get(2*levels)), power)/SagesSoul.ATTACK_SPEED.get(), 2));
+			mods.put(SharedMonsterAttributes.ARMOR.getName(), new AttributeModifier(SagesSoul.ARMOR_MOD, "Sages Armor Boost", Math.pow((-0.5+SagesSoul.ARMOR_SCALE.get(Math.sqrt(0.25+8*(levels*IMathCache.SQRT.get(level))))), power)/SagesSoul.ARMOR_DIVIDOR.get(), 0));
+			mods.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(SagesSoul.TOUGHNESS_MOD, "Sages Toughness Boost", Math.pow((-0.5+SagesSoul.TOUGHNESS_SCALE.get(Math.sqrt(0.25+1*(levels*IMathCache.SQRT.get(level))))), power)/SagesSoul.TOUGHNESS_DIVIDOR.get() , 0));
+		}
+		return mods;
 	}
 	
 	public static void damageShield(float damage, EntityPlayer player)

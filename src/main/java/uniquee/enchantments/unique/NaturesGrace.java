@@ -1,9 +1,10 @@
 package uniquee.enchantments.unique;
 
-import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 import net.minecraft.block.BlockFlower;
 import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.BlockLog;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -16,13 +17,16 @@ public class NaturesGrace extends UniqueEnchantment
 {
 	public static final DoubleLevelStats HEALING = new DoubleLevelStats("healing", 0.6, 0.2);
 	public static final IntStat DELAY = new IntStat(240, "delay");
-	public static Predicate<IBlockState> FLOWERS = new Predicate<IBlockState>(){
+	public static final ToIntFunction<IBlockState> FLOWERS = new ToIntFunction<IBlockState>() {
 		@Override
-		public boolean test(IBlockState t)
-		{
-			return t.getBlock() instanceof BlockFlower || t.getBlock() instanceof BlockLeaves;
+		public int applyAsInt(IBlockState value) {
+			if(value.getBlock() instanceof BlockFlower) return 3;
+			if(value.getBlock() instanceof BlockLeaves) return 1;
+			if(value.getBlock() instanceof BlockLog) return 2;
+			return 0;
 		}
-	};	
+	};
+	
 	public NaturesGrace()
 	{
 		super(new DefaultData("naturesgrace", Rarity.RARE, 2, true, 10, 16, 10), EnumEnchantmentType.ARMOR_CHEST, EntityEquipmentSlot.CHEST);

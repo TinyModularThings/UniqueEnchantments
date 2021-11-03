@@ -32,6 +32,11 @@ public class DoubleLevelStats implements IStat
 		level = config.get(category, name+"_level", levelConfig).getDouble();
 	}
 	
+	public double getSqrt(double input)
+	{
+		return base + Math.sqrt(level * input);
+	}
+	
 	public double getAsDouble(int level)
 	{
 		return base + (this.level * level);

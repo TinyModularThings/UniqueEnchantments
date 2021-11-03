@@ -4,18 +4,19 @@ import java.util.function.IntToDoubleFunction;
 
 public final class IMathCache
 {
-	public static final IMathCache SQRT = new IMathCache(1000, Math::sqrt);
-	public static final IMathCache POW2 = new IMathCache(1000, IMathCache::pow2);
-	public static final IMathCache POW3 = new IMathCache(1000, IMathCache::pow3);
-	public static final IMathCache POW5 = new IMathCache(1000, IMathCache::pow5);
-	public static final IMathCache POW_WEIRD = new IMathCache(1000, IMathCache::powWeird);
-	public static final IMathCache LOG = new IMathCache(100000, Math::log);
-	public static final IMathCache LOG_MAX = new IMathCache(1000, IMathCache::logMaxLevel);
-	public static final IMathCache LOG_ADD = new IMathCache(100000, IMathCache::logAddLevel);
-	public static final IMathCache LOG_ADD_MAX = new IMathCache(1000, IMathCache::logAddMaxLevel);
-	public static final IMathCache LOG_MUL_MAX = new IMathCache(1000, IMathCache::logMulMaxLevel);
-	public static final IMathCache LOG101 = new IMathCache(1000, IMathCache::log101);
-	public static final IMathCache LOG10 = new IMathCache(1000, Math::log10);
+	public static final int CACHESIZE = 100000; //Roughly 10MB ram usage with all caches that we use if anyone wonders how big it is.
+	public static final IMathCache SQRT = new IMathCache(CACHESIZE, Math::sqrt);
+	public static final IMathCache POW2 = new IMathCache(CACHESIZE, IMathCache::pow2);
+	public static final IMathCache POW3 = new IMathCache(CACHESIZE, IMathCache::pow3);
+	public static final IMathCache POW5 = new IMathCache(CACHESIZE, IMathCache::pow5);
+	public static final IMathCache POW_WEIRD = new IMathCache(CACHESIZE, IMathCache::powWeird);
+	public static final IMathCache LOG = new IMathCache(CACHESIZE, Math::log);
+	public static final IMathCache LOG_MAX = new IMathCache(CACHESIZE, IMathCache::logMaxLevel);
+	public static final IMathCache LOG_ADD = new IMathCache(CACHESIZE, IMathCache::logAddLevel);
+	public static final IMathCache LOG_ADD_MAX = new IMathCache(CACHESIZE, IMathCache::logAddMaxLevel);
+	public static final IMathCache LOG_MUL_MAX = new IMathCache(CACHESIZE, IMathCache::logMulMaxLevel);
+	public static final IMathCache LOG101 = new IMathCache(CACHESIZE, IMathCache::log101);
+	public static final IMathCache LOG10 = new IMathCache(CACHESIZE, Math::log10);
 	
 	final double[] cache;
 	final IntToDoubleFunction generator;

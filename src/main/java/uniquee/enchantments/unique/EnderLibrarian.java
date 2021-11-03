@@ -26,6 +26,6 @@ public class EnderLibrarian extends UniqueEnchantment implements ICustomItemEnch
 	@Override
 	public void addCustomItems(List<ItemStack> list)
 	{
-		list.add(new ItemStack(Items.ENCHANTED_BOOK));
+		list.add(new ItemStack(Items.FILLED_MAP));
 	}
 }

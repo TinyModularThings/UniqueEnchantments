@@ -171,9 +171,10 @@ public class EntityEvents
 				int level = container.getEnchantment(UniqueEnchantments.NATURES_GRACE, EntityEquipmentSlot.CHEST);
 				if(level > 0 && player.world.getTotalWorldTime() % Math.max((int)(NaturesGrace.DELAY.get() / IMathCache.LOG101.get(level)), 1) == 0)
 				{
-					if(player.getCombatTracker().getBestAttacker() == null && StackUtils.hasBlockCount(player.world, player.getPosition(), 4, NaturesGrace.FLOWERS))
+					if(player.getCombatTracker().getBestAttacker() == null)
 					{
-						player.heal(NaturesGrace.HEALING.getAsFloat(level));
+						int value = StackUtils.hasBlockCount(player.world, player.getPosition(), 24, NaturesGrace.FLOWERS);
+						if(value >= 4) player.heal((float)Math.log(7.39D + Math.pow(IMathCache.SQRT.getFloat(value), IMathCache.LOG.get(level+1))));
 					}
 				}
 			}
@@ -284,7 +285,7 @@ public class EntityEvents
 			ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.FEET);
 			if(nbt.getBoolean(Cloudwalker.ENABLED))
 			{
-				int value = StackUtils.getInt(stack, Cloudwalker.TIMER, Cloudwalker.TICKS.get(level));
+				int value = StackUtils.getInt(stack, Cloudwalker.TIMER, Cloudwalker.TICKS.get(level) * 5);
 				if(value <= 0)
 				{
 					nbt.setBoolean(Cloudwalker.ENABLED, false);
@@ -295,8 +296,10 @@ public class EntityEvents
 				player.fallDistance = 0F;
 				if(!player.isCreative())
 				{
-					StackUtils.setInt(stack, Cloudwalker.TIMER, value-1);
-					if(player.world.getTotalWorldTime() % Math.min(1, (int)(20 * IMathCache.SQRT.get(level))) == 0)
+					boolean levi = player.isPotionActive(MobEffects.LEVITATION);
+					int leviLevel = levi ? player.getActivePotionEffect(MobEffects.LEVITATION).getAmplifier()+1 : 0;
+					StackUtils.setInt(stack, Cloudwalker.TIMER, value-Math.max(1, 5 - (leviLevel * 2)));
+					if(player.world.getTotalWorldTime() % Math.min(1, (int)(20 * (IMathCache.SQRT.get(level) / (leviLevel+1)))) == 0)
 					{
 						stack.damageItem(1, player);
 					}
@@ -304,7 +307,7 @@ public class EntityEvents
 			}
 			else
 			{
-				StackUtils.setInt(stack, Cloudwalker.TIMER, Cloudwalker.TICKS.get(level));
+				StackUtils.setInt(stack, Cloudwalker.TIMER, Cloudwalker.TICKS.get(level) * 5);
 			}
 		}
 		Boolean cache = null;
@@ -316,7 +319,7 @@ public class EntityEvents
 			ItemStack equipStack = player.getItemStackFromSlot(slots[i]); 
 			if(level > 0 && equipStack.isItemDamaged() && player.world.getTotalWorldTime() % Math.max(1, (int)(Ecological.SPEED.get() / Math.log10(10.0D + (player.experienceLevel*level) / Ecological.SPEED_SCALE.get()))) == 0)
 			{
-				if((cache == null ? cache = StackUtils.hasBlockCount(player.world, player.getPosition(), 1, Ecological.STATES) : cache.booleanValue()))
+				if((cache == null ? cache = StackUtils.hasBlockCount(player.world, player.getPosition(), 1, Ecological.STATES) > 0 : cache.booleanValue()))
 				{
 					equipStack.damageItem(-1, player);
 				}
@@ -993,19 +996,19 @@ public class EntityEvents
 	public void onEquippementSwapped(LivingEquipmentChangeEvent event)
 	{
 		AbstractAttributeMap attribute = event.getEntityLiving().getAttributeMap();
-		Multimap<String, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), event.getSlot());
+		Multimap<String, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), event.getEntityLiving(), event.getSlot());
 		if(!mods.isEmpty())
 		{
 			attribute.removeAttributeModifiers(mods);
 		}
-		mods = createModifiersFromStack(event.getTo(), event.getSlot());
+		mods = createModifiersFromStack(event.getTo(),event.getEntityLiving(), event.getSlot());
 		if(!mods.isEmpty())
 		{
 			attribute.applyAttributeModifiers(mods);
 		}
 	}
 	
-	private Multimap<String, AttributeModifier> createModifiersFromStack(ItemStack stack, EntityEquipmentSlot slot)
+	private Multimap<String, AttributeModifier> createModifiersFromStack(ItemStack stack, EntityLivingBase living, EntityEquipmentSlot slot)
 	{
 		Multimap<String, AttributeModifier> mods = HashMultimap.create();
 		//Optimization. After 3 Enchantment's its sure that on average you have more then 1 full iteration. So now we fully iterate once over it since hash-code would be a faster check.
@@ -1013,7 +1016,8 @@ public class EntityEvents
 		int level = enchantments.getInt(UniqueEnchantments.VITAE);
 		if(level > 0 && MiscUtil.getSlotsFor(UniqueEnchantments.VITAE).contains(slot))
 		{
-			mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(Vitae.getForSlot(slot), "Vitae Boost", level * Vitae.HEALTH_BOOST.get(), 0));
+			int xpLevel = living instanceof EntityPlayer ? ((EntityPlayer)living).experienceLevel : 100;
+			mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(Vitae.getForSlot(slot), "Vitae Boost", Math.log10(1000+(Vitae.BASE_BOOST.get(level))+Vitae.SCALE_BOOST.get(xpLevel))-3, 2));
 		}
 		level = enchantments.getInt(UniqueEnchantments.SWIFT);
 		if(level > 0 && MiscUtil.getSlotsFor(UniqueEnchantments.SWIFT).contains(slot))

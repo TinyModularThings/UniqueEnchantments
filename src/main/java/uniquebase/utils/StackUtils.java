@@ -2,7 +2,6 @@ package uniquebase.utils;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
 import net.minecraft.block.state.IBlockState;
@@ -189,7 +188,7 @@ public class StackUtils
 		return found;
 	}
 	
-	public static boolean hasBlockCount(World world, BlockPos pos, int limit, Predicate<IBlockState> validator)
+	public static int hasBlockCount(World world, BlockPos pos, int limit, ToIntFunction<IBlockState> validator)
 	{
 		MutableBlockPos newPos = new MutableBlockPos();
 		int found = 0;
@@ -200,17 +199,14 @@ public class StackUtils
 				for(int z = -4;z<=4;z++)
 				{
 					newPos.setPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z);
-					if(validator.test(world.getBlockState(newPos)))
+					found += validator.applyAsInt(world.getBlockState(newPos));
+					if(found >= limit)
 					{
-						found++;
-						if(found >= limit)
-						{
-							return true;
-						}
+						return limit;
 					}
 				}
 			}
 		}
-		return false;
+		return found;
 	}
 }
