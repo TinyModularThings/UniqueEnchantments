@@ -2,26 +2,24 @@ package uniquebase.handler;
 
 import java.util.function.IntToDoubleFunction;
 
-public final class IMathCache
+public final class MathCache
 {
 	public static final int CACHESIZE = 100000; //Roughly 10MB ram usage with all caches that we use if anyone wonders how big it is.
-	public static final IMathCache SQRT = new IMathCache(CACHESIZE, Math::sqrt);
-	public static final IMathCache POW2 = new IMathCache(CACHESIZE, IMathCache::pow2);
-	public static final IMathCache POW3 = new IMathCache(CACHESIZE, IMathCache::pow3);
-	public static final IMathCache POW5 = new IMathCache(CACHESIZE, IMathCache::pow5);
-	public static final IMathCache POW_WEIRD = new IMathCache(CACHESIZE, IMathCache::powWeird);
-	public static final IMathCache LOG = new IMathCache(CACHESIZE, Math::log);
-	public static final IMathCache LOG_MAX = new IMathCache(CACHESIZE, IMathCache::logMaxLevel);
-	public static final IMathCache LOG_ADD = new IMathCache(CACHESIZE, IMathCache::logAddLevel);
-	public static final IMathCache LOG_ADD_MAX = new IMathCache(CACHESIZE, IMathCache::logAddMaxLevel);
-	public static final IMathCache LOG_MUL_MAX = new IMathCache(CACHESIZE, IMathCache::logMulMaxLevel);
-	public static final IMathCache LOG101 = new IMathCache(CACHESIZE, IMathCache::log101);
-	public static final IMathCache LOG10 = new IMathCache(CACHESIZE, Math::log10);
+	public static final MathCache POW3 = new MathCache(CACHESIZE, MathCache::pow3);
+	public static final MathCache POW5 = new MathCache(CACHESIZE, MathCache::pow5);
+	public static final MathCache POW_WEIRD = new MathCache(CACHESIZE, MathCache::powWeird);
+	public static final MathCache LOG = new MathCache(CACHESIZE, Math::log);
+	public static final MathCache LOG_MAX = new MathCache(CACHESIZE, MathCache::logMaxLevel);
+	public static final MathCache LOG_ADD = new MathCache(CACHESIZE, MathCache::logAddLevel);
+	public static final MathCache LOG_ADD_MAX = new MathCache(CACHESIZE, MathCache::logAddMaxLevel);
+	public static final MathCache LOG_MUL_MAX = new MathCache(CACHESIZE, MathCache::logMulMaxLevel);
+	public static final MathCache LOG101 = new MathCache(CACHESIZE, MathCache::log101);
+	public static final MathCache LOG10 = new MathCache(CACHESIZE, Math::log10);
 	
 	final double[] cache;
 	final IntToDoubleFunction generator;
 	
-	public IMathCache(int size, IntToDoubleFunction generator)
+	public MathCache(int size, IntToDoubleFunction generator)
 	{
 		this.generator = generator;
 		cache = new double[size];
@@ -43,7 +41,6 @@ public final class IMathCache
 		return (int)get(level);
 	}
 	
-	private static double pow2(int level) { return Math.pow(level, 2); }
 	private static double pow3(int level) { return Math.pow(level, 3); }
 	private static double pow5(int level) { return Math.pow(level, 5); }
 	private static double powWeird(int level) { return Math.pow(1+ ((level * level) / 100), 1+(level/100)); }

@@ -12,7 +12,7 @@ import uniquebase.UniqueEnchantmentsBase;
 public class ClientProxy extends Proxy
 {
 	KeyBinding boostKey;
-	boolean lastState = false;
+	int lastState = 0;
 	
 	@Override
 	public void init()
@@ -24,7 +24,7 @@ public class ClientProxy extends Proxy
 	@Override
 	public void update()
 	{
-		boolean newState = GameSettings.isKeyDown(boostKey);
+		int newState = (GameSettings.isKeyDown(boostKey) ? 1 : 0);
 		if(newState != lastState)
 		{
 			lastState = newState;

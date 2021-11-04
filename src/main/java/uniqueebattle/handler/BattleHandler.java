@@ -31,7 +31,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import uniquebase.handler.IMathCache;
+import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 import uniqueebattle.UniqueEnchantmentsBattle;
 import uniqueebattle.enchantments.AresFragment;
@@ -88,7 +88,7 @@ public class BattleHandler
 				EntityLivingBase enemy = event.getEntityLiving();
 				double toughness = enemy.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue();
 				double speed = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).getAttributeValue();
-				float damageFactor = (float)(Math.log(1+IMathCache.SQRT.get(player.experienceLevel*level*level)*(1+(enemy.getTotalArmorValue()+toughness*2.5)*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
+				float damageFactor = (float)(Math.log(1+Math.sqrt(player.experienceLevel*level*level)*(1+(enemy.getTotalArmorValue()+toughness*2.5)*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
 				event.setAmount(event.getAmount() * ((1F+(damageFactor*posRolls)) / (1F+(damageFactor*negRolls))));
 				source.getHeldItemMainhand().damageItem(MathHelper.ceil((Math.sqrt(Math.abs(posRolls-negRolls) / Math.pow(AresFragment.DURABILITY_REDUCTION_SCALING.get(), 1+(level/100D))) * (((posRolls * Math.pow(AresFragment.DURABILITY_DISTRIBUTION.get(), -1D))-(negRolls * AresFragment.DURABILITY_DISTRIBUTION.get())) / AresFragment.DURABILITY_ANTI_SCALING.get()))/speed), source);
 			}
@@ -159,13 +159,13 @@ public class BattleHandler
 				if(max > IfritsJudgement.LAVA_HITS.get())
 				{
 					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
-					source.attackEntityFrom(DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * IMathCache.LOG_MUL_MAX.getFloat(combined)));
+					source.attackEntityFrom(DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
 					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));
 				}
 				else if(max > IfritsJudgement.FIRE_HITS.get())
 				{
 					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
-					source.attackEntityFrom(DamageSource.IN_FIRE, IfritsJudgement.FIRE_DAMAGE.getAsFloat(found.getIntValue() * IMathCache.LOG_MUL_MAX.getFloat(combined)));
+					source.attackEntityFrom(DamageSource.IN_FIRE, IfritsJudgement.FIRE_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
 					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));					
 				}
 				else if(max > 0)
@@ -187,7 +187,7 @@ public class BattleHandler
 			int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.LUNATIC_DESPAIR, source);
 			if(level > 0)
 			{
-				float value = IMathCache.LOG_ADD.getFloat(level);
+				float value = MathCache.LOG_ADD.getFloat(level);
 				event.setAmount(event.getAmount() * (1F + LunaticDespair.BONUS_DAMAGE.getFloat(value)));
 				source.attackEntityFrom(DamageSource.GENERIC, LunaticDespair.SELF_DAMAGE.getFloat(value));
 				source.hurtResistantTime = 0;

@@ -2,38 +2,39 @@ package uniqueeutils.misc;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
 import uniquebase.networking.IUEPacket;
-import uniqueeutils.UniqueEnchantmentsUtils;
+import uniqueeutils.handler.UtilsHandler;
 
-public class KeyPacket implements IUEPacket
+public class HighlightPacket implements IUEPacket
 {
-	int pressed;
+	long pos;
 	
-	public KeyPacket()
+	public HighlightPacket()
 	{
 	}
 	
-	public KeyPacket(int pressed)
+	public HighlightPacket(BlockPos pos)
 	{
-		this.pressed = pressed;
+		this.pos = pos.toLong();
 	}
-
+	
 	@Override
 	public void write(PacketBuffer buf)
 	{
-		buf.writeInt(pressed);
+		buf.writeLong(pos);
 	}
-
+	
 	@Override
 	public void read(PacketBuffer buf)
 	{
-		pressed = buf.readInt();
+		pos = buf.readLong();
 	}
-
+	
 	@Override
 	public void handlePacket(EntityPlayer player)
 	{
-		UniqueEnchantmentsUtils.PROXY.updateData(player, pressed);
+		UtilsHandler.INSTANCE.addDrawPosition(BlockPos.fromLong(pos));
 	}
 	
 }

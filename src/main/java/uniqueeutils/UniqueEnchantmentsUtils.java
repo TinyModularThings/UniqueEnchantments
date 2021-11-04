@@ -29,10 +29,12 @@ import uniqueeutils.enchantments.simple.ThickPick;
 import uniqueeutils.enchantments.unique.AnemoiFragment;
 import uniqueeutils.enchantments.unique.DemetersSoul;
 import uniqueeutils.enchantments.unique.MountingAegis;
+import uniqueeutils.enchantments.unique.PegasusSoul;
 import uniqueeutils.enchantments.unique.Reinforced;
 import uniqueeutils.enchantments.unique.Resonance;
 import uniqueeutils.enchantments.unique.SagesSoul;
 import uniqueeutils.handler.UtilsHandler;
+import uniqueeutils.misc.HighlightPacket;
 import uniqueeutils.misc.KeyPacket;
 import uniqueeutils.misc.Proxy;
 import uniqueeutils.potion.SaturationPotion;
@@ -57,6 +59,7 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	public static Enchantment REINFORCED;
 	public static Enchantment RESONANCE;
 	public static Enchantment SAGES_SOUL;
+	public static Enchantment PEGASUS_SOUL;
 	
 	public static Potion SATURATION = new SaturationPotion();
 	
@@ -70,6 +73,7 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	{
 		PROXY.init();
 		UniqueEnchantmentsBase.NETWORKING.registerInternalPacket(this, KeyPacket.class, 20);
+		UniqueEnchantmentsBase.NETWORKING.registerInternalPacket(this, HighlightPacket.class, 21);
 		ForgeRegistries.POTIONS.register(SATURATION.setRegistryName("saturation"));
 		init("uniqueeutil", new File(event.getModConfigurationDirectory(), "UniqueEnchantments_Utils.cfg"));
 		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);
@@ -79,6 +83,8 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 		BaseHandler.INSTANCE.registerStorageTooltip(THICK_PICK, "tooltip.uniqueeutil.stored.repair.name", ThickPick.TAG);
 		BaseHandler.INSTANCE.registerStorageTooltip(ANEMOIS_FRAGMENT, "tooltip.uniqueeutil.stored.fuel.name", AnemoiFragment.STORAGE);
 		BaseHandler.INSTANCE.registerStorageTooltip(ALCHEMISTS_BLESSING, "tooltip.uniqueeutil.stored.redstone.name", AlchemistsBlessing.STORED_REDSTONE);
+		BaseHandler.INSTANCE.registerStorageTooltip(SAGES_SOUL, "tooltip.uniqueeutil.stored.soul.name", SagesSoul.STORED_XP);
+		BaseHandler.INSTANCE.registerStorageTooltip(REINFORCED, "tooltip.uniqueeutil.stored.shield.name", Reinforced.SHIELD);
 		ForgeRegistries.SOUND_EVENTS.register(RESONANCE_SOUND.setRegistryName("resonance_found"));
 	}
 	
@@ -102,5 +108,6 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 		REINFORCED = register(new Reinforced());
 		RESONANCE = register(new Resonance());
 		SAGES_SOUL = register(new SagesSoul());
+		PEGASUS_SOUL = register(new PegasusSoul());
 	}
 }

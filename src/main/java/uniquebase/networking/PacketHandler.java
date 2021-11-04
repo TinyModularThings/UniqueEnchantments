@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
@@ -31,6 +32,7 @@ public class PacketHandler extends SimpleChannelInboundHandler<IUEPacket>
 	public PacketHandler()
 	{
 		channel = NetworkRegistry.INSTANCE.newChannel("ue", packetRegistry, this);
+		packetRegistry.addDiscriminator(0, EntityPacket.class);
 	}
 	
 	public void registerInternalPacket(BaseUEMod mod, Class<? extends IUEPacket> packet, int id)
@@ -39,29 +41,36 @@ public class PacketHandler extends SimpleChannelInboundHandler<IUEPacket>
 		packetRegistry.addDiscriminator(id, packet);
 	}
 	
-	public void sendToPlayer(IUEPacket par1, EntityPlayer par2)
+	public void sendToPlayer(IUEPacket packet, EntityPlayer player)
 	{
-		if(!(par2 instanceof EntityPlayerMP))
+		if(!(player instanceof EntityPlayerMP))
 		{
-			FMLLog.log.info("UE Networking: Invalid Player Found: "+par2);
+			FMLLog.log.info("UE Networking: Invalid Player Found: "+player);
 			return;
 		}
 		channel.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
-		channel.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(par2);
-		channel.get(Side.SERVER).writeOutbound(par1);
+		channel.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+		channel.get(Side.SERVER).writeOutbound(packet);
 	}
 	
-	public void sendToServer(IUEPacket par1)
+	public void sendToServer(IUEPacket packet)
 	{
 		channel.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(OutboundTarget.TOSERVER);
-		channel.get(Side.CLIENT).writeOutbound(par1);
+		channel.get(Side.CLIENT).writeOutbound(packet);
 	}
 	
-	public void sendToAllPlayers(IUEPacket par1)
+	public void sendToAllPlayers(IUEPacket packet)
 	{
 		channel.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
-		channel.get(Side.SERVER).writeOutbound(par1);
+		channel.get(Side.SERVER).writeOutbound(packet);
 	}
+	
+    public void sendToChunk(IUEPacket packet, Chunk chunk)
+    {
+    	channel.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TRACKING_POINT);
+    	channel.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(new NetworkRegistry.TargetPoint(chunk.getWorld().provider.getDimension(), chunk.x * 16, 0, chunk.z * 16, 0));
+    	channel.get(Side.SERVER).writeOutbound(packet);
+    }
 	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, IUEPacket msg) throws Exception

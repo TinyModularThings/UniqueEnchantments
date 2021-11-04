@@ -19,13 +19,18 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EnchantmentWrapper implements IRecipeWrapper
 {
 	WrappedEnchantment enchantment;
+	int pageIndex = 0;
+	GuiButtonExt left = new GuiButtonExt(0, 0, 59, 10, 10, "<");
+	GuiButtonExt right = new GuiButtonExt(0, 54, 59, 10, 10, ">");
 	
 	public EnchantmentWrapper(WrappedEnchantment enchantment)
 	{
@@ -57,10 +62,10 @@ public class EnchantmentWrapper implements IRecipeWrapper
 		FontRenderer font = minecraft.fontRenderer;
 		String s = TextFormatting.UNDERLINE+I18n.format(enchantment.ench.getName());
 		font.drawString(s, 85 - (font.getStringWidth(s) / 2), 3, 0);
-		font.drawString("Max Level: "+TextFormatting.WHITE.toString()+enchantment.ench.getMaxLevel(), 3, 18, 0x1CD679);
-		font.drawString("Treasure: "+isTrue(enchantment.ench.isTreasureEnchantment()), 3, 28, 0xBA910D);
-		font.drawString("Curse: "+isTrue(enchantment.ench.isCurse()), 3, 38, 0xA11E15);
-		font.drawString("Rarity: "+getFormatting(enchantment.ench.getRarity())+toPascalCase(enchantment.ench.getRarity().name().toLowerCase()), 3, 48, 0xCB19D1);
+		font.drawString(I18n.format("unique.base.jei.max_level", TextFormatting.WHITE.toString()+enchantment.ench.getMaxLevel()), 3, 18, 0x1CD679);
+		font.drawString(I18n.format("unique.base.jei.treasure"), 3, 28, 0xBA910D);
+		font.drawString(I18n.format("unique.base.jei.curse"), 3, 38, 0xA11E15);
+		font.drawString(I18n.format("unique.base.jei.rarity", getFormatting(enchantment.ench.getRarity())+I18n.format("unique.base.jei."+enchantment.ench.getRarity().name().toLowerCase())), 3, 48, 0xCB19D1);
 		s = getDescription();
 		if((font.getWordWrappedHeight(s, 95) / font.FONT_HEIGHT) > 7)
 		{
@@ -69,47 +74,74 @@ public class EnchantmentWrapper implements IRecipeWrapper
 			GlStateManager.scale(2D, 2D, 1D);
 		}
 		else font.drawSplitString(s, 69, 63, 95, 0);
-		s = getIncompats();
+		font.drawString(""+pageIndex, 28, 60, 0);
+		List<String> incomp = getIncompats(font);
+		int rows = MathHelper.ceil(incomp.size() / 11D);
+		int start = pageIndex * 11;
 		GlStateManager.scale(0.5D, 0.5D, 1D);
-		font.drawSplitString(s, 4, 126, 122, 0);
+		font.drawString(I18n.format("unique.base.jei.incompats"), 4, 144, 0);
+		for(int i = 0;i<11&&start+i<incomp.size();i++)
+		{
+			font.drawString(incomp.get(start+i), 4, 164 + (i * font.FONT_HEIGHT), 0);
+		}
 		GlStateManager.scale(2D, 2D, 1D);
 		minecraft.getTextureManager().bindTexture(new ResourceLocation("textures/gui/container/beacon.png"));
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.scale(0.5D, 0.5D, 1D);
-		Gui.drawModalRectWithCustomSizedTexture(3 + (font.getStringWidth("Treasure: ") * 2), 55, 90 + (enchantment.ench.isTreasureEnchantment() ? 0 : 22), 220, 18, 18, 256, 256);
-		Gui.drawModalRectWithCustomSizedTexture(3 + (font.getStringWidth("Curse: ") * 2), 74, 90 + (enchantment.ench.isCurse() ? 0 : 22), 220, 18, 18, 256, 256);
+		Gui.drawModalRectWithCustomSizedTexture(3 + (font.getStringWidth(I18n.format("unique.base.jei.treasure")) * 2), 55, 90 + (enchantment.ench.isTreasureEnchantment() ? 0 : 22), 220, 18, 18, 256, 256);
+		Gui.drawModalRectWithCustomSizedTexture(3 + (font.getStringWidth(I18n.format("unique.base.jei.curse")) * 2), 74, 90 + (enchantment.ench.isCurse() ? 0 : 22), 220, 18, 18, 256, 256);
 		GlStateManager.scale(2D, 2D, 1D);
+		left.enabled = pageIndex > 0;
+		right.enabled = pageIndex < rows - 1;
+		left.drawButton(minecraft, mouseX, mouseY, minecraft.getRenderPartialTicks());
+		right.drawButton(minecraft, mouseX, mouseY, minecraft.getRenderPartialTicks());
 	}
 	
-	private String getIncompats()
+	@Override
+	@SideOnly(Side.CLIENT)
+	public boolean handleClick(Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
 	{
-		StringBuilder builder = new StringBuilder();
-		builder.append("Incompatible with: \n\n");
+		if(left.mousePressed(minecraft, mouseX, mouseY) && pageIndex > 0)
+		{
+			left.playPressSound(minecraft.getSoundHandler());
+			pageIndex--;
+			return true;
+		}
+		if(right.mousePressed(minecraft, mouseX, mouseY))
+		{
+			int rows = MathHelper.ceil(getIncompats(minecraft.fontRenderer).size() / 11D);
+			if(pageIndex < rows - 1)
+			{
+				right.playPressSound(minecraft.getSoundHandler());
+				pageIndex++;
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private List<String> getIncompats(FontRenderer font)
+	{
+		List<String> list = new ObjectArrayList<>();
 		if(enchantment.incompats.isEmpty())
 		{
-			builder.append("- Nothing");
+			list.addAll(font.listFormattedStringToWidth("- "+I18n.format("unique.base.jei.no.incompat"), 122));
 		}
 		else
 		{
 			for(Enchantment ench : enchantment.incompats)
 			{
-				builder.append("- ").append(I18n.format(ench.getName())).append("\n");
+				list.addAll(font.listFormattedStringToWidth("- "+I18n.format(ench.getName()), 122));
 			}
 		}
-		return builder.toString();
+		return list;
 	}
 	
 	private String getDescription()
 	{
 		String s = I18n.format("enchantment."+enchantment.ench.getRegistryName().getNamespace()+"."+enchantment.ench.getRegistryName().getPath()+".desc");
-		if(s.startsWith("enchantment.")) return "No Description";
+		if(s.startsWith("enchantment.")) return "unique.base.jei.no.description";
 		return s;
-	}
-	
-	private String isTrue(boolean value)
-	{
-		return "";
-//		return value ? TextFormatting.RED+"Yes" : TextFormatting.GREEN+"No";
 	}
 	
 	private TextFormatting getFormatting(Rarity rarity)
@@ -124,34 +156,9 @@ public class EnchantmentWrapper implements IRecipeWrapper
 		}
 	}
 	
-	public static String toPascalCase(String input)
-	{
-		StringBuilder builder = new StringBuilder();
-		for(String s : input.replaceAll("_", " ").replaceAll("-", " ").split(" "))
-		{
-			builder.append(firstLetterUppercase(s)).append(" ");
-		}
-		return builder.substring(0, builder.length() - 1);
-	}
-	
-	public static String firstLetterUppercase(String string) {
-		if(string == null || string.isEmpty()) {
-			return string;
-		}
-		String first = Character.toString(string.charAt(0));
-		return string.replaceFirst(first, first.toUpperCase());
-	}
-	
 	@Override
 	public List<String> getTooltipStrings(int mouseX, int mouseY)
 	{
 		return Collections.emptyList();
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean handleClick(Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
-	{
-		return false;
 	}
 }

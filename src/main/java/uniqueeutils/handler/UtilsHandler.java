@@ -2,6 +2,8 @@ package uniqueeutils.handler;
 
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -12,6 +14,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.culling.ClippingHelper;
+import net.minecraft.client.renderer.culling.ClippingHelperImpl;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -42,15 +51,16 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.MutableBlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -66,14 +76,19 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
+import uniquebase.UniqueEnchantmentsBase;
 import uniquebase.api.crops.CropHarvestRegistry;
-import uniquebase.handler.IMathCache;
+import uniquebase.handler.MathCache;
+import uniquebase.networking.EntityPacket;
 import uniquebase.utils.HarvestEntry;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
@@ -91,14 +106,93 @@ import uniqueeutils.enchantments.simple.Adept;
 import uniqueeutils.enchantments.simple.ThickPick;
 import uniqueeutils.enchantments.unique.AnemoiFragment;
 import uniqueeutils.enchantments.unique.DemetersSoul;
+import uniqueeutils.enchantments.unique.PegasusSoul;
 import uniqueeutils.enchantments.unique.Reinforced;
 import uniqueeutils.enchantments.unique.Resonance;
 import uniqueeutils.enchantments.unique.SagesSoul;
+import uniqueeutils.misc.RenderEntry;
 
 @SuppressWarnings("deprecation")
 public class UtilsHandler
 {
-	public static UtilsHandler INSTANCE = new UtilsHandler();
+	public static final UtilsHandler INSTANCE = new UtilsHandler();
+	private List<RenderEntry> toRender = new ObjectArrayList<>();
+	
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)
+	public void onTick(ClientTickEvent event)
+	{
+		if(event.phase == Phase.START) return;
+		Minecraft mc = Minecraft.getMinecraft();
+		if(mc.world == null || mc.player == null) 
+		{
+			toRender.clear();
+			return;
+		}
+		Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("uniquee", "treasurers_eyes"));
+		if(ench == null) 
+		{
+			toRender.clear();
+			return;
+		}
+		int level = MiscUtil.getEnchantmentLevel(ench, mc.player.getItemStackFromSlot(EntityEquipmentSlot.HEAD));
+		if(level <= 0) 
+		{
+			toRender.clear();
+			return;
+		}
+		for(int i = 0,m=toRender.size();i<m;i++)
+		{
+			if(toRender.get(i).update())
+			{
+				toRender.remove(i--);
+				m--;
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	@SideOnly(Side.CLIENT)	
+	public void onRender(RenderWorldLastEvent event)
+	{
+		if(toRender.isEmpty()) return;
+		Minecraft mc = Minecraft.getMinecraft();
+		Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("uniquee", "treasurers_eyes"));
+		if(ench == null) return;
+		int level = MiscUtil.getEnchantmentLevel(ench, mc.player.getItemStackFromSlot(EntityEquipmentSlot.HEAD));
+		if(level <= 0) return;
+		ClippingHelper helper = ClippingHelperImpl.getInstance();
+		Tessellator tes = Tessellator.getInstance();
+		BufferBuilder buffer = tes.getBuffer();
+		buffer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR);
+		for(int i = 0,m=toRender.size();i<m;i++)
+		{
+			toRender.get(i).render(helper, buffer);
+		}
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		
+		float particalTicks = event.getPartialTicks();
+		double x = player.lastTickPosX + (player.posX - player.lastTickPosX) * particalTicks;
+		double y = player.lastTickPosY + (player.posY - player.lastTickPosY) * particalTicks;
+		double z = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * particalTicks;
+		GL11.glPushMatrix();
+		GlStateManager.translate(-x, -y, -z);
+		GlStateManager.disableTexture2D();
+		GlStateManager.disableDepth();
+		GlStateManager.enableAlpha();
+		GlStateManager.alphaFunc(516, 0.1F);
+		GlStateManager.enableBlend();
+		GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+		tes.draw();
+		GlStateManager.enableTexture2D();
+		GlStateManager.enableDepth();
+		GL11.glPopMatrix();
+	}
+	
+	public void addDrawPosition(BlockPos pos)
+	{
+		toRender.add(new RenderEntry(pos, 0x33BBBBBB, 140));
+	}
 	
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)
@@ -128,6 +222,43 @@ public class UtilsHandler
 					StackUtils.setInt(armor, AnemoiFragment.STORAGE, Math.max(0, amount));
 					player.moveRelative(0F, (float)Math.log10(110+Math.pow(AnemoiFragment.BOOST.get(level*player.experienceLevel), 0.125))-2, 0F, 1F);
 				}
+			}
+		}
+		Entity ridden = player.getLowestRidingEntity();
+		if(ridden instanceof EntityHorse)
+		{
+			NBTTagCompound nbt = ridden.getEntityData();
+			EntityHorse horse = (EntityHorse)ridden;
+			IAttributeInstance instance = horse.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.PEGASUS_SOUL, ridden.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).getStackInSlot(1));
+			if(level > 0)
+			{
+				boolean active = UniqueEnchantmentsUtils.PROXY.isBoostKeyDown(player);
+				if(active && !nbt.getBoolean(PegasusSoul.TRIGGER) && (!player.onGround || nbt.getBoolean(PegasusSoul.ENABLED)))
+				{
+					nbt.setBoolean(PegasusSoul.ENABLED, !nbt.getBoolean(PegasusSoul.ENABLED));
+					nbt.setBoolean(PegasusSoul.TRIGGER, true);
+					UniqueEnchantmentsBase.NETWORKING.sendToPlayer(new EntityPacket(ridden.getEntityId(), nbt), player);
+				}
+				else if(!active)
+				{
+					nbt.setBoolean(PegasusSoul.TRIGGER, false);
+				}
+				if(instance.getModifier(PegasusSoul.SPEED_MOD) == null)
+				{
+					instance.applyModifier(new AttributeModifier(PegasusSoul.SPEED_MOD, "Pegasus Boost", Math.sqrt(PegasusSoul.SPEED.get(level))*0.01D, 2));
+				}
+			}
+			else if(!ridden.world.isRemote && instance.getModifier(PegasusSoul.SPEED_MOD) != null)
+			{
+				instance.removeModifier(PegasusSoul.SPEED_MOD);
+			}
+			if(nbt.getBoolean(PegasusSoul.ENABLED))
+			{
+				ridden.motionY = 0D;
+				ridden.fall(ridden.fallDistance, 1F);
+				ridden.fallDistance = 0F;
+				ridden.onGround = true;
 			}
 		}
 		if(event.side == Side.CLIENT) return;
@@ -164,7 +295,7 @@ public class UtilsHandler
 				}
 			}
 		}
-		int tickRate = Math.max(1, (int)(Reinforced.BASE_DURATION.get() / IMathCache.LOG10.get(1000+player.experienceLevel)-2));
+		int tickRate = Math.max(1, (int)(Reinforced.BASE_DURATION.get() / MathCache.LOG10.get(1000+player.experienceLevel)-2));
 		if(time % tickRate == 0)
 		{
 			InventoryPlayer inv = player.inventory;
@@ -177,7 +308,7 @@ public class UtilsHandler
 				if(level > 0)
 				{
 					int shield = StackUtils.getInt(stack, Reinforced.SHIELD, 0);
-					if(shield > 0 && stack.getItemDamage() > 0)
+					if(shield > 0 && stack.getItemDamage() > 0 && (i >= inv.mainInventory.size() || i == inv.currentItem))
 					{
 						int damage = stack.getItemDamage();
 						int left = Math.max(0, shield-damage);
@@ -185,10 +316,10 @@ public class UtilsHandler
 						shield = left;
 						StackUtils.setInt(stack, Reinforced.SHIELD, shield);
 					}
-					int max = IMathCache.SQRT.getInt(625+player.experienceLevel*level)*4;
+					int max = (int)Math.sqrt(625+player.experienceLevel*level)*4;
 					if(shield < max)
 					{
-						shield = Math.min(max, shield + MathHelper.ceil(IMathCache.SQRT.get(level)));
+						shield = Math.min(max, shield + MathHelper.ceil(Math.sqrt(level)));
 						StackUtils.setInt(stack, Reinforced.SHIELD, shield);						
 					}
 				}
@@ -212,13 +343,13 @@ public class UtilsHandler
 				Int2FloatMap.Entry entry = FaminesOdium.consumeRandomItem(player.inventory, FaminesOdium.NURISHMENT.getFloat(level));
 				if(entry != null)
 				{
-					double value = IMathCache.LOG_ADD_MAX.get(level);
+					double value = MathCache.LOG_ADD_MAX.get(level);
 					player.getFoodStats().addStats(MathHelper.ceil(FaminesOdium.NURISHMENT.get(entry.getIntKey() * value)), (float)(entry.getFloatValue() * level * value));
 					player.world.playSound((EntityPlayer)null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_BURP, SoundCategory.PLAYERS, 0.5F, player.world.rand.nextFloat() * 0.1F + 0.9F);
 				}
 				else
 				{
-					player.attackEntityFrom(DamageSource.MAGIC, FaminesOdium.DAMAGE.getFloat(duration * IMathCache.LOG_ADD_MAX.getFloat(level)));
+					player.attackEntityFrom(DamageSource.MAGIC, FaminesOdium.DAMAGE.getFloat(duration * MathCache.LOG_ADD_MAX.getFloat(level)));
 				}
 			}
 		}
@@ -258,7 +389,7 @@ public class UtilsHandler
 		{
 			if(event.getDistance() <= 1.3)
 				return;
-			int damage = MathHelper.floor(((event.getDistance() - 2) * EssenceOfSlime.DURABILITY_LOSS.get() / IMathCache.SQRT.get(level + MiscUtil.getEnchantmentLevel(Enchantments.FEATHER_FALLING, stack))));
+			int damage = MathHelper.floor(((event.getDistance() - 2) * EssenceOfSlime.DURABILITY_LOSS.get() / Math.sqrt(level + MiscUtil.getEnchantmentLevel(Enchantments.FEATHER_FALLING, stack))));
 			if(damage > 0)
 			{
 				stack.damageItem(damage, event.getEntityLiving());
@@ -291,7 +422,7 @@ public class UtilsHandler
 			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.AMBROSIA, event.getItem());
 			if(level > 0)
 			{
-				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(IMathCache.POW5.get(1 + ((EntityPlayer)event.getEntityLiving()).experienceLevel * level)) * Ambrosia.DURATION_MULTIPLIER.get()));
+				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(MathCache.POW5.get(1 + ((EntityPlayer)event.getEntityLiving()).experienceLevel * level)) * Ambrosia.DURATION_MULTIPLIER.get()));
 				((EntityPlayer)event.getEntityLiving()).getFoodStats().addStats(2000, 0);
 				event.getEntityLiving().addPotionEffect(new PotionEffect(UniqueEnchantmentsUtils.SATURATION, duration, Math.min(20, level)));
 			}
@@ -304,7 +435,7 @@ public class UtilsHandler
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
 		if(level > 0)
 		{
-			event.setAmount((float)(event.getAmount() * (1 - PhanesRegret.REDUCTION.get(Math.log(2.8D+IMathCache.POW3.get(level))))));
+			event.setAmount((float)(event.getAmount() * (1 - PhanesRegret.REDUCTION.get(Math.log(2.8D+MathCache.POW3.get(level))))));
 			if(event.getEntityLiving() instanceof EntityPlayer)
 			{
 				EntityPlayer player = (EntityPlayer)event.getEntityLiving();
@@ -312,7 +443,7 @@ public class UtilsHandler
 				if(toConsume > 0)
 				{
 					if(player.experienceTotal >= toConsume) MiscUtil.drainExperience(player, toConsume);
-					else player.attackEntityFrom(DamageSource.GENERIC, IMathCache.SQRT.getFloat(toConsume));
+					else player.attackEntityFrom(DamageSource.GENERIC, (float)Math.sqrt(toConsume));
 				}
 			}
 		}
@@ -322,22 +453,24 @@ public class UtilsHandler
 	public void onItemClick(RightClickItem event)
 	{
 		if(event.getEntityPlayer() == null || !event.getEntityPlayer().isSneaking()) return;
+		EntityPlayer player = event.getEntityPlayer();
 		ItemStack stack = event.getItemStack();
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.RESONANCE, stack);
 		if(level > 0)
 		{
 			if(!event.getWorld().isRemote)
 			{
-				NBTTagCompound nbt = event.getEntityPlayer().getEntityData();
+				NBTTagCompound nbt = player.getEntityData();
 				if(nbt.getLong(Resonance.COOLDOWN_TAG) > event.getWorld().getTotalWorldTime())
 				{
 					int used = nbt.getInteger(Resonance.OVERUSED_TAG);
 					event.getEntityPlayer().attackEntityFrom(DamageSource.MAGIC, 0.5F*used);
 					nbt.setInteger(Resonance.OVERUSED_TAG, used+1);
+					if(!player.world.isRemote) player.sendMessage(new TextComponentTranslation("tooltip.uniqueeutil.resonance.cooldown", (event.getWorld().getTotalWorldTime() - nbt.getLong(Resonance.COOLDOWN_TAG)) / 20));
 				}
 				else
 				{
-					Resonance.addResonance(event.getWorld(), event.getPos(), (int)(Resonance.RANGE.getSqrt(level*IMathCache.SQRT.get(event.getEntityPlayer().experienceLevel))));
+					Resonance.addResonance(event.getWorld(), event.getPos(), (int)(Resonance.RANGE.getSqrt(level*Math.sqrt(event.getEntityPlayer().experienceLevel))));
 					nbt.setLong(Resonance.COOLDOWN_TAG, event.getWorld().getTotalWorldTime()+600);
 					nbt.setInteger(Resonance.OVERUSED_TAG, 1);
 				}
@@ -398,18 +531,21 @@ public class UtilsHandler
 					{
 						MiscUtil.drainExperience(player, required);
 						StackUtils.setInt(stack, SagesSoul.STORED_XP, stored+5);
+						event.setCancellationResult(EnumActionResult.SUCCESS);
 					}
 					else
 					{
-						player.sendMessage(new TextComponentString("Not Enough XP"));
+						if(!player.world.isRemote) player.sendMessage(new TextComponentTranslation("tooltip.uniqueeutil.missing.xp"));
+						event.setCancellationResult(EnumActionResult.FAIL);
 					}
+					event.setCanceled(true);
 				}
 			}
 			else if(state.getBlock() == Blocks.BEACON)
 			{
 				Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(event.getItemStack());
 				int level = ench.getInt(UniqueEnchantmentsUtils.ALCHEMISTS_BLESSING);
-				if(level > 0)
+				if(level > 0 && !event.getWorld().isRemote)
 				{
 					TileEntity tile = event.getWorld().getTileEntity(event.getPos());
 					if(tile instanceof TileEntityBeacon)
@@ -448,6 +584,8 @@ public class UtilsHandler
 						int stored = StackUtils.getInt(event.getItemStack(), AlchemistsBlessing.STORED_REDSTONE, 0) - consumed;
 						StackUtils.setInt(event.getItemStack(), AlchemistsBlessing.STORED_REDSTONE, Math.max(0, stored));
 						if(stored < 0) event.getItemStack().damageItem(-stored, event.getEntityPlayer());
+						event.setCancellationResult(EnumActionResult.SUCCESS);
+						event.setCanceled(true);
 					}
 				}
 			}
@@ -557,7 +695,7 @@ public class UtilsHandler
 		if(level > 0)
 		{
 			double base = Reinforced.BASE_REDUCTION.get();
-			event.setNewSpeed((float)(event.getNewSpeed() * Math.pow((base+((1D-base)*0.01D)*level), IMathCache.SQRT.get(level))));
+			event.setNewSpeed((float)(event.getNewSpeed() * Math.pow((base+((1D-base)*0.01D)*level), Math.sqrt(level))));
 		}
 	}
 	
@@ -642,7 +780,7 @@ public class UtilsHandler
 							NBTTagCompound nbt = new NBTTagCompound();
 							rocket.writeEntityToNBT(nbt);
 							int time = nbt.getInteger("LifeTime");
-							time += time * RocketMan.FLIGHT_TIME.getAsDouble(level) * IMathCache.LOG_ADD_MAX.get(level);
+							time += time * RocketMan.FLIGHT_TIME.getAsDouble(level) * MathCache.LOG_ADD_MAX.get(level);
 							nbt.setInteger("LifeTime", time);
 							rocket.readEntityFromNBT(nbt);
 						}
@@ -676,10 +814,11 @@ public class UtilsHandler
 	@SubscribeEvent
 	public void onEntityDamage(LivingDamageEvent event)
 	{
+		if(event.getSource() == null || event.getSource().isMagicDamage()) return;
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
 		if(level > 0)
 		{
-			event.setAmount((float)(event.getAmount() * (1 - PhanesRegret.REDUCTION.get(Math.log(2.8D+IMathCache.POW3.get(level))))));
+			event.setAmount((float)(event.getAmount() * (1 - PhanesRegret.REDUCTION.get(Math.log(2.8D+MathCache.POW3.get(level))))));
 			if(event.getEntityLiving() instanceof EntityPlayer)
 			{
 				EntityPlayer player = (EntityPlayer)event.getEntityLiving();
@@ -717,7 +856,7 @@ public class UtilsHandler
 		if(level > 0)
 		{
 			double base = Reinforced.BASE_REDUCTION.get();
-			mods.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(Reinforced.SPEED_MOD, "Reinforced Boost", Math.pow((base+((1D-base)*0.01D)*level), IMathCache.SQRT.get(level)), 2));
+			mods.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(Reinforced.SPEED_MOD, "Reinforced Boost", Math.pow((base+((1D-base)*0.01D)*level), Math.sqrt(level)), 2));
 		}
 		level = ench.getInt(UniqueEnchantmentsUtils.SAGES_SOUL);
 		if(level > 0)
@@ -725,8 +864,8 @@ public class UtilsHandler
 			int levels = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
 			double power = SagesSoul.getEnchantPower(stack, level);
 			mods.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(SagesSoul.ATTACK_MOD, "Sage Attack Boost", Math.pow(-0.5+Math.sqrt(0.25+SagesSoul.ATTACK_SPEED.get(2*levels)), power)/SagesSoul.ATTACK_SPEED.get(), 2));
-			mods.put(SharedMonsterAttributes.ARMOR.getName(), new AttributeModifier(SagesSoul.ARMOR_MOD, "Sages Armor Boost", Math.pow((-0.5+SagesSoul.ARMOR_SCALE.get(Math.sqrt(0.25+8*(levels*IMathCache.SQRT.get(level))))), power)/SagesSoul.ARMOR_DIVIDOR.get(), 0));
-			mods.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(SagesSoul.TOUGHNESS_MOD, "Sages Toughness Boost", Math.pow((-0.5+SagesSoul.TOUGHNESS_SCALE.get(Math.sqrt(0.25+1*(levels*IMathCache.SQRT.get(level))))), power)/SagesSoul.TOUGHNESS_DIVIDOR.get() , 0));
+			mods.put(SharedMonsterAttributes.ARMOR.getName(), new AttributeModifier(SagesSoul.ARMOR_MOD, "Sages Armor Boost", Math.pow((-0.5+SagesSoul.ARMOR_SCALE.get(Math.sqrt(0.25+8*(levels*Math.sqrt(level))))), power)/SagesSoul.ARMOR_DIVIDOR.get(), 0));
+			mods.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(SagesSoul.TOUGHNESS_MOD, "Sages Toughness Boost", Math.pow((-0.5+SagesSoul.TOUGHNESS_SCALE.get(Math.sqrt(0.25+1*(levels*Math.sqrt(level))))), power)/SagesSoul.TOUGHNESS_DIVIDOR.get() , 0));
 		}
 		return mods;
 	}

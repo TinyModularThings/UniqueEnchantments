@@ -6,6 +6,7 @@ import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
@@ -35,7 +36,7 @@ public class EnchantmentCategory implements IRecipeCategory<EnchantmentWrapper>
 	@Override
 	public String getTitle()
 	{
-		return "UE Enchantment View";
+		return I18n.format("unique.base.jei.name");
 	}
 
 	@Override

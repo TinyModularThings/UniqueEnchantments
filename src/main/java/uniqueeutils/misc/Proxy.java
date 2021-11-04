@@ -2,13 +2,13 @@ package uniqueeutils.misc;
 
 import java.util.UUID;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class Proxy
 {
-	Object2BooleanMap<UUID> keyMap = new Object2BooleanOpenHashMap<>();
+	Object2IntMap<UUID> keyMap = new Object2IntOpenHashMap<>();
 	
 	public void init()
 	{
@@ -20,13 +20,13 @@ public class Proxy
 		
 	}
 	
-	public void updateData(EntityPlayer player, boolean pressed)
+	public void updateData(EntityPlayer player, int pressed)
 	{
 		keyMap.put(player.getUniqueID(), pressed);
 	}
 	
 	public boolean isBoostKeyDown(EntityPlayer player)
 	{
-		return keyMap.getBoolean(player.getUniqueID());
+		return (keyMap.get(player.getUniqueID()) & 1) != 0;
 	}
 }

@@ -3,10 +3,11 @@ package uniqueeutils.enchantments.unique;
 import java.util.UUID;
 
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.handler.IMathCache;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
 
@@ -33,8 +34,15 @@ public class SagesSoul extends UniqueEnchantment
 		setCategory("utils");
 	}
 	
+	@Override
+	public void loadIncompats()
+	{
+		addIncompats(new ResourceLocation("uniquee", "all"), new ResourceLocation("uniquee", "spartanweapon"), new ResourceLocation("uniquee", "berserk"), new ResourceLocation("uniquee", "alchemistsgrace"), new ResourceLocation("uniquee", "ender_mending"));
+		addIncompats(Enchantments.SHARPNESS, Enchantments.EFFICIENCY, Enchantments.PROTECTION, Enchantments.MENDING);
+	}
+	
 	public static double getEnchantPower(ItemStack stack, int level)
 	{
-		return Math.log10(10+Math.pow(((IMathCache.POW2.get(level)*0.5D)+stack.getEnchantmentTagList().tagCount()), (1/DIVIDOR.get())));
+		return Math.log10(10+Math.pow(((level*level*0.5D)+stack.getEnchantmentTagList().tagCount()), (1/DIVIDOR.get())));
 	}
 }

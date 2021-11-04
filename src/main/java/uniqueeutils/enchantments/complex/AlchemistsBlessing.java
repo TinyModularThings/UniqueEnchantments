@@ -7,10 +7,12 @@ import java.util.function.ToIntFunction;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -37,6 +39,13 @@ public class AlchemistsBlessing extends UniqueEnchantment
 	{
 		super(new DefaultData("alchemists_blessing", Rarity.VERY_RARE, 4, true, 26, 12, 10), EnumEnchantmentType.DIGGER, EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND);
 		addStats(CONSUMTION, BASE_XP_USAGE, LVL_XP_USAGE);
+	}
+	
+	@Override
+	public void loadIncompats()
+	{
+		addIncompats(Enchantments.MENDING);
+		addIncompats(new ResourceLocation("uniquee", "alchemistsgrace"), new ResourceLocation("uniquee", "ender_mending"));
 	}
 	
 	@Override

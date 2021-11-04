@@ -7,6 +7,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.ResourceLocation;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
@@ -24,6 +25,12 @@ public class AnemoiFragment extends UniqueEnchantment
 		super(new DefaultData("anemoi_fragment", Rarity.VERY_RARE, 4, true, 40, 10, 75), EnumEnchantmentType.ARMOR_CHEST, EntityEquipmentSlot.CHEST);
 		addStats(BOOST, CONSUMPTION, CONSUMPTION_SCALE);
 		setCategory("utils");
+	}
+	
+	@Override
+	public void loadIncompats()
+	{
+		addIncompats(new ResourceLocation("uniquee", "icarus_aegis"));;
 	}
 	
 	@Override
