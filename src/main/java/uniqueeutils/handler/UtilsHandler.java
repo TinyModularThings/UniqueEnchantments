@@ -845,7 +845,7 @@ public class UtilsHandler
 	@SubscribeEvent
 	public void onEntityDamage(LivingDamageEvent event)
 	{
-		if(event.getSource() == null || event.getSource().isMagic()) return;
+		if(event.getSource() == null || !"generic".equalsIgnoreCase(event.getSource().getMsgId())) return;
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
 		if(level > 0)
 		{

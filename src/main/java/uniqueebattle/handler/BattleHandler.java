@@ -153,12 +153,9 @@ public class BattleHandler
 			int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.LUNATIC_DESPAIR, source);
 			if(level > 0)
 			{
-				float value = MathCache.LOG_ADD.getFloat(level);
-				event.setAmount(event.getAmount() * (1F + LunaticDespair.BONUS_DAMAGE.getFloat(value)));
+				event.setAmount(event.getAmount() * (1F + LunaticDespair.BONUS_DAMAGE.getFloat(MathCache.LOG_ADD.getFloat(level))));
 				source.invulnerableTime = 0;
-				source.hurt(DamageSource.GENERIC, LunaticDespair.SELF_DAMAGE.getFloat(value));
-				source.invulnerableTime = 0;
-				source.hurt(DamageSource.MAGIC, LunaticDespair.SELF_MAGIC_DAMAGE.getFloat(value));
+				source.hurt(DamageSource.MAGIC, (float)Math.pow(event.getAmount()*level, 0.25)-1);
 			}
 		}
 	}

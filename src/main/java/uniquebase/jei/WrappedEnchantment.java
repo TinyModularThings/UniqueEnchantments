@@ -14,6 +14,7 @@ import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
@@ -27,8 +28,8 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 	List<Enchantment> incompats = new ObjectArrayList<>();
 	List<ItemStack> validItems = new ObjectArrayList<>();
 	int pageIndex = 0;
-	ExtendedButton left = new ExtendedButton(1, 59, 10, 10, new StringTextComponent("<"), T -> {});
-	ExtendedButton right = new ExtendedButton(54, 59, 10, 10, new StringTextComponent(">"), T -> {});
+	ExtendedButton left = new ExtendedButton(1, 68, 10, 10, new StringTextComponent("<"), T -> {});
+	ExtendedButton right = new ExtendedButton(54, 68, 10, 10, new StringTextComponent(">"), T -> {});
 	
 	
 	public WrappedEnchantment(Enchantment ench)
@@ -58,7 +59,7 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 	public String getDescription()
 	{
 		String s = I18n.get("enchantment."+ench.getRegistryName().getNamespace()+"."+ench.getRegistryName().getPath()+".desc");
-		if(s.startsWith("enchantment.")) return "unique.base.jei.no.description";
+		if(s.startsWith("enchantment.")) return I18n.get("unique.base.jei.no.description");
 		return s;
 	}
 	
@@ -79,13 +80,13 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 		List<IReorderingProcessor> list = new ObjectArrayList<>();
 		if(incompats.isEmpty())
 		{
-			list.addAll(font.split(new StringTextComponent("- "+I18n.get("unique.base.jei.no.incompat")), 122));
+			list.addAll(font.split(new StringTextComponent("- ").append(new TranslationTextComponent("unique.base.jei.no.incompat")), 122));
 		}
 		else
 		{
 			for(Enchantment ench : incompats)
 			{
-				list.addAll(font.split(new StringTextComponent("- "+I18n.get(ench.getDescriptionId())), 122));
+				list.addAll(font.split(new StringTextComponent("- ").append(new TranslationTextComponent(ench.getDescriptionId())), 122));
 			}
 		}
 		return list;

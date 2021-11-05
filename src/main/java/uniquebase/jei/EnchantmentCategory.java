@@ -83,7 +83,8 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 		font.draw(matrix, I18n.get("unique.base.jei.max_level", TextFormatting.WHITE.toString()+recipe.ench.getMaxLevel()), 3, 18, 0x1CD679);
 		font.draw(matrix, I18n.get("unique.base.jei.treasure"), 3, 28, 0xBA910D);
 		font.draw(matrix, I18n.get("unique.base.jei.curse"), 3, 38, 0xA11E15);
-		font.draw(matrix, I18n.get("unique.base.jei.rarity", recipe.getFormatting(recipe.ench.getRarity())+I18n.get("unique.base.jei."+recipe.ench.getRarity().name().toLowerCase())), 3, 48, 0xCB19D1);
+		font.draw(matrix, I18n.get("unique.base.jei.tradeable"), 3, 48, 0xC98414);
+		font.draw(matrix, I18n.get("unique.base.jei.rarity", recipe.getFormatting(recipe.ench.getRarity())+I18n.get("unique.base.jei."+recipe.ench.getRarity().name().toLowerCase())), 3, 58, 0xCB19D1);
 		s = recipe.getDescription();
 		if((font.wordWrapHeight(s, 95) / font.lineHeight) > 7)
 		{
@@ -91,7 +92,7 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 			int i = 0;
 			for(IReorderingProcessor entry : font.split(new StringTextComponent(s), 190))
 			{
-				font.drawShadow(matrix, entry, 138, 126+(i*font.lineHeight), 0);
+				font.draw(matrix, entry, 138, 144+(i*font.lineHeight), 0);
 				i++;
 			}
 			matrix.scale(2F, 2F, 1F);
@@ -101,23 +102,24 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 			int i = 0;
 			for(IReorderingProcessor entry : font.split(new StringTextComponent(s), 95))
 			{
-				font.drawShadow(matrix, entry, 69, 63+(i*font.lineHeight), 0);
+				font.draw(matrix, entry, 69, 72+(i*font.lineHeight), 0);
 				i++;
 			}
 		}
-		font.draw(matrix, ""+recipe.pageIndex, 28, 60, 0);
+		font.draw(matrix, ""+recipe.pageIndex, 28, 70, 0);
 		List<IReorderingProcessor> incomp = recipe.getIncompats(font);
-		int rows = MathHelper.ceil(incomp.size() / 11D);
-		int start = recipe.pageIndex * 11;
+		int rows = MathHelper.ceil(incomp.size() / 9D);
+		int start = recipe.pageIndex * 9;
 		matrix.scale(0.5F, 0.5F, 1F);
-		font.draw(matrix, I18n.get("unique.base.jei.incompats"), 5, 144, 0);
+		font.draw(matrix, I18n.get("unique.base.jei.incompats"), 5, 162, 0);
 		for(int i = 0;i<11&&start+i<incomp.size();i++)
 		{
-			font.drawShadow(matrix, incomp.get(start+i), 5, 164 + (i * font.lineHeight), 0);
+			font.draw(matrix, incomp.get(start+i), 5, 182 + (i * font.lineHeight), 0);
 		}
 		mc.getTextureManager().bind(new ResourceLocation("textures/gui/container/beacon.png"));
 		AbstractGui.blit(matrix, 3 + (font.width(I18n.get("unique.base.jei.treasure")) * 2), 55, 90 + (recipe.ench.isTreasureOnly() ? 0 : 22), 220, 18, 18, 256, 256);
 		AbstractGui.blit(matrix, 3 + (font.width(I18n.get("unique.base.jei.curse")) * 2), 74, 90 + (recipe.ench.isCurse() ? 0 : 22), 220, 18, 18, 256, 256);
+		AbstractGui.blit(matrix, 3 + (font.width(I18n.get("unique.base.jei.tradeable")) * 2), 95, 90 + (recipe.ench.isTradeable() ? 0 : 22), 220, 18, 18, 256, 256);
 		matrix.scale(2F, 2F, 1F);
 		recipe.left.active = recipe.pageIndex > 0;
 		recipe.right.active = recipe.pageIndex < rows - 1;
@@ -137,7 +139,7 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 		}
 		if(recipe.right.isMouseOver(mouseX, mouseY))
 		{
-			int rows = MathHelper.ceil(recipe.getIncompats(mc.font).size() / 11D);
+			int rows = MathHelper.ceil(recipe.getIncompats(mc.font).size() / 9D);
 			if(recipe.pageIndex < rows - 1)
 			{
 				recipe.right.playDownSound(mc.getSoundManager());
