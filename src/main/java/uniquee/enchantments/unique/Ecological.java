@@ -1,6 +1,6 @@
 package uniquee.enchantments.unique;
 
-import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -20,11 +20,11 @@ import uniquee.UniqueEnchantments;
 public class Ecological extends UniqueEnchantment
 {
 	public static final Tag<Block> ECHOLOGICAL = new BlockTags.Wrapper(new ResourceLocation("uniquee", "ecological"));
-	public static Predicate<BlockState> STATES = new Predicate<BlockState>(){
+	public static final ToIntFunction<BlockState> STATES = new ToIntFunction<BlockState>() {
 		@Override
-		public boolean test(BlockState t)
+		public int applyAsInt(BlockState t)
 		{
-			return BlockTags.LOGS.contains(t.getBlock()) || BlockTags.LEAVES.contains(t.getBlock()) || ECHOLOGICAL.contains(t.getBlock());
+			return BlockTags.LOGS.contains(t.getBlock()) || BlockTags.LEAVES.contains(t.getBlock()) || ECHOLOGICAL.contains(t.getBlock()) ? 1 : 0;
 		}
 	};
 	public static final IntStat SPEED = new IntStat(220, "baseDuration");

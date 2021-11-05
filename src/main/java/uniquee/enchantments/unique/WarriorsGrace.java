@@ -6,11 +6,10 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.api.filters.IGraceEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquee.UniqueEnchantments;
 
-public class WarriorsGrace extends UniqueEnchantment implements IGraceEnchantment
+public class WarriorsGrace extends UniqueEnchantment
 {
 	public static final DoubleStat DURABILITY_GAIN = new DoubleStat(1.1D, "durability_gain");
 

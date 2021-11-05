@@ -6,11 +6,10 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.api.filters.IBlessingEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquee.UniqueEnchantments;
 
-public class SagesBlessing extends UniqueEnchantment implements IBlessingEnchantment
+public class SagesBlessing extends UniqueEnchantment
 {
 	public static final DoubleStat XP_BOOST = new DoubleStat(0.2D, "xp_boost");
 	
