@@ -140,7 +140,7 @@ public class EnchantmentWrapper implements IRecipeWrapper
 	private String getDescription()
 	{
 		String s = I18n.format("enchantment."+enchantment.ench.getRegistryName().getNamespace()+"."+enchantment.ench.getRegistryName().getPath()+".desc");
-		if(s.startsWith("enchantment.")) return "unique.base.jei.no.description";
+		if(s.startsWith("enchantment.")) return I18n.format("unique.base.jei.no.description");
 		return s;
 	}
 	

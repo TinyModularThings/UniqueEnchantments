@@ -12,6 +12,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.Tuple;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -49,7 +50,7 @@ public class BaseHandler
 			if(enchantments.getInt(entry.getFirst()) > 0)
 			{
 				String[] names = entry.getSecond();
-				event.getToolTip().add(I18n.format(names[0], StackUtils.getInt(stack, names[1], 0)));
+				event.getToolTip().add(TextFormatting.GOLD+I18n.format(names[0], StackUtils.getInt(stack, names[1], 0)));
 			}
 		}
 	}
