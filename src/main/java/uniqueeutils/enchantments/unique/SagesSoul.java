@@ -6,6 +6,7 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.PotionItem;
 import net.minecraft.util.ResourceLocation;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -39,6 +40,12 @@ public class SagesSoul extends UniqueEnchantment
 	{
 		addIncompats(new ResourceLocation("uniquee", "all"), new ResourceLocation("uniquee", "spartanweapon"), new ResourceLocation("uniquee", "berserk"), new ResourceLocation("uniquee", "alchemistsgrace"), new ResourceLocation("uniquee", "ender_mending"));
 		addIncompats(Enchantments.SHARPNESS, Enchantments.EFFICIENCY, Enchantments.PROTECTION, Enchantments.MENDING);
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() instanceof PotionItem;
 	}
 	
 	public static double getEnchantPower(ItemStack stack, int level)

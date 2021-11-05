@@ -56,7 +56,7 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 	public String getDescription()
 	{
 		String s = I18n.format("enchantment."+ench.getRegistryName().getNamespace()+"."+ench.getRegistryName().getPath()+".desc");
-		if(s.startsWith("enchantment.")) return "unique.base.jei.no.description";
+		if(s.startsWith("enchantment.")) return I18n.format("unique.base.jei.no.description");
 		return s;
 	}
 	
