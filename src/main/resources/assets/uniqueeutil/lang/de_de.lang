@@ -1,7 +1,7 @@
 enchantment.uniqueeutil.adept=Anpassung
 enchantment.uniqueeutil.adept.desc=Reduziert die Verlangsamung der Abbaugeschwindigkeit unter Wasser und in der Luft
 enchantment.uniqueeutil.thick_pick=Maechtige Picke
-enchantment.uniqueeutil.thick_pick.desc=Shift-Linksklick einen Amboss um alle Juwelen in deinem Inventar zu konsumieren. Erhoeht deine Abbaugeschwindigkeit bei harten Bloecken im Austausch mit Juwelen
+enchantment.uniqueeutil.thick_pick.desc=Shift-Rechtsklick einen Amboss um alle Juwelen in deinem Inventar zu konsumieren. Erhoeht deine Abbaugeschwindigkeit bei harten Bloecken im Austausch mit Juwelen
 
 enchantment.uniqueeutil.alchemists_blessing=Segen des Alchemisten
 enchantment.uniqueeutil.alchemists_blessing.desc=Shift-Rechtsklicke einen Amboss um das Redstone in deinem Inventar zu konsumieren. Wandelt Gegendstaende in anderes um, benötigt einen Lichtstrahl und konsumiert das Redstone.
