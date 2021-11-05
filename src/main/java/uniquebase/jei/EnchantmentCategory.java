@@ -21,7 +21,7 @@ public class EnchantmentCategory implements IRecipeCategory<EnchantmentWrapper>
 	
 	public EnchantmentCategory(IGuiHelper helper)
 	{
-		drawable = helper.createDrawable(new ResourceLocation("uniquebase:textures/jei.png"), 4, 5, 167, 128);
+		drawable = helper.createDrawable(new ResourceLocation("uniquebase:textures/jei.png"), 4, 5, 167, 138);
 		ItemStack stack = new ItemStack(Items.ENCHANTED_BOOK);
 		ItemEnchantedBook.addEnchantment(stack, new EnchantmentData(Enchantments.FORTUNE, 100));
 		icon = helper.createDrawableIngredient(stack);

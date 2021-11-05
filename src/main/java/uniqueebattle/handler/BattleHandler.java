@@ -189,6 +189,7 @@ public class BattleHandler
 			{
 				float value = MathCache.LOG_ADD.getFloat(level);
 				event.setAmount(event.getAmount() * (1F + LunaticDespair.BONUS_DAMAGE.getFloat(value)));
+				source.hurtResistantTime = 0;
 				source.attackEntityFrom(DamageSource.GENERIC, LunaticDespair.SELF_DAMAGE.getFloat(value));
 				source.hurtResistantTime = 0;
 				source.attackEntityFrom(DamageSource.MAGIC, LunaticDespair.SELF_MAGIC_DAMAGE.getFloat(value));

@@ -29,7 +29,7 @@ public class EnchantmentWrapper implements IRecipeWrapper
 {
 	WrappedEnchantment enchantment;
 	int pageIndex = 0;
-	GuiButtonExt left = new GuiButtonExt(0, 0, 59, 10, 10, "<");
+	GuiButtonExt left = new GuiButtonExt(0, 1, 59, 10, 10, "<");
 	GuiButtonExt right = new GuiButtonExt(0, 54, 59, 10, 10, ">");
 	
 	public EnchantmentWrapper(WrappedEnchantment enchantment)
@@ -79,10 +79,10 @@ public class EnchantmentWrapper implements IRecipeWrapper
 		int rows = MathHelper.ceil(incomp.size() / 11D);
 		int start = pageIndex * 11;
 		GlStateManager.scale(0.5D, 0.5D, 1D);
-		font.drawString(I18n.format("unique.base.jei.incompats"), 4, 144, 0);
+		font.drawString(I18n.format("unique.base.jei.incompats"), 5, 144, 0);
 		for(int i = 0;i<11&&start+i<incomp.size();i++)
 		{
-			font.drawString(incomp.get(start+i), 4, 164 + (i * font.FONT_HEIGHT), 0);
+			font.drawString(incomp.get(start+i), 5, 164 + (i * font.FONT_HEIGHT), 0);
 		}
 		GlStateManager.scale(2D, 2D, 1D);
 		minecraft.getTextureManager().bindTexture(new ResourceLocation("textures/gui/container/beacon.png"));
