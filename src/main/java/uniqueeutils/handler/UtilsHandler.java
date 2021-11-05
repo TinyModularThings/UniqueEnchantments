@@ -711,7 +711,10 @@ public class UtilsHandler
 		{
 			double power = SagesSoul.getEnchantPower(held, level);
 			int levels = StackUtils.getInt(held, SagesSoul.STORED_XP, 0);
-			event.setNewSpeed((float)(event.getNewSpeed() + Math.min(25.5D, (-0.5+Math.pow(Math.sqrt(0.25+SagesSoul.MINING_SPEED.get(2*levels)), power))) + (Math.max(25.5, Math.pow((-0.5+Math.sqrt(0.25+2*player.experienceLevel)), power))-25.5D)/16));
+			float toolSpeed = player.inventory.getDestroySpeed(event.getState());
+			float invToolSpeed = 1F/toolSpeed;
+			float speed = event.getNewSpeed();
+			event.setNewSpeed(speed + toolSpeed * (1 + (float)Math.pow(Math.log(7.39+(levels*levels)/(speed*invToolSpeed)), power)*invToolSpeed));
 		}
 		level = ench.getInt(UniqueEnchantmentsUtils.THICK_PICK);
 		if(level > 0 && event.getState().getDestroySpeed(player.level, event.getPos()) >= 20)
