@@ -6,6 +6,7 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
+import uniquebase.utils.IntStat;
 
 public class Vitae extends UniqueEnchantment
 {
@@ -14,12 +15,13 @@ public class Vitae extends UniqueEnchantment
 	public static final UUID HEALTH_MOD_CHEST = UUID.fromString("72a87567-c59a-42a8-90e7-1ce787d42ad7");
 	public static final UUID HEALTH_MOD_LEGS = UUID.fromString("aa0db628-1082-42dc-8f97-bb935ed325c2");
 	public static final UUID HEALTH_MOD_FEET = UUID.fromString("1ae23c8c-1b59-4bcc-85c3-e5aa5ce75fe1");
-	public static final DoubleStat HEALTH_BOOST = new DoubleStat(1D, "health_boost");
+	public static final IntStat BASE_BOOST = new IntStat(20, "base_boost");
+	public static final DoubleStat SCALE_BOOST = new DoubleStat(1D, "scale_boost");
 	
 	public Vitae()
 	{
 		super(new DefaultData("vitae", Rarity.RARE, 5, false, 18, 8, 5), EnchantmentType.ARMOR, EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET);
-		addStats(HEALTH_BOOST);
+		addStats(BASE_BOOST, SCALE_BOOST);
 	}
 	
 	public static UUID getForSlot(EquipmentSlotType slot)

@@ -35,6 +35,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.EmptyHandler;
+import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 import uniqueebattle.UniqueEnchantmentsBattle;
 import uniqueebattle.enchantments.AresFragment;
@@ -150,10 +151,9 @@ public class BattleHandler
 			int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.LUNATIC_DESPAIR, source);
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() * (1F + LunaticDespair.BONUS_DAMAGE.getFloat((float)Math.log(2.8D+level))));
-				source.attackEntityFrom(DamageSource.GENERIC, LunaticDespair.SELF_DAMAGE.getFloat((float)Math.log(2.8+level)));
+				event.setAmount(event.getAmount() * (1F + LunaticDespair.BONUS_DAMAGE.getFloat(MathCache.LOG_ADD.getFloat(level))));
 				source.hurtResistantTime = 0;
-				source.attackEntityFrom(DamageSource.MAGIC, LunaticDespair.SELF_MAGIC_DAMAGE.getFloat((float)Math.log(2.8+level)));
+				source.attackEntityFrom(DamageSource.MAGIC, (float)Math.pow(event.getAmount()*level, 0.25)-1);
 			}
 		}
 	}
@@ -177,13 +177,13 @@ public class BattleHandler
 				if(max > IfritsJudgement.LAVA_HITS.get())
 				{
 					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
-					source.attackEntityFrom(DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * (float)Math.log(2.8*combined*0.0625D)));
+					source.attackEntityFrom(DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
 					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));
 				}
 				else if(max > IfritsJudgement.FIRE_HITS.get())
 				{
 					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
-					source.attackEntityFrom(DamageSource.IN_FIRE, IfritsJudgement.FIRE_DAMAGE.getAsFloat(found.getIntValue() * (float)Math.log(2.8*combined*0.0625D)));
+					source.attackEntityFrom(DamageSource.IN_FIRE, IfritsJudgement.FIRE_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
 					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));					
 				}
 				else if(max > 0)

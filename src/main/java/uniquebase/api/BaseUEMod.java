@@ -23,6 +23,11 @@ public abstract class BaseUEMod
 		ALL_MODS.add(this);
 	}
 	
+	public static boolean containsMod(BaseUEMod mod)
+	{
+		return ALL_MODS.contains(mod);
+	}
+	
 	public void init(IEventBus bus, String name)
 	{
 		bus.addGenericListener(Enchantment.class, this::registerEnchantments);

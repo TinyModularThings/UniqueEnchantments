@@ -5,10 +5,9 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.api.filters.IBlessingEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 
-public class PhoenixBlessing extends UniqueEnchantment implements IBlessingEnchantment
+public class PhoenixBlessing extends UniqueEnchantment
 {
 	public static final DoubleLevelStats RANGE = new DoubleLevelStats("range", 3D, 0.25D);
 	
