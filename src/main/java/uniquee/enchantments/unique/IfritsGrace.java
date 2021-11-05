@@ -17,10 +17,9 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.api.filters.IGraceEnchantment;
 import uniquebase.utils.DoubleStat;
 
-public class IfritsGrace extends UniqueEnchantment implements IGraceEnchantment
+public class IfritsGrace extends UniqueEnchantment
 {
 	public static Object2IntMap<Item> LAVA_ITEMS = new Object2IntOpenHashMap<Item>();
 	public static ToIntFunction<ItemStack> VALIDATOR = new ToIntFunction<ItemStack>(){

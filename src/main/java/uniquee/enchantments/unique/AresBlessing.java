@@ -3,10 +3,9 @@ package uniquee.enchantments.unique;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.api.filters.IBlessingEnchantment;
 import uniquebase.utils.DoubleStat;
 
-public class AresBlessing extends UniqueEnchantment implements IBlessingEnchantment
+public class AresBlessing extends UniqueEnchantment
 {
 	public static final DoubleStat BASE_DAMAGE = new DoubleStat(6D, "scalar");
 	

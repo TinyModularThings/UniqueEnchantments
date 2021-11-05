@@ -47,6 +47,8 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.0.40'
     compile fg.deobf("curse.maven:firstaid-276837:3152708")
     compile fg.deobf("curse.maven:configured-457570:3340535")
+    compile fg.deobf("curse.maven:jei-238222:3514175")
+	compile fg.deobf("curse.maven:enchantment-descriptions-250419:3488440")
 }
 
 jar {
