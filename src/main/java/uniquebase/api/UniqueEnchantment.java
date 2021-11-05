@@ -66,27 +66,27 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	}
 	
 	@Override
-	public boolean isTreasureEnchantment()
+	public boolean isTreasureOnly()
 	{
 		return values.isTreasure();
 	}
 	
 	@Override
-	public boolean canVillagerTrade()
+	public boolean isTradeable()
 	{
 		return values.isTradeable();
 	}
 	
 	@Override
-	public int getMinEnchantability(int enchantmentLevel)
+	public int getMinCost(int enchantmentLevel)
 	{
 		return values.getLevelCost(enchantmentLevel);
 	}
 	
 	@Override
-	public int getMaxEnchantability(int enchantmentLevel)
+	public int getMaxCost(int enchantmentLevel)
 	{
-		return getMinEnchantability(enchantmentLevel) + values.getRangeCost();
+		return getMinCost(enchantmentLevel) + values.getRangeCost();
 	}
 	
 	@Override
@@ -114,9 +114,9 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	}
 	
 	@Override
-	protected boolean canApplyTogether(Enchantment ench)
+	protected boolean checkCompatibility(Enchantment ench)
 	{
-		return super.canApplyTogether(ench) && !values.incompats.contains(ench.getRegistryName());
+		return super.checkCompatibility(ench) && !values.incompats.contains(ench.getRegistryName());
 	}
 	
 	@Override

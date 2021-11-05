@@ -6,11 +6,10 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.api.filters.IBlessingEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquee.UniqueEnchantments;
 
-public class SagesBlessing extends UniqueEnchantment implements IBlessingEnchantment
+public class SagesBlessing extends UniqueEnchantment
 {
 	public static final DoubleStat XP_BOOST = new DoubleStat(0.2D, "xp_boost");
 	
@@ -23,7 +22,7 @@ public class SagesBlessing extends UniqueEnchantment implements IBlessingEnchant
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return EnchantmentType.WEAPON.canEnchantItem(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
+		return EnchantmentType.WEAPON.canEnchant(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
 	}
 	
 	@Override

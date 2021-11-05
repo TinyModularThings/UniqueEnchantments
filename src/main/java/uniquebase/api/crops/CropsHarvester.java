@@ -25,15 +25,15 @@ public class CropsHarvester implements ICropHarvest
 	{
 		if(state.getBlock() != crop)
 		{
-			return ActionResult.resultFail(ItemStack.EMPTY);
+			return ActionResult.fail(ItemStack.EMPTY);
 		}
 		if(crop.isMaxAge(state))
 		{
 			List<ItemStack> drops = Block.getDrops(state, (ServerWorld)world, pos, null);
-			world.setBlockState(pos, crop.withAge(0));
-			return ActionResult.resultSuccess(drops.isEmpty() ? ItemStack.EMPTY : drops.get(0));
+			world.setBlockAndUpdate(pos, crop.getStateForAge(0));
+			return ActionResult.success(drops.isEmpty() ? ItemStack.EMPTY : drops.get(0));
 		}
-		return ActionResult.resultPass(ItemStack.EMPTY);
+		return ActionResult.pass(ItemStack.EMPTY);
 	}
 	
 }

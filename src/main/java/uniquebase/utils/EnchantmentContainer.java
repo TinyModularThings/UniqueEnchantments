@@ -46,7 +46,7 @@ public class EnchantmentContainer
 	{
 		if(enchantments[slot.ordinal()] == null) 
 		{
-			enchantments[slot.ordinal()] = MiscUtil.getEnchantments(base.getItemStackFromSlot(slot));
+			enchantments[slot.ordinal()] = MiscUtil.getEnchantments(base.getItemBySlot(slot));
 			checkedSlots++;
 		}
 		return enchantments[slot.ordinal()].getInt(ench);
@@ -74,7 +74,7 @@ public class EnchantmentContainer
 				{
 					if(enchantments[slot.ordinal()] == null)
 					{
-						enchantments[slot.ordinal()] = MiscUtil.getEnchantments(base.getItemStackFromSlot(slot));
+						enchantments[slot.ordinal()] = MiscUtil.getEnchantments(base.getItemBySlot(slot));
 						checkedSlots++;
 					}
 				}
@@ -150,7 +150,7 @@ public class EnchantmentContainer
 		public Int2ObjectMap.Entry<ItemStack> next()
 		{
 			if(!hasNext()) throw new IllegalStateException();
-			Int2ObjectMap.Entry<ItemStack> result = new AbstractInt2ObjectMap.BasicEntry<>(lastResult, base.getItemStackFromSlot(SLOTS[i]));
+			Int2ObjectMap.Entry<ItemStack> result = new AbstractInt2ObjectMap.BasicEntry<>(lastResult, base.getItemBySlot(SLOTS[i]));
 			lastResult = -1;
 			i++;
 			return result;

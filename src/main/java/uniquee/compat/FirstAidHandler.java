@@ -27,14 +27,14 @@ public class FirstAidHandler
 		if(event.getAfterDamage().isDead(event.getPlayer()))
 		{
 			DamageSource source = event.getSource();
-			if(!source.isMagicDamage() && source != DamageSource.FALL)
+			if(!source.isMagic() && source != DamageSource.FALL)
 			{
-				ItemStack stack = event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.CHEST);
+				ItemStack stack = event.getEntityLiving().getItemBySlot(EquipmentSlotType.CHEST);
 				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ARES_BLESSING, stack);
-				if(level > 0 && stack.isDamageable())
+				if(level > 0 && stack.isDamageableItem())
 				{
 					float damage = event.getUndistributedDamage();
-					stack.damageItem((int)(damage * (AresBlessing.BASE_DAMAGE.get() / Math.log(1+level))), event.getEntityLiving(), MiscUtil.get(EquipmentSlotType.CHEST));
+					stack.hurtAndBreak((int)(damage * (AresBlessing.BASE_DAMAGE.get() / Math.log(1+level))), event.getEntityLiving(), MiscUtil.get(EquipmentSlotType.CHEST));
 					event.setCanceled(true);
 					return;
 				}	
@@ -44,17 +44,17 @@ public class FirstAidHandler
 			if(slot.getIntValue() > 0)
 			{
 				living.heal(living.getMaxHealth());
-				living.clearActivePotions();
-				living.getFoodStats().addStats(Short.MAX_VALUE, 1F);
-				living.getPersistentData().putLong(DeathsOdium.CURSE_TIMER, living.getEntityWorld().getGameTime() + DeathsOdium.DELAY.get());
-	            living.addPotionEffect(new EffectInstance(Effects.REGENERATION, 600, 1));
-	            living.addPotionEffect(new EffectInstance(Effects.ABSORPTION, 100, 1));
-	            living.world.setEntityState(living, (byte)35);
-	            living.getItemStackFromSlot(slot.getKey()).shrink(1);
-	            for(LivingEntity entry : living.getEntityWorld().getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(living.getPosition()).grow(PhoenixBlessing.RANGE.getAsDouble(slot.getIntValue()))))
+				living.removeAllEffects();
+				living.getFoodData().eat(Short.MAX_VALUE, 1F);
+				living.getPersistentData().putLong(DeathsOdium.CURSE_TIMER, living.getCommandSenderWorld().getGameTime() + DeathsOdium.DELAY.get());
+	            living.addEffect(new EffectInstance(Effects.REGENERATION, 600, 1));
+	            living.addEffect(new EffectInstance(Effects.ABSORPTION, 100, 1));
+	            living.level.broadcastEntityEvent(living, (byte)35);
+	            living.getItemBySlot(slot.getKey()).shrink(1);
+	            for(LivingEntity entry : living.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(living.blockPosition()).inflate(PhoenixBlessing.RANGE.getAsDouble(slot.getIntValue()))))
 	            {
 	            	if(entry == living) continue;
-	            	entry.setFire(600000);
+	            	entry.setSecondsOnFire(600000);
 	            }
 			}
 		}

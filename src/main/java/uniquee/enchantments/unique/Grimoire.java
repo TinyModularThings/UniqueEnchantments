@@ -38,7 +38,7 @@ public class Grimoire extends UniqueEnchantment
 	public void loadIncompats()
 	{
 		addIncompats(Enchantments.MENDING, UniqueEnchantments.ENDER_MENDING);
-		INCOMPATS.addDefault(Enchantments.FORTUNE, Enchantments.EFFICIENCY, Enchantments.LOOTING, UniqueEnchantments.MIDAS_BLESSING, UniqueEnchantments.ENDEST_REAP, Enchantments.MENDING, Enchantments.SILK_TOUCH);
+		INCOMPATS.addDefault(Enchantments.BLOCK_FORTUNE, Enchantments.BLOCK_EFFICIENCY, Enchantments.MOB_LOOTING, UniqueEnchantments.MIDAS_BLESSING, UniqueEnchantments.ENDEST_REAP, Enchantments.MENDING, Enchantments.SILK_TOUCH);
 	}
 		
 	public static void applyGrimore(ItemStack stack, int level, PlayerEntity player)
@@ -69,21 +69,21 @@ public class Grimoire extends UniqueEnchantment
 				String id = enchantment.getString("id");
 				CompoundNBT copy = new CompoundNBT();
 				copy.putString("id", id);
-				copy.putShort("lvl", (short)(enchantment.getShort("lvl") + (exclusion.equals(id) || INCOMPATS.contains(ResourceLocation.tryCreate(id)) ? 0 : nextLevel)));
+				copy.putShort("lvl", (short)(enchantment.getShort("lvl") + (exclusion.equals(id) || INCOMPATS.contains(ResourceLocation.tryParse(id)) ? 0 : nextLevel)));
 				list.add(copy);
 			}
 			compound.put("Enchantments", list);
 		}
 		if(compound.contains(GRIMOIRE_OWNER))
 		{
-			if(!compound.getUniqueId(GRIMOIRE_OWNER).equals(player.getUniqueID()))
+			if(!compound.getUUID(GRIMOIRE_OWNER).equals(player.getUUID()))
 			{
-				player.attackEntityFrom(DamageSource.OUT_OF_WORLD, 1F);
+				player.hurt(DamageSource.OUT_OF_WORLD, 1F);
 			}
 		}
 		else
 		{
-			compound.putUniqueId(GRIMOIRE_OWNER, player.getUniqueID());
+			compound.putUUID(GRIMOIRE_OWNER, player.getUUID());
 		}
 		stack.setTag(compound);
 	}

@@ -46,20 +46,20 @@ public class CropHarvestRegistry
 		if(harvest != null)
 		{
 			ActionResult<ItemStack> result = harvest.harvest(state, world, pos);
-			if(result.getType() == ActionResultType.FAIL)
+			if(result.getResult() == ActionResultType.FAIL)
 			{
 				return ActionResultType.FAIL;
 			}
-			if(result.getType() == ActionResultType.PASS)
+			if(result.getResult() == ActionResultType.PASS)
 			{
 				return ActionResultType.PASS;
 			}
-			ItemStack stack = result.getResult().copy();
+			ItemStack stack = result.getObject().copy();
 			if(!stack.isEmpty())
 			{
 				stack.setCount(1);
 			}
-			player.getInventoryEnderChest().addItem(stack);
+			player.getEnderChestInventory().addItem(stack);
 			return ActionResultType.SUCCESS;
 		}
 		return ActionResultType.FAIL;

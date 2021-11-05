@@ -29,7 +29,7 @@ public class BoneCrusher extends UniqueEnchantment
 	{
 		for(EquipmentSlotType slot : EquipmentSlotType.values())
 		{
-			if(slot.getSlotType() == Group.ARMOR && slot != EquipmentSlotType.HEAD && !skeleton.getItemStackFromSlot(slot).isEmpty())
+			if(slot.getType() == Group.ARMOR && slot != EquipmentSlotType.HEAD && !skeleton.getItemBySlot(slot).isEmpty())
 			{
 				return false;
 			}

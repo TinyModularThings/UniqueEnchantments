@@ -7,10 +7,13 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
+import uniquebase.networking.PacketHandler;
 
 @Mod("uniquebase")
 public class UniqueEnchantmentsBase
 {
+	public static final PacketHandler NETWORKING = new PacketHandler();
+
 	public UniqueEnchantmentsBase()
 	{
 		FMLJavaModLoadingContext.get().getModEventBus().register(this);

@@ -5,6 +5,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.CrossbowItem;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import uniquebase.api.UniqueEnchantment;
@@ -30,6 +31,6 @@ public class IfritsBlessing extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof BowItem || stack.getItem() instanceof AxeItem || stack.getItem() instanceof CrossbowItem;
+		return stack.getItem() instanceof BowItem || stack.getItem() instanceof AxeItem || stack.getItem() instanceof CrossbowItem || stack.getItem() instanceof HoeItem;
 	}
 }

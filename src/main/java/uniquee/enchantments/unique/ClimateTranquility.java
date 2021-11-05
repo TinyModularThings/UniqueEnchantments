@@ -43,15 +43,15 @@ public class ClimateTranquility extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof AxeItem || EnchantmentType.BOW.canEnchantItem(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
+		return stack.getItem() instanceof AxeItem || EnchantmentType.BOW.canEnchant(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
 	}
 	
 	public static void onClimate(PlayerEntity player, EnchantmentContainer container)
 	{
 		Object2IntMap.Entry<EquipmentSlotType> slot = container.getEnchantedItem(UniqueEnchantments.CLIMATE_TRANQUILITY);
-		AttributeModifierManager map = player.getAttributeManager();
-		ModifiableAttributeInstance speed = map.createInstanceIfAbsent(Attributes.ATTACK_SPEED);
-		ModifiableAttributeInstance damage = map.createInstanceIfAbsent(Attributes.ATTACK_DAMAGE);
+		AttributeModifierManager map = player.getAttributes();
+		ModifiableAttributeInstance speed = map.getInstance(Attributes.ATTACK_SPEED);
+		ModifiableAttributeInstance damage = map.getInstance(Attributes.ATTACK_DAMAGE);
 		if(slot.getIntValue() <= 0)
 		{
 			speed.removeModifier(SPEED_UUID);
@@ -59,7 +59,7 @@ public class ClimateTranquility extends UniqueEnchantment
 			return;
 		}
 		int level = slot.getIntValue();
-		Set<BiomeDictionary.Type> effects = BiomeDictionary.getTypes(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, player.world.getBiome(player.getPosition()).getRegistryName()));
+		Set<BiomeDictionary.Type> effects = BiomeDictionary.getTypes(RegistryKey.create(Registry.BIOME_REGISTRY, player.level.getBiome(player.blockPosition()).getRegistryName()));
 		boolean hasHot = effects.contains(BiomeDictionary.Type.HOT) || effects.contains(BiomeDictionary.Type.NETHER);
 		boolean hasCold = effects.contains(BiomeDictionary.Type.COLD);
 		if(hasHot && !hasCold)
@@ -67,7 +67,7 @@ public class ClimateTranquility extends UniqueEnchantment
 			AttributeModifier speedMod = new AttributeModifier(SPEED_UUID, "Climate Boost", SPEED_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL);
 			if(!speed.hasModifier(speedMod))
 			{
-				speed.applyNonPersistentModifier(speedMod);
+				speed.addTransientModifier(speedMod);
 			}
 		}
 		else
@@ -79,7 +79,7 @@ public class ClimateTranquility extends UniqueEnchantment
 			AttributeModifier damageMod = new AttributeModifier(ATTACK_UUID, "Climate Boost", ATTACK_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL);
 			if(!damage.hasModifier(damageMod))
 			{
-				damage.applyNonPersistentModifier(damageMod);
+				damage.addTransientModifier(damageMod);
 			}
 		}
 		else

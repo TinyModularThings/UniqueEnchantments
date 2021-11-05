@@ -50,7 +50,7 @@ public class BaseHandler
 			if(enchantments.getInt(entry.getA()) > 0)
 			{
 				String[] names = entry.getB();
-				event.getToolTip().add(new TranslationTextComponent(names[0], StackUtils.getInt(stack, names[1], 0)).mergeStyle(TextFormatting.GOLD));
+				event.getToolTip().add(new TranslationTextComponent(names[0], StackUtils.getInt(stack, names[1], 0)).withStyle(TextFormatting.GOLD));
 			}
 		}
 	}
@@ -58,7 +58,7 @@ public class BaseHandler
 	@SubscribeEvent
 	public void onBlockClick(RightClickBlock event)
 	{
-		if(event.getPlayer().isSneaking())
+		if(event.getPlayer().isShiftKeyDown())
 		{
 			BlockState state = event.getWorld().getBlockState(event.getPos());
 			if(state.getBlock() instanceof AnvilBlock)

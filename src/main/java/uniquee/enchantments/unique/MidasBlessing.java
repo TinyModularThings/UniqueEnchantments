@@ -15,10 +15,9 @@ import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.api.filters.IBlessingEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 
-public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchantment
+public class MidasBlessing extends UniqueEnchantment
 {
 	public static final ToIntFunction<ItemStack> VALIDATOR = new ToIntFunction<ItemStack>(){
 		@Override
@@ -53,6 +52,6 @@ public class MidasBlessing extends UniqueEnchantment implements IBlessingEnchant
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH);
+		addIncompats(Enchantments.BLOCK_FORTUNE, Enchantments.SILK_TOUCH);
 	}
 }

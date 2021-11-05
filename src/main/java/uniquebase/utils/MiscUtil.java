@@ -49,7 +49,7 @@ public class MiscUtil
 		Consumer<LivingEntity>[] slots = new Consumer[EquipmentSlotType.values().length];
 		for(EquipmentSlotType slot : EquipmentSlotType.values())
 		{
-			slots[slot.getIndex()] = (entity) -> entity.sendBreakAnimation(slot);
+			slots[slot.getIndex()] = (entity) -> entity.broadcastBreakEvent(slot);
 		}
 		return slots;
 	}
@@ -68,7 +68,7 @@ public class MiscUtil
 	{
 		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return 0;
 		if(stack.isEmpty()) return 0;
-		ListNBT list = stack.getEnchantmentTagList();
+		ListNBT list = stack.getEnchantmentTags();
 		if(list.isEmpty()) return 0;
 		String id = ench.getRegistryName().toString();
 		for(int i = 0, m = list.size();i < m;i++)
@@ -92,7 +92,7 @@ public class MiscUtil
 		int totalLevel = 0;
 		for(int i = 0;i < slots.length;i++)
 		{
-			totalLevel += getEnchantmentLevel(ench, base.getItemStackFromSlot(slots[i]));
+			totalLevel += getEnchantmentLevel(ench, base.getItemBySlot(slots[i]));
 		}
 		return totalLevel;
 	}
@@ -100,7 +100,7 @@ public class MiscUtil
 	public static Object2IntMap<Enchantment> getEnchantments(ItemStack stack)
 	{
 		if(stack.isEmpty()) return Object2IntMaps.emptyMap();
-		ListNBT list = stack.getEnchantmentTagList();
+		ListNBT list = stack.getEnchantmentTags();
 		// Micro Optimization. If the EnchantmentMap is empty then returning a
 		// EmptyMap is faster then creating a new map. More Performance in
 		// checks.
@@ -126,7 +126,7 @@ public class MiscUtil
 		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return new EquipmentSlotType[0];
 		try
 		{
-			return findField(Enchantment.class, ench, EquipmentSlotType[].class, "applicableEquipmentTypes", "field_185263_a");
+			return findField(Enchantment.class, ench, EquipmentSlotType[].class, "slots", "slots");
 		}
 		catch(Exception e)
 		{
@@ -151,7 +151,7 @@ public class MiscUtil
 		}
 		for(int i = 0;i < slots.length;i++)
 		{
-			int level = getEnchantmentLevel(enchantment, base.getItemStackFromSlot(slots[i]));
+			int level = getEnchantmentLevel(enchantment, base.getItemBySlot(slots[i]));
 			if(level > 0)
 			{
 				return new AbstractObject2IntMap.BasicEntry<>(slots[i], level);
@@ -203,18 +203,18 @@ public class MiscUtil
 		}
 		ServerPlayerEntity player = (ServerPlayerEntity)event.getPlayer();
 		World world = (World)event.getWorld();
-		TileEntity tileentity = world.getTileEntity(pos);
+		TileEntity tileentity = world.getBlockEntity(pos);
 		Block block = state.getBlock();
-		if((block instanceof CommandBlockBlock || block instanceof StructureBlock || block instanceof JigsawBlock) && !player.canUseCommandBlock())
+		if((block instanceof CommandBlockBlock || block instanceof StructureBlock || block instanceof JigsawBlock) && !player.canUseGameMasterBlocks())
 		{
-			world.notifyBlockUpdate(pos, state, state, 3);
+			world.sendBlockUpdated(pos, state, state, 3);
 			return false;
 		}
-		else if(player.getHeldItemMainhand().onBlockStartBreak(pos, player))
+		else if(player.getMainHandItem().onBlockStartBreak(pos, player))
 		{
 			return false;
 		}
-		else if(player.blockActionRestricted(world, pos, player.interactionManager.getGameType()))
+		else if(player.blockActionRestricted(world, pos, player.gameMode.getGameModeForPlayer()))
 		{
 			return false;
 		}
@@ -228,10 +228,10 @@ public class MiscUtil
 			else
 			{
 				int exp = event.getExpToDrop();
-				ItemStack itemstack = player.getHeldItemMainhand();
+				ItemStack itemstack = player.getMainHandItem();
 				ItemStack copy = itemstack.copy();
 				boolean flag1 = state.canHarvestBlock(world, pos, player);
-				itemstack.onBlockDestroyed(world, state, pos, player);
+				itemstack.mineBlock(world, state, pos, player);
 				if(itemstack.isEmpty() && !copy.isEmpty())
 				{
 					net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, copy, Hand.MAIN_HAND);
@@ -240,11 +240,11 @@ public class MiscUtil
 				if(flag && flag1)
 				{
 					ItemStack itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
-					block.harvestBlock(world, player, pos, state, tileentity, itemstack1);
+					block.playerDestroy(world, player, pos, state, tileentity, itemstack1);
 				}
 				if(flag && exp > 0)
 				{
-					state.getBlock().dropXpOnBlockBreak((ServerWorld)world, pos, exp);
+					state.getBlock().popExperience((ServerWorld)world, pos, exp);
 				}
 				
 				return true;
@@ -258,7 +258,7 @@ public class MiscUtil
 		boolean removed = state.removedByPlayer(world, pos, player, canHarvest, world.getFluidState(pos));
 		if(removed)
 		{
-			state.getBlock().onPlayerDestroy(world, pos, state);
+			state.getBlock().destroy(world, pos, state);
 		}
 		return removed;
 	}
@@ -270,16 +270,16 @@ public class MiscUtil
 			return points;
 		}
 		int change = Math.min(getXP(player), points);
-		player.experienceTotal -= change;
-		player.experienceLevel = getLvlForXP(player.experienceTotal);
-		player.experience = (float)(player.experienceTotal - getXPForLvl(player.experienceLevel)) / (float)player.xpBarCap();
-		player.onEnchant(ItemStack.EMPTY, 0);
+		player.totalExperience -= change;
+		player.experienceLevel = getLvlForXP(player.totalExperience);
+		player.experienceProgress = (float)(player.totalExperience - getXPForLvl(player.experienceLevel)) / (float)player.getXpNeededForNextLevel();
+		player.onEnchantmentPerformed(ItemStack.EMPTY, 0);
 		return change;
 	}
 	
 	public static int getXP(PlayerEntity player)
 	{
-		return getXPForLvl(player.experienceLevel) + (DoubleMath.roundToInt(player.experience * player.xpBarCap(), RoundingMode.HALF_UP));
+		return getXPForLvl(player.experienceLevel) + (DoubleMath.roundToInt(player.experienceProgress * player.getXpNeededForNextLevel(), RoundingMode.HALF_UP));
 	}
 	
 	public static int getXPForLvl(int level)

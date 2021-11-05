@@ -27,23 +27,23 @@ public class FaminesOdium extends UniqueEnchantment
 	
 	public static Int2FloatMap.Entry consumeRandomItem(IInventory inventory, float effect)
 	{
-		for(int i = 0,m=inventory.getSizeInventory();i<m;i++)
+		for(int i = 0,m=inventory.getContainerSize();i<m;i++)
 		{
-			ItemStack stack = inventory.getStackInSlot(i);
-			if(stack.getItem().isFood())
+			ItemStack stack = inventory.getItem(i);
+			if(stack.getItem().isEdible())
 			{
-				Food food = stack.getItem().getFood();
-				BasicEntry entry = new BasicEntry(food.getHealing() / 4, food.getSaturation() * effect);
+				Food food = stack.getItem().getFoodProperties();
+				BasicEntry entry = new BasicEntry(food.getNutrition() / 4, food.getSaturationModifier() * effect);
 				if(stack.getItem().hasContainerItem(stack))
 				{
 					ItemStack container = stack.getItem().getContainerItem(stack);
 					stack.shrink(1);
-					inventory.setInventorySlotContents(i, container);
+					inventory.setItem(i, container);
 				}
 				else
 				{
 					stack.shrink(1);
-					inventory.setInventorySlotContents(i, stack);
+					inventory.setItem(i, stack);
 				}
 				return entry;
 			}

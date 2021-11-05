@@ -1,12 +1,16 @@
 package uniquee.enchantments.unique;
 
+import java.util.List;
+
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import uniquebase.api.ICustomItemEnchantment;
 import uniquebase.api.UniqueEnchantment;
 
-public class EnderLibrarian extends UniqueEnchantment
+public class EnderLibrarian extends UniqueEnchantment implements ICustomItemEnchantment
 {
 	public EnderLibrarian()
 	{
@@ -17,5 +21,11 @@ public class EnderLibrarian extends UniqueEnchantment
 	public boolean canApplyAtEnchantingTable(ItemStack stack)
 	{
 		return enabled.get() && stack.getItem() instanceof FilledMapItem;
+	}
+
+	@Override
+	public void addCustomItems(List<ItemStack> list)
+	{
+		list.add(new ItemStack(Items.FILLED_MAP));
 	}
 }

@@ -34,15 +34,15 @@ public class LootModifier implements IGlobalLootModifier
 	@Override
 	public List<ItemStack> apply(List<ItemStack> generatedLoot, LootContext context)
 	{
-		if(context.has(LootParameters.TOOL) && context.has(LootParameters.BLOCK_STATE))
+		if(context.hasParam(LootParameters.TOOL) && context.hasParam(LootParameters.BLOCK_STATE))
 		{
 			ItemStack stack = ItemStack.EMPTY;
-			if(context.has(LootParameters.THIS_ENTITY))
+			if(context.hasParam(LootParameters.THIS_ENTITY))
 			{
-				Entity entity = context.get(LootParameters.THIS_ENTITY);
-				if(entity instanceof LivingEntity) stack = ((LivingEntity)entity).getHeldItemMainhand();
+				Entity entity = context.getParamOrNull(LootParameters.THIS_ENTITY);
+				if(entity instanceof LivingEntity) stack = ((LivingEntity)entity).getMainHandItem();
 			}
-			BlockState state = context.get(LootParameters.BLOCK_STATE);
+			BlockState state = context.getParamOrNull(LootParameters.BLOCK_STATE);
 			Object2IntMap<Enchantment> enchs = MiscUtil.getEnchantments(stack);
 			int midas = enchs.getInt(UniqueEnchantments.MIDAS_BLESSING);
 			if(midas > 0)
@@ -78,9 +78,9 @@ public class LootModifier implements IGlobalLootModifier
 						toBurn.setCount(1);
 						IInventory inventory = new Inventory(toBurn);
 						ItemStack result = ItemStack.EMPTY;
-						for(IRecipe<IInventory> recipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipesForType(IRecipeType.SMELTING))
+						for(IRecipe<IInventory> recipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(IRecipeType.SMELTING))
 						{
-							if(recipe.matches(inventory, null)) result = recipe.getCraftingResult(inventory);
+							if(recipe.matches(inventory, null)) result = recipe.assemble(inventory);
 						}
 						if(result.isEmpty()) continue;
 						result.setCount(result.getCount() * stacks.get(i).getCount());

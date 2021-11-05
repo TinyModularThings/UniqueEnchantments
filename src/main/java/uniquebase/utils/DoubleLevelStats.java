@@ -43,6 +43,11 @@ public class DoubleLevelStats implements IStat
 		return level != null ? level.get() : levelConfig;
 	}
 	
+	public double getSqrt(double input)
+	{
+		return getBase() + Math.sqrt(getLevel() * input);
+	}
+	
 	public double getAsDouble(int level)
 	{
 		return getBase() + (getLevel() * level);

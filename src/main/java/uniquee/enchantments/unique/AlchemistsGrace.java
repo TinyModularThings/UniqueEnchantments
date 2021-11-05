@@ -20,11 +20,10 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.UniqueEnchantment;
-import uniquebase.api.filters.IGraceEnchantment;
 import uniquebase.utils.MiscUtil;
 import uniquee.UniqueEnchantments;
 
-public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantment
+public class AlchemistsGrace extends UniqueEnchantment
 {
 	public static final List<List<PotionPlan>> EFFECTS = new ObjectArrayList<>();
 	static ConfigValue<List<? extends String>> EFFECT_CONFIG;
@@ -37,7 +36,7 @@ public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantm
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof ToolItem || EnchantmentType.BOW.canEnchantItem(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
+		return stack.getItem() instanceof ToolItem || EnchantmentType.BOW.canEnchant(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
 	}
 		
 	@Override
@@ -67,7 +66,7 @@ public class AlchemistsGrace extends UniqueEnchantment implements IGraceEnchantm
 						if(plan.isValid(mining)) 
 						{
 							EffectInstance effect = plan.createEffect(level, hitScalar);
-							if(potions.add(effect.getPotion())) base.addPotionEffect(effect);
+							if(potions.add(effect.getEffect())) base.addEffect(effect);
 						}
 					}
 				}
