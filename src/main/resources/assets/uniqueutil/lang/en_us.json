@@ -2,7 +2,7 @@
 	"enchantment.uniqueeutil.adept":"Adept",
 	"enchantment.uniqueeutil.adept.desc":"Less penalty for mining underwater or in-air",
 	"enchantment.uniqueeutil.thick_pick":"Thick Pick",
-	"enchantment.uniqueeutil.thick_pick.desc":"Shift-Leftclicking an Anvil consume Gems in your Inventory, increase Mining Speed for Blocks with a high Hardness in exchange for Gems",
+	"enchantment.uniqueeutil.thick_pick.desc":"Shift-Rightclicking an Anvil consume Gems in your Inventory, increase Mining Speed for Blocks with a high Hardness in exchange for Gems",
 
 	"enchantment.uniqueeutil.alchemists_blessing":"Alchemist's Blessing",
 	"enchantment.uniqueeutil.alchemists_blessing.desc":"Shift-Rightclicking an Anvil will consume all of your Redstone in your Inventory. Requires a Beam of Light, transmutates Items on thus Beam. This Action consumes Redstone",
