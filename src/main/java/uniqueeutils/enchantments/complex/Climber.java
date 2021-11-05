@@ -56,7 +56,7 @@ public class Climber extends UniqueEnchantment
 			if(split.length != 2) continue;
 			try
 			{
-				Block block = ForgeRegistries.BLOCKS.getValue(ResourceLocation.tryCreate(split[0]));
+				Block block = ForgeRegistries.BLOCKS.getValue(ResourceLocation.tryParse(split[0]));
 				if(block != null && block != Blocks.AIR) CLIMB_SPEED.put(block, Integer.parseInt(split[1]));
 			}
 			catch(Exception e) { e.printStackTrace(); }

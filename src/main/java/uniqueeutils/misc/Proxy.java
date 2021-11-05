@@ -22,11 +22,11 @@ public class Proxy
 	
 	public void updateData(PlayerEntity player, int pressed)
 	{
-		keyMap.put(player.getUniqueID(), pressed);
+		keyMap.put(player.getUUID(), pressed);
 	}
 	
 	public boolean isBoostKeyDown(PlayerEntity player)
 	{
-		return (keyMap.getInt(player.getUniqueID()) & 1) != 0;
+		return (keyMap.getInt(player.getUUID()) & 1) != 0;
 	}
 }

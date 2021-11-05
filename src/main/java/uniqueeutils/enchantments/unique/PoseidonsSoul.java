@@ -24,6 +24,6 @@ public class PoseidonsSoul extends UniqueEnchantment
 	
 	public static boolean isValid(Block block)
 	{
-		return POSEIDONS_SOUL.getAllElements().isEmpty() ? BlockTags.CORAL_BLOCKS.contains(block) || block == Blocks.LILY_PAD || block == Blocks.SEA_PICKLE : POSEIDONS_SOUL.contains(block);
+		return POSEIDONS_SOUL.getValues().isEmpty() ? BlockTags.CORAL_BLOCKS.contains(block) || block == Blocks.LILY_PAD || block == Blocks.SEA_PICKLE : POSEIDONS_SOUL.contains(block);
 	}
 }

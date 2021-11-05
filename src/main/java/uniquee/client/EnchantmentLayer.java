@@ -33,54 +33,54 @@ public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> 
 	{
 		PlayerEntity player = Minecraft.getInstance().player;
 		if(player == base) return false;
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.TREASURERS_EYES, player.getItemStackFromSlot(EquipmentSlotType.HEAD));
+		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.TREASURERS_EYES, player.getItemBySlot(EquipmentSlotType.HEAD));
 		if(level > 0)
 		{
 			double maxDistance = TreasurersEyes.RANGE.getAsDouble(level);
 			maxDistance *= maxDistance;
-			return player.getDistanceSq(base) <= maxDistance;
+			return player.distanceToSqr(base) <= maxDistance;
 		}
 		return false;
 	}
 	@Override
 	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
 	{
-		if(entity.getPersistentData().getLong("effectTimer") == entity.world.getGameTime()) return;
-		long time = entity.world.getGameTime();
+		if(entity.getPersistentData().getLong("effectTimer") == entity.level.getGameTime()) return;
+		long time = entity.level.getGameTime();
 		entity.getPersistentData().putLong("effectTimer", time);
 		if(!canSeeEffects(entity)) return;
-		if(time % 14 == 0 && MiscUtil.getEnchantmentLevel(UniqueEnchantments.ARES_BLESSING, entity.getItemStackFromSlot(EquipmentSlotType.CHEST)) > 0)
+		if(time % 14 == 0 && MiscUtil.getEnchantmentLevel(UniqueEnchantments.ARES_BLESSING, entity.getItemBySlot(EquipmentSlotType.CHEST)) > 0)
 		{
-			spawnParticle(ParticleTypes.ANGRY_VILLAGER, entity.world, entity.getBoundingBox(), 0F, 0.8F, 0F);
+			spawnParticle(ParticleTypes.ANGRY_VILLAGER, entity.level, entity.getBoundingBox(), 0F, 0.8F, 0F);
 		}
 		if(time % 2 == 0)
 		{
-			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(entity.getHeldItemMainhand());
+			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(entity.getMainHandItem());
 			if(enchantments.getInt(UniqueEnchantments.BERSERKER) > 0)
 			{
-				spawnParticle(new RedstoneParticleData(1F, 0F, 0F, 1F), entity.world, entity.getBoundingBox(), 0F, 0F, 0F);
+				spawnParticle(new RedstoneParticleData(1F, 0F, 0F, 1F), entity.level, entity.getBoundingBox(), 0F, 0F, 0F);
 			}
 			if(enchantments.getInt(UniqueEnchantments.PERPETUAL_STRIKE) > 0)
 			{
-				spawnParticle(new RedstoneParticleData(0F, 0F, 1F, 1F), entity.world, entity.getBoundingBox(), 0F, 0F, 0F);				
+				spawnParticle(new RedstoneParticleData(0F, 0F, 1F, 1F), entity.level, entity.getBoundingBox(), 0F, 0F, 0F);				
 			}
 			if(enchantments.getInt(UniqueEnchantments.SPARTAN_WEAPON) > 0)
 			{
-				spawnParticle(new RedstoneParticleData(0F, 1F, 0F, 1F), entity.world, entity.getBoundingBox(), 0F, 0F, 0F);				
+				spawnParticle(new RedstoneParticleData(0F, 1F, 0F, 1F), entity.level, entity.getBoundingBox(), 0F, 0F, 0F);				
 			}
 			if(enchantments.getInt(UniqueEnchantments.ALCHEMISTS_GRACE) > 0)
 			{
 				int value = (int)(time % 90);
-				spawnParticle(new RedstoneParticleData(value >= 0 && value < 30 ? 1F : 0F, value >= 30 && value < 60 ? 1F : 0F, value >= 60 && value < 90 ? 1F : 0F, 1F), entity.world, entity.getBoundingBox(), 0F, 0F, 0F);
+				spawnParticle(new RedstoneParticleData(value >= 0 && value < 30 ? 1F : 0F, value >= 30 && value < 60 ? 1F : 0F, value >= 60 && value < 90 ? 1F : 0F, 1F), entity.level, entity.getBoundingBox(), 0F, 0F, 0F);
 			}
 			if(enchantments.getInt(UniqueEnchantments.PHOENIX_BLESSING) > 0)
 			{
 				AxisAlignedBB box = entity.getBoundingBox();
 				float width = (float)(box.maxX - box.minX);
 				float debth = (float)(box.maxZ - box.minZ);
-				float xOffset = (width * entity.world.rand.nextFloat()) - (width / 2);
-				float zOffset = (debth * entity.world.rand.nextFloat()) - (debth / 2);
-				entity.world.addOptionalParticle(ParticleTypes.FLAME, entity.getPosX() + xOffset, entity.getPosY(), entity.getPosZ() + zOffset, 0F, 0F, 0F);
+				float xOffset = (width * entity.level.random.nextFloat()) - (width / 2);
+				float zOffset = (debth * entity.level.random.nextFloat()) - (debth / 2);
+				entity.level.addAlwaysVisibleParticle(ParticleTypes.FLAME, entity.getX() + xOffset, entity.getY(), entity.getZ() + zOffset, 0F, 0F, 0F);
 			}
 		}
 	}
@@ -90,9 +90,9 @@ public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> 
 		float width = (float)(box.maxX - box.minX);
 		float height = (float)(box.maxY - box.minY);
 		float debth = (float)(box.maxZ - box.minZ);
-		float xOffset = (width * world.rand.nextFloat());
-		float yOffset = (height * world.rand.nextFloat());
-		float zOffset = (debth * world.rand.nextFloat());
-		((ClientWorld)world).addOptionalParticle(type, (float)box.minX + xOffset + xOff, (float)box.minY + yOffset + yOff, (float)box.minZ + zOffset + zOff, 0F, 0F, 0F);
+		float xOffset = (width * world.random.nextFloat());
+		float yOffset = (height * world.random.nextFloat());
+		float zOffset = (debth * world.random.nextFloat());
+		((ClientWorld)world).addAlwaysVisibleParticle(type, (float)box.minX + xOffset + xOff, (float)box.minY + yOffset + yOff, (float)box.minZ + zOffset + zOff, 0F, 0F, 0F);
 	}
 }

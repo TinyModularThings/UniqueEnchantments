@@ -23,7 +23,7 @@ import net.minecraftforge.common.Tags;
 
 public class StackUtils
 {
-	public static final Method ARROW_STACK = MiscUtil.findMethod(AbstractArrowEntity.class, new String[]{"getArrowStack", "func_184550_j"});
+	public static final Method ARROW_STACK = MiscUtil.findMethod(AbstractArrowEntity.class, new String[]{"getArrowStack", "getPickupItem"});
 	
 	public static int getInt(ItemStack stack, String tagName, int defaultValue)
 	{
@@ -33,7 +33,7 @@ public class StackUtils
 	
 	public static void setInt(ItemStack stack, String tagName, int value)
 	{
-		stack.setTagInfo(tagName, IntNBT.valueOf(value));
+		stack.addTagElement(tagName, IntNBT.valueOf(value));
 	}
 	
 	public static long getLong(ItemStack stack, String tagName, long defaultValue)
@@ -44,7 +44,7 @@ public class StackUtils
 	
 	public static void setLong(ItemStack stack, String tagName, long value)
 	{
-		stack.setTagInfo(tagName, LongNBT.valueOf(value));
+		stack.addTagElement(tagName, LongNBT.valueOf(value));
 	}
 	
 	public static void growStack(ItemStack source, int size, List<ItemStack> output)
@@ -75,11 +75,11 @@ public class StackUtils
 		else if(arrow instanceof ArrowEntity)
 		{
 			CompoundNBT nbt = new CompoundNBT();
-			arrow.writeWithoutTypeId(nbt);
+			arrow.saveWithoutId(nbt);
 			if(nbt.contains("CustomPotionEffects"))
 			{
 				ItemStack stack = new ItemStack(Items.TIPPED_ARROW);
-				stack.setTagInfo("CustomPotionEffects", nbt.get("CustomPotionEffects"));
+				stack.addTagElement("CustomPotionEffects", nbt.get("CustomPotionEffects"));
 				return stack;
 			}
 			return new ItemStack(Items.ARROW);
@@ -123,7 +123,7 @@ public class StackUtils
 	public static int consumeItems(PlayerEntity player, ToIntFunction<ItemStack> validator, int limit)
 	{
 		int found = 0;
-		NonNullList<ItemStack> inv = player.inventory.mainInventory;
+		NonNullList<ItemStack> inv = player.inventory.items;
 		for(int i = 0,m=inv.size();i<m;i++)
 		{
 			ItemStack stack = inv.get(i);
@@ -166,7 +166,7 @@ public class StackUtils
 			{
 				for(int z = -4;z<=4;z++)
 				{
-					found += validator.applyAsInt(world.getBlockState(newPos.setPos(pos.getX() + x, pos.getY() + y, pos.getZ() + z)));
+					found += validator.applyAsInt(world.getBlockState(newPos.set(pos.getX() + x, pos.getY() + y, pos.getZ() + z)));
 					if(found >= limit)
 					{
 						return limit;

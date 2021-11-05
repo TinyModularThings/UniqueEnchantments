@@ -42,7 +42,7 @@ public class IfritsGrace extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(Enchantments.FORTUNE, Enchantments.SILK_TOUCH);
+		addIncompats(Enchantments.BLOCK_FORTUNE, Enchantments.SILK_TOUCH);
 	}
 	
 	@Override

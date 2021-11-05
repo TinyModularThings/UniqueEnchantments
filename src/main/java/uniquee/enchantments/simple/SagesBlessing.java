@@ -22,7 +22,7 @@ public class SagesBlessing extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return EnchantmentType.WEAPON.canEnchantItem(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
+		return EnchantmentType.WEAPON.canEnchant(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
 	}
 	
 	@Override

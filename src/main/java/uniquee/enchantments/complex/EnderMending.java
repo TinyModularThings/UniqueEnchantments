@@ -52,7 +52,7 @@ public class EnderMending extends UniqueEnchantment
 	@Override
 	protected boolean canNotApplyToItems(ItemStack stack)
 	{
-		return EnchantmentType.ARMOR.canEnchantItem(stack.getItem());
+		return EnchantmentType.ARMOR.canEnchant(stack.getItem());
 	}
 	
 	public static void shareXP(PlayerEntity player, EnchantmentContainer container)
@@ -66,7 +66,7 @@ public class EnderMending extends UniqueEnchantment
 			{
 				double xpProvided = 1D/(1D+(THRESHOLD.get(level)/100D));
 				int required = (int)(MathHelper.ceil(EnderMending.LIMIT.get() * Math.pow(EnderMending.LIMIT_MULTIPLIER.get(), Math.sqrt(level))) * xpProvided);
-				int found = StackUtils.getInt(player.getItemStackFromSlot(entry.getKey()), EnderMending.ENDER_TAG, 0);
+				int found = StackUtils.getInt(player.getItemBySlot(entry.getKey()), EnderMending.ENDER_TAG, 0);
 				if(found >= required)
 				{
 					hasSlot = entry.getKey();
@@ -77,9 +77,9 @@ public class EnderMending extends UniqueEnchantment
 		}
 		if(hasSlot == null) return;
 		List<ItemStack> found = new ObjectArrayList<>();
-		for(int i = 0,m=player.inventory.getSizeInventory();i<m;i++)
+		for(int i = 0,m=player.inventory.getContainerSize();i<m;i++)
 		{
-			ItemStack stack = player.inventory.getStackInSlot(i);
+			ItemStack stack = player.inventory.getItem(i);
 			if(stack.isEmpty() || !stack.isDamaged()) continue;
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
 			for(Enchantment ench : enchantments.keySet())
@@ -90,11 +90,11 @@ public class EnderMending extends UniqueEnchantment
 			}
 		}
 		int last = stored;
-		stored -= StackUtils.evenDistribute(stored, player.world.rand, found, (stack, i) -> {
-			int used = Math.min(i, stack.getDamage());
-            stack.setDamage(stack.getDamage() - used);
+		stored -= StackUtils.evenDistribute(stored, player.level.random, found, (stack, i) -> {
+			int used = Math.min(i, stack.getDamageValue());
+            stack.setDamageValue(stack.getDamageValue() - used);
             return used;
 		});
-		if(last != stored) StackUtils.setInt(player.getItemStackFromSlot(hasSlot), EnderMending.ENDER_TAG, stored);
+		if(last != stored) StackUtils.setInt(player.getItemBySlot(hasSlot), EnderMending.ENDER_TAG, stored);
 	}
 }

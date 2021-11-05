@@ -41,20 +41,20 @@ public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 	}
 	
 	@Override
-	public float calcDamageByCreature(int level, CreatureAttribute creatureType)
+	public float getDamageBonus(int level, CreatureAttribute creatureType)
 	{
     	return creatureType == CreatureAttribute.ARTHROPOD ? BONUS_DAMAGE.getFloat(level) : 0F;
 	}
     
 	@Override
-	public void onEntityDamaged(LivingEntity user, Entity target, int level)
+	public void doPostAttack(LivingEntity user, Entity target, int level)
 	{
         if (target instanceof LivingEntity)
         {
         	LivingEntity entitylivingbase = (LivingEntity)target;
-            if (entitylivingbase.getCreatureAttribute() == CreatureAttribute.ARTHROPOD)
+            if (entitylivingbase.getMobType() == CreatureAttribute.ARTHROPOD)
             {
-                entitylivingbase.addPotionEffect(new EffectInstance(Effects.SLOWNESS, SLOW_DURATION.get(level), 3));
+                entitylivingbase.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, SLOW_DURATION.get(level), 3));
             }
         }
 	}

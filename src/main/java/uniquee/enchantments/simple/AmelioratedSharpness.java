@@ -34,7 +34,7 @@ public class AmelioratedSharpness extends UniqueEnchantment
 	}
 		
     @Override
-	public float calcDamageByCreature(int level, CreatureAttribute creatureType)
+	public float getDamageBonus(int level, CreatureAttribute creatureType)
     {
     	return BONUS_DAMAGE.getFloat(level);
     }

@@ -30,11 +30,11 @@ public class EnderEyes extends UniqueEnchantment
 			@Override
 			public boolean apply(LivingEntity input)
 			{
-				if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDER_EYES, input.getItemStackFromSlot(EquipmentSlotType.HEAD)) <= 0) return false;
-				Vector3d vec3d1 = new Vector3d(living.getPosX() - input.getPosX(), living.getBoundingBox().minY + living.getEyeHeight() - (input.getPosY() + input.getEyeHeight()), living.getPosZ() - input.getPosZ());
+				if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDER_EYES, input.getItemBySlot(EquipmentSlotType.HEAD)) <= 0) return false;
+				Vector3d vec3d1 = new Vector3d(living.getX() - input.getX(), living.getBoundingBox().minY + living.getEyeHeight() - (input.getY() + input.getEyeHeight()), living.getZ() - input.getZ());
 		        double d0 = vec3d1.length();
-		        double d1 = input.getLook(1.0F).normalize().dotProduct(vec3d1.normalize());
-		        return d1 > 1.0D - 0.025D / d0 ? input.canEntityBeSeen(living) : false;
+		        double d1 = input.getViewVector(1.0F).normalize().dot(vec3d1.normalize());
+		        return d1 > 1.0D - 0.025D / d0 ? input.canSee(living) : false;
 			}
 		};
 	}

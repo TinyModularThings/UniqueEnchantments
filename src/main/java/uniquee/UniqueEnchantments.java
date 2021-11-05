@@ -214,7 +214,7 @@ public class UniqueEnchantments extends BaseUEMod
     @OnlyIn(Dist.CLIENT)
     public void onClientInit(FMLClientSetupEvent event)
     {
-		EntityRendererManager manager = Minecraft.getInstance().getRenderManager();
+		EntityRendererManager manager = Minecraft.getInstance().getEntityRenderDispatcher();
 		for(PlayerRenderer player : manager.getSkinMap().values())
 		{
 			player.addLayer(new EnchantmentLayer<>(player));

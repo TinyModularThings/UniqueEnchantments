@@ -43,10 +43,10 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 		for(Item item : ForgeRegistries.ITEMS)
 		{
 			NonNullList<ItemStack> temp = NonNullList.create();
-			item.fillItemGroup(ItemGroup.SEARCH, temp);
+			item.fillItemCategory(ItemGroup.TAB_SEARCH, temp);
 			for(int i = 0,m=temp.size();i<m;i++)
 			{
-				if(ench.canApply(temp.get(i))) validItems.add(temp.get(i));
+				if(ench.canEnchant(temp.get(i))) validItems.add(temp.get(i));
 			}
 		}
 		if(ench instanceof ICustomItemEnchantment)
@@ -57,7 +57,7 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 	
 	public String getDescription()
 	{
-		String s = I18n.format("enchantment."+ench.getRegistryName().getNamespace()+"."+ench.getRegistryName().getPath()+".desc");
+		String s = I18n.get("enchantment."+ench.getRegistryName().getNamespace()+"."+ench.getRegistryName().getPath()+".desc");
 		if(s.startsWith("enchantment.")) return "unique.base.jei.no.description";
 		return s;
 	}
@@ -79,13 +79,13 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 		List<IReorderingProcessor> list = new ObjectArrayList<>();
 		if(incompats.isEmpty())
 		{
-			list.addAll(font.trimStringToWidth(new StringTextComponent("- "+I18n.format("unique.base.jei.no.incompat")), 122));
+			list.addAll(font.split(new StringTextComponent("- "+I18n.get("unique.base.jei.no.incompat")), 122));
 		}
 		else
 		{
 			for(Enchantment ench : incompats)
 			{
-				list.addAll(font.trimStringToWidth(new StringTextComponent("- "+I18n.format(ench.getName())), 122));
+				list.addAll(font.split(new StringTextComponent("- "+I18n.get(ench.getDescriptionId())), 122));
 			}
 		}
 		return list;
@@ -93,7 +93,7 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 	
 	public String getName()
 	{
-		return I18n.format(ench.getName());
+		return I18n.get(ench.getDescriptionId());
 	}
 	
 	@Override

@@ -16,40 +16,40 @@ import uniquee.UniqueEnchantments;
 
 public class SpecialFindPlayerAI extends NearestAttackableTargetGoal<PlayerEntity>
 {
-	public static final Method TELEPORT_RANDOMLY = MiscUtil.findMethod(EndermanEntity.class, new String[]{"teleportRandomly", "func_70820_n"});
-	public static final Method TELEPORT_TO = MiscUtil.findMethod(EndermanEntity.class, new String[]{"teleportToEntity", "func_70816_c"}, Entity.class);
+	public static final Method TELEPORT_RANDOMLY = MiscUtil.findMethod(EndermanEntity.class, new String[]{"teleportRandomly", "teleport"});
+	public static final Method TELEPORT_TO = MiscUtil.findMethod(EndermanEntity.class, new String[]{"teleportToEntity", "teleportTowards"}, Entity.class);
 	
 	private final EndermanEntity enderman;
 	private PlayerEntity player;
 	private int aggroTime;
 	private int teleportTime;
-	private final EntityPredicate field_220791_m;
-	private final EntityPredicate field_220792_n = (new EntityPredicate()).setLineOfSiteRequired();
+	private final EntityPredicate startAggroTargetConditions;
+	private final EntityPredicate continueAggroTargetConditions = (new EntityPredicate()).allowUnseeable();
 	
 	public SpecialFindPlayerAI(EndermanEntity p_i45842_1_)
 	{
 		super(p_i45842_1_, PlayerEntity.class, false);
 		enderman = p_i45842_1_;
-		field_220791_m = (new EntityPredicate()).setDistance(getTargetDistance()).setCustomPredicate((p_220790_1_) -> {
+		startAggroTargetConditions = (new EntityPredicate()).range(getFollowDistance()).selector((p_220790_1_) -> {
 			return shouldAttack(p_i45842_1_, (PlayerEntity)p_220790_1_);
 		});
 	}
 	
 	public boolean shouldAttack(EndermanEntity source, PlayerEntity target)
 	{
-		ItemStack itemstack = target.inventory.armorInventory.get(3);
+		ItemStack itemstack = target.inventory.armor.get(3);
 		if(itemstack.getItem() == Blocks.CARVED_PUMPKIN.asItem() || MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDER_EYES, itemstack) > 0)
 		{
 			return false;
 		}
 		else
 		{
-			Vector3d vec3d = target.getLook(1.0F).normalize();
-			Vector3d vec3d1 = new Vector3d(source.getPosX() - target.getPosX(), source.getBoundingBox().minY + source.getEyeHeight() - (target.getPosY() + target.getEyeHeight()), source.getPosZ() - target.getPosZ());
+			Vector3d vec3d = target.getViewVector(1.0F).normalize();
+			Vector3d vec3d1 = new Vector3d(source.getX() - target.getX(), source.getBoundingBox().minY + source.getEyeHeight() - (target.getY() + target.getEyeHeight()), source.getZ() - target.getZ());
 			double d0 = vec3d1.length();
 			vec3d1 = vec3d1.normalize();
-			double d1 = vec3d.dotProduct(vec3d1);
-			return d1 > 1.0D - 0.025D / d0 ? target.canEntityBeSeen(source) : false;
+			double d1 = vec3d.dot(vec3d1);
+			return d1 > 1.0D - 0.025D / d0 ? target.canSee(source) : false;
 		}
 	}
 	
@@ -58,9 +58,9 @@ public class SpecialFindPlayerAI extends NearestAttackableTargetGoal<PlayerEntit
 	 * method as well.
 	 */
 	@Override
-	public boolean shouldExecute()
+	public boolean canUse()
 	{
-		player = enderman.world.getClosestPlayer(field_220791_m, enderman);
+		player = enderman.level.getNearestPlayer(startAggroTargetConditions, enderman);
 		return player != null;
 	}
 	
@@ -68,7 +68,7 @@ public class SpecialFindPlayerAI extends NearestAttackableTargetGoal<PlayerEntit
 	 * Execute a one shot task or start executing a continuous task
 	 */
 	@Override
-	public void startExecuting()
+	public void start()
 	{
 		aggroTime = 5;
 		teleportTime = 0;
@@ -78,17 +78,17 @@ public class SpecialFindPlayerAI extends NearestAttackableTargetGoal<PlayerEntit
 	 * Reset the task's internal state. Called when this task is interrupted by another one
 	 */
 	@Override
-	public void resetTask()
+	public void stop()
 	{
 		player = null;
-		super.resetTask();
+		super.stop();
 	}
 	
 	/**
 	 * Returns whether an in-progress EntityAIBase should continue executing
 	 */
 	@Override
-	public boolean shouldContinueExecuting()
+	public boolean canContinueToUse()
 	{
 		if(player != null)
 		{
@@ -98,13 +98,13 @@ public class SpecialFindPlayerAI extends NearestAttackableTargetGoal<PlayerEntit
 			}
 			else
 			{
-				enderman.faceEntity(player, 10.0F, 10.0F);
+				enderman.lookAt(player, 10.0F, 10.0F);
 				return true;
 			}
 		}
 		else
 		{
-			return nearestTarget != null && field_220792_n.canTarget(enderman, nearestTarget) ? true : super.shouldContinueExecuting();
+			return target != null && continueAggroTargetConditions.test(enderman, target) ? true : super.canContinueToUse();
 		}
 	}
 	
@@ -118,18 +118,18 @@ public class SpecialFindPlayerAI extends NearestAttackableTargetGoal<PlayerEntit
 		{
 			if(--aggroTime <= 0)
 			{
-				nearestTarget = player;
+				target = player;
 				player = null;
-				super.startExecuting();
+				super.start();
 			}
 		}
 		else
 		{
-			if(nearestTarget != null && !enderman.isPassenger())
+			if(target != null && !enderman.isPassenger())
 			{
-				if(shouldAttack(enderman, (PlayerEntity)nearestTarget))
+				if(shouldAttack(enderman, (PlayerEntity)target))
 				{
-					if(nearestTarget.getDistanceSq(enderman) < 16.0D)
+					if(target.distanceToSqr(enderman) < 16.0D)
 					{
 						try
 						{
@@ -142,7 +142,7 @@ public class SpecialFindPlayerAI extends NearestAttackableTargetGoal<PlayerEntit
 					
 					teleportTime = 0;
 				}
-				else if(nearestTarget.getDistanceSq(enderman) > 256.0D && teleportTime++ >= 30 && teleportTo(nearestTarget))
+				else if(target.distanceToSqr(enderman) > 256.0D && teleportTime++ >= 30 && teleportTo(target))
 				{
 					teleportTime = 0;
 				}

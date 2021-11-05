@@ -59,15 +59,15 @@ public class BattleHandler
 			int count = event.getPlayer().getPersistentData().getInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT);
 			if(count > 0)
 			{
-				TileEntity tile = event.getWorld().getTileEntity(event.getPos());
+				TileEntity tile = event.getWorld().getBlockEntity(event.getPos());
 				if(tile == null) return;
 				IItemHandler handler = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, event.getFace()).orElse(EmptyHandler.INSTANCE);
 				if(handler.getSlots() < 9) return;
-				LootTable table = ((ServerWorld)event.getWorld()).getServer().getLootTableManager().getLootTableFromLocation(IfritsJudgement.JUDGEMENT_LOOT);
-				LootContext.Builder builder = (new LootContext.Builder((ServerWorld)event.getWorld())).withRandom(event.getWorld().getRandom()).withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(event.getPos())).withLuck(event.getPlayer().getLuck()).withParameter(LootParameters.THIS_ENTITY, event.getPlayer());
-				table.recursiveGenerate(builder.build(LootParameterSets.CHEST), T -> ItemHandlerHelper.insertItem(handler, T, false));
+				LootTable table = ((ServerWorld)event.getWorld()).getServer().getLootTables().get(IfritsJudgement.JUDGEMENT_LOOT);
+				LootContext.Builder builder = (new LootContext.Builder((ServerWorld)event.getWorld())).withRandom(event.getWorld().getRandom()).withParameter(LootParameters.ORIGIN, Vector3d.atCenterOf(event.getPos())).withLuck(event.getPlayer().getLuck()).withParameter(LootParameters.THIS_ENTITY, event.getPlayer());
+				table.getRandomItemsRaw(builder.create(LootParameterSets.CHEST), T -> ItemHandlerHelper.insertItem(handler, T, false));
 				event.getPlayer().getPersistentData().putInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT, count-1);
-				if(event.getPlayer().isSneaking()) event.setCanceled(true);
+				if(event.getPlayer().isShiftKeyDown()) event.setCanceled(true);
 			}
 		}
 	}
@@ -75,31 +75,31 @@ public class BattleHandler
 	@SubscribeEvent
 	public void onArmorDamage(LivingHurtEvent event)
 	{
-		Entity entity = event.getSource().getTrueSource();
+		Entity entity = event.getSource().getEntity();
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity source = (LivingEntity)entity;
-			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(source.getHeldItemMainhand());
+			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(source.getMainHandItem());
 			int level = ench.getInt(UniqueEnchantmentsBattle.ARES_FRAGMENT);
 			if(level > 0 && source instanceof PlayerEntity)
 			{
 				PlayerEntity player = (PlayerEntity)source;
 				int maxRolls = MathHelper.floor(Math.sqrt(level*player.experienceLevel)*AresFragment.BASE_ROLL_MULTIPLIER.get()) + AresFragment.BASE_ROLL.get();
-				int posRolls = 1+source.world.rand.nextInt(maxRolls);
+				int posRolls = 1+source.level.random.nextInt(maxRolls);
 				int negRolls = maxRolls - posRolls;
 				LivingEntity enemy = event.getEntityLiving();
 				double toughness = enemy.getAttribute(Attributes.ARMOR_TOUGHNESS).getValue();
 				double speed = player.getAttribute(Attributes.ATTACK_SPEED).getValue();
-				float damageFactor = (float)(Math.log(1+Math.sqrt(player.experienceLevel*level*level)*(1+(enemy.getTotalArmorValue()+toughness*2.5)*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
+				float damageFactor = (float)(Math.log(1+Math.sqrt(player.experienceLevel*level*level)*(1+(enemy.getArmorValue()+toughness*2.5)*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
 				event.setAmount(event.getAmount() * (1F+(damageFactor*posRolls)) / (1F+(damageFactor*negRolls)));
-				source.getHeldItemMainhand().damageItem(MathHelper.ceil((Math.sqrt(Math.abs(posRolls-negRolls) / Math.pow(AresFragment.DURABILITY_REDUCTION_SCALING.get(), 1+(level/100D))) * (((posRolls * Math.pow(AresFragment.DURABILITY_DISTRIBUTION.get(), -1D))-(negRolls * AresFragment.DURABILITY_DISTRIBUTION.get())) / AresFragment.DURABILITY_ANTI_SCALING.get()))/speed), source, MiscUtil.get(EquipmentSlotType.MAINHAND));
+				source.getMainHandItem().hurtAndBreak(MathHelper.ceil((Math.sqrt(Math.abs(posRolls-negRolls) / Math.pow(AresFragment.DURABILITY_REDUCTION_SCALING.get(), 1+(level/100D))) * (((posRolls * Math.pow(AresFragment.DURABILITY_DISTRIBUTION.get(), -1D))-(negRolls * AresFragment.DURABILITY_DISTRIBUTION.get())) / AresFragment.DURABILITY_ANTI_SCALING.get()))/speed), source, MiscUtil.get(EquipmentSlotType.MAINHAND));
 			}
-			if(event.getEntityLiving().isBurning())
+			if(event.getEntityLiving().isOnFire())
 			{
 				level = event.getSource().isProjectile() ? MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.IFRITS_BLESSING, source).getIntValue() : ench.getInt(UniqueEnchantmentsBattle.IFRITS_BLESSING);
 				if(level > 0)
 				{
-					event.setAmount(event.getAmount() * ((1 + IfritsBlessing.BONUS_DAMAGE.getLogValue(2.8D, level)) * (source.isBurning() ? 2 : 1)));
+					event.setAmount(event.getAmount() * ((1 + IfritsBlessing.BONUS_DAMAGE.getLogValue(2.8D, level)) * (source.isOnFire() ? 2 : 1)));
 				}
 			}
 			EquipmentSlotType slot = null;
@@ -119,7 +119,7 @@ public class BattleHandler
 				CompoundNBT entityNBT = event.getEntityLiving().getPersistentData();
 				ListNBT list = entityNBT.getList(IfritsJudgement.FLAG_JUDGEMENT_ID, 10);
 				boolean found = false;
-				String id = source.getItemStackFromSlot(slot).getItem().getRegistryName().toString();
+				String id = source.getItemBySlot(slot).getItem().getRegistryName().toString();
 				for(int i = 0,m=list.size();i<m;i++)
 				{
 					CompoundNBT data = list.getCompound(i);
@@ -146,7 +146,7 @@ public class BattleHandler
 	@SubscribeEvent
 	public void onEntityDamage(LivingDamageEvent event)
 	{
-		Entity entity = event.getSource().getTrueSource();
+		Entity entity = event.getSource().getEntity();
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity source = (LivingEntity)entity;
@@ -155,10 +155,10 @@ public class BattleHandler
 			{
 				float value = MathCache.LOG_ADD.getFloat(level);
 				event.setAmount(event.getAmount() * (1F + LunaticDespair.BONUS_DAMAGE.getFloat(value)));
-				source.hurtResistantTime = 0;
-				source.attackEntityFrom(DamageSource.GENERIC, LunaticDespair.SELF_DAMAGE.getFloat(value));
-				source.hurtResistantTime = 0;
-				source.attackEntityFrom(DamageSource.MAGIC, LunaticDespair.SELF_MAGIC_DAMAGE.getFloat(value));
+				source.invulnerableTime = 0;
+				source.hurt(DamageSource.GENERIC, LunaticDespair.SELF_DAMAGE.getFloat(value));
+				source.invulnerableTime = 0;
+				source.hurt(DamageSource.MAGIC, LunaticDespair.SELF_MAGIC_DAMAGE.getFloat(value));
 			}
 		}
 	}
@@ -166,7 +166,7 @@ public class BattleHandler
 	@SubscribeEvent
 	public void onEntityDeath(LivingDeathEvent event)
 	{
-		Entity entity = event.getSource().getTrueSource();
+		Entity entity = event.getSource().getEntity();
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity source = (LivingEntity)entity;
@@ -182,14 +182,14 @@ public class BattleHandler
 				if(max > IfritsJudgement.LAVA_HITS.get())
 				{
 					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
-					source.attackEntityFrom(DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
-					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));
+					source.hurt(DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
+					entity.setSecondsOnFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));
 				}
 				else if(max > IfritsJudgement.FIRE_HITS.get())
 				{
 					int combined = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
-					source.attackEntityFrom(DamageSource.IN_FIRE, IfritsJudgement.FIRE_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
-					entity.setFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));					
+					source.hurt(DamageSource.IN_FIRE, IfritsJudgement.FIRE_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
+					entity.setSecondsOnFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));					
 				}
 				else if(max > 0)
 				{
@@ -203,16 +203,16 @@ public class BattleHandler
 	@SubscribeEvent
 	public void onEquippementSwapped(LivingEquipmentChangeEvent event)
 	{
-		AttributeModifierManager attribute = event.getEntityLiving().getAttributeManager();
-		Multimap<Attribute, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), event.getSlot(), event.getEntityLiving().getEntityWorld());
+		AttributeModifierManager attribute = event.getEntityLiving().getAttributes();
+		Multimap<Attribute, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), event.getSlot(), event.getEntityLiving().getCommandSenderWorld());
 		if(!mods.isEmpty())
 		{
-			attribute.removeModifiers(mods);
+			attribute.removeAttributeModifiers(mods);
 		}
-		mods = createModifiersFromStack(event.getTo(), event.getSlot(), event.getEntityLiving().getEntityWorld());
+		mods = createModifiersFromStack(event.getTo(), event.getSlot(), event.getEntityLiving().getCommandSenderWorld());
 		if(!mods.isEmpty())
 		{
-			attribute.reapplyModifiers(mods);
+			attribute.addTransientAttributeModifiers(mods);
 		}
 	}
 	
@@ -223,7 +223,7 @@ public class BattleHandler
 		int level = enchantments.getInt(UniqueEnchantmentsBattle.CELESTIAL_BLESSING);
 		if(level > 0)
 		{
-			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(CelestialBlessing.SPEED_MOD, "speed_boost", world.isDaytime() ? 0F : CelestialBlessing.SPEED_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(CelestialBlessing.SPEED_MOD, "speed_boost", world.isDay() ? 0F : CelestialBlessing.SPEED_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UniqueEnchantmentsBattle.GOLEM_SOUL);
 		if(level > 0)

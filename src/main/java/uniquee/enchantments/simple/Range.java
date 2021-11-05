@@ -23,6 +23,6 @@ public class Range extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return EnchantmentType.DIGGER.canEnchantItem(stack.getItem());
+		return EnchantmentType.DIGGER.canEnchant(stack.getItem());
 	}
 }

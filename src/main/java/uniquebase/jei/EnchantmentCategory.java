@@ -38,7 +38,7 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 	{
 		drawable = helper.createDrawable(new ResourceLocation("uniquebase:textures/jei.png"), 4, 5, 167, 138);
 		ItemStack stack = new ItemStack(Items.ENCHANTED_BOOK);
-		EnchantedBookItem.addEnchantment(stack, new EnchantmentData(Enchantments.FORTUNE, 100));
+		EnchantedBookItem.addEnchantment(stack, new EnchantmentData(Enchantments.BLOCK_FORTUNE, 100));
 		icon = helper.createDrawableIngredient(stack);
 	}
 	
@@ -51,7 +51,7 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 	@Override
 	public String getTitle()
 	{
-		return I18n.format("unique.base.jei.name");
+		return I18n.get("unique.base.jei.name");
 	}
 	
 	@Override
@@ -77,21 +77,21 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 	public void draw(WrappedEnchantment recipe, MatrixStack matrix, double mouseX, double mouseY)
 	{
 		Minecraft mc = Minecraft.getInstance();
-		FontRenderer font = mc.fontRenderer;
-		String s = TextFormatting.UNDERLINE+I18n.format(recipe.ench.getName());
-		font.drawString(matrix, s, 85 - (font.getStringWidth(s) / 2), 3, 0);
-		font.drawString(matrix, I18n.format("unique.base.jei.max_level", TextFormatting.WHITE.toString()+recipe.ench.getMaxLevel()), 3, 18, 0x1CD679);
-		font.drawString(matrix, I18n.format("unique.base.jei.treasure"), 3, 28, 0xBA910D);
-		font.drawString(matrix, I18n.format("unique.base.jei.curse"), 3, 38, 0xA11E15);
-		font.drawString(matrix, I18n.format("unique.base.jei.rarity", recipe.getFormatting(recipe.ench.getRarity())+I18n.format("unique.base.jei."+recipe.ench.getRarity().name().toLowerCase())), 3, 48, 0xCB19D1);
+		FontRenderer font = mc.font;
+		String s = TextFormatting.UNDERLINE+I18n.get(recipe.ench.getDescriptionId());
+		font.draw(matrix, s, 85 - (font.width(s) / 2), 3, 0);
+		font.draw(matrix, I18n.get("unique.base.jei.max_level", TextFormatting.WHITE.toString()+recipe.ench.getMaxLevel()), 3, 18, 0x1CD679);
+		font.draw(matrix, I18n.get("unique.base.jei.treasure"), 3, 28, 0xBA910D);
+		font.draw(matrix, I18n.get("unique.base.jei.curse"), 3, 38, 0xA11E15);
+		font.draw(matrix, I18n.get("unique.base.jei.rarity", recipe.getFormatting(recipe.ench.getRarity())+I18n.get("unique.base.jei."+recipe.ench.getRarity().name().toLowerCase())), 3, 48, 0xCB19D1);
 		s = recipe.getDescription();
-		if((font.getWordWrappedHeight(s, 95) / font.FONT_HEIGHT) > 7)
+		if((font.wordWrapHeight(s, 95) / font.lineHeight) > 7)
 		{
 			matrix.scale(0.5F, 0.5F, 1F);
 			int i = 0;
-			for(IReorderingProcessor entry : font.trimStringToWidth(new StringTextComponent(s), 190))
+			for(IReorderingProcessor entry : font.split(new StringTextComponent(s), 190))
 			{
-				font.func_238407_a_(matrix, entry, 138, 126+(i*font.FONT_HEIGHT), 0);
+				font.drawShadow(matrix, entry, 138, 126+(i*font.lineHeight), 0);
 				i++;
 			}
 			matrix.scale(2F, 2F, 1F);
@@ -99,30 +99,30 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 		else
 		{
 			int i = 0;
-			for(IReorderingProcessor entry : font.trimStringToWidth(new StringTextComponent(s), 95))
+			for(IReorderingProcessor entry : font.split(new StringTextComponent(s), 95))
 			{
-				font.func_238407_a_(matrix, entry, 69, 63+(i*font.FONT_HEIGHT), 0);
+				font.drawShadow(matrix, entry, 69, 63+(i*font.lineHeight), 0);
 				i++;
 			}
 		}
-		font.drawString(matrix, ""+recipe.pageIndex, 28, 60, 0);
+		font.draw(matrix, ""+recipe.pageIndex, 28, 60, 0);
 		List<IReorderingProcessor> incomp = recipe.getIncompats(font);
 		int rows = MathHelper.ceil(incomp.size() / 11D);
 		int start = recipe.pageIndex * 11;
 		matrix.scale(0.5F, 0.5F, 1F);
-		font.drawString(matrix, I18n.format("unique.base.jei.incompats"), 5, 144, 0);
+		font.draw(matrix, I18n.get("unique.base.jei.incompats"), 5, 144, 0);
 		for(int i = 0;i<11&&start+i<incomp.size();i++)
 		{
-			font.func_238407_a_(matrix, incomp.get(start+i), 5, 164 + (i * font.FONT_HEIGHT), 0);
+			font.drawShadow(matrix, incomp.get(start+i), 5, 164 + (i * font.lineHeight), 0);
 		}
-		mc.getTextureManager().bindTexture(new ResourceLocation("textures/gui/container/beacon.png"));
-		AbstractGui.blit(matrix, 3 + (font.getStringWidth(I18n.format("unique.base.jei.treasure")) * 2), 55, 90 + (recipe.ench.isTreasureEnchantment() ? 0 : 22), 220, 18, 18, 256, 256);
-		AbstractGui.blit(matrix, 3 + (font.getStringWidth(I18n.format("unique.base.jei.curse")) * 2), 74, 90 + (recipe.ench.isCurse() ? 0 : 22), 220, 18, 18, 256, 256);
+		mc.getTextureManager().bind(new ResourceLocation("textures/gui/container/beacon.png"));
+		AbstractGui.blit(matrix, 3 + (font.width(I18n.get("unique.base.jei.treasure")) * 2), 55, 90 + (recipe.ench.isTreasureOnly() ? 0 : 22), 220, 18, 18, 256, 256);
+		AbstractGui.blit(matrix, 3 + (font.width(I18n.get("unique.base.jei.curse")) * 2), 74, 90 + (recipe.ench.isCurse() ? 0 : 22), 220, 18, 18, 256, 256);
 		matrix.scale(2F, 2F, 1F);
 		recipe.left.active = recipe.pageIndex > 0;
 		recipe.right.active = recipe.pageIndex < rows - 1;
-		recipe.left.render(matrix, (int)mouseX, (int)mouseY, mc.getRenderPartialTicks());
-		recipe.right.render(matrix, (int)mouseX, (int)mouseY, mc.getRenderPartialTicks());
+		recipe.left.render(matrix, (int)mouseX, (int)mouseY, mc.getFrameTime());
+		recipe.right.render(matrix, (int)mouseX, (int)mouseY, mc.getFrameTime());
 	}
 
 	@Override
@@ -131,16 +131,16 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 		Minecraft mc = Minecraft.getInstance();
 		if(recipe.left.isMouseOver(mouseX, mouseY) && recipe.pageIndex > 0)
 		{
-			recipe.left.playDownSound(mc.getSoundHandler());
+			recipe.left.playDownSound(mc.getSoundManager());
 			recipe.pageIndex--;
 			return true;
 		}
 		if(recipe.right.isMouseOver(mouseX, mouseY))
 		{
-			int rows = MathHelper.ceil(recipe.getIncompats(mc.fontRenderer).size() / 11D);
+			int rows = MathHelper.ceil(recipe.getIncompats(mc.font).size() / 11D);
 			if(recipe.pageIndex < rows - 1)
 			{
-				recipe.right.playDownSound(mc.getSoundHandler());
+				recipe.right.playDownSound(mc.getSoundManager());
 				recipe.pageIndex++;
 				return true;
 			}

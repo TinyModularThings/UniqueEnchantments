@@ -35,7 +35,7 @@ public class AmelioratedSmite extends UniqueEnchantment
 	}
 	
     @Override
-	public float calcDamageByCreature(int level, CreatureAttribute creatureType)
+	public float getDamageBonus(int level, CreatureAttribute creatureType)
     {
     	return creatureType == CreatureAttribute.UNDEAD ? BONUS_DAMAGE.getFloat(level) : 0F;
     }

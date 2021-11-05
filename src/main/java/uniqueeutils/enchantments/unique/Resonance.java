@@ -66,16 +66,16 @@ public class Resonance extends UniqueEnchantment
 	        while (radius <= targetRadius)
 	        {
 	            for (int q = -radius + 1; q <= radius; q++) {
-	            	add(start.add(radius, 0, q));
+	            	add(start.offset(radius, 0, q));
 	            }
 	            for (int q = radius - 1; q >= -radius; q--) {
-	            	add(start.add(q, 0, radius));
+	            	add(start.offset(q, 0, radius));
 	            }
 	            for (int q = radius - 1; q >= -radius; q--) {
-	            	add(start.add(-radius, 0, q));
+	            	add(start.offset(-radius, 0, q));
 	            }
 	            for (int q = -radius + 1; q <= radius; q++) {
-	            	add(start.add(q, 0, -radius));
+	            	add(start.offset(q, 0, -radius));
 	            }
 	            radius++;
 	        }
@@ -83,10 +83,10 @@ public class Resonance extends UniqueEnchantment
 		
 		private void add(BlockPos pos)
 		{
-			positionsToCheck.add(pos.down());
+			positionsToCheck.add(pos.below());
 			positionsToCheck.add(pos);
-			positionsToCheck.add(pos.up());
-			positionsToCheck.add(pos.up(2));
+			positionsToCheck.add(pos.above());
+			positionsToCheck.add(pos.above(2));
 		}
 		
 		public boolean tick(World world)

@@ -23,7 +23,7 @@ public class ClientProxy extends Proxy
 	@Override
 	public void update()
 	{
-		int newState = (boostKey.isKeyDown() ? 1 : 0);
+		int newState = (boostKey.isDown() ? 1 : 0);
 		if(newState != lastState)
 		{
 			lastState = newState;
@@ -34,6 +34,6 @@ public class ClientProxy extends Proxy
 	@Override
 	public boolean isBoostKeyDown(PlayerEntity player)
 	{
-		return boostKey.isKeyDown();
+		return boostKey.isDown();
 	}
 }

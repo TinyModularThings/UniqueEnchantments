@@ -23,24 +23,24 @@ public class SaturationEffect extends Effect
 	@SuppressWarnings("deprecation")
 	protected String getOrCreateDescriptionId()
 	{
-		if(this.name == null) this.name = Util.makeTranslationKey("effect", Registry.EFFECTS.getKey(Effects.SATURATION));
+		if(this.name == null) this.name = Util.makeDescriptionId("effect", Registry.MOB_EFFECT.getKey(Effects.SATURATION));
 		return this.name;
 	}
 	
 	@Override
-	public boolean isReady(int duration, int amplifier)
+	public boolean isDurationEffectTick(int duration, int amplifier)
 	{
 		return true;
 	}
 	
 	@Override
-	public void performEffect(LivingEntity entity, int amplifier)
+	public void applyEffectTick(LivingEntity entity, int amplifier)
 	{
-		if(entity instanceof PlayerEntity && entity.world.getGameTime() % 4 == 0)
+		if(entity instanceof PlayerEntity && entity.level.getGameTime() % 4 == 0)
 		{
-			FoodStats stat = ((PlayerEntity)entity).getFoodStats();
+			FoodStats stat = ((PlayerEntity)entity).getFoodData();
 			int last = stat.getFoodLevel();
-			stat.addStats(1, amplifier);
+			stat.eat(1, amplifier);
 			stat.setFoodLevel(last);
 		}
 	}

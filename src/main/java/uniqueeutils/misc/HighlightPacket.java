@@ -16,7 +16,7 @@ public class HighlightPacket implements IUEPacket
 	
 	public HighlightPacket(BlockPos pos)
 	{
-		this.pos = pos.toLong();
+		this.pos = pos.asLong();
 	}
 	
 	@Override
@@ -34,7 +34,7 @@ public class HighlightPacket implements IUEPacket
 	@Override
 	public void handlePacket(PlayerEntity player)
 	{
-		UtilsHandler.INSTANCE.addDrawPosition(BlockPos.fromLong(pos));
+		UtilsHandler.INSTANCE.addDrawPosition(BlockPos.of(pos));
 	}
 	
 }

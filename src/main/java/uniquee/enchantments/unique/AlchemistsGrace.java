@@ -36,7 +36,7 @@ public class AlchemistsGrace extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof ToolItem || EnchantmentType.BOW.canEnchantItem(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
+		return stack.getItem() instanceof ToolItem || EnchantmentType.BOW.canEnchant(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
 	}
 		
 	@Override
@@ -66,7 +66,7 @@ public class AlchemistsGrace extends UniqueEnchantment
 						if(plan.isValid(mining)) 
 						{
 							EffectInstance effect = plan.createEffect(level, hitScalar);
-							if(potions.add(effect.getPotion())) base.addPotionEffect(effect);
+							if(potions.add(effect.getEffect())) base.addEffect(effect);
 						}
 					}
 				}

@@ -38,11 +38,11 @@ public class SagesSoul extends UniqueEnchantment
 	public void loadIncompats()
 	{
 		addIncompats(new ResourceLocation("uniquee", "all"), new ResourceLocation("uniquee", "spartanweapon"), new ResourceLocation("uniquee", "berserk"), new ResourceLocation("uniquee", "alchemistsgrace"), new ResourceLocation("uniquee", "ender_mending"));
-		addIncompats(Enchantments.SHARPNESS, Enchantments.EFFICIENCY, Enchantments.PROTECTION, Enchantments.MENDING);
+		addIncompats(Enchantments.SHARPNESS, Enchantments.BLOCK_EFFICIENCY, Enchantments.ALL_DAMAGE_PROTECTION, Enchantments.MENDING);
 	}
 	
 	public static double getEnchantPower(ItemStack stack, int level)
 	{
-		return Math.log10(10+Math.pow(((level*level*0.5D)+stack.getEnchantmentTagList().size()), (1/DIVIDOR.get())));
+		return Math.log10(10+Math.pow(((level*level*0.5D)+stack.getEnchantmentTags().size()), (1/DIVIDOR.get())));
 	}
 }

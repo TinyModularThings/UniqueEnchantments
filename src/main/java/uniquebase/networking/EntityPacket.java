@@ -24,20 +24,20 @@ public class EntityPacket implements IUEPacket
 	public void write(PacketBuffer buf)
 	{
 		buf.writeInt(entityId);
-		buf.writeCompoundTag(data);
+		buf.writeNbt(data);
 	}
 	
 	@Override
 	public void read(PacketBuffer buf)
 	{
 		entityId = buf.readInt();
-		data = buf.readCompoundTag(); 
+		data = buf.readNbt(); 
 	}
 	
 	@Override
 	public void handlePacket(PlayerEntity player)
 	{
-		Entity entity = player.world.getEntityByID(entityId);
+		Entity entity = player.level.getEntity(entityId);
 		if(entity == null) return;
 		entity.getPersistentData().merge(data);
 	}

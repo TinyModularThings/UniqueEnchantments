@@ -88,8 +88,8 @@ public class AlchemistsBlessing extends UniqueEnchantment
 		
 		public ConversionEntry(String[] data)
 		{
-			input = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(data[0]));
-			output = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(data[1]));
+			input = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(data[0]));
+			output = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(data[1]));
 			amount = Integer.parseInt(data[2]);
 		}
 		

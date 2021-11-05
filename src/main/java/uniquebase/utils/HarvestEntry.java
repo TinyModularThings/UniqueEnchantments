@@ -41,12 +41,12 @@ public class HarvestEntry
 	
 	public ActionResultType harvest(World world, PlayerEntity player)
 	{
-		if(!world.getDimensionKey().getLocation().equals(dim))
+		if(!world.dimension().location().equals(dim))
 		{
 			return ActionResultType.PASS;
 		}
-		BlockPos pos = BlockPos.fromLong(position);
-		return world.isBlockPresent(pos) ? CropHarvestRegistry.INSTANCE.tryHarvest(world.getBlockState(pos), world, pos, player) : ActionResultType.PASS;
+		BlockPos pos = BlockPos.of(position);
+		return world.isLoaded(pos) ? CropHarvestRegistry.INSTANCE.tryHarvest(world.getBlockState(pos), world, pos, player) : ActionResultType.PASS;
 	}
 	
 	@Override
