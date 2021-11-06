@@ -1,7 +1,5 @@
 package uniquebase.utils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Set;
@@ -13,7 +11,6 @@ import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -37,6 +34,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.IToggleEnchantment;
+import uniquebase.utils.mixin.EnchantmentMixin;
 
 public class MiscUtil
 {
@@ -124,14 +122,7 @@ public class MiscUtil
 	public static EquipmentSlotType[] getEquipmentSlotsFor(Enchantment ench)
 	{
 		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return new EquipmentSlotType[0];
-		try
-		{
-			return findField(Enchantment.class, ench, EquipmentSlotType[].class, "slots", "slots");
-		}
-		catch(Exception e)
-		{
-		}
-		return new EquipmentSlotType[0];
+		return ((EnchantmentMixin)ench).getSlots();
 	}
 	
 	public static Set<EquipmentSlotType> getSlotsFor(Enchantment ench)
@@ -160,40 +151,41 @@ public class MiscUtil
 		return NO_ENCHANTMENT;
 	}
 	
-	public static Method findMethod(Class<?> clz, String[] names, Class<?>...variables)
-	{
-		for(String s : names)
-		{
-			try
-			{
-				Method method = clz.getDeclaredMethod(s, variables);
-				method.setAccessible(true);
-				return method;
-			}
-			catch(Exception e)
-			{
-			}
-		}
-		throw new IllegalStateException("Couldnt find methods: "+ObjectArrayList.wrap(names));
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static <T> T findField(Class<?> clz, Object instance, Class<T> result, String...names)
-	{
-		for(String s : names)
-		{
-			try
-			{
-				Field field = clz.getDeclaredField(s);
-				field.setAccessible(true);
-				return (T)field.get(instance);
-			}
-			catch(Exception e)
-			{
-			}
-		}
-		throw new IllegalStateException("Couldnt find fields: "+ObjectArrayList.wrap(names));
-	}
+//	public static Method findMethod(Class<?> clz, String[] names, Class<?>...variables)
+//	{
+//		for(String s : names)
+//		{
+//			try
+//			{
+//				Method method = clz.getDeclaredMethod(s, variables);
+//				method.setAccessible(true);
+//				return method;
+//			}
+//			catch(Exception e)
+//			{
+//				e.printStackTrace();
+//			}
+//		}
+//		throw new IllegalStateException("Couldnt find methods: "+ObjectArrayList.wrap(names));
+//	}
+//	
+//	@SuppressWarnings("unchecked")
+//	public static <T> T findField(Class<?> clz, Object instance, Class<T> result, String...names)
+//	{
+//		for(String s : names)
+//		{
+//			try
+//			{
+//				Field field = clz.getDeclaredField(s);
+//				field.setAccessible(true);
+//				return (T)field.get(instance);
+//			}
+//			catch(Exception e)
+//			{
+//			}
+//		}
+//		throw new IllegalStateException("Couldnt find fields: "+ObjectArrayList.wrap(names));
+//	}
 	
 	public static boolean harvestBlock(BreakEvent event, BlockState state, BlockPos pos)
 	{

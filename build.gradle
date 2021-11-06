@@ -1,11 +1,12 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
+        maven { url = 'https://repo.spongepowered.org/maven' }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -29,14 +30,17 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+            arg "-mixin.config=uniquebase.mixins.json"
         }
 
         server {
             workingDirectory project.file('run')
+            arg "-mixin.config=uniquebase.mixins.json"
         }
 
         data {
             workingDirectory project.file('run')
+            arg "-mixin.config=uniquebase.mixins.json"
         }
     }
 }
@@ -50,6 +54,12 @@ dependencies {
     compile fg.deobf("curse.maven:jei-238222:3514175")
 	compile fg.deobf("curse.maven:enchantment-descriptions-250419:3488440")
 	compile fg.deobf("curse.maven:bookshelf-228525:3474499")
+	
+    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
+}
+
+mixin {
+    add sourceSets.main, "mixins.uniquebase.refmap.json"
 }
 
 jar {
@@ -61,7 +71,8 @@ jar {
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
             "Implementation-Vendor" :"uniquee",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "MixinConfigs": "uniquebase.mixins.json"
         ])
     }
     includeEmptyDirs = false
@@ -74,12 +85,13 @@ task baseJar(type: Jar, dependsOn: reobf) {
   from(zipTree(jar.archivePath)) {
     include 'META_INF/MANIFEST.MF'
     include '**/uniquebase/**/*'
+    include '**/assets/uniquebase/**/*'
     include 'pack.mcmeta'
   }
   from(zipTree(jar.archivePath)) {
     	include 'META-INF/unique_base_mods.toml'
     	rename 'unique_base_mods.toml', 'mods.toml'
-   		expand 'version':unique_base_version
+   		expand 'version': unique_base_version
   }
   includeEmptyDirs = false
 }
@@ -98,7 +110,7 @@ task mainJar(type: Jar, dependsOn: reobf) {
   from(zipTree(jar.archivePath)) {
     	include 'META-INF/uniquee_mods.toml'
    		rename 'uniquee_mods.toml', 'mods.toml'
-   		expand 'version':uniquee_version, 'base_version':unique_base_version
+   		expand 'version': uniquee_version, 'base_version': unique_base_version
   }
   includeEmptyDirs = false
 }
@@ -115,7 +127,7 @@ task utilsJar(type: Jar, dependsOn: reobf) {
   from(zipTree(jar.archivePath)) {
     	include 'META-INF/unique_utils_mods.toml'
    		rename 'unique_utils_mods.toml', 'mods.toml'
-   		expand 'version':unique_utils_version, 'base_version':unique_base_version
+   		expand 'version': unique_utils_version, 'base_version': unique_base_version
   }
   includeEmptyDirs = false
 }
@@ -133,7 +145,7 @@ task battleJar(type: Jar, dependsOn: reobf) {
   from(zipTree(jar.archivePath)) {
     	include 'META-INF/unique_battle_mods.toml'
    		rename 'unique_battle_mods.toml', 'mods.toml'
-   		expand 'version':unique_battle_version, 'base_version':unique_base_version
+   		expand 'version': unique_battle_version, 'base_version': unique_base_version
   }
   includeEmptyDirs = false
 }

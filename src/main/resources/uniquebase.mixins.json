@@ -1,0 +1,18 @@
+{
+	"package": "uniquebase.utils.mixin",
+	"required": true,
+	"refmap": "mixins.uniquebase.refmap.json",
+	"minVersion": "0.7",
+	"compatibilityLevel": "JAVA_8",
+	"mixins": [
+		"ArrowMixin",
+		"EndermenMixin",
+		"EnchantmentMixin",
+		"EntityMixin",
+		"InteractionManagerMixin",
+		"MapDataMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

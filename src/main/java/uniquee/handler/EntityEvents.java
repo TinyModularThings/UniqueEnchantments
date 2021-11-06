@@ -1,7 +1,6 @@
 package uniquee.handler;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,9 +24,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.AttributeModifierManager;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.ai.goal.GoalSelector;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.AbstractSkeletonEntity;
@@ -46,7 +42,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.server.management.PlayerInteractionManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -90,6 +85,9 @@ import uniquebase.networking.EntityPacket;
 import uniquebase.utils.EnchantmentContainer;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
+import uniquebase.utils.events.EndermenLookEvent;
+import uniquebase.utils.mixin.InteractionManagerMixin;
+import uniquebase.utils.mixin.MapDataMixin;
 import uniquee.UniqueEnchantments;
 import uniquee.enchantments.complex.EnderMending;
 import uniquee.enchantments.complex.Momentum;
@@ -120,36 +118,31 @@ import uniquee.enchantments.unique.IcarusAegis;
 import uniquee.enchantments.unique.NaturesGrace;
 import uniquee.enchantments.unique.PhoenixBlessing;
 import uniquee.enchantments.unique.WarriorsGrace;
-import uniquee.handler.ai.SpecialFindPlayerAI;
 
 public class EntityEvents
 {
 	public static final EntityEvents INSTANCE = new EntityEvents();
 	static final ThreadLocal<UUID> ENDER_MEN_TELEPORT = new ThreadLocal<>();
 		
-	@SuppressWarnings("unchecked")
 	@SubscribeEvent
 	public void onEntitySpawn(EntityJoinWorldEvent event)
 	{
 		Entity entity = event.getEntity();
-		if(entity instanceof EndermanEntity)
-		{
-			GoalSelector goals = ((EndermanEntity)entity).targetSelector;
-			for(PrioritizedGoal goal : new ObjectArrayList<PrioritizedGoal>(MiscUtil.findField(GoalSelector.class, goals, Set.class, "availableGoals", "availableGoals")))
-			{
-				if(goal.getPriority() == 1 && goal.getGoal() instanceof NearestAttackableTargetGoal)
-				{
-					goals.removeGoal(goal.getGoal());
-					goals.addGoal(1, new SpecialFindPlayerAI((EndermanEntity)entity));
-				}
-			}
-		}
-		else if(entity instanceof ItemEntity)
+		if(entity instanceof ItemEntity)
 		{
 			if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.GRIMOIRE, ((ItemEntity)entity).getItem()) > 0)
 			{
 				entity.setInvulnerable(true);
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEndermenLookEvent(EndermenLookEvent event)
+	{
+		if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDER_EYES, event.getPlayer().getItemBySlot(EquipmentSlotType.HEAD)) > 0)
+		{
+			event.setCanceled(true);
 		}
 	}
 	
@@ -424,11 +417,7 @@ public class EntityEvents
 	
 	public boolean isMining(PlayerEntity player)
 	{
-		if(player instanceof ServerPlayerEntity)
-		{
-			return MiscUtil.findField(PlayerInteractionManager.class, ((ServerPlayerEntity)player).gameMode, Boolean.class, "isDestroyingBlock", "isDestroyingBlock");
-		}
-		return true;
+		return !(player instanceof ServerPlayerEntity) || ((InteractionManagerMixin)((ServerPlayerEntity)player).gameMode).isMiningBlock();
 	}
 	
 	@SubscribeEvent
@@ -491,7 +480,6 @@ public class EntityEvents
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	@SubscribeEvent
 	public void onItemClick(RightClickItem event)
 	{
@@ -522,7 +510,7 @@ public class EntityEvents
 	            }
 	            if(position == null)
 	            {
-					List<MapBanner> banner = new ObjectArrayList<MapBanner>(MiscUtil.findField(MapData.class, data, Map.class, "bannerMarkers", "bannerMarkers").values());
+					List<MapBanner> banner = new ObjectArrayList<>(((MapDataMixin)data).getBanners().values());
 					if(banner.size() > 0)
 					{
 						position = banner.get(event.getWorld().random.nextInt(banner.size())).getPos();

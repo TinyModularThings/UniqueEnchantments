@@ -2,12 +2,15 @@ package uniquebase.networking;
 
 import java.util.function.Supplier;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -67,11 +70,10 @@ public class PacketHandler
 	
 	protected void handlePacket(IUEPacket packet, Supplier<NetworkEvent.Context> provider)
 	{
+		Context context = provider.get();
 		try
 		{
-			Context context = provider.get();
-			PlayerEntity player = context.getSender();
-			if(player == null) return;
+			PlayerEntity player = getPlayer(context);
 			context.enqueueWork(() -> {
 				packet.handlePacket(player);
 				context.setPacketHandled(true);
@@ -81,6 +83,18 @@ public class PacketHandler
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	private PlayerEntity getPlayer(Context context)
+	{
+		PlayerEntity player = context.getSender();
+		return player == null ? getClientPlayer() : player;
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	private PlayerEntity getClientPlayer()
+	{
+		return Minecraft.getInstance().player;
 	}
 	
 	public void sendToServer(IUEPacket packet)

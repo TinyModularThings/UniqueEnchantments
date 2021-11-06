@@ -64,7 +64,7 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	
 	public static Effect SATURATION;
 	
-	public static final SoundEvent RESONANCE_SOUND = new SoundEvent(new ResourceLocation("uniqueeutil", "resonance_found"));
+	public static final SoundEvent RESONANCE_SOUND = new SoundEvent(new ResourceLocation("uniqueutil", "resonance_found"));
 	
 	public static final Proxy PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> Proxy::new);
 	

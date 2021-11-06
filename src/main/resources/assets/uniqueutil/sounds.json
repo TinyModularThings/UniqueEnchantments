@@ -3,7 +3,7 @@
 		"category": "blocks",
 		"subtitle": "Resonance",
 		"sounds": [
-			{"name": "uniqueeutil:resonance_found", "stream": true }
+			{"name": "uniqueutil:resonance_found", "stream": true }
 		]
 	}
 }

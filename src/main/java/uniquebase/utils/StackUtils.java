@@ -1,6 +1,5 @@
 package uniquebase.utils;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Random;
 import java.util.function.ToIntFunction;
@@ -20,11 +19,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Tags;
+import uniquebase.utils.mixin.ArrowMixin;
 
 public class StackUtils
 {
-	public static final Method ARROW_STACK = MiscUtil.findMethod(AbstractArrowEntity.class, new String[]{"getArrowStack", "getPickupItem"});
-	
 	public static int getInt(ItemStack stack, String tagName, int defaultValue)
 	{
 		CompoundNBT nbt = stack.getTag();
@@ -62,11 +60,11 @@ public class StackUtils
 	{
 		try
 		{
-			//For Every ASM user. No. Anti ASM Guy writing this. Aka no ASM coming here. Live with it.
-			return (ItemStack)ARROW_STACK.invoke(arrow, new Object[0]);
+			return ((ArrowMixin)arrow).getPickupItem();
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
 		}
 		if(arrow instanceof SpectralArrowEntity)
 		{

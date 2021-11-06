@@ -62,6 +62,7 @@ import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -98,6 +99,7 @@ import uniquebase.networking.EntityPacket;
 import uniquebase.utils.HarvestEntry;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
+import uniquebase.utils.mixin.EntityMixin;
 import uniqueeutils.UniqueEnchantmentsUtils;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing.ConversionEntry;
@@ -171,27 +173,23 @@ public class UtilsHandler
 		Tessellator tes = Tessellator.getInstance();
 		BufferBuilder buffer = tes.getBuilder();
 		buffer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR);
+		MatrixStack matrix = event.getMatrixStack();
+		matrix.pushPose();
+		Vector3d playerPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+		matrix.translate(-playerPos.x(), -playerPos.y(), -playerPos.z());
+		Matrix4f transform = matrix.last().pose();
 		for(int i = 0,m=toRender.size();i<m;i++)
 		{
-			toRender.get(i).render(buffer);
+			toRender.get(i).render(buffer, transform);
 		}
-		PlayerEntity player = mc.player;
-
-		float particalTicks = event.getPartialTicks();
-		double x = player.xOld + (player.getX() - player.xOld) * particalTicks;
-		double y = player.yOld + (player.getY() - player.yOld) * particalTicks;
-		double z = player.zOld + (player.getZ() - player.zOld) * particalTicks;
-		MatrixStack matrix = event.getMatrixStack();
+		matrix.popPose();
 		GlStateManager._disableTexture();
 		GlStateManager._disableDepthTest();
 		GlStateManager._enableAlphaTest();
 		GlStateManager._alphaFunc(516, 0.1F);
 		GlStateManager._enableBlend();
 		RenderSystem.defaultBlendFunc();
-		matrix.pushPose();
-		matrix.translate(-x, -y, -z);
 		tes.end();
-		matrix.popPose();
 		GlStateManager._enableTexture();
 		GlStateManager._enableDepthTest();
 	}
@@ -498,12 +496,12 @@ public class UtilsHandler
 					int used = nbt.getInt(Resonance.OVERUSED_TAG);
 					player.hurt(DamageSource.MAGIC, 0.5F*used);
 					nbt.putInt(Resonance.OVERUSED_TAG, used+1);
-					if(!player.level.isClientSide) player.displayClientMessage(new TranslationTextComponent("tooltip.uniqueeutil.resonance.cooldown", (event.getWorld().getGameTime() - nbt.getLong(Resonance.COOLDOWN_TAG)) / 20), true);
+					if(!player.level.isClientSide) player.displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.resonance.cooldown", (nbt.getLong(Resonance.COOLDOWN_TAG) - event.getWorld().getGameTime()) / 20), true);
 				}
 				else
 				{
 					Resonance.addResonance(event.getWorld(), event.getPos(), (int)(Resonance.RANGE.getSqrt(level*Math.sqrt(player.experienceLevel))));
-					nbt.putLong(Resonance.COOLDOWN_TAG, event.getWorld().getGameTime()+600);
+					nbt.putLong(Resonance.COOLDOWN_TAG, event.getWorld().getGameTime()+Resonance.COOLDOWN.get());
 					nbt.putInt(Resonance.OVERUSED_TAG, 1);
 				}
 			}
@@ -782,14 +780,7 @@ public class UtilsHandler
                 	PlayerEntity player = event.getPlayer();
                 	event.getPlayer().teleportTo(player.getX(), player.getY() + 0.5D, player.getZ());
                 }
-                try
-				{
-                	MiscUtil.findMethod(Entity.class, new String[]{"setSharedFlag", "setSharedFlag"}, int.class, boolean.class).invoke(event.getPlayer(), 7, true);
-				}
-				catch(Exception e)
-				{
-					e.printStackTrace();
-				}	
+                ((EntityMixin)event.getPlayer()).setFlag(7, true);
 			}
 		}
 	}
