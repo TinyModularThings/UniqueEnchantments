@@ -10,6 +10,7 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: "org.spongepowered.mixin"
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
@@ -87,6 +88,13 @@ task baseJar(type: Jar, dependsOn: reobf) {
     include '**/uniquebase/**/*'
     include '**/assets/uniquebase/**/*'
     include 'pack.mcmeta'
+    include 'uniquebase.mixins.json'
+    include 'mixins.uniquebase.refmap.json'
+  }
+  manifest {
+       attributes([
+           "MixinConfigs": "uniquebase.mixins.json"
+      ])
   }
   from(zipTree(jar.archivePath)) {
     	include 'META-INF/unique_base_mods.toml'

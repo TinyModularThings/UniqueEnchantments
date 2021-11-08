@@ -1,9 +1,16 @@
 package uniqueeutils.misc;
 
+import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.util.InputMappings.Input;
+import net.minecraft.client.util.InputMappings.Type;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.settings.IKeyConflictContext;
+import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import uniquebase.UniqueEnchantmentsBase;
 
@@ -16,24 +23,34 @@ public class ClientProxy extends Proxy
 	@Override
 	public void init()
 	{
-		boostKey = new KeyBinding("AnemoiFragment Boost Key", 29, "UE Keys");
+		boostKey = new KeyBinding("Effect Key", GLFW.GLFW_KEY_LEFT_CONTROL, "UE Keys");
 		ClientRegistry.registerKeyBinding(boostKey);
 	}
 	
 	@Override
 	public void update()
 	{
-		int newState = (boostKey.isDown() ? 1 : 0);
+		int newState = (isKeyPressed(boostKey) ? 1 : 0);
 		if(newState != lastState)
 		{
 			lastState = newState;
 			UniqueEnchantmentsBase.NETWORKING.sendToServer(new KeyPacket(newState));
+			updateData(Minecraft.getInstance().player, newState);
 		}
 	}
 	
-	@Override
-	public boolean isBoostKeyDown(PlayerEntity player)
+	public boolean isKeyPressed(KeyBinding binding)
 	{
-		return boostKey.isDown();
+		IKeyConflictContext context = binding.getKeyConflictContext();
+		binding.setKeyConflictContext(KeyConflictContext.IN_GAME);
+		boolean result = isKeyDown(binding) && binding.isConflictContextAndModifierActive();
+		binding.setKeyConflictContext(context);
+		return result;
+	}
+	
+	private boolean isKeyDown(KeyBinding binding)
+	{
+		Input input = binding.getKey();
+		return input.getType() == Type.MOUSE ? GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), input.getValue()) == 1 : InputMappings.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), input.getValue());
 	}
 }

@@ -15,7 +15,7 @@ public class Vitae extends UniqueEnchantment
 	public static final UUID HEALTH_MOD_CHEST = UUID.fromString("72a87567-c59a-42a8-90e7-1ce787d42ad7");
 	public static final UUID HEALTH_MOD_LEGS = UUID.fromString("aa0db628-1082-42dc-8f97-bb935ed325c2");
 	public static final UUID HEALTH_MOD_FEET = UUID.fromString("1ae23c8c-1b59-4bcc-85c3-e5aa5ce75fe1");
-	public static final IntStat BASE_BOOST = new IntStat(20, "base_boost");
+	public static final IntStat BASE_BOOST = new IntStat(5, "base_boost");
 	public static final DoubleStat SCALE_BOOST = new DoubleStat(1D, "scale_boost");
 	
 	public Vitae()

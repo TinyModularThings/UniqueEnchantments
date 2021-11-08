@@ -23,7 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
@@ -108,7 +107,6 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 		}
 		font.draw(matrix, ""+recipe.pageIndex, 28, 70, 0);
 		List<IReorderingProcessor> incomp = recipe.getIncompats(font);
-		int rows = MathHelper.ceil(incomp.size() / 9D);
 		int start = recipe.pageIndex * 9;
 		matrix.scale(0.5F, 0.5F, 1F);
 		font.draw(matrix, I18n.get("unique.base.jei.incompats"), 5, 162, 0);
@@ -122,7 +120,7 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 		AbstractGui.blit(matrix, 3 + (font.width(I18n.get("unique.base.jei.tradeable")) * 2), 95, 90 + (recipe.ench.isTradeable() ? 0 : 22), 220, 18, 18, 256, 256);
 		matrix.scale(2F, 2F, 1F);
 		recipe.left.active = recipe.pageIndex > 0;
-		recipe.right.active = recipe.pageIndex < rows - 1;
+		recipe.right.active = recipe.pageIndex < incomp.size() / 10;
 		recipe.left.render(matrix, (int)mouseX, (int)mouseY, mc.getFrameTime());
 		recipe.right.render(matrix, (int)mouseX, (int)mouseY, mc.getFrameTime());
 	}
@@ -139,8 +137,7 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 		}
 		if(recipe.right.isMouseOver(mouseX, mouseY))
 		{
-			int rows = MathHelper.ceil(recipe.getIncompats(mc.font).size() / 9D);
-			if(recipe.pageIndex < rows - 1)
+			if(recipe.pageIndex < recipe.getIncompats(mc.font).size() / 10	)
 			{
 				recipe.right.playDownSound(mc.getSoundManager());
 				recipe.pageIndex++;

@@ -77,7 +77,6 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -88,7 +87,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -100,6 +98,7 @@ import uniquebase.utils.HarvestEntry;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.mixin.EntityMixin;
+import uniquebase.utils.mixin.FireworkMixin;
 import uniqueeutils.UniqueEnchantmentsUtils;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing.ConversionEntry;
@@ -132,6 +131,7 @@ public class UtilsHandler
 	{
 		if(event.phase == Phase.START) return;
 		Minecraft mc = Minecraft.getInstance();
+		UniqueEnchantmentsUtils.PROXY.update();
 		if(mc.level == null || mc.player == null) 
 		{
 			toRender.clear();
@@ -261,7 +261,7 @@ public class UtilsHandler
 			if(nbt.getBoolean(PegasusSoul.ENABLED))
 			{
 				Vector3d vec = player.getDeltaMovement();
-				player.setDeltaMovement(vec.x, 0D, vec.z);
+				ridden.setDeltaMovement(vec.x, 0D, vec.z);
 				ridden.causeFallDamage(ridden.fallDistance, 1F);
 				ridden.fallDistance = 0F;
 				ridden.setOnGround(true);
@@ -272,7 +272,7 @@ public class UtilsHandler
 		if(player.isPassenger() && time % 20 == 0)
 		{
 			Entity entity = player.getVehicle();
-			if(entity instanceof HorseEntity)
+			if(entity instanceof HorseEntity && entity.isAlive())
 			{
 				HorseEntity horse = (HorseEntity)entity;
 				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.SLEIPNIRS_GRACE, entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(null).getStackInSlot(1));
@@ -442,16 +442,17 @@ public class UtilsHandler
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
 		if(level > 0)
 		{
-			event.setAmount((float)(event.getAmount() * (1 - PhanesRegret.REDUCTION.get(Math.log(2.8D+MathCache.POW3.get(level))))));
-			if(event.getEntityLiving() instanceof PlayerEntity)
+			double chance = PhanesRegret.CHANCE.get(MathCache.LOG_ADD.get(MathCache.POW3.getInt(level)));
+			if(chance > 1D)
 			{
-				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-				int toConsume = MathHelper.ceil(Math.sqrt(Math.abs(event.getAmount()*level)));
-				if(toConsume > 0)
-				{
-					if(player.totalExperience >= toConsume) MiscUtil.drainExperience(player, toConsume);
-					else player.hurt(DamageSource.GENERIC, (float)Math.sqrt(toConsume));
-				}
+				event.getEntityLiving().hurt(DamageSource.STARVE, event.getAmount());
+				event.setCanceled(true);
+				return;
+			}
+			if(event.getEntity().level.random.nextDouble() < chance)
+			{
+				event.setCanceled(true);
+				return;
 			}
 		}
 	}
@@ -555,7 +556,7 @@ public class UtilsHandler
 				if(level > 0)
 				{
 					int stored = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
-					int required = MiscUtil.getXPForLvl((stored * 2) + 5);
+					int required = MiscUtil.getXPForLvl(stored+5);
 					if(player.totalExperience >= required)
 					{
 						MiscUtil.drainExperience(player, required);
@@ -564,7 +565,7 @@ public class UtilsHandler
 					}
 					else
 					{
-						if(!player.level.isClientSide) player.displayClientMessage(new TranslationTextComponent("tooltip.uniqueeutil.missing.xp"), true);
+						if(!player.level.isClientSide) player.displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.missing.xp"), true);
 						event.setCancellationResult(ActionResultType.FAIL);
 					}
 					event.setCanceled(true);
@@ -599,10 +600,8 @@ public class UtilsHandler
 								xpToSpawn += stack.getCount();
 								continue;
 							}
-							ItemStack result = entry.generateOutput(world.random, level-1, Math.min(world.random.nextInt(Math.max(ench.getInt(Enchantments.BLOCK_FORTUNE), ench.getInt(Enchantments.MOB_LOOTING)) + 1), level));
-							if(result.getCount() <= 0) continue;
-							List<ItemStack> newDrops = new ObjectArrayList<>();
-							StackUtils.growStack(result, result.getCount() * stack.getCount(), newDrops);
+							List<ItemStack> newDrops = new ObjectArrayList<ItemStack>();
+							entry.generateOutput(world.random, level-1, Math.min(world.random.nextInt(Math.max(ench.getInt(Enchantments.BLOCK_FORTUNE), ench.getInt(Enchantments.MOB_LOOTING)) + 1), level), stack.getCount(), newDrops);
 							for(ItemStack drop : newDrops)
 							{
 								world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, drop));
@@ -639,7 +638,7 @@ public class UtilsHandler
 					{
 						if(list.size() >= DemetersSoul.CAP.get(level))
 						{
-							event.getPlayer().displayClientMessage(new TranslationTextComponent("tooltip.uniqueeutil.crops.full.name"), false);
+							event.getPlayer().displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.crops.full.name"), false);
 							event.setCancellationResult(ActionResultType.SUCCESS);
 							event.setCanceled(true);
 							return;
@@ -793,7 +792,7 @@ public class UtilsHandler
 			FireworkRocketEntity rocket = (FireworkRocketEntity)event.getEntity();
 			try
 			{
-				LivingEntity entity = ObfuscationReflectionHelper.getPrivateValue(FireworkRocketEntity.class, rocket, "attachedToEntity");
+				LivingEntity entity = ((FireworkMixin)rocket).getRidingEntity();
 				if(entity != null)
 				{
 					ItemStack stack = entity.getItemBySlot(EquipmentSlotType.CHEST);
@@ -833,27 +832,6 @@ public class UtilsHandler
 		}
 	}
 	
-	@SubscribeEvent
-	public void onEntityDamage(LivingDamageEvent event)
-	{
-		if(event.getSource() == null || !"generic".equalsIgnoreCase(event.getSource().getMsgId())) return;
-		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
-		if(level > 0)
-		{
-			event.setAmount((float)(event.getAmount() * (1 - PhanesRegret.REDUCTION.get(Math.log(2.8D+MathCache.POW3.get(level))))));
-			if(event.getEntityLiving() instanceof PlayerEntity)
-			{
-				PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-				int toConsume = MathHelper.ceil(Math.sqrt(Math.abs(event.getAmount()*level)));
-				if(toConsume > 0)
-				{
-					if(player.totalExperience >= toConsume) MiscUtil.drainExperience(player, toConsume);
-					else event.setAmount(event.getAmount() * (float)(Math.log10(100+event.getAmount()*level)-1));
-				}
-			}
-		}
-	}
-
 	@SubscribeEvent
 	public void onEquippementSwapped(LivingEquipmentChangeEvent event)
 	{

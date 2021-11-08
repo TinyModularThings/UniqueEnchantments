@@ -10,7 +10,8 @@
 		"EnchantmentMixin",
 		"EntityMixin",
 		"InteractionManagerMixin",
-		"MapDataMixin"
+		"MapDataMixin",
+		"FireworkMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
