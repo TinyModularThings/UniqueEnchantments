@@ -22,7 +22,6 @@ import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -92,8 +91,7 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 		else font.drawSplitString(s, 69, 63, 95, 0);
 		font.drawString(""+recipe.pageIndex, 28, 60, 0);
 		List<String> incomp = recipe.getIncompats(font);
-		int rows = MathHelper.ceil(incomp.size() / 11D);
-		int start = recipe.pageIndex * 11;
+		int start = recipe.pageIndex * 10;
 		GlStateManager.scaled(0.5D, 0.5D, 1D);
 		font.drawString(I18n.format("unique.base.jei.incompats"), 5, 144, 0);
 		for(int i = 0;i<11&&start+i<incomp.size();i++)
@@ -108,7 +106,7 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 		AbstractGui.blit(3 + (font.getStringWidth(I18n.format("unique.base.jei.curse")) * 2), 74, 90 + (recipe.ench.isCurse() ? 0 : 22), 220, 18, 18, 256, 256);
 		GlStateManager.scaled(2D, 2D, 1D);
 		recipe.left.active = recipe.pageIndex > 0;
-		recipe.right.active = recipe.pageIndex < rows - 1;
+		recipe.right.active = recipe.pageIndex < incomp.size() / 11;
 		recipe.left.render((int)mouseX, (int)mouseY, mc.getRenderPartialTicks());
 		recipe.right.render((int)mouseX, (int)mouseY, mc.getRenderPartialTicks());
 	}
@@ -125,8 +123,7 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 		}
 		if(recipe.right.isMouseOver(mouseX, mouseY))
 		{
-			int rows = MathHelper.ceil(recipe.getIncompats(mc.fontRenderer).size() / 11D);
-			if(recipe.pageIndex < rows - 1)
+			if(recipe.pageIndex < recipe.getIncompats(mc.fontRenderer).size() / 11)
 			{
 				recipe.right.playDownSound(mc.getSoundHandler());
 				recipe.pageIndex++;

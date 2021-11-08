@@ -70,6 +70,7 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	
 	public UniqueEnchantmentsUtils()
 	{
+		PROXY.init();
 		UniqueEnchantmentsBase.NETWORKING.registerInternalPacket(this, KeyPacket.class, KeyPacket::new, 20);
 		UniqueEnchantmentsBase.NETWORKING.registerInternalPacket(this, HighlightPacket.class, HighlightPacket::new, 21);
 		SATURATION = new SaturationEffect();
@@ -80,10 +81,10 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 		BaseHandler.INSTANCE.registerAnvilHelper(ANEMOIS_FRAGMENT, AnemoiFragment.FUEL_SOURCE, AnemoiFragment.STORAGE);
 		BaseHandler.INSTANCE.registerAnvilHelper(ALCHEMISTS_BLESSING, AlchemistsBlessing.REDSTONE, AlchemistsBlessing.STORED_REDSTONE);
 		BaseHandler.INSTANCE.registerStorageTooltip(THICK_PICK, "tooltip.uniqueutil.stored.repair.name", ThickPick.TAG);
-		BaseHandler.INSTANCE.registerStorageTooltip(ANEMOIS_FRAGMENT, "tooltip.uniqueeutil.stored.fuel.name", AnemoiFragment.STORAGE);
-		BaseHandler.INSTANCE.registerStorageTooltip(ALCHEMISTS_BLESSING, "tooltip.uniqueeutil.stored.redstone.name", AlchemistsBlessing.STORED_REDSTONE);
-		BaseHandler.INSTANCE.registerStorageTooltip(SAGES_SOUL, "tooltip.uniqueeutil.stored.soul.name", SagesSoul.STORED_XP);
-		BaseHandler.INSTANCE.registerStorageTooltip(REINFORCED, "tooltip.uniqueeutil.stored.shield.name", Reinforced.SHIELD);
+		BaseHandler.INSTANCE.registerStorageTooltip(ANEMOIS_FRAGMENT, "tooltip.uniqueutil.stored.fuel.name", AnemoiFragment.STORAGE);
+		BaseHandler.INSTANCE.registerStorageTooltip(ALCHEMISTS_BLESSING, "tooltip.uniqueutil.stored.redstone.name", AlchemistsBlessing.STORED_REDSTONE);
+		BaseHandler.INSTANCE.registerStorageTooltip(SAGES_SOUL, "tooltip.uniqueutil.stored.soul.name", SagesSoul.STORED_XP);
+		BaseHandler.INSTANCE.registerStorageTooltip(REINFORCED, "tooltip.uniqueutil.stored.shield.name", Reinforced.SHIELD);
 		ForgeRegistries.SOUND_EVENTS.register(RESONANCE_SOUND.setRegistryName("resonance_found"));
 	}
 	

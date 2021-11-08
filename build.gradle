@@ -67,6 +67,7 @@ task baseJar(type: Jar, dependsOn: reobf) {
   from(zipTree(jar.archivePath)) {
     include 'META_INF/MANIFEST.MF'
     include '**/uniquebase/**/*'
+    include '**/assets/uniquebase/**/*'
     include 'pack.mcmeta'
   }
   from(zipTree(jar.archivePath)) {

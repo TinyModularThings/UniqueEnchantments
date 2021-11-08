@@ -301,7 +301,7 @@ public class EntityEvents
 					boolean levi = player.isPotionActive(Effects.LEVITATION);
 					int leviLevel = levi ? player.getActivePotionEffect(Effects.LEVITATION).getAmplifier()+1 : 0;
 					StackUtils.setInt(stack, Cloudwalker.TIMER, value-Math.max(1, 5 - (leviLevel * 2)));
-					if(player.world.getGameTime() % Math.min(1, (int)(20 * (Math.sqrt(level) / (leviLevel+1)))) == 0)
+					if(player.world.getGameTime() % Math.max(1, (int)(20 * (Math.sqrt(level) / (leviLevel+1)))) == 0)
 					{
 						stack.damageItem(1, player, MiscUtil.get(EquipmentSlotType.FEET));
 					}
@@ -872,10 +872,6 @@ public class EntityEvents
 				event.setCanceled(true);
 			}
 		}
-		if(event.getEntityLiving().isPotionActive(UniqueEnchantments.PESTILENCES_ODIUM_POTION))
-		{
-			event.setCanceled(true);
-		}
 	}
 	
 	@SubscribeEvent
@@ -955,7 +951,7 @@ public class EntityEvents
 		if(level > 0 && MiscUtil.getSlotsFor(UniqueEnchantments.VITAE).contains(slot))
 		{
 			int xpLevel = living instanceof PlayerEntity ? ((PlayerEntity)living).experienceLevel : 100;
-			mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(Vitae.getForSlot(slot), "Vitae Boost", Math.log10(1000+(Vitae.BASE_BOOST.get(level))+Vitae.SCALE_BOOST.get(xpLevel))-3, Operation.MULTIPLY_TOTAL));
+			mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(Vitae.getForSlot(slot), "Vitae Boost", Math.log10(100+(Vitae.BASE_BOOST.get(level))+Math.sqrt(Vitae.SCALE_BOOST.get(xpLevel)))-2, Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UniqueEnchantments.SWIFT);
 		if(level > 0 && MiscUtil.getSlotsFor(UniqueEnchantments.SWIFT).contains(slot))
