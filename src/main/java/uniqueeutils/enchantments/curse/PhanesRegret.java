@@ -7,13 +7,13 @@ import uniquebase.utils.DoubleStat;
 
 public class PhanesRegret extends UniqueEnchantment
 {
-	public static final DoubleStat REDUCTION = new DoubleStat(0.125D, "reduction");
+	public static final DoubleStat CHANCE = new DoubleStat(0.125D, "chance");
 	
 	public PhanesRegret()
 	{
 		super(new DefaultData("phanes_regret", Rarity.UNCOMMON, 2, true, 10, 2, 75), EnumEnchantmentType.ALL, EntityEquipmentSlot.values());
 		setCategory("utils");
-		addStats(REDUCTION);
+		addStats(CHANCE);
 		setCurse();
 	}
 }

@@ -19,7 +19,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.relauncher.Side;
@@ -76,8 +75,7 @@ public class EnchantmentWrapper implements IRecipeWrapper
 		else font.drawSplitString(s, 69, 63, 95, 0);
 		font.drawString(""+pageIndex, 28, 60, 0);
 		List<String> incomp = getIncompats(font);
-		int rows = MathHelper.ceil(incomp.size() / 11D);
-		int start = pageIndex * 11;
+		int start = pageIndex * 10;
 		GlStateManager.scale(0.5D, 0.5D, 1D);
 		font.drawString(I18n.format("unique.base.jei.incompats"), 5, 144, 0);
 		for(int i = 0;i<11&&start+i<incomp.size();i++)
@@ -92,7 +90,7 @@ public class EnchantmentWrapper implements IRecipeWrapper
 		Gui.drawModalRectWithCustomSizedTexture(3 + (font.getStringWidth(I18n.format("unique.base.jei.curse")) * 2), 74, 90 + (enchantment.ench.isCurse() ? 0 : 22), 220, 18, 18, 256, 256);
 		GlStateManager.scale(2D, 2D, 1D);
 		left.enabled = pageIndex > 0;
-		right.enabled = pageIndex < rows - 1;
+		right.enabled = pageIndex < incomp.size() / 11;
 		left.drawButton(minecraft, mouseX, mouseY, minecraft.getRenderPartialTicks());
 		right.drawButton(minecraft, mouseX, mouseY, minecraft.getRenderPartialTicks());
 	}
@@ -109,8 +107,7 @@ public class EnchantmentWrapper implements IRecipeWrapper
 		}
 		if(right.mousePressed(minecraft, mouseX, mouseY))
 		{
-			int rows = MathHelper.ceil(getIncompats(minecraft.fontRenderer).size() / 11D);
-			if(pageIndex < rows - 1)
+			if(pageIndex < getIncompats(minecraft.fontRenderer).size() / 11)
 			{
 				right.playPressSound(minecraft.getSoundHandler());
 				pageIndex++;

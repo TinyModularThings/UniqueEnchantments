@@ -17,7 +17,7 @@ public class ClientProxy extends Proxy
 	@Override
 	public void init()
 	{
-		boostKey = new KeyBinding("AnemoiFragment Boost Key", 29, "UE Keys");
+		boostKey = new KeyBinding("Effect Key", 29, "UE Keys");
 		ClientRegistry.registerKeyBinding(boostKey);
 	}
 	

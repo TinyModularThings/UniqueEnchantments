@@ -1,5 +1,6 @@
 package uniqueeutils.enchantments.complex;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.ToIntFunction;
@@ -16,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
+import uniquebase.utils.StackUtils;
 
 public class AlchemistsBlessing extends UniqueEnchantment
 {
@@ -91,9 +93,9 @@ public class AlchemistsBlessing extends UniqueEnchantment
 			return input;
 		}
 		
-		public ItemStack generateOutput(Random rand, int min, int extra)
+		public void generateOutput(Random rand, int level, int extra, int multiplier, List<ItemStack> result)
 		{
-			return new ItemStack(output, Math.max(rand.nextInt(Math.max(1, amount + extra)), min));
+			StackUtils.growStack(new ItemStack(output), Math.max(rand.nextInt(amount + 1), 1) * (level + extra) * multiplier, result);
 		}
 	}
 }

@@ -64,7 +64,6 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -123,6 +122,7 @@ public class UtilsHandler
 	public void onTick(ClientTickEvent event)
 	{
 		if(event.phase == Phase.START) return;
+		UniqueEnchantmentsUtils.PROXY.update();
 		Minecraft mc = Minecraft.getMinecraft();
 		if(mc.world == null || mc.player == null) 
 		{
@@ -266,7 +266,7 @@ public class UtilsHandler
 		if(player.isRiding() && time % 20 == 0)
 		{
 			Entity entity = player.getRidingEntity();
-			if(entity instanceof EntityHorse)
+			if(entity instanceof EntityHorse && entity.isEntityAlive())
 			{
 				EntityHorse horse = (EntityHorse)entity;
 				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.SLEIPNIRS_GRACE, entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).getStackInSlot(1));
@@ -435,16 +435,17 @@ public class UtilsHandler
 		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
 		if(level > 0)
 		{
-			event.setAmount((float)(event.getAmount() * (1 - PhanesRegret.REDUCTION.get(Math.log(2.8D+MathCache.POW3.get(level))))));
-			if(event.getEntityLiving() instanceof EntityPlayer)
+			double chance = PhanesRegret.CHANCE.get(MathCache.LOG_ADD.get(MathCache.POW3.getInt(level)));
+			if(chance > 1D)
 			{
-				EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-				int toConsume = MathHelper.ceil(Math.sqrt(Math.abs(event.getAmount()*level)));
-				if(toConsume > 0)
-				{
-					if(player.experienceTotal >= toConsume) MiscUtil.drainExperience(player, toConsume);
-					else player.attackEntityFrom(DamageSource.GENERIC, (float)Math.sqrt(toConsume));
-				}
+				event.getEntityLiving().attackEntityFrom(DamageSource.STARVE, event.getAmount());
+				event.setCanceled(true);
+				return;
+			}
+			if(event.getEntity().getEntityWorld().rand.nextDouble() < chance)
+			{
+				event.setCanceled(true);
+				return;
 			}
 		}
 	}
@@ -466,7 +467,7 @@ public class UtilsHandler
 					int used = nbt.getInteger(Resonance.OVERUSED_TAG);
 					event.getEntityPlayer().attackEntityFrom(DamageSource.MAGIC, 0.5F*used);
 					nbt.setInteger(Resonance.OVERUSED_TAG, used+1);
-					if(!player.world.isRemote) player.sendMessage(new TextComponentTranslation("tooltip.uniqueeutil.resonance.cooldown", (event.getWorld().getTotalWorldTime() - nbt.getLong(Resonance.COOLDOWN_TAG)) / 20));
+					if(!player.world.isRemote) player.sendMessage(new TextComponentTranslation("tooltip.uniqueeutil.resonance.cooldown", (nbt.getLong(Resonance.COOLDOWN_TAG) - event.getWorld().getTotalWorldTime()) / 20));
 				}
 				else
 				{
@@ -526,7 +527,7 @@ public class UtilsHandler
 				if(level > 0)
 				{
 					int stored = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
-					int required = MiscUtil.getXPForLvl((stored * 2) + 5);
+					int required = MiscUtil.getXPForLvl(stored+5);
 					if(player.experienceTotal >= required)
 					{
 						MiscUtil.drainExperience(player, required);
@@ -570,10 +571,8 @@ public class UtilsHandler
 								xpToSpawn += stack.getCount();
 								continue;
 							}
-							ItemStack result = entry.generateOutput(world.rand, level-1, Math.min(world.rand.nextInt(Math.max(ench.getInt(Enchantments.FORTUNE), ench.getInt(Enchantments.LOOTING)) + 1), level));
-							if(result.getCount() <= 0) continue;
 							List<ItemStack> newDrops = new ObjectArrayList<ItemStack>();
-							StackUtils.growStack(result, result.getCount() * stack.getCount(), newDrops);
+							entry.generateOutput(world.rand, level-1, Math.min(world.rand.nextInt(Math.max(ench.getInt(Enchantments.FORTUNE), ench.getInt(Enchantments.LOOTING)) + 1), level), stack.getCount(), newDrops);
 							for(ItemStack drop : newDrops)
 							{
 								world.spawnEntity(new EntityItem(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, drop));
@@ -809,27 +808,6 @@ public class UtilsHandler
 					damageShield(event.getAmount(), player);
 					event.setCanceled(true);
 					return;
-				}
-			}
-		}
-	}
-	
-	@SubscribeEvent
-	public void onEntityDamage(LivingDamageEvent event)
-	{
-		if(event.getSource() == null || !"generic".equalsIgnoreCase(event.getSource().getDamageType())) return;
-		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
-		if(level > 0)
-		{
-			event.setAmount((float)(event.getAmount() * (1 - PhanesRegret.REDUCTION.get(Math.log(2.8D+MathCache.POW3.get(level))))));
-			if(event.getEntityLiving() instanceof EntityPlayer)
-			{
-				EntityPlayer player = (EntityPlayer)event.getEntityLiving();
-				int toConsume = MathHelper.ceil(Math.sqrt(Math.abs(event.getAmount()*level)));
-				if(toConsume > 0)
-				{
-					if(player.experienceTotal >= toConsume) MiscUtil.drainExperience(player, toConsume);
-					else event.setAmount(event.getAmount() * (float)(Math.log10(100+event.getAmount()*level)-1));
 				}
 			}
 		}
