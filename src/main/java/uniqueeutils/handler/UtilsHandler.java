@@ -122,13 +122,13 @@ public class UtilsHandler
 	public void onTick(ClientTickEvent event)
 	{
 		if(event.phase == Phase.START) return;
-		UniqueEnchantmentsUtils.PROXY.update();
 		Minecraft mc = Minecraft.getMinecraft();
 		if(mc.world == null || mc.player == null) 
 		{
 			toRender.clear();
 			return;
 		}
+		UniqueEnchantmentsUtils.PROXY.update();
 		Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("uniquee", "treasurers_eyes"));
 		if(ench == null) 
 		{
