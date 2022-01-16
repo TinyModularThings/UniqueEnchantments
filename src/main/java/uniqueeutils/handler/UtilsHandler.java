@@ -556,7 +556,7 @@ public class UtilsHandler
 				if(level > 0)
 				{
 					int stored = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
-					int required = MiscUtil.getXPForLvl(stored+5);
+					int required = MiscUtil.getXPForLvl(stored+10);
 					if(player.experienceTotal >= required || player.isCreative())
 					{
 						MiscUtil.drainExperience(player, required);
