@@ -40,6 +40,13 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 		{
 			((ICustomItemEnchantment)ench).addCustomItems(validItems);
 		}
+		validItems.removeIf(ItemStack::isEmpty);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Wrapped Enchantment: "+ench.getRegistryName().toString();
 	}
 	
 	public String getName()

@@ -9,6 +9,7 @@ import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.recipe.IRecipeCategoryRegistration;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import uniquebase.utils.MiscUtil;
 
 @JEIPlugin
 public class JEIView implements IModPlugin
@@ -18,7 +19,11 @@ public class JEIView implements IModPlugin
 	{
 		registry.handleRecipes(WrappedEnchantment.class, EnchantmentWrapper::new, "ue_enchantments");
 		List<WrappedEnchantment> enchantments = new ObjectArrayList<>();
-		for(Enchantment ench : ForgeRegistries.ENCHANTMENTS) enchantments.add(new WrappedEnchantment(ench));
+		for(Enchantment ench : ForgeRegistries.ENCHANTMENTS)
+		{
+			if(MiscUtil.isDisabled(ench)) continue;
+			enchantments.add(new WrappedEnchantment(ench));
+		}
 		enchantments.sort(null);
 		registry.addRecipes(enchantments, "ue_enchantments");
 	}

@@ -14,6 +14,7 @@ import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -37,6 +38,19 @@ public class MiscUtil
 	public static int getHardCap(Enchantment ench)
 	{
 		return ench instanceof IToggleEnchantment ? ((IToggleEnchantment)ench).getHardCap() : Integer.MAX_VALUE;
+	}
+	
+	public static boolean isDisabled(Enchantment ench)
+	{
+		return ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled();
+
+	}
+	
+	public static NBTTagCompound getPersistentData(Entity entity)
+	{
+		NBTTagCompound data = entity.getEntityData().getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+		if(data.isEmpty()) entity.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, data);
+		return data;
 	}
 	
 	public static int getEnchantmentLevel(Enchantment ench, ItemStack stack)
