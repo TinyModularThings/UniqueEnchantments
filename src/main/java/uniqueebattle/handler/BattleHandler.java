@@ -29,7 +29,9 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -54,7 +56,7 @@ public class BattleHandler
 	{
 		if(event.getWorld() instanceof ServerWorld)
 		{
-			int count = event.getPlayer().getPersistentData().getInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT);
+			int count = event.getPlayer().getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG).getInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT);
 			if(count > 0)
 			{
 				TileEntity tile = event.getWorld().getTileEntity(event.getPos());
@@ -64,9 +66,28 @@ public class BattleHandler
 				LootTable table = ((ServerWorld)event.getWorld()).getServer().getLootTableManager().getLootTableFromLocation(IfritsJudgement.JUDGEMENT_LOOT);
 				LootContext.Builder builder = (new LootContext.Builder((ServerWorld)event.getWorld())).withRandom(event.getWorld().getRandom()).withParameter(LootParameters.POSITION, event.getPos()).withLuck(event.getPlayer().getLuck()).withParameter(LootParameters.THIS_ENTITY, event.getPlayer());
 				table.generate(builder.build(LootParameterSets.CHEST), T -> ItemHandlerHelper.insertItem(handler, T, false));
-				event.getPlayer().getPersistentData().putInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT, count-1);
+				MiscUtil.getPersistentData(event.getPlayer()).putInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT, count-1);
 				if(event.getPlayer().isSneaking()) event.setCanceled(true);
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onCritEvent(CriticalHitEvent event)
+	{
+		if(event.isVanillaCritical()) return;
+		LivingEntity source = event.getPlayer();
+		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(source.getHeldItemMainhand());
+		int level = ench.getInt(UniqueEnchantmentsBattle.ARES_FRAGMENT);
+		if(level > 0 && source instanceof PlayerEntity)
+		{
+			PlayerEntity player = (PlayerEntity)source;
+			int maxRolls = MathHelper.floor(Math.sqrt(level*player.experienceLevel)*AresFragment.BASE_ROLL_MULTIPLIER.get()) + AresFragment.BASE_ROLL.get();
+			int posRolls = Math.max(source.world.rand.nextInt(Math.max(1, maxRolls)), MathHelper.floor(Math.sqrt(level)));
+			int negRolls = maxRolls - posRolls;
+			if(negRolls >= posRolls) return;
+			event.setResult(Result.ALLOW);
+			event.setDamageModifier(1.5F);
 		}
 	}
 	
@@ -83,14 +104,14 @@ public class BattleHandler
 			{
 				PlayerEntity player = (PlayerEntity)source;
 				int maxRolls = MathHelper.floor(Math.sqrt(level*player.experienceLevel)*AresFragment.BASE_ROLL_MULTIPLIER.get()) + AresFragment.BASE_ROLL.get();
-				int posRolls = 1+source.world.rand.nextInt(maxRolls);
+				int posRolls = Math.max(source.world.rand.nextInt(Math.max(1, maxRolls)), MathHelper.floor(Math.sqrt(level)));
 				int negRolls = maxRolls - posRolls;
 				LivingEntity enemy = event.getEntityLiving();
 				double toughness = enemy.getAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getValue();
 				double speed = player.getAttribute(SharedMonsterAttributes.ATTACK_SPEED).getValue();
 				float damageFactor = (float)(Math.log(1+Math.sqrt(player.experienceLevel*level*level)*(1+(enemy.getTotalArmorValue()+toughness*2.5)*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
 				event.setAmount(event.getAmount() * (1F+(damageFactor*posRolls)) / (1F+(damageFactor*negRolls)));
-				source.getHeldItemMainhand().damageItem(MathHelper.ceil((Math.sqrt(Math.abs(posRolls-negRolls) / Math.pow(AresFragment.DURABILITY_REDUCTION_SCALING.get(), 1+(level/100D))) * (((posRolls * Math.pow(AresFragment.DURABILITY_DISTRIBUTION.get(), -1D))-(negRolls * AresFragment.DURABILITY_DISTRIBUTION.get())) / AresFragment.DURABILITY_ANTI_SCALING.get()))/speed), source, MiscUtil.get(EquipmentSlotType.MAINHAND));
+				source.getHeldItemMainhand().damageItem(MathHelper.ceil(Math.log(Math.abs(posRolls-Math.sqrt(negRolls)))*(((posRolls-negRolls) != 0 ? posRolls-negRolls : 1)/speed)), source, MiscUtil.get(EquipmentSlotType.MAINHAND));
 			}
 			if(event.getEntityLiving().isBurning())
 			{
@@ -114,7 +135,7 @@ public class BattleHandler
 			}
 			if(level > 0)
 			{
-				CompoundNBT entityNBT = event.getEntityLiving().getPersistentData();
+				CompoundNBT entityNBT = MiscUtil.getPersistentData(event.getEntityLiving());
 				ListNBT list = entityNBT.getList(IfritsJudgement.FLAG_JUDGEMENT_ID, 10);
 				boolean found = false;
 				String id = source.getItemStackFromSlot(slot).getItem().getRegistryName().toString();
@@ -168,7 +189,7 @@ public class BattleHandler
 			Object2IntMap.Entry<EquipmentSlotType> found = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.IFRITS_JUDGEMENT, source);
 			if(found.getIntValue() > 0)
 			{
-				ListNBT list = event.getEntityLiving().getPersistentData().getList(IfritsJudgement.FLAG_JUDGEMENT_ID, 10);
+				ListNBT list = MiscUtil.getPersistentData(event.getEntityLiving()).getList(IfritsJudgement.FLAG_JUDGEMENT_ID, 10);
 				int max = 0;
 				for(int i = 0,m=list.size();i<m;i++)
 				{
@@ -188,7 +209,7 @@ public class BattleHandler
 				}
 				else if(max > 0)
 				{
-					CompoundNBT compound = source.getPersistentData();
+					CompoundNBT compound = MiscUtil.getPersistentData(source);
 					compound.putInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT, compound.getInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT)+1);
 				}
 			}

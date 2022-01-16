@@ -122,7 +122,8 @@ public class EntityEvents
 {
 	public static final EntityEvents INSTANCE = new EntityEvents();
 	static final ThreadLocal<UUID> ENDER_MEN_TELEPORT = new ThreadLocal<>();
-		
+	public static final ThreadLocal<Boolean> BREAKING = ThreadLocal.withInitial(() -> false);
+	
 	@SuppressWarnings("unchecked")
 	@SubscribeEvent
 	public void onEntitySpawn(EntityJoinWorldEvent event)
@@ -202,7 +203,7 @@ public class EntityEvents
 				int level = container.getEnchantment(UniqueEnchantments.ENDEST_REAP, EquipmentSlotType.MAINHAND);
 				if(level > 0)
 				{
-					StackUtils.setInt(player.getHeldItemMainhand(), EndestReap.REAP_STORAGE, player.getPersistentData().getInt(EndestReap.REAP_STORAGE));
+					StackUtils.setInt(player.getHeldItemMainhand(), EndestReap.REAP_STORAGE, player.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE));
 				}
 			}
 			if(player.world.getGameTime() % 1200 == 0)
@@ -398,7 +399,8 @@ public class EntityEvents
 		}
 		PlayerEntity player = event.getPlayer();
 		ItemStack held = player.getHeldItemMainhand();
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.MOMENTUM, held);
+		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(held);
+		int level = ench.getInt(UniqueEnchantments.MOMENTUM);
 		if(level > 0 && isMining(player))
 		{
 			CompoundNBT nbt = player.getPersistentData();
@@ -415,6 +417,15 @@ public class EntityEvents
 			double percent = 1 + (Math.pow(Momentum.SPEED_MULTIPLIER.get(count), 0.55F)/level);
 			event.setNewSpeed((float)((event.getNewSpeed() + flat) * percent));
 			nbt.putLong(Momentum.LAST_MINE, worldTime);
+		}
+		level = ench.getInt(UniqueEnchantments.RANGE);
+		if(level > 0)
+		{
+			double value = player.getAttributes().getAttributeInstance(PlayerEntity.REACH_DISTANCE).getBaseValue();
+			if(value * value < event.getPos().distanceSq(player.posX, player.posY + player.getEyeHeight(), player.posZ, true))
+			{
+				event.setNewSpeed(event.getNewSpeed() * Range.REDUCTION.getLogDevided(level+1));
+			}
 		}
 	}
 	
@@ -444,7 +455,7 @@ public class EntityEvents
 		level = enchs.getInt(UniqueEnchantments.SMART_ASS);
 		if(level > 0)
 		{
-			if(SmartAss.VALID_STATES.test(event.getState()))
+			if(!BREAKING.get() && SmartAss.VALID_STATES.test(event.getState()))
 			{
 				Block block = event.getState().getBlock();
 				int limit = SmartAss.RANGE.get(level);
@@ -462,11 +473,14 @@ public class EntityEvents
 					lastState = state;
 					lastPos = pos;
 				}
+				BREAKING.set(true);
 				if(lastState != null && MiscUtil.harvestBlock(event, lastState, lastPos))
 				{
+					BREAKING.set(false);
 					event.setCanceled(true);
 					return;
 				}
+				BREAKING.set(false);
 			}
 		}
 		level = enchs.getInt(UniqueEnchantments.SAGES_BLESSING);
@@ -644,7 +658,7 @@ public class EntityEvents
 			level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
 			if(level > 0)
 			{
-				 event.setAmount(event.getAmount() + (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getInt(EndestReap.REAP_STORAGE))));
+				 event.setAmount(event.getAmount() + (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE))));
 			}
 		}
 		if(event.getSource() == DamageSource.FLY_INTO_WALL)
@@ -757,7 +771,7 @@ public class EntityEvents
 					level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ENDEST_REAP, base.getHeldItemMainhand());
 					if(level > 0)
 					{
-						CompoundNBT nbt = base.getPersistentData();
+						CompoundNBT nbt = MiscUtil.getPersistentData(entity);
 						nbt.putInt(EndestReap.REAP_STORAGE, Math.min(nbt.getInt(EndestReap.REAP_STORAGE)+amount, ((PlayerEntity)base).experienceLevel));
 						StackUtils.setInt(base.getHeldItemMainhand(), EndestReap.REAP_STORAGE, nbt.getInt(EndestReap.REAP_STORAGE));
 					}
@@ -919,11 +933,14 @@ public class EntityEvents
 			event.setCanceled(true);
 		}
 		LivingEntity living = event.getEntityLiving();
-        IAttributeInstance attri = living.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
-        if(living.getEntityWorld().getClosestPlayer(new EntityPredicate().setDistance(attri == null ? 16.0D : attri.getValue()).setCustomPredicate(EnderEyes.getPlayerFilter(living)), living) != null)
-        {
-        	event.setCanceled(true);
-        }
+		if(living instanceof EndermanEntity)
+		{
+	        IAttributeInstance attri = living.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
+	        if(living.getEntityWorld().getClosestPlayer(new EntityPredicate().setDistance(attri == null ? 16.0D : attri.getValue()).setCustomPredicate(EnderEyes.getPlayerFilter(living)), living) != null)
+	        {
+	        	event.setCanceled(true);
+	        }	
+		}
 	}
 	
 	@SubscribeEvent
@@ -951,7 +968,7 @@ public class EntityEvents
 		if(level > 0 && MiscUtil.getSlotsFor(UniqueEnchantments.VITAE).contains(slot))
 		{
 			int xpLevel = living instanceof PlayerEntity ? ((PlayerEntity)living).experienceLevel : 100;
-			mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(Vitae.getForSlot(slot), "Vitae Boost", Math.log10(100+(Vitae.BASE_BOOST.get(level))+Math.sqrt(Vitae.SCALE_BOOST.get(xpLevel)))-2, Operation.MULTIPLY_TOTAL));
+			mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(Vitae.HEALTH_MOD.getId(slot), "Vitae Boost", Math.log10(100+(Vitae.BASE_BOOST.get(level))+Math.sqrt(Vitae.SCALE_BOOST.get(xpLevel)))-2, Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UniqueEnchantments.SWIFT);
 		if(level > 0 && MiscUtil.getSlotsFor(UniqueEnchantments.SWIFT).contains(slot))
@@ -969,7 +986,7 @@ public class EntityEvents
 			int value = StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0);
 			if(value > 0)
 			{
-				mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(DeathsOdium.getForSlot(slot), "Death Odiums Restore", DeathsOdium.BASE_LOSS.get(value), Operation.ADDITION));
+				mods.put(SharedMonsterAttributes.MAX_HEALTH.getName(), new AttributeModifier(DeathsOdium.GENERAL_MOD.getId(slot), "Death Odiums Restore", DeathsOdium.BASE_LOSS.get(value), Operation.ADDITION));
 			}
 		}
 		return mods;

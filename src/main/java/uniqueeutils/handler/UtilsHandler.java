@@ -557,7 +557,7 @@ public class UtilsHandler
 				{
 					int stored = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
 					int required = MiscUtil.getXPForLvl(stored+5);
-					if(player.experienceTotal >= required)
+					if(player.experienceTotal >= required || player.isCreative())
 					{
 						MiscUtil.drainExperience(player, required);
 						StackUtils.setInt(stack, SagesSoul.STORED_XP, stored+5);
@@ -699,8 +699,12 @@ public class UtilsHandler
 		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.ADEPT, player.getItemStackFromSlot(EquipmentSlotType.HEAD));
 		if(level > 0)
 		{
-			event.setNewSpeed(event.getNewSpeed() * (player.onGround ? 1F : 5F) * (player.areEyesInFluid(FluidTags.WATER) && !EnchantmentHelper.hasAquaAffinity(player) ? 5F : 1F));
-			event.setNewSpeed((float)(event.getNewSpeed() * -Math.sqrt(1/(1 + level*level * Adept.SPEED_SCALE.get()))+1));
+			boolean inWater = player.areEyesInFluid(FluidTags.WATER);
+			event.setNewSpeed(event.getNewSpeed() * (player.onGround ? 1F : 5F) * (inWater && !EnchantmentHelper.hasAquaAffinity(player) ? 5F : 1F));
+			if(inWater || !player.onGround)
+			{
+				event.setNewSpeed((float)(event.getNewSpeed() * -Math.sqrt(1/(1 + level*level * Adept.SPEED_SCALE.get()))+1));	
+			}
 		}
 		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(held);
 		level = ench.getInt(UniqueEnchantmentsUtils.SAGES_SOUL);
@@ -870,9 +874,9 @@ public class UtilsHandler
 		{
 			int levels = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
 			double power = SagesSoul.getEnchantPower(stack, level);
-			mods.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(SagesSoul.ATTACK_MOD, "Sage Attack Boost", Math.pow(-0.5+Math.sqrt(0.25+SagesSoul.ATTACK_SPEED.get(2*levels)), power)/SagesSoul.ATTACK_SPEED.get(), Operation.MULTIPLY_TOTAL));
-			mods.put(SharedMonsterAttributes.ARMOR.getName(), new AttributeModifier(SagesSoul.ARMOR_MOD, "Sages Armor Boost", Math.pow((-0.5+SagesSoul.ARMOR_SCALE.get(Math.sqrt(0.25+8*(levels*Math.sqrt(level))))), power)/SagesSoul.ARMOR_DIVIDOR.get(), Operation.ADDITION));
-			mods.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(SagesSoul.TOUGHNESS_MOD, "Sages Toughness Boost", Math.pow((-0.5+SagesSoul.TOUGHNESS_SCALE.get(Math.sqrt(0.25+1*(levels*Math.sqrt(level))))), power)/SagesSoul.TOUGHNESS_DIVIDOR.get(), Operation.ADDITION));
+			mods.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(SagesSoul.ATTACK_MOD.getId(slot), "Sage Attack Boost", Math.pow(-0.5+Math.sqrt(0.25+SagesSoul.ATTACK_SPEED.get(2*levels)), power)/SagesSoul.ATTACK_SPEED.get(), Operation.MULTIPLY_TOTAL));
+			mods.put(SharedMonsterAttributes.ARMOR.getName(), new AttributeModifier(SagesSoul.ARMOR_MOD.getId(slot), "Sages Armor Boost", Math.pow((-0.5+SagesSoul.ARMOR_SCALE.get(Math.sqrt(0.25+8*(levels*Math.sqrt(level))))), power)/SagesSoul.ARMOR_DIVIDOR.get(), Operation.ADDITION));
+			mods.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(SagesSoul.TOUGHNESS_MOD.getId(slot), "Sages Toughness Boost", Math.pow((-0.5+SagesSoul.TOUGHNESS_SCALE.get(Math.sqrt(0.25+1*(levels*Math.sqrt(level))))), power)/SagesSoul.TOUGHNESS_DIVIDOR.get(), Operation.ADDITION));
 		}
 		return mods;
 	}

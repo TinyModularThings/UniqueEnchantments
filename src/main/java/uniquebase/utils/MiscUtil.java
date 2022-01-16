@@ -21,6 +21,7 @@ import net.minecraft.block.CommandBlockBlock;
 import net.minecraft.block.JigsawBlock;
 import net.minecraft.block.StructureBlock;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -61,6 +62,18 @@ public class MiscUtil
 	public static int getHardCap(Enchantment ench)
 	{
 		return ench instanceof IToggleEnchantment ? ((IToggleEnchantment)ench).getHardCap() : Integer.MAX_VALUE;
+	}
+	
+	public static boolean isDisabled(Enchantment ench)
+	{
+		return ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled();
+	}
+
+	public static CompoundNBT getPersistentData(Entity entity)
+	{
+		CompoundNBT data = entity.getPersistentData();
+		if(data.isEmpty()) entity.getPersistentData().put(PlayerEntity.PERSISTED_NBT_TAG, data);
+		return data;
 	}
 	
 	public static int getEnchantmentLevel(Enchantment ench, ItemStack stack)
