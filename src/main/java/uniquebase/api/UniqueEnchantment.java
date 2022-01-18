@@ -13,7 +13,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import uniquebase.utils.IStat;
+import uniquebase.utils.IdStat;
 
 public abstract class UniqueEnchantment extends Enchantment implements IToggleEnchantment
 {
@@ -24,6 +26,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	protected boolean enabled = false;
 	protected boolean activated = false;
 	protected boolean isCurse = false;
+	protected boolean disableDefaultItems = false;
 	String configName;
 	String categoryName = "base";
 	
@@ -45,6 +48,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	public UniqueEnchantment setCurse()
 	{
 		isCurse = true;
+		return this;
+	}
+	
+	public UniqueEnchantment disableDefaultItems()
+	{
+		disableDefaultItems = true;
 		return this;
 	}
 	
@@ -99,7 +108,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack)
 	{
-		return enabled ? (super.canApplyAtEnchantingTable(stack) || canApplyToItem(stack)) && !canNotApplyToItems(stack) : false;
+		return enabled ? ((!disableDefaultItems && super.canApplyAtEnchantingTable(stack)) || canApplyToItem(stack) || actualData.isCompatible(stack)) && !(canNotApplyToItems(stack) || actualData.isIncompatible(stack)) : false;
 	}
 	
 	@Override
@@ -185,6 +194,8 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		int rangeCost;
 		int hardCap;
 		Set<ResourceLocation> incompats = new ObjectOpenHashSet<>();
+		IdStat incompatibleItems = new IdStat("incompatible_items", "Allows to add custom incompatible Items", ForgeRegistries.ITEMS);
+		IdStat compatibleItems = new IdStat("compatible_items", "Allows to add custom compatible Items", ForgeRegistries.ITEMS);
 		
 		public DefaultData(DefaultData defaultValues, Configuration config, String configName)
 		{
@@ -209,6 +220,8 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 					FMLLog.log.error("Adding Incompat ["+result[i]+"] has caused a crash", e);
 				}
 			}
+			incompatibleItems.handleConfig(config, configName);
+			compatibleItems.handleConfig(config, configName);
 		}
 		
 		public DefaultData(String name, Rarity rare, int maxLevel, boolean isTreasure, int baseCost, int levelCost, int rangeCost)
@@ -256,6 +269,16 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		public int getLevelCost(int minLevel)
 		{
 			return (baseCost - levelCost) + (minLevel * levelCost);
+		}
+		
+		public boolean isCompatible(ItemStack stack)
+		{
+			return compatibleItems.contains(stack.getItem().getRegistryName());
+		}
+		
+		public boolean isIncompatible(ItemStack stack)
+		{
+			return incompatibleItems.contains(stack.getItem().getRegistryName());
 		}
 		
 		public String getName()

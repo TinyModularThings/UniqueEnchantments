@@ -11,6 +11,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,10 +39,12 @@ import uniquebase.utils.MiscUtil;
 import uniqueebattle.UniqueEnchantmentsBattle;
 import uniqueebattle.enchantments.AresFragment;
 import uniqueebattle.enchantments.CelestialBlessing;
+import uniqueebattle.enchantments.Fury;
 import uniqueebattle.enchantments.GolemSoul;
 import uniqueebattle.enchantments.IfritsBlessing;
 import uniqueebattle.enchantments.IfritsJudgement;
 import uniqueebattle.enchantments.LunaticDespair;
+import uniqueebattle.enchantments.StreakersWill;
 
 public class BattleHandler
 {
@@ -75,9 +78,13 @@ public class BattleHandler
 	@SubscribeEvent
 	public void onCritEvent(CriticalHitEvent event)
 	{
-		if(event.isVanillaCritical()) return;
 		EntityLivingBase source = event.getEntityPlayer();
 		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(source.getHeldItemMainhand());
+		if(event.isVanillaCritical())
+		{
+			dropPlayerHand(event.getTarget(), ench.getInt(UniqueEnchantmentsBattle.FURY));
+			return;
+		}
 		int level = ench.getInt(UniqueEnchantmentsBattle.ARES_FRAGMENT);
 		if(level > 0 && source instanceof EntityPlayer)
 		{
@@ -88,6 +95,27 @@ public class BattleHandler
 			if(negRolls >= posRolls) return;
 			event.setResult(Result.ALLOW);
 			event.setDamageModifier(1.5F);
+			dropPlayerHand(event.getTarget(), ench.getInt(UniqueEnchantmentsBattle.FURY));
+		}
+	}
+	
+	protected void dropPlayerHand(Entity target, int level)
+	{
+		if(level > 0 && target instanceof EntityPlayer && target.world.rand.nextDouble() < Fury.DROP_CHANCE.getDevided(level))
+		{
+			InventoryPlayer player = ((EntityPlayer)target).inventory;
+			int firstEmpty = player.getFirstEmptyStack();
+			if(firstEmpty == -1)
+			{
+				player.player.dropItem(player.getCurrentItem(), false);
+				player.removeStackFromSlot(player.currentItem);
+			}
+			else
+			{
+				ItemStack stack = player.getCurrentItem().copy();
+				player.removeStackFromSlot(player.currentItem);
+				player.add(firstEmpty, stack);
+			}
 		}
 	}
 	
@@ -119,6 +147,18 @@ public class BattleHandler
 				if(level > 0)
 				{
 					event.setAmount(event.getAmount() * ((1 + IfritsBlessing.BONUS_DAMAGE.getLogValue(2.8D, level)) * (source.isBurning() ? 2 : 1)));
+				}
+			}
+			level = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.STREAKERS_WILL, source).getIntValue();
+			if(level > 0 && source.world.rand.nextDouble() < StreakersWill.CHANCE.getAsDouble(level))
+			{
+				EntityLivingBase enemy = event.getEntityLiving();
+				for(EntityEquipmentSlot slot : new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.HEAD})
+				{
+					ItemStack stack = enemy.getItemStackFromSlot(slot);
+					if(stack.isEmpty()) continue;
+					stack.damageItem((int)StreakersWill.LOSS_PER_LEVEL.get(level), enemy);
+					break;
 				}
 			}
 			EntityEquipmentSlot slot = null;
@@ -245,6 +285,11 @@ public class BattleHandler
 		{
 			mods.put(SharedMonsterAttributes.MOVEMENT_SPEED.getName(), new AttributeModifier(GolemSoul.SPEED_MOD, "speed_loss", (Math.pow(1-GolemSoul.SPEED.get(), level)-1), 2));
 			mods.put(SharedMonsterAttributes.KNOCKBACK_RESISTANCE.getName(), new AttributeModifier(GolemSoul.KNOCKBACK_MOD, "knockback_boost", GolemSoul.KNOCKBACK.get(level), 0));
+		}
+		level = enchantments.getInt(UniqueEnchantmentsBattle.FURY);
+		if(level > 0)
+		{
+			mods.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(Fury.SPEED_MOD, "fury_faster_speed", Math.pow(Fury.ATTACK_SPEED_SCALE.get(1.43D * level), 0.125D), 0));
 		}
 		return mods;
 	}

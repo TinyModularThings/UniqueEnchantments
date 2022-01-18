@@ -10,10 +10,12 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import uniquebase.api.BaseUEMod;
 import uniqueebattle.enchantments.AresFragment;
 import uniqueebattle.enchantments.CelestialBlessing;
+import uniqueebattle.enchantments.Fury;
 import uniqueebattle.enchantments.GolemSoul;
 import uniqueebattle.enchantments.IfritsBlessing;
 import uniqueebattle.enchantments.IfritsJudgement;
 import uniqueebattle.enchantments.LunaticDespair;
+import uniqueebattle.enchantments.StreakersWill;
 import uniqueebattle.handler.BattleHandler;
 
 @Mod(modid = "uniqueebattle", name = "Unique Battle Enchantments", version = "1.0.1", dependencies = "required-after:uniquebase@[1.0.0,);")
@@ -25,6 +27,8 @@ public class UniqueEnchantmentsBattle extends BaseUEMod
 	public static Enchantment IFRITS_BLESSING;
 	public static Enchantment IFRITS_JUDGEMENT;
 	public static Enchantment GOLEM_SOUL;
+	public static Enchantment FURY;
+	public static Enchantment STREAKERS_WILL;
 	
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent event)
@@ -42,5 +46,7 @@ public class UniqueEnchantmentsBattle extends BaseUEMod
 		IFRITS_BLESSING = register(new IfritsBlessing());
 		IFRITS_JUDGEMENT = register(new IfritsJudgement());
 		GOLEM_SOUL = register(new GolemSoul());
+		FURY = register(new Fury());
+		STREAKERS_WILL = register(new StreakersWill());
 	}
 }
