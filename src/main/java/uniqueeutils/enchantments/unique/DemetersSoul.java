@@ -26,14 +26,15 @@ public class DemetersSoul extends UniqueEnchantment
 		super(new DefaultData("demeters_soul", Rarity.VERY_RARE, 3, true, 20, 10, 40), EnumEnchantmentType.BREAKABLE, EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND);
 		setCategory("utils");
 		addStats(DELAY, SCALING, CAP);
-	}
-		
-	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
-	{
-		return enabled && stack.getItem() instanceof ItemHoe;
+		setDisableDefaultItems();
 	}
 	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() instanceof ItemHoe;	
+	}
+		
 	public static HarvestEntry getNextIndex(EntityPlayer player)
 	{
 		NBTTagCompound entityData = player.getEntityData();

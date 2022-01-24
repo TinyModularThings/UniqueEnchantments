@@ -6,7 +6,10 @@ import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -16,9 +19,13 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootContext;
@@ -29,8 +36,10 @@ import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -39,16 +48,35 @@ import uniquebase.utils.MiscUtil;
 import uniqueebattle.UniqueEnchantmentsBattle;
 import uniqueebattle.enchantments.AresFragment;
 import uniqueebattle.enchantments.CelestialBlessing;
+import uniqueebattle.enchantments.DeepWounds;
 import uniqueebattle.enchantments.Fury;
 import uniqueebattle.enchantments.GolemSoul;
 import uniqueebattle.enchantments.IfritsBlessing;
 import uniqueebattle.enchantments.IfritsJudgement;
+import uniqueebattle.enchantments.IronBird;
 import uniqueebattle.enchantments.LunaticDespair;
+import uniqueebattle.enchantments.NobleImpact;
 import uniqueebattle.enchantments.StreakersWill;
+import uniqueebattle.enchantments.WarsOdium;
 
 public class BattleHandler
 {
 	public static final BattleHandler INSTANCE = new BattleHandler();
+	
+	@SubscribeEvent
+	public void onPlayerTick(PlayerTickEvent event)
+	{
+		if(event.phase == Phase.START || event.side.isClient()) return;
+		EntityPlayer player = event.player;
+		if(player.onGround && player.world.getTotalWorldTime() % 40 == 0)
+		{
+			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsBattle.IRON_BIRD, player.getItemStackFromSlot(EntityEquipmentSlot.CHEST));
+			if(level > 0)
+			{
+				player.addPotionEffect(new PotionEffect(UniqueEnchantmentsBattle.TOUGHEND, Math.max(MathHelper.floor(Math.sqrt(level)-1), 0), 80, true, true));
+			}
+		}
+	}
 	
 	@SubscribeEvent
 	public void onBlockClick(RightClickBlock event)
@@ -126,6 +154,8 @@ public class BattleHandler
 		if(entity instanceof EntityLivingBase)
 		{
 			EntityLivingBase source = (EntityLivingBase)entity;
+			EntityLivingBase target = event.getEntityLiving();
+
 			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(source.getHeldItemMainhand());
 			int level = ench.getInt(UniqueEnchantmentsBattle.ARES_FRAGMENT);
 			if(level > 0 && source instanceof EntityPlayer)
@@ -134,14 +164,31 @@ public class BattleHandler
 				int maxRolls = MathHelper.floor(Math.sqrt(level*player.experienceLevel)*AresFragment.BASE_ROLL_MULTIPLIER.get()) + AresFragment.BASE_ROLL.get();
 				int posRolls = Math.max(source.world.rand.nextInt(Math.max(1, maxRolls)), MathHelper.floor(Math.sqrt(level)));
 				int negRolls = maxRolls - posRolls;
-				EntityLivingBase enemy = event.getEntityLiving();
-				double toughness = enemy.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue();
-				double speed = player.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED).getAttributeValue();
-				float damageFactor = (float)(Math.log(1+Math.sqrt(player.experienceLevel*level*level)*(1+(enemy.getTotalArmorValue()+toughness*2.5)*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
+				double toughness = MiscUtil.getAttribute(target, SharedMonsterAttributes.ARMOR_TOUGHNESS);
+				double speed = MiscUtil.getAttribute(target, SharedMonsterAttributes.ATTACK_SPEED);
+				float damageFactor = (float)(Math.log(1+Math.sqrt(player.experienceLevel*level*level)*(1+(target.getTotalArmorValue()+toughness*2.5)*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
 				event.setAmount(event.getAmount() * ((1F+(damageFactor*posRolls)) / (1F+(damageFactor*negRolls))));
 				source.getHeldItemMainhand().damageItem(MathHelper.ceil(Math.log(Math.abs(posRolls-Math.sqrt(negRolls)))*(((posRolls-negRolls) != 0 ? posRolls-negRolls : 1)/speed)), source);
 			}
-			if(event.getEntityLiving().isBurning())
+			level = ench.getInt(UniqueEnchantmentsBattle.NOBLE_IMPACT);
+			if(level > 0)
+			{
+				double armor = (source.getTotalArmorValue()+1D) / (target.getTotalArmorValue()+1D);
+				double toughness = ((MiscUtil.getAttribute(source, SharedMonsterAttributes.ARMOR_TOUGHNESS)+1D) / (MiscUtil.getAttribute(target, SharedMonsterAttributes.ARMOR_TOUGHNESS)+1D)) * 2.5D;
+				event.setAmount(event.getAmount() * (float)Math.log(Math.pow(1+NobleImpact.SCALE.get(armor+toughness), 0.5)));
+			}
+			level = ench.getInt(UniqueEnchantmentsBattle.DEEP_WOUNDS);
+			if(level > 0 && target.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty())
+			{
+				PotionEffect effect = target.getActivePotionEffect(UniqueEnchantmentsBattle.BLEED);
+				if(effect != null)
+				{
+					event.setAmount(event.getAmount() * (float)DeepWounds.BLEED_SCALE.get(Math.log(Math.pow(1+MiscUtil.getAttackSpeed(source), level*0.25F))));
+				}
+				event.setAmount(event.getAmount() * 1+(float)(Math.pow(DeepWounds.SCALE.get(MiscUtil.getPlayerLevel(source, 200)), 2) * 0.01D));
+				target.addPotionEffect(new PotionEffect(UniqueEnchantmentsBattle.BLEED, 0, (int)Math.pow(DeepWounds.DURATION.get(level), 0.4D)));
+			}
+			if(target.isBurning())
 			{
 				level = event.getSource().isProjectile() ? MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.IFRITS_BLESSING, source).getIntValue() : ench.getInt(UniqueEnchantmentsBattle.IFRITS_BLESSING);
 				if(level > 0)
@@ -152,7 +199,7 @@ public class BattleHandler
 			level = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.STREAKERS_WILL, source).getIntValue();
 			if(level > 0 && source.world.rand.nextDouble() < StreakersWill.CHANCE.getAsDouble(level))
 			{
-				EntityLivingBase enemy = event.getEntityLiving();
+				EntityLivingBase enemy = target;
 				for(EntityEquipmentSlot slot : new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.HEAD})
 				{
 					ItemStack stack = enemy.getItemStackFromSlot(slot);
@@ -175,7 +222,7 @@ public class BattleHandler
 			}
 			if(level > 0)
 			{
-				NBTTagCompound entityNBT = MiscUtil.getPersistentData(event.getEntityLiving());
+				NBTTagCompound entityNBT = MiscUtil.getPersistentData(target);
 				NBTTagList list = entityNBT.getTagList(IfritsJudgement.FLAG_JUDGEMENT_ID, 10);
 				boolean found = false;
 				String id = source.getItemStackFromSlot(slot).getItem().getRegistryName().toString();
@@ -198,6 +245,11 @@ public class BattleHandler
 					entityNBT.setTag(IfritsJudgement.FLAG_JUDGEMENT_ID, list);
 				}
 			}
+		}
+		PotionEffect effect = event.getEntityLiving().getActivePotionEffect(UniqueEnchantmentsBattle.TOUGHEND);
+		if(effect != null)
+		{
+			event.setAmount((float)(event.getAmount() * Math.pow(0.9, effect.getAmplifier()+1)));
 		}
 	}
 	
@@ -234,6 +286,41 @@ public class BattleHandler
 					NBTTagCompound compound = MiscUtil.getPersistentData(source);
 					compound.setInteger(IfritsJudgement.FLAG_JUDGEMENT_LOOT, compound.getInteger(IfritsJudgement.FLAG_JUDGEMENT_LOOT)+1);
 				}
+				int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.WARS_ODIUM, source);
+				if(level > 0)
+				{
+					double chance = WarsOdium.SPAWN_CHANCE.getAsDouble(MiscUtil.getPersistentData(source).getInteger(WarsOdium.HIT_COUNTER)) * MathCache.LOG_ADD_MAX.get(level);
+					if(chance < source.world.rand.nextDouble())
+					{
+						double spawnMod = Math.log(54.6+WarsOdium.MULTIPLIER.get(level))-3;
+						int value = (int)spawnMod;
+						if(value > 0)
+						{
+							double extraHealth = WarsOdium.HEALTH_BUFF.getAsDouble(spawnMod);
+							IEntityLivingData data = null;//IDEA implement group data support so the curse gets really mean
+							ResourceLocation location = EntityList.getKey(event.getEntity());
+							Vec3d pos = event.getEntity().getPositionVector();
+							if(location != null)
+							{
+								for(int i = 0;i<value;i++)
+								{
+									Entity toSpawn = EntityList.createEntityByIDFromName(location, event.getEntity().world);
+									if(toSpawn instanceof EntityLiving)
+									{
+										EntityLiving base = (EntityLiving)toSpawn;
+										base.setLocationAndAngles(pos.x, pos.y, pos.z, MathHelper.wrapDegrees(event.getEntityLiving().world.rand.nextFloat() * 360.0F), 0.0F);
+										base.rotationYawHead = base.rotationYaw;
+					                    base.renderYawOffset = base.rotationYaw;
+										data = base.onInitialSpawn(event.getEntity().world.getDifficultyForLocation(new BlockPos(toSpawn)), data);
+										base.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier(WarsOdium.HEALTH_MOD, "wars_spawn_buff", extraHealth, 2));
+										event.getEntity().world.spawnEntity(toSpawn);
+					                    base.playLivingSound();
+									}
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -251,6 +338,12 @@ public class BattleHandler
 				event.setAmount(event.getAmount() * (1F + LunaticDespair.BONUS_DAMAGE.getFloat(MathCache.LOG_ADD.getFloat(level))));
 				source.hurtResistantTime = 0;
 				source.attackEntityFrom(DamageSource.MAGIC, (float)Math.pow(event.getAmount()*level, 0.25)-1);
+			}
+			level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.WARS_ODIUM, source);
+			if(level > 0)
+			{
+				NBTTagCompound nbt = MiscUtil.getPersistentData(source);
+				nbt.setInteger(WarsOdium.HIT_COUNTER, nbt.getInteger(WarsOdium.HIT_COUNTER)+1);
 			}
 		}
 	}
@@ -279,6 +372,13 @@ public class BattleHandler
 		if(level > 0)
 		{
 			mods.put(SharedMonsterAttributes.ATTACK_SPEED.getName(), new AttributeModifier(CelestialBlessing.SPEED_MOD, "speed_boost", world.isDaytime() ? 0F : CelestialBlessing.SPEED_BONUS.getAsDouble(level), 2));
+		}
+		level = enchantments.getInt(UniqueEnchantmentsBattle.IRON_BIRD);
+		if(level > 0)
+		{
+			double armor = IronBird.ARMOR.getAsDouble(level);
+			mods.put(SharedMonsterAttributes.ARMOR.getName(), new AttributeModifier(IronBird.DAMAGE_MOD, "damage_mod", armor, 0));
+			mods.put(SharedMonsterAttributes.ARMOR_TOUGHNESS.getName(), new AttributeModifier(IronBird.TOUGHNESS_MOD, "toughness_mod", Math.sqrt(IronBird.TOUGHNESS.get(armor)), 0));
 		}
 		level = enchantments.getInt(UniqueEnchantmentsBattle.GOLEM_SOUL);
 		if(level > 0)

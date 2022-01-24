@@ -51,7 +51,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		return this;
 	}
 	
-	public UniqueEnchantment disableDefaultItems()
+	public UniqueEnchantment setDisableDefaultItems()
 	{
 		disableDefaultItems = true;
 		return this;

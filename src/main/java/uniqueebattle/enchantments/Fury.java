@@ -20,6 +20,7 @@ public class Fury extends UniqueEnchantment
 	{
 		super(new DefaultData("fury", Rarity.RARE, 3, true, 20, 4, 50), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND);
 		addStats(ATTACK_SPEED_SCALE, DROP_CHANCE);
+		setDisableDefaultItems();
 	}
 	
 	@Override
@@ -29,8 +30,8 @@ public class Fury extends UniqueEnchantment
 	}
 	
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return enabled && stack.getItem() instanceof ItemAxe;
+		return stack.getItem() instanceof ItemAxe;
 	}
 }

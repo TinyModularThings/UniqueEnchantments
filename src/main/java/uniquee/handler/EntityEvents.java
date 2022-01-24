@@ -429,7 +429,7 @@ public class EntityEvents
 		level = ench.getInt(UniqueEnchantments.RANGE);
 		if(level > 0)
 		{
-			double value = player.getAttributeMap().getAttributeInstance(EntityPlayer.REACH_DISTANCE).getBaseValue();
+			double value = MiscUtil.getBaseAttribute(player, EntityPlayer.REACH_DISTANCE);
 			if(value * value < player.getDistanceSqToCenter(event.getPos()))
 			{
 				event.setNewSpeed(event.getNewSpeed() * Range.REDUCTION.getLogDevided(level+1));
@@ -684,9 +684,8 @@ public class EntityEvents
 					count = 0;
 					StackUtils.setInt(held, PerpetualStrike.HIT_ID, event.getEntityLiving().getEntityId());
 				}
-				IAttributeInstance attr = base.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.ATTACK_SPEED);
 				float amount = event.getAmount();
-				double damage = (1F + Math.pow(PerpetualStrike.PER_HIT.get(count)/Math.log(2.8D+(attr == null ? 1D : attr.getAttributeValue())), 1.4D)-1F)*level*PerpetualStrike.PER_HIT_LEVEL.get();
+				double damage = (1F + Math.pow(PerpetualStrike.PER_HIT.get(count)/Math.log(2.8D+MiscUtil.getAttribute(base, SharedMonsterAttributes.ATTACK_SPEED, 1)), 1.4D)-1F)*level*PerpetualStrike.PER_HIT_LEVEL.get();
 				double multiplier = Math.log10(10+(damage/Math.log10(1+event.getAmount())) * PerpetualStrike.MULTIPLIER.get());
 				amount += damage;
 				amount *= multiplier;

@@ -22,11 +22,12 @@ public class SleipnirsGrace extends UniqueEnchantment
 		super(new DefaultData("sleipnirs_grace", Rarity.RARE, 10, true, 20, 14, 75), EnumEnchantmentType.ARMOR_CHEST);
 		setCategory("utils");
 		addStats(CAP, GAIN, MAX, PATH_BONUS);
+		setDisableDefaultItems();
 	}
 	
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return enabled && HorseArmorType.isHorseArmor(stack);
+		return HorseArmorType.isHorseArmor(stack);
 	}
 }

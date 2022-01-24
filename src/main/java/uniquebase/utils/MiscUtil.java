@@ -16,6 +16,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -43,7 +46,38 @@ public class MiscUtil
 	public static boolean isDisabled(Enchantment ench)
 	{
 		return ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled();
-
+	}
+	
+	public static int getPlayerLevel(Entity entity, int defaultValue)
+	{
+		return entity instanceof EntityPlayer ? ((EntityPlayer)entity).experienceLevel : defaultValue;
+	}
+	
+	public static double getAttackSpeed(EntityLivingBase entity)
+	{
+		return getAttribute(entity, SharedMonsterAttributes.ATTACK_SPEED, 0D);
+	}
+	
+	public static double getAttribute(EntityLivingBase entity, IAttribute attribute)
+	{
+		return getAttribute(entity, attribute, 0D);
+	}
+	
+	public static double getAttribute(EntityLivingBase entity, IAttribute attribute, double defaultValue)
+	{
+		IAttributeInstance instance = entity.getEntityAttribute(attribute);
+		return instance == null ? defaultValue : instance.getAttributeValue();
+	}
+	
+	public static double getBaseAttribute(EntityLivingBase entity, IAttribute attribute)
+	{
+		return getBaseAttribute(entity, attribute, 0D);
+	}
+	
+	public static double getBaseAttribute(EntityLivingBase entity, IAttribute attribute, double defaultValue)
+	{
+		IAttributeInstance instance = entity.getEntityAttribute(attribute);
+		return instance == null ? defaultValue : instance.getBaseValue();
 	}
 	
 	public static NBTTagCompound getPersistentData(Entity entity)

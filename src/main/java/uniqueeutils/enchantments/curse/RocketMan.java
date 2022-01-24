@@ -17,11 +17,12 @@ public class RocketMan extends UniqueEnchantment
 		setCategory("utils");
 		addStats(FLIGHT_TIME);
 		setCurse();
+		setDisableDefaultItems();
 	}
 	
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return enabled && stack.getItem() instanceof ItemElytra;
+		return stack.getItem() instanceof ItemElytra;
 	}
 }

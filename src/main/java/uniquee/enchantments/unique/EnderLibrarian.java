@@ -15,14 +15,15 @@ public class EnderLibrarian extends UniqueEnchantment implements ICustomItemEnch
 	public EnderLibrarian()
 	{
 		super(new DefaultData("ender_librarian", Rarity.VERY_RARE, 1, true, 24, 3, 10), EnumEnchantmentType.FISHING_ROD, EntityEquipmentSlot.MAINHAND, EntityEquipmentSlot.OFFHAND);
+		setDisableDefaultItems();
 	}
-		
+	
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return enabled && stack.getItem() instanceof ItemMap;
+		return stack.getItem() instanceof ItemMap;
 	}
-
+	
 	@Override
 	public void addCustomItems(List<ItemStack> list)
 	{
