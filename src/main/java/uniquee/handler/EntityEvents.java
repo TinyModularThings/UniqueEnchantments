@@ -843,7 +843,7 @@ public class EntityEvents
 				ItemStack stack = event.getEntityLiving().getItemStackFromSlot(slot);
 				if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.DEATHS_ODIUM, stack) > 0)
 				{
-					StackUtils.setInt(stack, DeathsOdium.CURSE_STORAGE, Math.min(StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0) + 1, DeathsOdium.MAX_STORAGE.get()));
+					StackUtils.setInt(stack, DeathsOdium.CURSE_STORAGE, Math.min(StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0) + 1, DeathsOdium.MAX_STORAGE.get(maxLevel)));
 					break;
 				}
 			}

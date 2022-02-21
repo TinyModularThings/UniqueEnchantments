@@ -6,6 +6,7 @@ import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -13,8 +14,11 @@ import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -22,6 +26,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntitySelectors;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -33,10 +39,13 @@ import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -45,17 +54,20 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
+import uniquebase.utils.StackUtils;
 import uniqueebattle.UniqueEnchantmentsBattle;
 import uniqueebattle.enchantments.AresFragment;
+import uniqueebattle.enchantments.AresGrace;
+import uniqueebattle.enchantments.ArtemisSoul;
 import uniqueebattle.enchantments.CelestialBlessing;
 import uniqueebattle.enchantments.DeepWounds;
 import uniqueebattle.enchantments.Fury;
 import uniqueebattle.enchantments.GolemSoul;
+import uniqueebattle.enchantments.GranisSoul;
 import uniqueebattle.enchantments.IfritsBlessing;
 import uniqueebattle.enchantments.IfritsJudgement;
 import uniqueebattle.enchantments.IronBird;
 import uniqueebattle.enchantments.LunaticDespair;
-import uniqueebattle.enchantments.NobleImpact;
 import uniqueebattle.enchantments.StreakersWill;
 import uniqueebattle.enchantments.WarsOdium;
 
@@ -73,7 +85,75 @@ public class BattleHandler
 			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsBattle.IRON_BIRD, player.getItemStackFromSlot(EntityEquipmentSlot.CHEST));
 			if(level > 0)
 			{
-				player.addPotionEffect(new PotionEffect(UniqueEnchantmentsBattle.TOUGHEND, Math.max(MathHelper.floor(Math.sqrt(level)-1), 0), 80, true, true));
+				player.addPotionEffect(new PotionEffect(UniqueEnchantmentsBattle.TOUGHEND, 80, Math.max(MathHelper.floor(Math.sqrt(level)-1), 0), true, true));
+			}
+		}
+		if(player.world.getTotalWorldTime() % 4800 == 0)
+		{
+			Object2IntMap.Entry<EntityEquipmentSlot> entry = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.ARTEMIS_SOUL, player);
+			if(entry.getIntValue() > 0)
+			{
+				ItemStack stack = player.getItemStackFromSlot(entry.getKey());
+				int enderPoints = StackUtils.getInt(stack, ArtemisSoul.ENDER_STORAGE, 0);
+				if(enderPoints > 0)
+				{
+					StackUtils.setInt(stack, ArtemisSoul.ENDER_STORAGE, Math.max(0, enderPoints-MathHelper.ceil(Math.sqrt(entry.getIntValue()))));
+				}
+				else
+				{
+					StackUtils.setInt(stack, ArtemisSoul.TEMPORARY_SOUL_COUNT, (int)(StackUtils.getInt(stack, ArtemisSoul.TEMPORARY_SOUL_COUNT, 0) * ((-1D/(entry.getIntValue()+1D))+1D)));
+				}
+			}
+		}
+		Entity entity = event.player.getLowestRidingEntity();
+		if(entity instanceof EntityHorse)
+		{
+			EntityHorse horse = (EntityHorse)entity;
+			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsBattle.GRANIS_SOUL, horse.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).getStackInSlot(1));
+			if(level > 0)
+			{
+				NBTTagCompound nbt = horse.getEntityData();
+				if(nbt.getLong(GranisSoul.NEXT_DASH) < player.world.getTotalWorldTime())
+				{
+					IAttributeInstance instance = horse.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+					if(instance.getModifier(GranisSoul.DASH_ID) != null)
+					{
+						instance.removeModifier(GranisSoul.DASH_ID);	
+					}
+					if(UniqueEnchantmentsBattle.GRANIS_SOUL_DASH.test(player))
+					{
+						int duration = (MathCache.LOG10.getInt(GranisSoul.DASH_DURATION.get()+player.experienceLevel)-1)*20;
+						nbt.setLong(GranisSoul.NEXT_DASH, player.world.getTotalWorldTime() + duration+20);
+						nbt.setInteger(GranisSoul.DASH_TIME, duration);
+						instance.applyModifier(new AttributeModifier(GranisSoul.DASH_ID, "Granis Dash", Math.sqrt(GranisSoul.DASH_SPEED.get()+level), 2));
+						int bleed = GranisSoul.BLEED_DURATION.get(level);
+						for(EntityLivingBase base : player.world.getEntitiesWithinAABB(EntityLivingBase.class, horse.getEntityBoundingBox().grow(GranisSoul.BLEED_RANGE.get(level)), T -> T != horse && T != player && EntitySelectors.NOT_SPECTATING.test(T)))
+						{
+							base.addPotionEffect(new PotionEffect(UniqueEnchantmentsBattle.BLEED, bleed, level-1));
+						}
+					}
+				}
+				else
+				{
+					int timeLeft = nbt.getInteger(GranisSoul.DASH_TIME);
+					if(timeLeft >= 0)
+					{
+						timeLeft--;
+						nbt.setInteger(GranisSoul.DASH_TIME, timeLeft);
+						if(timeLeft <= 0)
+						{
+							horse.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).removeModifier(GranisSoul.DASH_ID);
+						}
+					}
+				}
+			}
+			else
+			{
+				IAttributeInstance instance = horse.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
+				if(instance.getModifier(GranisSoul.DASH_ID) != null)
+				{
+					instance.removeModifier(GranisSoul.DASH_ID);	
+				}
 			}
 		}
 	}
@@ -129,21 +209,68 @@ public class BattleHandler
 	
 	protected void dropPlayerHand(Entity target, int level)
 	{
-		if(level > 0 && target instanceof EntityPlayer && target.world.rand.nextDouble() < Fury.DROP_CHANCE.getDevided(level))
+		if(level > 0 && target.world.rand.nextDouble() < Fury.DROP_CHANCE.getDevided(level))
 		{
-			InventoryPlayer player = ((EntityPlayer)target).inventory;
-			int firstEmpty = player.getFirstEmptyStack();
-			if(firstEmpty == -1)
+			if(target instanceof EntityPlayer)
 			{
-				player.player.dropItem(player.getCurrentItem(), false);
-				player.removeStackFromSlot(player.currentItem);
+				InventoryPlayer player = ((EntityPlayer)target).inventory;
+				int firstEmpty = player.getFirstEmptyStack();
+				if(firstEmpty == -1)
+				{
+					player.player.dropItem(player.getCurrentItem(), false);
+					player.removeStackFromSlot(player.currentItem);
+				}
+				else
+				{
+					ItemStack stack = player.getCurrentItem().copy();
+					player.removeStackFromSlot(player.currentItem);
+					player.add(firstEmpty, stack);
+				}
 			}
-			else
+			else if(target instanceof EntityLivingBase)
 			{
-				ItemStack stack = player.getCurrentItem().copy();
-				player.removeStackFromSlot(player.currentItem);
-				player.add(firstEmpty, stack);
+				EntityLivingBase other = (EntityLivingBase)target;
+				if(!other.getHeldItemMainhand().isEmpty())
+				{
+					if(other.getHeldItemOffhand().isEmpty())
+					{
+						other.setHeldItem(EnumHand.OFF_HAND, other.getHeldItem(EnumHand.MAIN_HAND));
+						other.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
+					}
+					else
+					{
+						other.entityDropItem(other.getHeldItemMainhand(), 0F);
+						other.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
+					}
+				}
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEntityLoot(LootingLevelEvent event)
+	{
+		Entity entity = event.getDamageSource().getTrueSource();
+		if(entity instanceof EntityLivingBase)
+		{
+			EntityLivingBase base = (EntityLivingBase)entity;
+			Object2IntMap.Entry<EntityEquipmentSlot> entry = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.ARTEMIS_SOUL, base);
+			if(entry.getIntValue() > 0)
+			{
+				event.setLootingLevel(event.getLootingLevel() + MathCache.LOG10.getInt(1+StackUtils.getInt(base.getItemStackFromSlot(entry.getKey()), ArtemisSoul.PERSISTEN_SOUL_COUNT, 0)*entry.getIntValue()));
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onXPDrop(LivingExperienceDropEvent event)
+	{
+		Object2IntMap.Entry<EntityEquipmentSlot> entry = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.ARTEMIS_SOUL, event.getAttackingPlayer());
+		if(entry.getIntValue() > 0)
+		{
+			ItemStack stack = event.getAttackingPlayer().getItemStackFromSlot(entry.getKey());
+			double temp = ArtemisSoul.TEMP_SOUL_SCALE.get(StackUtils.getInt(stack, ArtemisSoul.TEMPORARY_SOUL_COUNT, 0));
+			event.setDroppedExperience(event.getDroppedExperience()*MathCache.LOG10.getInt(100+MathHelper.ceil(entry.getIntValue()*Math.sqrt((ArtemisSoul.PERM_SOUL_SCALE.get(StackUtils.getInt(stack, ArtemisSoul.PERSISTEN_SOUL_COUNT, 0)))+(temp*temp))))-1);
 		}
 	}
 	
@@ -164,18 +291,10 @@ public class BattleHandler
 				int maxRolls = MathHelper.floor(Math.sqrt(level*player.experienceLevel)*AresFragment.BASE_ROLL_MULTIPLIER.get()) + AresFragment.BASE_ROLL.get();
 				int posRolls = Math.max(source.world.rand.nextInt(Math.max(1, maxRolls)), MathHelper.floor(Math.sqrt(level)));
 				int negRolls = maxRolls - posRolls;
-				double toughness = MiscUtil.getAttribute(target, SharedMonsterAttributes.ARMOR_TOUGHNESS);
-				double speed = MiscUtil.getAttribute(target, SharedMonsterAttributes.ATTACK_SPEED);
-				float damageFactor = (float)(Math.log(1+Math.sqrt(player.experienceLevel*level*level)*(1+(target.getTotalArmorValue()+toughness*2.5)*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
+				double speed = MiscUtil.getAttribute(source, SharedMonsterAttributes.ATTACK_SPEED);
+				float damageFactor = (float)(Math.log(1+Math.sqrt(player.experienceLevel*level*level)*(1+MiscUtil.getArmorProtection(target)*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
 				event.setAmount(event.getAmount() * ((1F+(damageFactor*posRolls)) / (1F+(damageFactor*negRolls))));
 				source.getHeldItemMainhand().damageItem(MathHelper.ceil(Math.log(Math.abs(posRolls-Math.sqrt(negRolls)))*(((posRolls-negRolls) != 0 ? posRolls-negRolls : 1)/speed)), source);
-			}
-			level = ench.getInt(UniqueEnchantmentsBattle.NOBLE_IMPACT);
-			if(level > 0)
-			{
-				double armor = (source.getTotalArmorValue()+1D) / (target.getTotalArmorValue()+1D);
-				double toughness = ((MiscUtil.getAttribute(source, SharedMonsterAttributes.ARMOR_TOUGHNESS)+1D) / (MiscUtil.getAttribute(target, SharedMonsterAttributes.ARMOR_TOUGHNESS)+1D)) * 2.5D;
-				event.setAmount(event.getAmount() * (float)Math.log(Math.pow(1+NobleImpact.SCALE.get(armor+toughness), 0.5)));
 			}
 			level = ench.getInt(UniqueEnchantmentsBattle.DEEP_WOUNDS);
 			if(level > 0 && target.getItemStackFromSlot(EntityEquipmentSlot.CHEST).isEmpty())
@@ -183,10 +302,10 @@ public class BattleHandler
 				PotionEffect effect = target.getActivePotionEffect(UniqueEnchantmentsBattle.BLEED);
 				if(effect != null)
 				{
-					event.setAmount(event.getAmount() * (float)DeepWounds.BLEED_SCALE.get(Math.log(Math.pow(1+MiscUtil.getAttackSpeed(source), level*0.25F))));
+					event.setAmount(event.getAmount() * MathCache.LOG.getFloat(10+((int)Math.pow(DeepWounds.BLEED_SCALE.get(MiscUtil.getPlayerLevel(source, 70)),2))/100));
 				}
 				event.setAmount(event.getAmount() * 1+(float)(Math.pow(DeepWounds.SCALE.get(MiscUtil.getPlayerLevel(source, 200)), 2) * 0.01D));
-				target.addPotionEffect(new PotionEffect(UniqueEnchantmentsBattle.BLEED, 0, (int)Math.pow(DeepWounds.DURATION.get(level), 0.4D)));
+				target.addPotionEffect(new PotionEffect(UniqueEnchantmentsBattle.BLEED, (int)Math.pow(DeepWounds.DURATION.get(level), 0.4D)*20, 0));
 			}
 			if(target.isBurning())
 			{
@@ -207,6 +326,12 @@ public class BattleHandler
 					stack.damageItem((int)StreakersWill.LOSS_PER_LEVEL.get(level), enemy);
 					break;
 				}
+			}
+			level = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.ARES_GRACE, source).getIntValue();
+			if(level > 0)
+			{
+				event.setAmount(event.getAmount() + (float)Math.log(1+Math.sqrt(MiscUtil.getArmorProtection(target)*target.getHealth())*MiscUtil.getPlayerLevel(source, 0)*level*AresGrace.DAMAGE.get()));
+				source.getHeldItemMainhand().damageItem(MathHelper.ceil(AresGrace.DURABILITY.get(Math.log(1+level*source.getHealth()))), source);
 			}
 			EntityEquipmentSlot slot = null;
 			if(event.getSource().isProjectile())
@@ -286,41 +411,57 @@ public class BattleHandler
 					NBTTagCompound compound = MiscUtil.getPersistentData(source);
 					compound.setInteger(IfritsJudgement.FLAG_JUDGEMENT_LOOT, compound.getInteger(IfritsJudgement.FLAG_JUDGEMENT_LOOT)+1);
 				}
-				int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.WARS_ODIUM, source);
-				if(level > 0)
+			}
+			int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.WARS_ODIUM, source);
+			if(level > 0 && !(event.getEntity() instanceof EntityPlayer))
+			{
+				NBTTagCompound nbt = MiscUtil.getPersistentData(source);
+				double chance = WarsOdium.SPAWN_CHANCE.getAsDouble(nbt.getInteger(WarsOdium.HIT_COUNTER)) * MathCache.LOG_ADD_MAX.get(level);
+				nbt.removeTag(WarsOdium.HIT_COUNTER);
+				if(chance >= source.world.rand.nextDouble())
 				{
-					double chance = WarsOdium.SPAWN_CHANCE.getAsDouble(MiscUtil.getPersistentData(source).getInteger(WarsOdium.HIT_COUNTER)) * MathCache.LOG_ADD_MAX.get(level);
-					if(chance < source.world.rand.nextDouble())
+					double spawnMod = Math.log(54.6+WarsOdium.MULTIPLIER.get(level))-3;
+					int value = (int)spawnMod;
+					if(value > 0)
 					{
-						double spawnMod = Math.log(54.6+WarsOdium.MULTIPLIER.get(level))-3;
-						int value = (int)spawnMod;
-						if(value > 0)
+						double extraHealth = WarsOdium.HEALTH_BUFF.getAsDouble(spawnMod);
+						IEntityLivingData data = null;//IDEA implement group data support so the curse gets really mean
+						ResourceLocation location = EntityList.getKey(event.getEntity());
+						Vec3d pos = event.getEntity().getPositionVector();
+						if(location != null)
 						{
-							double extraHealth = WarsOdium.HEALTH_BUFF.getAsDouble(spawnMod);
-							IEntityLivingData data = null;//IDEA implement group data support so the curse gets really mean
-							ResourceLocation location = EntityList.getKey(event.getEntity());
-							Vec3d pos = event.getEntity().getPositionVector();
-							if(location != null)
+							for(int i = 0;i<value;i++)
 							{
-								for(int i = 0;i<value;i++)
+								Entity toSpawn = EntityList.createEntityByIDFromName(location, event.getEntity().world);
+								if(toSpawn instanceof EntityLiving)
 								{
-									Entity toSpawn = EntityList.createEntityByIDFromName(location, event.getEntity().world);
-									if(toSpawn instanceof EntityLiving)
-									{
-										EntityLiving base = (EntityLiving)toSpawn;
-										base.setLocationAndAngles(pos.x, pos.y, pos.z, MathHelper.wrapDegrees(event.getEntityLiving().world.rand.nextFloat() * 360.0F), 0.0F);
-										base.rotationYawHead = base.rotationYaw;
-					                    base.renderYawOffset = base.rotationYaw;
-										data = base.onInitialSpawn(event.getEntity().world.getDifficultyForLocation(new BlockPos(toSpawn)), data);
-										base.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier(WarsOdium.HEALTH_MOD, "wars_spawn_buff", extraHealth, 2));
-										event.getEntity().world.spawnEntity(toSpawn);
-					                    base.playLivingSound();
-									}
+									EntityLiving base = (EntityLiving)toSpawn;
+									base.setLocationAndAngles(pos.x, pos.y, pos.z, MathHelper.wrapDegrees(event.getEntityLiving().world.rand.nextFloat() * 360.0F), 0.0F);
+									base.rotationYawHead = base.rotationYaw;
+				                    base.renderYawOffset = base.rotationYaw;
+									data = base.onInitialSpawn(event.getEntity().world.getDifficultyForLocation(new BlockPos(toSpawn)), data);
+									base.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).applyModifier(new AttributeModifier(WarsOdium.HEALTH_MOD, "wars_spawn_buff", extraHealth, 2));
+									base.setHealth(base.getMaxHealth());
+									event.getEntity().world.spawnEntity(toSpawn);
+				                    base.playLivingSound();
 								}
 							}
 						}
 					}
 				}
+			}
+			Object2IntMap.Entry<EntityEquipmentSlot> entry = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.ARTEMIS_SOUL, source);
+			level = entry.getIntValue();
+			if(level > 0 && !(event.getEntityLiving() instanceof EntityAgeable))
+			{
+				ItemStack stack = source.getItemStackFromSlot(entry.getKey());
+				String key = ArtemisSoul.isValidSpecialMob(event.getEntity()) ? ArtemisSoul.PERSISTEN_SOUL_COUNT : ArtemisSoul.TEMPORARY_SOUL_COUNT;
+				int playerLevel = MiscUtil.getPlayerLevel(source, 70);
+				int max = (int)Math.max(Math.sqrt(playerLevel*ArtemisSoul.CAP_SCALE.get())*ArtemisSoul.CAP_FACTOR.get(), ArtemisSoul.CAP_BASE.get());
+				int gain = MathCache.LOG10.getInt((int)(10+(entity.world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, stack)+1)+1)*level*ArtemisSoul.REAP_SCALE.get()*playerLevel));
+				int preLog = (int)(10+(entity.world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, stack)+1)+1)*level*ArtemisSoul.REAP_SCALE.get()*playerLevel);
+				FMLLog.log.info("Gain: "+gain+", PreLog: "+preLog+", Looting: "+(entity.world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, stack)+1)+1)+", Level: "+level+", PlayerLevel: "+playerLevel);
+				StackUtils.setInt(stack, key, Math.min(StackUtils.getInt(stack, key, 0)+gain, max));
 			}
 		}
 	}
@@ -352,19 +493,19 @@ public class BattleHandler
 	public void onEquippementSwapped(LivingEquipmentChangeEvent event)
 	{
 		AbstractAttributeMap attribute = event.getEntityLiving().getAttributeMap();
-		Multimap<String, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), event.getSlot(), event.getEntityLiving().getEntityWorld());
+		Multimap<String, AttributeModifier> mods = createModifiersFromStack(event.getEntityLiving(), event.getFrom(), event.getSlot(), event.getEntityLiving().getEntityWorld());
 		if(!mods.isEmpty())
 		{
 			attribute.removeAttributeModifiers(mods);
 		}
-		mods = createModifiersFromStack(event.getTo(), event.getSlot(), event.getEntityLiving().getEntityWorld());
+		mods = createModifiersFromStack(event.getEntityLiving(), event.getTo(), event.getSlot(), event.getEntityLiving().getEntityWorld());
 		if(!mods.isEmpty())
 		{
 			attribute.applyAttributeModifiers(mods);
 		}
 	}
 	
-	private Multimap<String, AttributeModifier> createModifiersFromStack(ItemStack stack, EntityEquipmentSlot slot, World world)
+	private Multimap<String, AttributeModifier> createModifiersFromStack(EntityLivingBase base, ItemStack stack, EntityEquipmentSlot slot, World world)
 	{
 		Multimap<String, AttributeModifier> mods = HashMultimap.create();
 		Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);

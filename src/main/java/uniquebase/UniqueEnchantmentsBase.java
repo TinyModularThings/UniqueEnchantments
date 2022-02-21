@@ -8,22 +8,30 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import uniquebase.api.BaseUEMod;
+import uniquebase.api.IKeyBind;
 import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
+import uniquebase.handler.Proxy;
 import uniquebase.networking.PacketHandler;
 
 @Mod(modid = "uniquebase", name = "Unique Enchantments Base", version = "1.0.1", guiFactory = "uniquebase.handler.ConfigHandler")
 public class UniqueEnchantmentsBase
 {
 	public static final PacketHandler NETWORKING = new PacketHandler();
+	@SidedProxy(clientSide = "uniquebase.handler.ClientProxy", serverSide = "uniquebase.handler.Proxy")
+	public static Proxy PROXY;
+	
+	public static IKeyBind ENCHANTMENT_GUI = IKeyBind.empty();
 	
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent event)
 	{
+		ENCHANTMENT_GUI = PROXY.registerKey("Enchantment Gui", 56);
 		MinecraftForge.EVENT_BUS.register(BaseHandler.INSTANCE);
 	}
 	

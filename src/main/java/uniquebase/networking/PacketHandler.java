@@ -33,6 +33,7 @@ public class PacketHandler extends SimpleChannelInboundHandler<IUEPacket>
 	{
 		channel = NetworkRegistry.INSTANCE.newChannel("ue", packetRegistry, this);
 		packetRegistry.addDiscriminator(0, EntityPacket.class);
+		packetRegistry.addDiscriminator(1, KeyPacket.class);
 	}
 	
 	public void registerInternalPacket(BaseUEMod mod, Class<? extends IUEPacket> packet, int id)

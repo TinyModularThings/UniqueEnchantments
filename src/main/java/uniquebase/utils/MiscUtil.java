@@ -53,6 +53,11 @@ public class MiscUtil
 		return entity instanceof EntityPlayer ? ((EntityPlayer)entity).experienceLevel : defaultValue;
 	}
 	
+	public static double getArmorProtection(EntityLivingBase entity)
+	{
+		return entity.getTotalArmorValue() + (getAttribute(entity, SharedMonsterAttributes.ARMOR_TOUGHNESS) * 2.5D);
+	}
+	
 	public static double getAttackSpeed(EntityLivingBase entity)
 	{
 		return getAttribute(entity, SharedMonsterAttributes.ATTACK_SPEED, 0D);
@@ -245,6 +250,8 @@ public class MiscUtil
 		{
 			return points;
 		}
+		int totalXP = getXP(player); 
+		if(totalXP != player.experienceTotal) player.experienceTotal = totalXP;
 		int change = Math.min(getXP(player), points);
 		player.experienceTotal -= change;
 		player.experienceLevel = getLvlForXP(player.experienceTotal);

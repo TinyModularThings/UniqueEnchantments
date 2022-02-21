@@ -9,11 +9,11 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import uniquebase.UniqueEnchantmentsBase;
 import uniquebase.api.BaseUEMod;
+import uniquebase.api.IKeyBind;
 import uniquebase.handler.BaseHandler;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing;
 import uniqueeutils.enchantments.complex.Ambrosia;
@@ -35,8 +35,6 @@ import uniqueeutils.enchantments.unique.Resonance;
 import uniqueeutils.enchantments.unique.SagesSoul;
 import uniqueeutils.handler.UtilsHandler;
 import uniqueeutils.misc.HighlightPacket;
-import uniqueeutils.misc.KeyPacket;
-import uniqueeutils.misc.Proxy;
 import uniqueeutils.potion.SaturationPotion;
 
 @Mod(modid = "uniqueeutil", name = "Unique Util Enchantments", version = "1.0.1", dependencies = "required-after:uniquebase@[1.0.0,);")
@@ -64,16 +62,13 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	public static Potion SATURATION = new SaturationPotion();
 	
 	public static final SoundEvent RESONANCE_SOUND = new SoundEvent(new ResourceLocation("uniqueeutil", "resonance_found"));
-	
-	@SidedProxy(clientSide = "uniqueeutils.misc.ClientProxy", serverSide = "uniqueeutils.misc.Proxy")
-	public static Proxy PROXY;
+	public static IKeyBind BOOST_KEY = IKeyBind.empty();
 	
 	@EventHandler
 	public void onPreInit(FMLPreInitializationEvent event)
 	{
-		PROXY.init();
-		UniqueEnchantmentsBase.NETWORKING.registerInternalPacket(this, KeyPacket.class, 20);
 		UniqueEnchantmentsBase.NETWORKING.registerInternalPacket(this, HighlightPacket.class, 21);
+		BOOST_KEY = UniqueEnchantmentsBase.PROXY.registerKey("Pegasus Soul Key", 29);
 		ForgeRegistries.POTIONS.register(SATURATION.setRegistryName("saturation"));
 		init("uniqueeutil", new File(event.getModConfigurationDirectory(), "UniqueEnchantments_Utils.cfg"));
 		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);

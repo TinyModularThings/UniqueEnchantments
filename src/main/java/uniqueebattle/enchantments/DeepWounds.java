@@ -2,6 +2,8 @@ package uniqueebattle.enchantments;
 
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemAxe;
+import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
@@ -17,6 +19,12 @@ public class DeepWounds extends UniqueEnchantment
 	{
 		super(new DefaultData("deep_wounds", Rarity.RARE, 4, true, 28, 4, 20), EnumEnchantmentType.WEAPON, EntityEquipmentSlot.MAINHAND);
 		addStats(DURATION, BLEED_SCALE, SCALE);
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() instanceof ItemAxe;
 	}
 	
 }

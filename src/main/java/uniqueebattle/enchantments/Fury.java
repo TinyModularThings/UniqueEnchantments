@@ -24,12 +24,6 @@ public class Fury extends UniqueEnchantment
 	}
 	
 	@Override
-	public void loadIncompats()
-	{
-		//TODO midias Grace
-	}
-	
-	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
 		return stack.getItem() instanceof ItemAxe;
