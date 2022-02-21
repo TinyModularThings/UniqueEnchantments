@@ -239,7 +239,10 @@ public class BattleHandler
 					}
 					else
 					{
-						other.entityDropItem(other.getHeldItemMainhand(), 0F);
+						if(!other.world.isRemote)
+						{
+							other.entityDropItem(other.getHeldItemMainhand(), 0F);
+						}
 						other.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 					}
 				}
@@ -304,8 +307,7 @@ public class BattleHandler
 				{
 					event.setAmount(event.getAmount() * MathCache.LOG.getFloat(10+((int)Math.pow(DeepWounds.BLEED_SCALE.get(MiscUtil.getPlayerLevel(source, 70)),2))/100));
 				}
-				event.setAmount(event.getAmount() * 1+(float)(Math.pow(DeepWounds.SCALE.get(MiscUtil.getPlayerLevel(source, 200)), 2) * 0.01D));
-				target.addPotionEffect(new PotionEffect(UniqueEnchantmentsBattle.BLEED, (int)Math.pow(DeepWounds.DURATION.get(level), 0.4D)*20, 0));
+				target.addPotionEffect(new PotionEffect(UniqueEnchantmentsBattle.BLEED, (int)Math.pow(DeepWounds.DURATION.get(level), 0.4D)*20, effect == null ? 0 : effect.getAmplifier()+1));
 			}
 			if(target.isBurning())
 			{
