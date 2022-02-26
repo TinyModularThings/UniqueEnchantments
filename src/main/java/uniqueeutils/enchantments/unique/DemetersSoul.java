@@ -32,11 +32,11 @@ public class DemetersSoul extends UniqueEnchantment
 	public void loadData(Builder config) {}
 	
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return enabled.get() && stack.getItem() instanceof HoeItem;
+		return stack.getItem() instanceof HoeItem;
 	}
-	
+		
 	public static HarvestEntry getNextIndex(PlayerEntity player)
 	{
 		CompoundNBT entityData = player.getPersistentData();

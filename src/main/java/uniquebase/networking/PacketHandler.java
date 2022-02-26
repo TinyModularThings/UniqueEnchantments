@@ -28,6 +28,8 @@ public class PacketHandler
 	{
 		channel = NetworkRegistry.newSimpleChannel(new ResourceLocation("uniquebase", "networking"), () -> version, version::equals, version::equals);
 		registerPacket(EntityPacket.class, EntityPacket::new, 0);
+		registerPacket(KeyPacket.class, KeyPacket::new, 1);
+
 	}
 	
 	public <T extends IUEPacket> void registerInternalPacket(BaseUEMod mod, Class<T> packet, Supplier<T> creator, int index)

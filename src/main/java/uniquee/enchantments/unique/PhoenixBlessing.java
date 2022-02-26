@@ -15,11 +15,12 @@ public class PhoenixBlessing extends UniqueEnchantment
 	{
 		super(new DefaultData("phoenixs_blessing", Rarity.RARE, 2, true, 26, 2, 2), EnchantmentType.ALL, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(RANGE);
+		setDisableDefaultItems();
 	}
 	
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return enabled.get() && stack.getItem() == Items.TOTEM_OF_UNDYING;
+		return stack.getItem() == Items.TOTEM_OF_UNDYING;
 	}
 }

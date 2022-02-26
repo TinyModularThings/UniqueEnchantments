@@ -15,6 +15,11 @@ import uniquebase.utils.MiscUtil;
 @JeiPlugin
 public class JEIView implements IModPlugin
 {
+	public JEIView()
+	{
+		System.out.println("Created Plugin");
+	}
+	
 	@Override
 	public void registerRecipes(IRecipeRegistration registration)
 	{

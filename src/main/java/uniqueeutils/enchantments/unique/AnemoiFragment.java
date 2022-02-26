@@ -24,6 +24,7 @@ public class AnemoiFragment extends UniqueEnchantment
 	{
 		super(new DefaultData("anemoi_fragment", Rarity.VERY_RARE, 4, true, 40, 10, 75), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
 		addStats(BOOST, CONSUMPTION, CONSUMPTION_SCALE);
+		setDisableDefaultItems();
 		setCategory("utils");
 	}
 	
@@ -34,8 +35,8 @@ public class AnemoiFragment extends UniqueEnchantment
 	}
 	
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return enabled.get() && stack.getItem() instanceof ElytraItem;
+		return stack.getItem() instanceof ElytraItem;
 	}
 }

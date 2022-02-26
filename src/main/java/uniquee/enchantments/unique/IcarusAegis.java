@@ -27,11 +27,12 @@ public class IcarusAegis extends UniqueEnchantment
 	{
 		super(new DefaultData("icarus_aegis", Rarity.VERY_RARE, 3, true, 16, 4, 10), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
 		addStats(BASE_CONSUMPTION);
+		setDisableDefaultItems();
 	}
 	
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return enabled.get() && stack.getItem() instanceof ElytraItem;
+		return stack.getItem() instanceof ElytraItem;
 	}
 }

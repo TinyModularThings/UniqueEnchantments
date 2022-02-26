@@ -297,6 +297,7 @@ public class EntityEvents
 				player.setMotion(vec.x, player.abilities.isFlying ? 0.15D : 0D, vec.z);
 				player.fall(player.fallDistance, 1F);
 				player.fallDistance = 0F;
+				player.onGround = true;
 				if(!player.isCreative())
 				{
 					boolean levi = player.isPotionActive(Effects.LEVITATION);
@@ -421,7 +422,7 @@ public class EntityEvents
 		level = ench.getInt(UniqueEnchantments.RANGE);
 		if(level > 0)
 		{
-			double value = player.getAttributes().getAttributeInstance(PlayerEntity.REACH_DISTANCE).getBaseValue();
+			double value = MiscUtil.getBaseAttribute(player, PlayerEntity.REACH_DISTANCE);
 			if(value * value < event.getPos().distanceSq(player.posX, player.posY + player.getEyeHeight(), player.posZ, true))
 			{
 				event.setNewSpeed(event.getNewSpeed() * Range.REDUCTION.getLogDevided(level+1));
@@ -627,9 +628,8 @@ public class EntityEvents
 					count = 0;
 					StackUtils.setInt(held, PerpetualStrike.HIT_ID, event.getEntityLiving().getEntityId());
 				}
-				IAttributeInstance attr = base.getAttribute(SharedMonsterAttributes.ATTACK_SPEED);
 				float amount = event.getAmount();
-				double damage = (1F + Math.pow(PerpetualStrike.PER_HIT.get(count)/Math.log(2.8D+(attr == null ? 1D : attr.getValue())), 1.4D)-1F)*level*PerpetualStrike.PER_HIT_LEVEL.get();
+				double damage = (1F + Math.pow(PerpetualStrike.PER_HIT.get(count)/Math.log(2.8D+(MiscUtil.getAttribute(base, SharedMonsterAttributes.ATTACK_SPEED, 1))), 1.4D)-1F)*level*PerpetualStrike.PER_HIT_LEVEL.get();
 				double multiplier = Math.log10(10+(damage/Math.log10(1+event.getAmount())) * PerpetualStrike.MULTIPLIER.get());
 				amount += damage;
 				amount *= multiplier;
@@ -786,7 +786,10 @@ public class EntityEvents
 				ItemStack stack = event.getEntityLiving().getItemStackFromSlot(slot);
 				if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.DEATHS_ODIUM, stack) > 0)
 				{
-					StackUtils.setInt(stack, DeathsOdium.CURSE_STORAGE, Math.min(StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0) + 1, DeathsOdium.MAX_STORAGE.get()));
+					int value = StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0);
+					int newValue = Math.min(value + 1, DeathsOdium.MAX_STORAGE.get(maxLevel));
+					if(value == newValue) continue;
+					StackUtils.setInt(stack, DeathsOdium.CURSE_STORAGE, newValue);
 					break;
 				}
 			}
@@ -935,8 +938,7 @@ public class EntityEvents
 		LivingEntity living = event.getEntityLiving();
 		if(living instanceof EndermanEntity)
 		{
-	        IAttributeInstance attri = living.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
-	        if(living.getEntityWorld().getClosestPlayer(new EntityPredicate().setDistance(attri == null ? 16.0D : attri.getValue()).setCustomPredicate(EnderEyes.getPlayerFilter(living)), living) != null)
+	        if(living.getEntityWorld().getClosestPlayer(new EntityPredicate().setDistance(MiscUtil.getAttribute(living, SharedMonsterAttributes.FOLLOW_RANGE, 16D)).setCustomPredicate(EnderEyes.getPlayerFilter(living)), living) != null)
 	        {
 	        	event.setCanceled(true);
 	        }	

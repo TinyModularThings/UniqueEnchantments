@@ -25,6 +25,11 @@ public class IdStat implements IStat
 		this(config, null, registry, new ResourceLocation[0]);
 	}
 	
+	public IdStat(String config, String comment, IForgeRegistry<?> registry)
+	{
+		this(config, comment, registry, new ResourceLocation[0]);
+	}
+	
 	public IdStat(String config, IForgeRegistry<?> registry, IForgeRegistryEntry<?>... defaultValues)
 	{
 		this(config, null, registry, defaultValues);

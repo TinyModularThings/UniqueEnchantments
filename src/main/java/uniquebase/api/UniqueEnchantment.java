@@ -22,6 +22,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	DefaultData values;
 	protected BooleanValue enabled;
 	protected BooleanValue activated;
+	protected boolean disableDefaultItems = false;
 	boolean isCurse = false;
 	List<IStat> stats = new ObjectArrayList<>();
 	String configName;
@@ -33,6 +34,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		setRegistryName(data.getName());
 		configName = data.getName();
 		values = data;
+	}
+	
+	public UniqueEnchantment setDisableDefaultItems()
+	{
+		disableDefaultItems = true;
+		return this;
 	}
 	
 	public UniqueEnchantment addStats(IStat...stat)
@@ -92,7 +99,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack)
 	{
-		return enabled.get() ? (super.canApplyAtEnchantingTable(stack) || canApplyToItem(stack)) && !canNotApplyToItems(stack) : false;
+		return enabled.get() ? ((!disableDefaultItems && super.canApplyAtEnchantingTable(stack)) || canApplyToItem(stack) || values.isCompatible(stack)) && !(canNotApplyToItems(stack) || values.isIncompatible(stack)) : false;
 	}
 	
 	@Override
@@ -195,6 +202,8 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		IntValue maxLevel_Config;
 		IntValue hardCap_Config;
 		IdStat incompats = new IdStat("incompats", ForgeRegistries.ENCHANTMENTS);
+		IdStat incompatibleItems = new IdStat("incompatible_items", "Allows to add custom incompatible Items", ForgeRegistries.ITEMS);
+		IdStat compatibleItems = new IdStat("compatible_items", "Allows to add custom compatible Items", ForgeRegistries.ITEMS);
 		
 		public DefaultData(String name, Rarity rare, int maxLevel, boolean isTreasure, int baseCost, int levelCost, int rangeCost)
 		{
@@ -224,6 +233,8 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 			rangeCost_Config = config.defineInRange("cost_limit", rangeCost, 0, Integer.MAX_VALUE);
 			hardCap_Config = config.defineInRange("hard_cap", hardCap, 0, Integer.MAX_VALUE);
 			incompats.handleConfig(config);
+			incompatibleItems.handleConfig(config);
+			compatibleItems.handleConfig(config);
 		}
 		
 		public void addIncompats(Enchantment...enchantments)
@@ -256,6 +267,16 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		public String getName()
 		{
 			return name;
+		}
+		
+		public boolean isCompatible(ItemStack stack)
+		{
+			return compatibleItems.contains(stack.getItem().getRegistryName());
+		}
+
+		public boolean isIncompatible(ItemStack stack)
+		{
+			return incompatibleItems.contains(stack.getItem().getRegistryName());
 		}
 		
 		public int getMinLevel()

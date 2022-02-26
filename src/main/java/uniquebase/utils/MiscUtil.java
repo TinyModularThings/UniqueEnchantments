@@ -23,6 +23,9 @@ import net.minecraft.block.StructureBlock;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -68,10 +71,47 @@ public class MiscUtil
 	{
 		return ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled();
 	}
+	
+	public static int getPlayerLevel(Entity entity, int defaultValue)
+	{
+		return entity instanceof PlayerEntity ? ((PlayerEntity)entity).experienceLevel : defaultValue;
+	}
 
+	public static double getArmorProtection(LivingEntity entity)
+	{
+		return entity.getTotalArmorValue() + (getAttribute(entity, SharedMonsterAttributes.ARMOR_TOUGHNESS) * 2.5D);
+	}
+
+	public static double getAttackSpeed(LivingEntity entity)
+	{
+		return getAttribute(entity, SharedMonsterAttributes.ATTACK_SPEED, 0D);
+	}
+
+	public static double getAttribute(LivingEntity entity, IAttribute attribute)
+	{
+		return getAttribute(entity, attribute, 0D);
+	}
+
+	public static double getAttribute(LivingEntity entity, IAttribute attribute, double defaultValue)
+	{
+		IAttributeInstance instance = entity.getAttribute(attribute);
+		return instance == null ? defaultValue : instance.getValue();
+	}
+
+	public static double getBaseAttribute(LivingEntity entity, IAttribute attribute)
+	{
+		return getBaseAttribute(entity, attribute, 0D);
+	}
+
+	public static double getBaseAttribute(LivingEntity entity, IAttribute attribute, double defaultValue)
+	{
+		IAttributeInstance instance = entity.getAttribute(attribute);
+		return instance == null ? defaultValue : instance.getBaseValue();
+	}
+	
 	public static CompoundNBT getPersistentData(Entity entity)
 	{
-		CompoundNBT data = entity.getPersistentData();
+		CompoundNBT data = entity.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
 		if(data.isEmpty()) entity.getPersistentData().put(PlayerEntity.PERSISTED_NBT_TAG, data);
 		return data;
 	}
@@ -281,6 +321,8 @@ public class MiscUtil
 		{
 			return points;
 		}
+		int totalXP = getXP(player); 
+		if(totalXP != player.experienceTotal) player.experienceTotal = totalXP;
 		int change = Math.min(getXP(player), points);
 		player.experienceTotal -= change;
 		player.experienceLevel = getLvlForXP(player.experienceTotal);
