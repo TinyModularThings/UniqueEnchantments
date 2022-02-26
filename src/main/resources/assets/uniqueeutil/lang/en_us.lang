@@ -34,7 +34,7 @@ enchantment.uniqueeutil.sages_soul=Sage's Soul
 enchantment.uniqueeutil.sages_soul.desc=Improves your Item by Wisdom. Shift-Rightclicking an Anvil will transfer Experience to the Item
 
 enchantment.uniqueeutil.phanes_regret=Phanes Regret
-enchantment.uniqueeutil.phanes_regret.desc=Modifies changes to Health, be it healing, or generic damage. Will consume Experience with every change. If no experience can be consumed, your next received hit will be amplified
+enchantment.uniqueeutil.phanes_regret.desc=On healing, returns a part of the healing as damage. On damage received, returns a part of the damage as healing, consumes Experience after healing. 
 enchantment.uniqueeutil.rocketman=Rocket Man
 enchantment.uniqueeutil.rocketman.desc=A Rocket can force you into Elytra Mode. Rocket Flight Duration increased
 enchantment.uniqueeutil.famines_odium=Famine's Odium

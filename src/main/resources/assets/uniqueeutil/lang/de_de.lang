@@ -25,7 +25,7 @@ enchantment.uniqueeutil.mounting_aegis.desc=Schilde koennen nun auch Schaden geg
 enchantment.uniqueeutil.pegasus_soul=Pegasus Soul
 enchantment.uniqueeutil.pegasus_soul.desc=Druecke den dedizierten Hotkey (in der Regel Strg.) und dein Ross ist nicht mehr von der Gravitation betroffen
 enchantment.uniqueeutil.poseidons_soul=Poseidons Seele
-enchantment.uniqueeutil.poseidons_soul.desc=Schmeiße deinen Deizack gegen einen Meeres-Block. Der Block wird im Austauch mit Erfahrung dupliziert
+enchantment.uniqueeutil.poseidons_soul.desc=Schmeisse deinen Deizack gegen einen Meeres-Block. Der Block wird im Austauch mit Erfahrung dupliziert
 enchantment.uniqueeutil.reinforced=Verstaerkt
 enchantment.uniqueeutil.reinforced=Erhaelt einen Schild der gelegentlich die Haltbarkeit wiederherstellt, jedoch deine Angriffsgeschwindigkeit und Abbaugeschwindigkeit
 enchantment.uniqueeutil.resonance=Resonanz
@@ -36,7 +36,7 @@ enchantment.uniqueeutil.sages_soul.desc=Verbessert den Gegenstand durch Wissen. 
 enchantment.uniqueeutil.famines_odium=Abscheu des Hungers
 enchantment.uniqueeutil.famines_odium.desc=Gelegentlich wird Essen aus deinem Inventar konsumiert unabhaengig deines Hungers. Das in diesem Wege konsumierte Essen, hat reduzierte Hunger und Saetigungs Werte. Sollte kein Essen gefunden werden erhaelt der Spieler, Schaden
 enchantment.uniqueeutil.phanes_regret=Phanes Reue
-enchantment.uniqueeutil.phanes_regret.desc=Modifiziert Heilung und generischen Schaden. Konsumiert die Erfahrung des Spielers mit jeder Iteration. Wenn keine Erfahrung konsumiert werden kann, wird der naechste erhaltene Schaden erhoeht
+enchantment.uniqueeutil.phanes_regret.desc=Beim heilen, teilt einen Teil wieder als Schaden aus. Wenn Schaden erhalten wird, wird ein Teil des Schadens als Heilung wieder hinzugefuegt. Konsumiert Erfahrung beim heilen
 enchantment.uniqueeutil.rocketman=Raketenmann
 enchantment.uniqueeutil.rocketman.desc=Raketen koennen dich nun in den Flugmodus zwingen. Flugdauern durch Raketen ist erhoeht
 

@@ -1,12 +1,32 @@
-enchantment.uniqueebattle.lunatic_despair=Lunatic Despair
-enchantment.uniqueebattle.lunatic_despair.desc=Receive a Damage Boost but also deal Damage to yourself
 enchantment.uniqueebattle.celestial_blessing=Celestial Blessing
 enchantment.uniqueebattle.celestial_blessing.desc=At Night increases Attack Speed/Drawspeed
-enchantment.uniqueebattle.ares_fragment=Ares Fragment
-enchantment.uniqueebattle.ares_fragment.desc=Every Hit can either increase or decrease your Damage dealt. Chance increases with Player level
+enchantment.uniqueebattle.fury=Fury
+enchantment.uniqueebattle.fury.desc=Increases Attack Speed. Crits have a chance to move main hand items, eventually also drop them
 enchantment.uniqueebattle.golem_soul=Golem Soul
 enchantment.uniqueebattle.golem_soul.desc=Gain Knockback Resistance in exchange for Speed
+enchantment.uniqueebattle.iron_bird=Iron Bird
+enchantment.uniqueebattle.iron_bird.desc=Slightly increases Armor and Toughness. Grants further percs on ground
+enchantment.uniqueebattle.streakers_will=Streaker's Will
+enchantment.uniqueebattle.streakers_will.desc=Has a chance to damage the Targets Armor Durability
+
+enchantment.uniqueebattle.ares_fragment=Ares Fragment
+enchantment.uniqueebattle.ares_fragment.desc=Every Hit can either increase or decrease your Damage dealt. Chance increases with Player level
+enchantment.uniqueebattle.artemis_soul=Artemis Soul
+enchantment.uniqueebattle.artemis_soul.desc=Shift-rightclick an Anvil  with ender-related Items to store them. Killing an Entity saves the Soul in the Tool. Souls increase the overall yields. However your Tool needs to feast with Ender or Souls 
+enchantment.uniqueebattle.deep_wounds=Deep Wounds
+enchantment.uniqueebattle.deep_wounds.desc=Hitting an entity without Chestplace, will cause it to bleed. Bleeding enemy take damage over time and increased damage.
 enchantment.uniqueebattle.ifrits_blessing=Ifrit's Blessing
 enchantment.uniqueebattle.ifrits_blessing.desc=Hitting a burning Entity will deal additional Damage. Bonus is doubled if you're burning as well
+enchantment.uniqueebattle.granis_soul=Grani's Soul
+enchantment.uniqueebattle.granis_soul.desc=Press the specified Key to start dashing. Entities around the start and end location start bleeding
+
 enchantment.uniqueebattle.ifrits_judgement=Ifrit's Judgement
 enchantment.uniqueebattle.ifrits_judgement.desc=Hitting the same Entity more than 4 times with the same Tool will ignite you. Less hits grant you Rewards. Shift-rightclicking a Chest inserts the Items into the Chest
+enchantment.uniqueebattle.lunatic_despair=Lunatic Despair
+enchantment.uniqueebattle.lunatic_despair.desc=Receive a Damage Boost but also deal Damage to yourself
+enchantment.uniqueebattle.wars_odium=War's Odium
+enchantment.uniqueebattle.wars_odium.desc=Killing a Mob, has a Chance to respawn the Mob
+
+tooltip.uniqueebattle.stored.ender.name=Stored Ender Energy
+tooltip.uniqueebattle.stored.ender.souls.common.name=Basic Souls stored %s
+tooltip.uniqueebattle.stored.ender.souls.higher.name=Higher Souls stored %s
