@@ -11,5 +11,6 @@
 	"unique.base.jei.incompats": "Incompatible With: ",
 	"unique.base.jei.no.incompat": "Nothing",
 	"unique.base.jei.no.description": "No Description",
-	"unique.base.jei.name": "UE Enchantment View"
+	"unique.base.jei.name": "UE Enchantment View",
+    "unique.base.jei.press_gui":"Hold %s to View Enchantments"
 }

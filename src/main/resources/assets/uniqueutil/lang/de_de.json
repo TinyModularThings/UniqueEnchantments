@@ -37,7 +37,7 @@
 	"enchantment.uniqueutil.famines_odium":"Abscheu des Hungers",
 	"enchantment.uniqueutil.famines_odium.desc":"Gelegentlich wird Essen aus deinem Inventar konsumiert unabhaengig deines Hungers. Das in diesem Wege konsumierte Essen, hat reduzierte Hunger und Saetigungs Werte. Sollte kein Essen gefunden werden erhaelt der Spieler, Schaden",
 	"enchantment.uniqueutil.phanes_regret":"Phanes Reue",
-	"enchantment.uniqueutil.phanes_regret.desc":"Modifiziert Heilung und generischen Schaden. Konsumiert die Erfahrung des Spielers mit jeder Iteration. Wenn keine Erfahrung konsumiert werden kann, wird der naechste erhaltene Schaden erhoeht",
+	"enchantment.uniqueutil.phanes_regret.desc":"Beim heilen, teilt einen Teil wieder als Schaden aus. Wenn Schaden erhalten wird, wird ein Teil des Schadens als Heilung wieder hinzugefuegt. Konsumiert Erfahrung beim heilen",
 	"enchantment.uniqueutil.rocketman":"Raketenmann",
 	"enchantment.uniqueutil.rocketman.desc":"Raketen koennen dich nun in den Flugmodus zwingen. Flugdauern durch Raketen ist erhoeht",
 	
