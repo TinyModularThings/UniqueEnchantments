@@ -418,7 +418,7 @@ public class EntityEvents
 		level = ench.getInt(UniqueEnchantments.RANGE);
 		if(level > 0)
 		{
-			double value = player.getAttributes().getInstance(ForgeMod.REACH_DISTANCE.get()).getBaseValue();
+			double value = MiscUtil.getBaseAttribute(player, ForgeMod.REACH_DISTANCE.get());
 			if(value * value < event.getPos().distSqr(player.position(), true))
 			{
 				event.setNewSpeed(event.getNewSpeed() * Range.REDUCTION.getLogDevided(level+1));
@@ -620,9 +620,8 @@ public class EntityEvents
 					count = 0;
 					StackUtils.setInt(held, PerpetualStrike.HIT_ID, event.getEntityLiving().getId());
 				}
-				ModifiableAttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
 				float amount = event.getAmount();
-				double damage = (1F + Math.pow(PerpetualStrike.PER_HIT.get(count)/Math.log(2.8D+(attr == null ? 1D : attr.getValue())), 1.4D)-1F)*level*PerpetualStrike.PER_HIT_LEVEL.get();
+				double damage = (1F + Math.pow(PerpetualStrike.PER_HIT.get(count)/Math.log(2.8D+(MiscUtil.getAttribute(base, Attributes.ATTACK_SPEED, 1D))), 1.4D)-1F)*level*PerpetualStrike.PER_HIT_LEVEL.get();
 				double multiplier = Math.log10(10+(damage/Math.log10(1+event.getAmount())) * PerpetualStrike.MULTIPLIER.get());
 				amount += damage;
 				amount *= multiplier;
@@ -779,7 +778,10 @@ public class EntityEvents
 				ItemStack stack = event.getEntityLiving().getItemBySlot(slot);
 				if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.DEATHS_ODIUM, stack) > 0)
 				{
-					StackUtils.setInt(stack, DeathsOdium.CURSE_STORAGE, Math.min(StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0) + 1, DeathsOdium.MAX_STORAGE.get()));
+					int value = StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0);
+					int newValue = Math.min(value + 1, DeathsOdium.MAX_STORAGE.get(maxLevel));
+					if(value == newValue) continue;
+					StackUtils.setInt(stack, DeathsOdium.CURSE_STORAGE, newValue);
 					break;
 				}
 			}
@@ -791,7 +793,7 @@ public class EntityEvents
 				toRemove += mod.getAmount();
 				instance.removeModifier(mod);
 			}
-			CompoundNBT nbt = event.getEntityLiving().getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
+			CompoundNBT nbt = MiscUtil.getPersistentData(event.getEntityLiving());
 			if(nbt.getBoolean(DeathsOdium.CURSE_RESET))
 			{
 				nbt.remove(DeathsOdium.CURSE_RESET);
@@ -806,7 +808,6 @@ public class EntityEvents
 				}
 				return;
 			}
-			event.getEntityLiving().getPersistentData().put(PlayerEntity.PERSISTED_NBT_TAG, nbt);
 			nbt.putFloat(DeathsOdium.CURSE_STORAGE, toRemove - (float)Math.ceil(Math.sqrt(DeathsOdium.BASE_LOSS.get(maxLevel))));
 		}
 	}
@@ -814,7 +815,7 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onRespawn(PlayerEvent.Clone event)
 	{
-		float f = event.getPlayer().getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG).getFloat(DeathsOdium.CURSE_STORAGE);
+		float f = MiscUtil.getPersistentData(event.getPlayer()).getFloat(DeathsOdium.CURSE_STORAGE);
 		if(f != 0F)
 		{
 			event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH).addTransientModifier(new AttributeModifier(DeathsOdium.REMOVE_UUID, "odiums_curse", f, Operation.ADDITION));
@@ -926,13 +927,9 @@ public class EntityEvents
 			event.setCanceled(true);
 		}
 		LivingEntity living = event.getEntityLiving();
-		if(living instanceof EndermanEntity)
+		if(living instanceof EndermanEntity && living.getCommandSenderWorld().getNearestPlayer(new EntityPredicate().range(MiscUtil.getAttribute(living, Attributes.FOLLOW_RANGE, 16D)).selector(EnderEyes.getPlayerFilter(living)), living) != null)
 		{
-			ModifiableAttributeInstance attri = living.getAttribute(Attributes.FOLLOW_RANGE);
-	        if(living.getCommandSenderWorld().getNearestPlayer(new EntityPredicate().range(attri == null ? 16.0D : attri.getValue()).selector(EnderEyes.getPlayerFilter(living)), living) != null)
-	        {
-	        	event.setCanceled(true);
-	        }
+        	event.setCanceled(true);
 		}
 	}
 	

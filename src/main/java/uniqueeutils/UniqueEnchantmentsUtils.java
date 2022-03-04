@@ -6,12 +6,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UniqueEnchantmentsBase;
 import uniquebase.api.BaseUEMod;
+import uniquebase.api.IKeyBind;
 import uniquebase.handler.BaseHandler;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing;
 import uniqueeutils.enchantments.complex.Ambrosia;
@@ -33,10 +33,7 @@ import uniqueeutils.enchantments.unique.Reinforced;
 import uniqueeutils.enchantments.unique.Resonance;
 import uniqueeutils.enchantments.unique.SagesSoul;
 import uniqueeutils.handler.UtilsHandler;
-import uniqueeutils.misc.ClientProxy;
 import uniqueeutils.misc.HighlightPacket;
-import uniqueeutils.misc.KeyPacket;
-import uniqueeutils.misc.Proxy;
 import uniqueeutils.potion.SaturationEffect;
 
 @Mod("uniqueutil")
@@ -66,13 +63,12 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	
 	public static final SoundEvent RESONANCE_SOUND = new SoundEvent(new ResourceLocation("uniqueutil", "resonance_found"));
 	
-	public static final Proxy PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> Proxy::new);
+	public static IKeyBind BOOST_KEY = IKeyBind.empty();
 	
 	public UniqueEnchantmentsUtils()
 	{
-		PROXY.init();
-		UniqueEnchantmentsBase.NETWORKING.registerInternalPacket(this, KeyPacket.class, KeyPacket::new, 20);
 		UniqueEnchantmentsBase.NETWORKING.registerInternalPacket(this, HighlightPacket.class, HighlightPacket::new, 21);
+		BOOST_KEY = UniqueEnchantmentsBase.PROXY.registerKey("Pegasus Soul Key", 341);
 		SATURATION = new SaturationEffect();
 		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Effect.class, this::registerPotion);
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UniqueEnchantment-Utils.toml");

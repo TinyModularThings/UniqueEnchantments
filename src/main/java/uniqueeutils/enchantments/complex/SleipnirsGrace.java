@@ -25,8 +25,8 @@ public class SleipnirsGrace extends UniqueEnchantment
 	}
 	
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return enabled.get() && stack.getItem() instanceof HorseArmorItem;
+		return stack.getItem() instanceof HorseArmorItem;
 	}
 }

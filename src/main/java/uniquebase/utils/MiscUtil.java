@@ -20,6 +20,9 @@ import net.minecraft.block.StructureBlock;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -67,10 +70,47 @@ public class MiscUtil
 	{
 		return ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled();
 	}
+	
+	public static int getPlayerLevel(Entity entity, int defaultValue)
+	{
+		return entity instanceof PlayerEntity ? ((PlayerEntity)entity).experienceLevel : defaultValue;
+	}
 
+	public static double getArmorProtection(LivingEntity entity)
+	{
+		return entity.getArmorValue() + (getAttribute(entity, Attributes.ARMOR_TOUGHNESS) * 2.5D);
+	}
+
+	public static double getAttackSpeed(LivingEntity entity)
+	{
+		return getAttribute(entity, Attributes.ATTACK_SPEED, 0D);
+	}
+
+	public static double getAttribute(LivingEntity entity, Attribute attribute)
+	{
+		return getAttribute(entity, attribute, 0D);
+	}
+
+	public static double getAttribute(LivingEntity entity, Attribute attribute, double defaultValue)
+	{
+		ModifiableAttributeInstance instance = entity.getAttribute(attribute);
+		return instance == null ? defaultValue : instance.getValue();
+	}
+
+	public static double getBaseAttribute(LivingEntity entity, Attribute attribute)
+	{
+		return getBaseAttribute(entity, attribute, 0D);
+	}
+
+	public static double getBaseAttribute(LivingEntity entity, Attribute attribute, double defaultValue)
+	{
+		ModifiableAttributeInstance instance = entity.getAttribute(attribute);
+		return instance == null ? defaultValue : instance.getBaseValue();
+	}
+	
 	public static CompoundNBT getPersistentData(Entity entity)
 	{
-		CompoundNBT data = entity.getPersistentData();
+		CompoundNBT data = entity.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
 		if(data.isEmpty()) entity.getPersistentData().put(PlayerEntity.PERSISTED_NBT_TAG, data);
 		return data;
 	}
@@ -164,42 +204,6 @@ public class MiscUtil
 		return NO_ENCHANTMENT;
 	}
 	
-//	public static Method findMethod(Class<?> clz, String[] names, Class<?>...variables)
-//	{
-//		for(String s : names)
-//		{
-//			try
-//			{
-//				Method method = clz.getDeclaredMethod(s, variables);
-//				method.setAccessible(true);
-//				return method;
-//			}
-//			catch(Exception e)
-//			{
-//				e.printStackTrace();
-//			}
-//		}
-//		throw new IllegalStateException("Couldnt find methods: "+ObjectArrayList.wrap(names));
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	public static <T> T findField(Class<?> clz, Object instance, Class<T> result, String...names)
-//	{
-//		for(String s : names)
-//		{
-//			try
-//			{
-//				Field field = clz.getDeclaredField(s);
-//				field.setAccessible(true);
-//				return (T)field.get(instance);
-//			}
-//			catch(Exception e)
-//			{
-//			}
-//		}
-//		throw new IllegalStateException("Couldnt find fields: "+ObjectArrayList.wrap(names));
-//	}
-	
 	public static boolean harvestBlock(BreakEvent event, BlockState state, BlockPos pos)
 	{
 		if(!(event.getPlayer() instanceof ServerPlayerEntity))
@@ -274,6 +278,8 @@ public class MiscUtil
 		{
 			return points;
 		}
+		int totalXP = getXP(player); 
+		if(totalXP != player.totalExperience) player.totalExperience = totalXP;
 		int change = Math.min(getXP(player), points);
 		player.totalExperience -= change;
 		player.experienceLevel = getLvlForXP(player.totalExperience);

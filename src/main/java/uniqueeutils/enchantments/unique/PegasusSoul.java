@@ -20,11 +20,12 @@ public class PegasusSoul extends UniqueEnchantment
 		super(new DefaultData("pegasus_soul", Rarity.VERY_RARE, 5, true, true, 18, 2, 60), EnchantmentType.ARMOR_CHEST);
 		setCategory("utils");
 		addStats(SPEED);
+		setDisableDefaultItems();
 	}
 	
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
+	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return enabled.get() && stack.getItem() instanceof HorseArmorItem;
+		return stack.getItem() instanceof HorseArmorItem;
 	}
 }

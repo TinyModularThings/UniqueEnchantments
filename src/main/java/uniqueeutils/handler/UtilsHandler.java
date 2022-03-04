@@ -77,6 +77,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -107,7 +108,6 @@ import uniqueeutils.enchantments.complex.Climber;
 import uniqueeutils.enchantments.complex.EssenceOfSlime;
 import uniqueeutils.enchantments.complex.SleipnirsGrace;
 import uniqueeutils.enchantments.curse.FaminesOdium;
-import uniqueeutils.enchantments.curse.PhanesRegret;
 import uniqueeutils.enchantments.curse.RocketMan;
 import uniqueeutils.enchantments.simple.Adept;
 import uniqueeutils.enchantments.simple.ThickPick;
@@ -124,7 +124,8 @@ public class UtilsHandler
 {
 	public static final UtilsHandler INSTANCE = new UtilsHandler();
 	private List<RenderEntry> toRender = new ObjectArrayList<>();
-
+	static final ThreadLocal<Boolean> PHANES_REGRET_ACTIVE = ThreadLocal.withInitial(() -> false); 
+	
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)	
 	public void onTick(ClientTickEvent event)
@@ -136,7 +137,6 @@ public class UtilsHandler
 			toRender.clear();
 			return;
 		}
-		UniqueEnchantmentsUtils.PROXY.update();
 		Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("uniquee", "treasurers_eyes"));
 		if(ench == null) 
 		{
@@ -218,7 +218,7 @@ public class UtilsHandler
 		if(!armor.isEmpty())
 		{
 			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.ANEMOIS_FRAGMENT, armor);
-			if(level > 0 && UniqueEnchantmentsUtils.PROXY.isBoostKeyDown(player))
+			if(level > 0 && UniqueEnchantmentsUtils.BOOST_KEY.test(player))
 			{
 				int amount = StackUtils.getInt(armor, AnemoiFragment.STORAGE, 0);
 				if(amount > 0)
@@ -238,7 +238,7 @@ public class UtilsHandler
 			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.PEGASUS_SOUL, ridden.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(EmptyHandler.INSTANCE).getStackInSlot(1));
 			if(level > 0)
 			{
-				boolean active = UniqueEnchantmentsUtils.PROXY.isBoostKeyDown(player);
+				boolean active = UniqueEnchantmentsUtils.BOOST_KEY.test(player);
 				if(active && !nbt.getBoolean(PegasusSoul.TRIGGER) && (!player.isOnGround() || nbt.getBoolean(PegasusSoul.ENABLED)))
 				{
 					nbt.putBoolean(PegasusSoul.ENABLED, !nbt.getBoolean(PegasusSoul.ENABLED));
@@ -437,24 +437,39 @@ public class UtilsHandler
 	}
 	
 	@SubscribeEvent
+	public void onEntityDamage(LivingDamageEvent event)
+	{
+		if(event.getAmount() >= 1F)
+		{
+			if(PHANES_REGRET_ACTIVE.get()) return;
+			PHANES_REGRET_ACTIVE.set(true);
+			int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
+			if(level > 0)
+			{
+				if(event.getEntityLiving() instanceof PlayerEntity)
+				{
+					MiscUtil.drainExperience((PlayerEntity)event.getEntityLiving(), MathHelper.ceil(event.getAmount()));
+				}
+				event.getEntityLiving().heal(event.getAmount() * (1F-(1F/MathCache.LOG_ADD.getFloat(level))));
+			}
+			PHANES_REGRET_ACTIVE.set(false);
+		}
+	}
+	
+	@SubscribeEvent
 	public void onHeal(LivingHealEvent event)
 	{
-		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
-		if(level > 0)
+		if(PHANES_REGRET_ACTIVE.get()) return;
+		PHANES_REGRET_ACTIVE.set(true);
+		if(event.getAmount() >= 1F)
 		{
-			double chance = PhanesRegret.CHANCE.get(MathCache.LOG_ADD.get(MathCache.POW3.getInt(level)));
-			if(chance > 1D)
+			int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
+			if(level > 0)
 			{
-				event.getEntityLiving().hurt(DamageSource.STARVE, event.getAmount());
-				event.setCanceled(true);
-				return;
-			}
-			if(event.getEntity().level.random.nextDouble() < chance)
-			{
-				event.setCanceled(true);
-				return;
+				event.getEntityLiving().hurt(DamageSource.MAGIC, event.getAmount() * (1F-(1F/MathCache.LOG_ADD.getFloat(level))));
 			}
 		}
+		PHANES_REGRET_ACTIVE.set(false);
 	}
 	
 	@SubscribeEvent

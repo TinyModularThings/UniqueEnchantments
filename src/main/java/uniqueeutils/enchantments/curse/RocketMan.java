@@ -16,12 +16,12 @@ public class RocketMan extends UniqueEnchantment
 		super(new DefaultData("rocketman", Rarity.VERY_RARE, 3, true, true, 25, 4, 20), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
 		setCategory("utils");
 		addStats(FLIGHT_TIME);
-		setCurse();	
+		setCurse();
+		setDisableDefaultItems();
 	}
 	
 	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack)
-	{
-		return enabled.get() && stack.getItem() instanceof ElytraItem;
+	protected boolean canApplyToItem(ItemStack stack)	{
+		return stack.getItem() instanceof ElytraItem;
 	}
 }
