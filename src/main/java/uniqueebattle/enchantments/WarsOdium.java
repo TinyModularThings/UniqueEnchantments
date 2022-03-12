@@ -18,7 +18,7 @@ public class WarsOdium extends UniqueEnchantment
 	
 	public WarsOdium()
 	{
-		super(new DefaultData("wars_odium", Rarity.COMMON, 2, false, 10, 10, 40), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		super(new DefaultData("wars_odium", Rarity.VERY_RARE, 2, false, 10, 10, 40), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
 		addStats(SPAWN_CHANCE, HEALTH_BUFF, MULTIPLIER);
 		setCurse();
 	}

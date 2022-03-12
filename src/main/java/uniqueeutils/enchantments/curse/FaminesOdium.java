@@ -19,7 +19,7 @@ public class FaminesOdium extends UniqueEnchantment
 	
 	public FaminesOdium()
 	{
-		super(new DefaultData("famines_odium", Rarity.UNCOMMON, 2, true, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
+		super(new DefaultData("famines_odium", Rarity.VERY_RARE, 2, true, 10, 4, 40), EnchantmentType.ALL, EquipmentSlotType.values());
 		setCategory("utils");
 		addStats(DELAY, NURISHMENT, DAMAGE);
 		setCurse();	
