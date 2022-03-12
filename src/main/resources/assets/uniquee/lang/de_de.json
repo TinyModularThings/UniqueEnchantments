@@ -60,7 +60,7 @@
 	"enchantment.uniquee.ecological": "Oekologisch",
 	"enchantment.uniquee.ecological.desc": "Solange du in Naehe von Natur bist, regenerierst du Haltbarkeit",
 	"enchantment.uniquee.phoenixs_blessing": "Segen des Phoenix",
-	"enchantment.uniquee.phoenixs_blessing.desc": "Wenn du stirbst, erhalst du volles Leben und Saettigung",
+	"enchantment.uniquee.phoenixs_blessing.desc": "Wenn du stirbst, erhalst du volles Leben und Saettigung, Gegner in der Naehe brennen. Phoenixe und Tod hassen sich schon immer",
 	"enchantment.uniquee.midas_blessing": "Segen des Midas",
 	"enchantment.uniquee.midas_blessing.desc": "Shift-Rechtsklick einen Amboss um dein gesamtes Gold zu konsumieren. Wenn du einen Ore abbaust erhoeht sich die Beute",
 	"enchantment.uniquee.ifrits_grace": "Grazie des Ifrits",
@@ -78,7 +78,7 @@
 	"enchantment.uniquee.pestilences_odium": "Abscheu der Pestilenz",
 	"enchantment.uniquee.pestilences_odium.desc": "Jede nicht-unfreundliche Einheit in deiner Naehe erhaelt durchegehnd Schaden",
 	"enchantment.uniquee.deaths_odium": "Abscheu des Todes",
-	"enchantment.uniquee.deaths_odium.desc": "Sterben mit diesem Fluch aktiv, reduziert dein maximales Leben",
+	"enchantment.uniquee.deaths_odium.desc": "Sterben mit diesem Fluch aktiv, transferiert maximales Leben zu einem Gegenstand in einem aktiven Slot",
 	
 	"//Potion": true,
 	"potion.uniquee.uniquepestilences_odium": "Abscheu der Pestilenz",

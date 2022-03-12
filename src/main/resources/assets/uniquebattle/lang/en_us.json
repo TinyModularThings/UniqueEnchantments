@@ -1,4 +1,6 @@
 {
+	"enchantment.uniquebattle.ares_grace":"Ares Grace",
+	"enchantment.uniquebattle.ares_grace.desc":"Increased Damage against protected Enemies",
 	"enchantment.uniquebattle.celestial_blessing":"Celestial Blessing",
 	"enchantment.uniquebattle.celestial_blessing.desc":"At Night increases Attack Speed/Drawspeed",
 	"enchantment.uniquebattle.fury":"Fury",
@@ -26,11 +28,11 @@
 	"enchantment.uniquebattle.ifrits_judgement":"Ifrit's Judgement",
 	"enchantment.uniquebattle.ifrits_judgement.desc":"Hitting the same Entity more than 4 times with the same Tool will ignite you. Less hits grant you Rewards. Shift-rightclicking a Chest inserts the Items into the Chest",
 	"enchantment.uniquebattle.lunatic_despair":"Lunatic Despair",
-	"enchantment.uniquebattle.lunatic_despair.desc":"Teile mehr Schaden aus jedoch schadest du dir auch selbst",
+	"enchantment.uniquebattle.lunatic_despair.desc":"Deal more damage, but also hurt yourself",
 	"enchantment.uniquebattle.wars_odium":"War's Odium",
 	"enchantment.uniquebattle.wars_odium.desc":"Killing a Mob, has a Chance to respawn the Mob",
 	
-	"tooltip.uniquebattle.stored.ender.name":"Stored Ender Energy",
+	"tooltip.uniquebattle.stored.ender.name":"Stored Ender Energy %s",
 	"tooltip.uniquebattle.stored.ender.souls.common.name":"Basic Souls stored %s",
 	"tooltip.uniquebattle.stored.ender.souls.higher.name":"Higher Souls stored %s"
 }
