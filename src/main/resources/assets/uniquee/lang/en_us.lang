@@ -59,7 +59,7 @@ enchantment.uniquee.alchemistsgrace.desc=Hitting an Enemy or Mining a Block will
 enchantment.uniquee.ecological=Ecological
 enchantment.uniquee.ecological.desc=Standing near Wood(Logs) & Leaves will recover slowly the durability of your tool.
 enchantment.uniquee.phoenixs_blessing=Phoenix's Blessing
-enchantment.uniquee.phoenixs_blessing.desc=When died will resurrect you with full Health and Hunger nearby Enemies will burn
+enchantment.uniquee.phoenixs_blessing.desc=Upon death, will resurrect you with full Health and Hunger, nearby Enemies will burn. There is an everlasting Hate between Phoenix's and Death
 enchantment.uniquee.midas_blessing=Midas Blessing
 enchantment.uniquee.midas_blessing.desc=Shift-Rightclicking an Anvil will consume all of your Gold in your Inventory. Mining an oreGem will consume Gold but double the drops.
 enchantment.uniquee.ifrits_grace=Ifrit's Grace
@@ -77,7 +77,7 @@ enchantment.uniquee.grimoire.desc=Improves Enchantments by Player's Knowledge. A
 enchantment.uniquee.pestilences_odium=Pestilence's Odium
 enchantment.uniquee.pestilences_odium.desc=Non-Hostile Entities in your area will be continuously damaged
 enchantment.uniquee.deaths_odium=Death's Odium
-enchantment.uniquee.deaths_odium.desc=Dieing while having this Curse in an active slot will cause you to lose some Base HP. Lost Base HP will be partially granted back as long as this Enchantment is on an active Slot..
+enchantment.uniquee.deaths_odium.desc=Upon death, transfer some Health to the Item, while in an active Slot. Maybe this can be used in my favor
 
 //Potion
 potion.uniquee.uniquepestilences_odium=Pestilence's Odium

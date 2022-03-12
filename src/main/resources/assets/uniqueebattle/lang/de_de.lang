@@ -1,3 +1,5 @@
+enchantment.uniqueebattle.ares_grace=Grazie des Ares
+enchantment.uniqueebattle.ares_grace=Erhoeht Schaden gegen geruestete Entitaeten
 enchantment.uniqueebattle.celestial_blessing=Himmlischer Segen
 enchantment.uniqueebattle.celestial_blessing.desc=Erhoeht deine Angriffsgeschwindigkeit bei Nacht
 enchantment.uniqueebattle.fury=Raserei
@@ -27,6 +29,6 @@ enchantment.uniqueebattle.lunatic_despair.desc=Teile mehr Schaden aus jedoch sch
 enchantment.uniqueebattle.wars_odium=Abscheu des Krieges
 enchantment.uniqueebattle.wars_odium.desc=Toetest du einen Mob, kann dieser wieder auferstehen
 
-tooltip.uniqueebattle.stored.ender.name=Gespeicherte Ender Energie
+tooltip.uniqueebattle.stored.ender.name=Gespeicherte Ender Energie %s
 tooltip.uniqueebattle.stored.ender.souls.common.name=Normale Seelen gespeichert %s
 tooltip.uniqueebattle.stored.ender.souls.higher.name=Maechtige Seelen gespeichert %s
