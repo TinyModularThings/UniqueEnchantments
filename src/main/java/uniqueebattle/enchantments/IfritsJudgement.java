@@ -28,7 +28,7 @@ public class IfritsJudgement extends UniqueEnchantment
 	
 	public IfritsJudgement()
 	{
-		super(new DefaultData("ifrits_judgement", Rarity.COMMON, 2, false, false, 10, 4, 40), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("ifrits_judgement", Rarity.RARE, 2, false, false, 10, 4, 40), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		setCategory("battle");
 		setCurse();
 		addStats(FIRE_DAMAGE, LAVA_DAMAGE, DURATION, LAVA_HITS, FIRE_HITS);

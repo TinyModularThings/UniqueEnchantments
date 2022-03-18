@@ -1,4 +1,6 @@
 {
+	"enchantment.uniquebattle.ares_grace":"Grazie des Ares",
+	"enchantment.uniquebattle.ares_grace.desc":" Erhoeht Schaden gegen geruestete Entitaeten",
 	"enchantment.uniquebattle.celestial_blessing":"Himmlischer Segen",
 	"enchantment.uniquebattle.celestial_blessing.desc":"Erhoeht deine Angriffsgeschwindigkeit bei Nacht",
 	"enchantment.uniquebattle.fury":"Raserei",
@@ -30,7 +32,7 @@
 	"enchantment.uniquebattle.wars_odium":"Abscheu des Krieges",
 	"enchantment.uniquebattle.wars_odium.desc":"Toetest du einen Mob, kann dieser wieder auferstehen",
 	
-	"tooltip.uniquebattle.stored.ender.name":"Gespeicherte Ender Energie",
+	"tooltip.uniquebattle.stored.ender.name":"Gespeicherte Ender Energie %s",
 	"tooltip.uniquebattle.stored.ender.souls.common.name":"Normale Seelen gespeichert %s",
 	"tooltip.uniquebattle.stored.ender.souls.higher.name":"Maechtige Seelen gespeichert %s"
 }
