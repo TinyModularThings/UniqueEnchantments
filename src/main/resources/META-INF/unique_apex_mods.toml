@@ -1,0 +1,18 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+license="MIT License"
+[[mods]]
+	modId="uniqueapex"
+	version="${version}"
+	displayName="Unique Apex Enchantments"
+	credits="Thanks Xaikii for the Mod Design, Thanks to Speiger for the Code"
+	authors="Speiger, Xaikii"
+	description='''
+	A Set of Unique Apex Enchantments
+	'''
+	[[dependencies.uniqueapex]]
+		modId="uniquebase"
+		mandatory=true
+		versionRange="[${base_version},)"
+		ordering="BEFORE"
+		side="BOTH"

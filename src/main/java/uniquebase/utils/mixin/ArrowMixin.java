@@ -10,5 +10,5 @@ import net.minecraft.item.ItemStack;
 public interface ArrowMixin
 {
 	@Invoker("getPickupItem")
-	public ItemStack getPickupItem();
+	public ItemStack getArrowItem();
 }

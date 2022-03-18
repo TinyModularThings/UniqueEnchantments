@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class Ecological extends UniqueEnchantment
 {
@@ -45,6 +45,6 @@ public class Ecological extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.ENDERMARKSMEN, Enchantments.MENDING, Enchantments.INFINITY_ARROWS);
+		addIncompats(UE.WARRIORS_GRACE, UE.ENDERMARKSMEN, Enchantments.MENDING, Enchantments.INFINITY_ARROWS);
 	}
 }

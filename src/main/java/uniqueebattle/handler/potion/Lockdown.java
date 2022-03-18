@@ -10,7 +10,7 @@ public class Lockdown extends Effect
 	public Lockdown()
 	{
 		super(EffectType.HARMFUL, 5926017);
-		setRegistryName("snare");
-		addAttributeModifier(Attributes.MOVEMENT_SPEED, "4617e38d-8ea1-426f-9749-e768e8344be3", 0D, AttributeModifier.Operation.MULTIPLY_TOTAL);
+		setRegistryName("uniquebattle", "snare");
+		addAttributeModifier(Attributes.MOVEMENT_SPEED, "4617e38d-8ea1-426f-9749-e768e8344be3", -1D, AttributeModifier.Operation.MULTIPLY_TOTAL);
 	}
 }

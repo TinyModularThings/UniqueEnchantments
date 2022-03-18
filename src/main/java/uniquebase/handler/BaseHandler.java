@@ -26,7 +26,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import uniquebase.UniqueEnchantmentsBase;
+import uniquebase.UEBase;
 import uniquebase.gui.EnchantmentGui;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
@@ -56,15 +56,15 @@ public class BaseHandler
 		if(event.phase == Phase.START) return;
 		Minecraft mc = Minecraft.getInstance();
 		if(mc.level == null || mc.player == null) return;
-		UniqueEnchantmentsBase.PROXY.update();
-		if(UniqueEnchantmentsBase.ENCHANTMENT_GUI.test(mc.player) && mc.screen instanceof ContainerScreen && !(mc.screen instanceof EnchantmentGui))
+		UEBase.PROXY.update();
+		if(UEBase.ENCHANTMENT_GUI.test(mc.player) && mc.screen instanceof ContainerScreen && !(mc.screen instanceof EnchantmentGui))
 		{
 			Slot slot = ((ContainerScreen<?>)mc.screen).getSlotUnderMouse();
 			if(slot != null && slot.hasItem() && EnchantmentHelper.getEnchantments(slot.getItem()).size() > 0)
 			{
 				tooltipCounter++;
 				if(tooltipCounter >= 40) {
-					mc.setScreen(new EnchantmentGui(slot.getItem().copy(), mc.player));
+					mc.setScreen(new EnchantmentGui(slot.getItem().copy(), mc.player, mc.screen));
 				}
 			}
 			else
@@ -116,7 +116,7 @@ public class BaseHandler
 				}
 				else
 				{
-					event.getToolTip().add(1, new TranslationTextComponent("unique.base.jei.press_gui", UniqueEnchantmentsBase.ENCHANTMENT_GUI.getKeyName()));					
+					event.getToolTip().add(1, new TranslationTextComponent("unique.base.jei.press_gui", UEBase.ENCHANTMENT_GUI.getKeyName()));					
 				}
 			}
 		}

@@ -60,7 +60,7 @@ public class StackUtils
 	{
 		try
 		{
-			return ((ArrowMixin)arrow).getPickupItem();
+			return ((ArrowMixin)arrow).getArrowItem();
 		}
 		catch(Exception e)
 		{

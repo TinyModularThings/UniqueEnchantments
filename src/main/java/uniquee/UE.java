@@ -69,7 +69,7 @@ import uniquee.handler.LootModifier;
 import uniquee.handler.potion.PestilencesOdiumPotion;
 
 @Mod("uniquee")
-public class UniqueEnchantments extends BaseUEMod
+public class UE extends BaseUEMod
 {
 	public static Enchantment BERSERKER;
 	public static Enchantment ADV_SHARPNESS;
@@ -119,7 +119,7 @@ public class UniqueEnchantments extends BaseUEMod
 	public static Effect PESTILENCES_ODIUM_POTION;
 	public static ForgeConfigSpec CONFIG;
 	
-	public UniqueEnchantments()
+	public UE()
 	{
 		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
 		

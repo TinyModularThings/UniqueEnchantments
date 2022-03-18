@@ -25,7 +25,7 @@ import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 import uniquee.enchantments.unique.IfritsGrace;
 import uniquee.enchantments.unique.MidasBlessing;
 
@@ -44,7 +44,7 @@ public class LootModifier implements IGlobalLootModifier
 			}
 			BlockState state = context.getParamOrNull(LootParameters.BLOCK_STATE);
 			Object2IntMap<Enchantment> enchs = MiscUtil.getEnchantments(stack);
-			int midas = enchs.getInt(UniqueEnchantments.MIDAS_BLESSING);
+			int midas = enchs.getInt(UE.MIDAS_BLESSING);
 			if(midas > 0)
 			{
 				int gold = StackUtils.getInt(stack, MidasBlessing.GOLD_COUNTER, 0);
@@ -62,7 +62,7 @@ public class LootModifier implements IGlobalLootModifier
 					generatedLoot.addAll(newDrops);
 				}
 			}
-			int level = enchs.getInt(UniqueEnchantments.IFRIDS_GRACE);
+			int level = enchs.getInt(UE.IFRIDS_GRACE);
 			if(level > 0)
 			{
 				int stored = StackUtils.getInt(stack, IfritsGrace.LAVA_COUNT, 0);

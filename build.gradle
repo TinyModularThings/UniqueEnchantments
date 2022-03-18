@@ -158,12 +158,31 @@ task battleJar(type: Jar, dependsOn: reobf) {
   includeEmptyDirs = false
 }
 
+task apexJar(type: Jar, dependsOn: reobf) {
+  baseName = 'Unique Enchantments Apex'
+  version = minecraft_version+"-"+unique_apex_version
+  from(zipTree(jar.archivePath)) {
+    include 'META_INF/MANIFEST.MF'
+    include '**/uniqueapex/**/*'
+    include '**/assets/uniqueapex/**/*'
+    include '**/data/uniqueapex/**/*'
+    include 'pack.mcmeta'
+  }
+  from(zipTree(jar.archivePath)) {
+    	include 'META-INF/unique_apex_mods.toml'
+   		rename 'unique_apex_mods.toml', 'mods.toml'
+   		expand 'version': unique_apex_version, 'base_version': unique_base_version
+  }
+  includeEmptyDirs = false
+}
+
 
 artifacts {
     archives baseJar
     archives mainJar
     archives utilsJar
     archives battleJar
+    archives apexJar
 }
 
 

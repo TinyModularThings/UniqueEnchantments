@@ -91,7 +91,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 import net.minecraftforge.registries.ForgeRegistries;
-import uniquebase.UniqueEnchantmentsBase;
+import uniquebase.UEBase;
 import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.MathCache;
 import uniquebase.networking.EntityPacket;
@@ -100,7 +100,7 @@ import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.mixin.EntityMixin;
 import uniquebase.utils.mixin.FireworkMixin;
-import uniqueeutils.UniqueEnchantmentsUtils;
+import uniqueeutils.UEUtils;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing.ConversionEntry;
 import uniqueeutils.enchantments.complex.Ambrosia;
@@ -217,8 +217,8 @@ public class UtilsHandler
 		ItemStack armor = player.getItemBySlot(EquipmentSlotType.CHEST);
 		if(!armor.isEmpty())
 		{
-			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.ANEMOIS_FRAGMENT, armor);
-			if(level > 0 && UniqueEnchantmentsUtils.BOOST_KEY.test(player))
+			int level = MiscUtil.getEnchantmentLevel(UEUtils.ANEMOIS_FRAGMENT, armor);
+			if(level > 0 && UEUtils.BOOST_KEY.test(player))
 			{
 				int amount = StackUtils.getInt(armor, AnemoiFragment.STORAGE, 0);
 				if(amount > 0)
@@ -235,15 +235,15 @@ public class UtilsHandler
 			CompoundNBT nbt = ridden.getPersistentData();
 			HorseEntity horse = (HorseEntity)ridden;
 			ModifiableAttributeInstance instance = horse.getAttribute(Attributes.MOVEMENT_SPEED);
-			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.PEGASUS_SOUL, ridden.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(EmptyHandler.INSTANCE).getStackInSlot(1));
+			int level = MiscUtil.getEnchantmentLevel(UEUtils.PEGASUS_SOUL, ridden.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(EmptyHandler.INSTANCE).getStackInSlot(1));
 			if(level > 0)
 			{
-				boolean active = UniqueEnchantmentsUtils.BOOST_KEY.test(player);
+				boolean active = UEUtils.BOOST_KEY.test(player);
 				if(active && !nbt.getBoolean(PegasusSoul.TRIGGER) && (!player.isOnGround() || nbt.getBoolean(PegasusSoul.ENABLED)))
 				{
 					nbt.putBoolean(PegasusSoul.ENABLED, !nbt.getBoolean(PegasusSoul.ENABLED));
 					nbt.putBoolean(PegasusSoul.TRIGGER, true);
-					UniqueEnchantmentsBase.NETWORKING.sendToPlayer(new EntityPacket(ridden.getId(), nbt), player);
+					UEBase.NETWORKING.sendToPlayer(new EntityPacket(ridden.getId(), nbt), player);
 				}
 				else if(!active)
 				{
@@ -275,7 +275,7 @@ public class UtilsHandler
 			if(entity instanceof HorseEntity && entity.isAlive())
 			{
 				HorseEntity horse = (HorseEntity)entity;
-				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.SLEIPNIRS_GRACE, entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(null).getStackInSlot(1));
+				int level = MiscUtil.getEnchantmentLevel(UEUtils.SLEIPNIRS_GRACE, entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(null).getStackInSlot(1));
 				if(level > 0)
 				{
 					CompoundNBT nbt = entity.getPersistentData();
@@ -310,7 +310,7 @@ public class UtilsHandler
 			{
 				ItemStack stack = inv.getItem(i);
 				if(stack.isEmpty()) continue;
-				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.REINFORCED, stack);
+				int level = MiscUtil.getEnchantmentLevel(UEUtils.REINFORCED, stack);
 				if(level > 0)
 				{
 					int shield = StackUtils.getInt(stack, Reinforced.SHIELD, 0);
@@ -340,7 +340,7 @@ public class UtilsHandler
 			nbt.remove(Climber.CLIMB_POS);
 			player.teleportTo(pos.getX()+0.5F, pos.getY(), pos.getZ() + 0.5F);
 		}
-		int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.FAMINES_ODIUM, player);
+		int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.FAMINES_ODIUM, player);
 		if(level > 0)
 		{
 			int duration = (int)Math.max((FaminesOdium.DELAY.get() / Math.pow(level, 0.125D)), 1);
@@ -359,7 +359,7 @@ public class UtilsHandler
 				}
 			}
 		}
-		int delay = Math.max(1, MathHelper.ceil(DemetersSoul.DELAY.get() / Math.log(10 + DemetersSoul.SCALING.get(MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.DEMETERS_SOUL, player.getItemInHand(Hand.MAIN_HAND))))));
+		int delay = Math.max(1, MathHelper.ceil(DemetersSoul.DELAY.get() / Math.log(10 + DemetersSoul.SCALING.get(MiscUtil.getEnchantmentLevel(UEUtils.DEMETERS_SOUL, player.getItemInHand(Hand.MAIN_HAND))))));
 		if(player.level.getGameTime() % delay == 0)
 		{
 			HarvestEntry entry = DemetersSoul.getNextIndex(player);
@@ -390,7 +390,7 @@ public class UtilsHandler
 	public void onFall(LivingFallEvent event)
 	{
 		ItemStack stack = event.getEntityLiving().getItemBySlot(EquipmentSlotType.FEET);
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.ESSENCE_OF_SLIME, stack);
+		int level = MiscUtil.getEnchantmentLevel(UEUtils.ESSENCE_OF_SLIME, stack);
 		if(level > 0)
 		{
 			if(event.getDistance() <= 1.3)
@@ -426,12 +426,12 @@ public class UtilsHandler
 	{
 		if(event.getEntityLiving() instanceof PlayerEntity)
 		{
-			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.AMBROSIA, event.getItem());
+			int level = MiscUtil.getEnchantmentLevel(UEUtils.AMBROSIA, event.getItem());
 			if(level > 0)
 			{
 				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(MathCache.POW5.get(1 + ((PlayerEntity)event.getEntityLiving()).experienceLevel * level)) * Ambrosia.DURATION_MULTIPLIER.get()));
 				((PlayerEntity)event.getEntityLiving()).getFoodData().eat(2000, 0);
-				event.getEntityLiving().addEffect(new EffectInstance(UniqueEnchantmentsUtils.SATURATION, duration, Math.min(20, level)));
+				event.getEntityLiving().addEffect(new EffectInstance(UEUtils.SATURATION, duration, Math.min(20, level)));
 			}
 		}
 	}
@@ -443,7 +443,7 @@ public class UtilsHandler
 		{
 			if(PHANES_REGRET_ACTIVE.get()) return;
 			PHANES_REGRET_ACTIVE.set(true);
-			int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
+			int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.PHANES_REGRET, event.getEntityLiving());
 			if(level > 0)
 			{
 				if(event.getEntityLiving() instanceof PlayerEntity)
@@ -463,7 +463,7 @@ public class UtilsHandler
 		PHANES_REGRET_ACTIVE.set(true);
 		if(event.getAmount() >= 1F)
 		{
-			int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsUtils.PHANES_REGRET, event.getEntityLiving());
+			int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.PHANES_REGRET, event.getEntityLiving());
 			if(level > 0)
 			{
 				event.getEntityLiving().hurt(DamageSource.MAGIC, event.getAmount() * (1F-(1F/MathCache.LOG_ADD.getFloat(level))));
@@ -486,7 +486,7 @@ public class UtilsHandler
 			ItemStack arrowStack = StackUtils.getArrowStack(event.getArrow());
 			if(arrowStack.getItem() != Items.TRIDENT) return;
 			Object2IntMap<Enchantment> enchs = MiscUtil.getEnchantments(arrowStack);
-			int level = enchs.getInt(UniqueEnchantmentsUtils.POSEIDONS_SOUL);
+			int level = enchs.getInt(UEUtils.POSEIDONS_SOUL);
 			if(level <= 0) return;
 			ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
 			stack.enchant(Enchantments.SILK_TOUCH, 1);
@@ -501,7 +501,7 @@ public class UtilsHandler
 		if(event.getPlayer() == null || !event.getPlayer().isShiftKeyDown()) return;
 		PlayerEntity player = event.getPlayer();
 		ItemStack stack = event.getItemStack();
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.RESONANCE, stack);
+		int level = MiscUtil.getEnchantmentLevel(UEUtils.RESONANCE, stack);
 		if(level > 0)
 		{
 			if(!event.getWorld().isClientSide)
@@ -534,7 +534,7 @@ public class UtilsHandler
 			BlockState state = event.getWorld().getBlockState(event.getPos());
 			if(state.getBlock().isLadder(state, event.getWorld(), event.getPos(), event.getEntityLiving()))
 			{
-				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.CLIMBER, event.getPlayer().getItemBySlot(EquipmentSlotType.LEGS));
+				int level = MiscUtil.getEnchantmentLevel(UEUtils.CLIMBER, event.getPlayer().getItemBySlot(EquipmentSlotType.LEGS));
 				if(level > 0)
 				{
 					Mutable pos = new Mutable().set(event.getPos());
@@ -567,7 +567,7 @@ public class UtilsHandler
 				ItemStack stack = event.getItemStack();
 				PlayerEntity player = event.getPlayer();
 				Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(stack);
-				int level = ench.getInt(UniqueEnchantmentsUtils.SAGES_SOUL);
+				int level = ench.getInt(UEUtils.SAGES_SOUL);
 				if(level > 0)
 				{
 					int stored = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
@@ -589,7 +589,7 @@ public class UtilsHandler
 			else if(state.getBlock() == Blocks.BEACON)
 			{
 				Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(event.getItemStack());
-				int level = ench.getInt(UniqueEnchantmentsUtils.ALCHEMISTS_BLESSING);
+				int level = ench.getInt(UEUtils.ALCHEMISTS_BLESSING);
 				if(level > 0 && !event.getWorld().isClientSide)
 				{
 					TileEntity tile = event.getWorld().getBlockEntity(event.getPos());
@@ -634,7 +634,7 @@ public class UtilsHandler
 			}
 			else
 			{
-				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.DEMETERS_SOUL, event.getItemStack());
+				int level = MiscUtil.getEnchantmentLevel(UEUtils.DEMETERS_SOUL, event.getItemStack());
 				if(level > 0 && CropHarvestRegistry.INSTANCE.isValid(state.getBlock()) && !event.getWorld().isClientSide)
 				{
 					HarvestEntry entry = new HarvestEntry(event.getWorld().dimension().location(), event.getPos().asLong());
@@ -670,7 +670,7 @@ public class UtilsHandler
 		else
 		{
 			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(event.getItemStack());
-			if(ench.getInt(UniqueEnchantmentsUtils.DETEMERS_BLESSING) > 0)
+			if(ench.getInt(UEUtils.DETEMERS_BLESSING) > 0)
 			{
 				BlockState state = event.getWorld().getBlockState(event.getPos());
 				if(state.getBlock() instanceof CropsBlock)
@@ -685,7 +685,7 @@ public class UtilsHandler
 				}
 				else if(state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS_PATH || state.getBlock() == Blocks.GRASS_BLOCK)
 				{
-					event.getItemStack().hurt(-ench.getInt(UniqueEnchantmentsUtils.DETEMERS_BLESSING), event.getWorld().random, null);
+					event.getItemStack().hurt(-ench.getInt(UEUtils.DETEMERS_BLESSING), event.getWorld().random, null);
 				}
 			}
 		}
@@ -711,7 +711,7 @@ public class UtilsHandler
 		}
 		PlayerEntity player = event.getPlayer();
 		ItemStack held = player.getMainHandItem();
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.ADEPT, player.getItemBySlot(EquipmentSlotType.HEAD));
+		int level = MiscUtil.getEnchantmentLevel(UEUtils.ADEPT, player.getItemBySlot(EquipmentSlotType.HEAD));
 		if(level > 0)
 		{
 			boolean inWater = player.isEyeInFluid(FluidTags.WATER);
@@ -722,7 +722,7 @@ public class UtilsHandler
 			}
 		}
 		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(held);
-		level = ench.getInt(UniqueEnchantmentsUtils.SAGES_SOUL);
+		level = ench.getInt(UEUtils.SAGES_SOUL);
 		if(level > 0)
 		{
 			double power = SagesSoul.getEnchantPower(held, level);
@@ -732,7 +732,7 @@ public class UtilsHandler
 			float speed = event.getNewSpeed();
 			event.setNewSpeed(speed + toolSpeed * (1 + (float)Math.pow(Math.log(7.39+(levels*levels)/(speed*invToolSpeed)), power)*invToolSpeed));
 		}
-		level = ench.getInt(UniqueEnchantmentsUtils.THICK_PICK);
+		level = ench.getInt(UEUtils.THICK_PICK);
 		if(level > 0 && event.getState().getDestroySpeed(player.level, event.getPos()) >= 20)
 		{
 			int amount = StackUtils.getInt(held, ThickPick.TAG, 0);
@@ -741,7 +741,7 @@ public class UtilsHandler
 				event.setNewSpeed(event.getNewSpeed() * ThickPick.MINING_SPEED.getAsFloat(level));
 			}
 		}
-		level = ench.getInt(UniqueEnchantmentsUtils.REINFORCED);
+		level = ench.getInt(UEUtils.REINFORCED);
 		if(level > 0)
 		{
 			double base = Reinforced.BASE_REDUCTION.get();
@@ -752,7 +752,7 @@ public class UtilsHandler
 	@SubscribeEvent
 	public void onItemUseTick(LivingEntityUseItemEvent.Tick event)
 	{
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.SAGES_SOUL, event.getItem());
+		int level = MiscUtil.getEnchantmentLevel(UEUtils.SAGES_SOUL, event.getItem());
 		if(level > 0)
 		{
 			event.setDuration((int)(event.getDuration() * 1/(Math.log10(Math.pow(1000+SagesSoul.DRAW_SPEED.get(StackUtils.getInt(event.getItem(), SagesSoul.STORED_XP, 0)), SagesSoul.getEnchantPower(event.getItem(), level)))-2)));
@@ -768,7 +768,7 @@ public class UtilsHandler
 		}
 		PlayerEntity player = event.getPlayer();
 		ItemStack held = player.getMainHandItem();
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.THICK_PICK, held);
+		int level = MiscUtil.getEnchantmentLevel(UEUtils.THICK_PICK, held);
 		if(level > 0)
 		{
 			int amount = StackUtils.getInt(held, ThickPick.TAG, 0);
@@ -786,7 +786,7 @@ public class UtilsHandler
 		if(stack.getItem() == Items.FIREWORK_ROCKET && event.getPlayer() != null && !event.getPlayer().isFallFlying())
 		{
 			ItemStack armor = event.getPlayer().getItemBySlot(EquipmentSlotType.CHEST);
-			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.ROCKET_MAN, armor);
+			int level = MiscUtil.getEnchantmentLevel(UEUtils.ROCKET_MAN, armor);
 			if(armor.getItem() instanceof ElytraItem && level > 0)
 			{
                 if(!event.getWorld().isClientSide)
@@ -817,7 +817,7 @@ public class UtilsHandler
 					ItemStack stack = entity.getItemBySlot(EquipmentSlotType.CHEST);
 					if(stack.getItem() instanceof ElytraItem)
 					{
-						int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.ROCKET_MAN, stack);
+						int level = MiscUtil.getEnchantmentLevel(UEUtils.ROCKET_MAN, stack);
 						if(level > 0)
 						{
 							CompoundNBT nbt = new CompoundNBT();
@@ -871,13 +871,13 @@ public class UtilsHandler
 	{
 		Multimap<Attribute, AttributeModifier> mods = HashMultimap.create();
 		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(stack);
-		int level = ench.getInt(UniqueEnchantmentsUtils.REINFORCED);
+		int level = ench.getInt(UEUtils.REINFORCED);
 		if(level > 0)
 		{
 			double base = Reinforced.BASE_REDUCTION.get();
 			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(Reinforced.SPEED_MOD, "Reinforced Boost", Math.pow((base+((1D-base)*0.01D)*level), Math.sqrt(level)), Operation.MULTIPLY_TOTAL));
 		}
-		level = ench.getInt(UniqueEnchantmentsUtils.SAGES_SOUL);
+		level = ench.getInt(UEUtils.SAGES_SOUL);
 		if(level > 0)
 		{
 			int levels = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
@@ -930,7 +930,7 @@ public class UtilsHandler
     {
         if (!damageSourceIn.isBypassArmor() && player.isBlocking())
         {
-        	if(MiscUtil.getEnchantmentLevel(UniqueEnchantmentsUtils.MOUNTING_AEGIS, player.getUseItem()) <= 0) return false;
+        	if(MiscUtil.getEnchantmentLevel(UEUtils.MOUNTING_AEGIS, player.getUseItem()) <= 0) return false;
             Vector3d Vector3d = damageSourceIn.getSourcePosition();
 
             if (Vector3d != null)

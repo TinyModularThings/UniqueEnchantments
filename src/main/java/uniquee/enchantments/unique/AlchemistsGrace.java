@@ -21,7 +21,7 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.MiscUtil;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class AlchemistsGrace extends UniqueEnchantment
 {
@@ -42,7 +42,7 @@ public class AlchemistsGrace extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.NATURES_GRACE);
+		addIncompats(UE.WARRIORS_GRACE, UE.NATURES_GRACE);
 	}
 	
 	public static void applyToEntity(Entity entity, boolean mining, float hitScalar)
@@ -50,7 +50,7 @@ public class AlchemistsGrace extends UniqueEnchantment
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity base = (LivingEntity)entity;
-			Object2IntMap.Entry<EquipmentSlotType> slot = MiscUtil.getEnchantedItem(UniqueEnchantments.ALCHEMISTS_GRACE, base);
+			Object2IntMap.Entry<EquipmentSlotType> slot = MiscUtil.getEnchantedItem(UE.ALCHEMISTS_GRACE, base);
 			if(slot.getIntValue() > 0)
 			{
 				int level = slot.getIntValue();

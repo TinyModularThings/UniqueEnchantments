@@ -4,7 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import uniquebase.UniqueEnchantmentsBase;
+import uniquebase.UEBase;
 
 public class KeyPacket implements IUEPacket
 {
@@ -43,7 +43,7 @@ public class KeyPacket implements IUEPacket
 	@Override
 	public void handlePacket(PlayerEntity player)
 	{
-		UniqueEnchantmentsBase.PROXY.updateData(player, keyState);
+		UEBase.PROXY.updateData(player, keyState);
 	}
 	
 }

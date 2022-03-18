@@ -5,7 +5,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
-import uniqueeutils.UniqueEnchantmentsUtils;
+import uniqueeutils.UEUtils;
 
 public class DemetersBlessing extends UniqueEnchantment
 {
@@ -24,7 +24,7 @@ public class DemetersBlessing extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantmentsUtils.DEMETERS_SOUL);
+		addIncompats(UEUtils.DEMETERS_SOUL);
 	}
 	
 }

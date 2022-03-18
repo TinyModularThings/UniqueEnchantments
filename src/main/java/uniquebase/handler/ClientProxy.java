@@ -21,7 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import uniquebase.UniqueEnchantmentsBase;
+import uniquebase.UEBase;
 import uniquebase.api.IKeyBind;
 import uniquebase.networking.KeyPacket;
 
@@ -42,7 +42,7 @@ public class ClientProxy extends Proxy
 		if(!lastKeyState.equals(keyState))
 		{
 			lastKeyState = keyState.isEmpty() ? Object2BooleanMaps.emptyMap() : keyState;
-			UniqueEnchantmentsBase.NETWORKING.sendToServer(new KeyPacket(keyState));			
+			UEBase.NETWORKING.sendToServer(new KeyPacket(keyState));			
 		}
 	}
 	

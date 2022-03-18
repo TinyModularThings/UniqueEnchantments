@@ -8,6 +8,6 @@ public class Toughend extends Effect
 	public Toughend()
 	{
 		super(EffectType.BENEFICIAL, 0xFF99453A);
-		setRegistryName("toughend");
+		setRegistryName("uniquebattle", "toughend");
 	}
 }

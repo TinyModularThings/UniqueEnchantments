@@ -10,7 +10,7 @@ import net.minecraft.tags.BlockTags;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 import uniquebase.utils.IntStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class NaturesGrace extends UniqueEnchantment
 {
@@ -35,6 +35,6 @@ public class NaturesGrace extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.ARES_BLESSING, UniqueEnchantments.ALCHEMISTS_GRACE, UniqueEnchantments.WARRIORS_GRACE);
+		addIncompats(UE.ARES_BLESSING, UE.ALCHEMISTS_GRACE, UE.WARRIORS_GRACE);
 	}
 }

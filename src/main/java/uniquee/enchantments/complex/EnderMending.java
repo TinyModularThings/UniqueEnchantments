@@ -21,7 +21,7 @@ import uniquebase.utils.IdStat;
 import uniquebase.utils.IntStat;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class EnderMending extends UniqueEnchantment
 {
@@ -39,8 +39,8 @@ public class EnderMending extends UniqueEnchantment
 	
 	public void loadIncompats()
 	{
-		addIncompats(Enchantments.MENDING, UniqueEnchantments.ENDERMARKSMEN, UniqueEnchantments.WARRIORS_GRACE, UniqueEnchantments.ECOLOGICAL);
-		VALID_ENCHANTMENTS.addDefault(Enchantments.MENDING, UniqueEnchantments.ENDER_MENDING, UniqueEnchantments.GRIMOIRE);
+		addIncompats(Enchantments.MENDING, UE.ENDERMARKSMEN, UE.WARRIORS_GRACE, UE.ECOLOGICAL);
+		VALID_ENCHANTMENTS.addDefault(Enchantments.MENDING, UE.ENDER_MENDING, UE.GRIMOIRE);
 	}
 	
 	@Override
@@ -61,7 +61,7 @@ public class EnderMending extends UniqueEnchantment
 		int stored = 0;
 		for(Entry<EquipmentSlotType, Object2IntMap<Enchantment>> entry : container.getAll())
 		{
-			int level = entry.getValue().getInt(UniqueEnchantments.ENDER_MENDING);
+			int level = entry.getValue().getInt(UE.ENDER_MENDING);
 			if(level > 0)
 			{
 				double xpProvided = 1D/(1D+(THRESHOLD.get(level)/100D));

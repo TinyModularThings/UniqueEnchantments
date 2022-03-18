@@ -9,7 +9,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
-import uniquebase.UniqueEnchantmentsBase;
+import uniquebase.UEBase;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.IKeyBind;
 import uniquebase.handler.BaseHandler;
@@ -37,7 +37,7 @@ import uniqueeutils.misc.HighlightPacket;
 import uniqueeutils.potion.SaturationEffect;
 
 @Mod("uniqueutil")
-public class UniqueEnchantmentsUtils extends BaseUEMod
+public class UEUtils extends BaseUEMod
 {
 	public static Enchantment SLEIPNIRS_GRACE;
 	public static Enchantment FAMINES_ODIUM;
@@ -65,10 +65,10 @@ public class UniqueEnchantmentsUtils extends BaseUEMod
 	
 	public static IKeyBind BOOST_KEY = IKeyBind.empty();
 	
-	public UniqueEnchantmentsUtils()
+	public UEUtils()
 	{
-		UniqueEnchantmentsBase.NETWORKING.registerInternalPacket(this, HighlightPacket.class, HighlightPacket::new, 21);
-		BOOST_KEY = UniqueEnchantmentsBase.PROXY.registerKey("Pegasus Soul Key", 341);
+		UEBase.NETWORKING.registerInternalPacket(this, HighlightPacket.class, HighlightPacket::new, 21);
+		BOOST_KEY = UEBase.PROXY.registerKey("Pegasus Soul Key", 341);
 		SATURATION = new SaturationEffect();
 		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Effect.class, this::registerPotion);
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UniqueEnchantment-Utils.toml");

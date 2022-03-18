@@ -2,6 +2,7 @@ package uniquebase.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -13,11 +14,13 @@ public class EnchantmentGui extends ContainerScreen<EnchantmentContainer>
 {
     private static final ResourceLocation TEXTURE = new ResourceLocation("uniquebase:textures/enchantments.png");
     int slots = 0;
+    Screen parent;
     
-	public EnchantmentGui(ItemStack stack, PlayerEntity player)
+	public EnchantmentGui(ItemStack stack, PlayerEntity player, Screen parent)
 	{
 		super(new EnchantmentContainer(stack), player.inventory, new StringTextComponent("I am error"));
 		slots = ((EnchantmentContainer)menu).enchantments.size();
+		this.parent = parent;
 	}
 	
 	@Override
@@ -42,6 +45,12 @@ public class EnchantmentGui extends ContainerScreen<EnchantmentContainer>
         	boolean hovered = mouseX >= xPos && mouseX <= xPos + 18 && mouseY >= yPos && mouseY <= yPos + 18; 
         	this.blit(stack, xPos, yPos, hovered ? 196 : 176, 0, 18, 18);
         }
+	}
+	
+	@Override
+	public void onClose()
+	{
+		minecraft.setScreen(parent);
 	}
 	
 	@Override

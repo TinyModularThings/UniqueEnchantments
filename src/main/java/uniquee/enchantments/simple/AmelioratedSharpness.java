@@ -8,7 +8,7 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class AmelioratedSharpness extends UniqueEnchantment
 {
@@ -24,7 +24,7 @@ public class AmelioratedSharpness extends UniqueEnchantment
 	public void loadIncompats()
 	{
 		addIncompats(Enchantments.SHARPNESS, Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS);
-		addIncompats(UniqueEnchantments.ADV_SMITE, UniqueEnchantments.ADV_BANE_OF_ARTHROPODS);
+		addIncompats(UE.ADV_SMITE, UE.ADV_BANE_OF_ARTHROPODS);
 	}
 	
 	@Override

@@ -26,7 +26,9 @@ import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -135,6 +137,25 @@ public class MiscUtil
 		return 0;
 	}
 	
+	public static void replaceEnchantmentLevel(Enchantment ench, ItemStack stack, int newLevel)
+	{
+		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return;
+		if(stack.isEmpty()) return;
+		ListNBT list = stack.getEnchantmentTags();
+		if(list.isEmpty()) return;
+		String id = ench.getRegistryName().toString();
+		for(int i = 0, m = list.size();i < m;i++)
+		{
+			CompoundNBT tag = list.getCompound(i);
+			if(tag.getString("id").equalsIgnoreCase(id))
+			{
+				if(newLevel <= 0) list.remove(i);
+				else tag.putInt("lvl", Math.min(newLevel, getHardCap(ench)));
+				return;
+			}
+		}
+	}
+	
 	public static int getCombinedEnchantmentLevel(Enchantment ench, LivingEntity base)
 	{
 		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return 0;
@@ -170,6 +191,28 @@ public class MiscUtil
 			}
 		}
 		return map;
+	}
+	
+	public static Object2IntMap.Entry<Enchantment> getFirstEnchantment(ItemStack stack)
+	{
+		ListNBT list = stack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(stack) : stack.getEnchantmentTags();
+		// Micro Optimization. If the EnchantmentMap is empty then returning a
+		// EmptyMap is faster then creating a new map. More Performance in
+		// checks.
+		if(list.isEmpty()) return null;
+		for(int i = 0, m = list.size();i < m;i++)
+		{
+			CompoundNBT tag = list.getCompound(i);
+			Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(tag.getString("id")));
+			if(enchantment != null)
+			{
+				if(enchantment instanceof IToggleEnchantment && !((IToggleEnchantment)enchantment).isEnabled()) continue;
+				// Only grabbing Level if it is needed. Not wasting CPU Time on
+				// grabbing useless data
+				return new AbstractObject2IntMap.BasicEntry<Enchantment>(enchantment, Math.min(tag.getInt("lvl"), getHardCap(enchantment)));
+			}
+		}
+		return null;
 	}
 	
 	public static EquipmentSlotType[] getEquipmentSlotsFor(Enchantment ench)

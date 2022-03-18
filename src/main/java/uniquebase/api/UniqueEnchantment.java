@@ -278,6 +278,8 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		public void onConfigChanged()
 		{
 			incompats.onConfigChanged();
+			incompatibleItems.onConfigChanged();
+			compatibleItems.onConfigChanged();
 		}
 		
 		public int getLevelCost(int minLevel)

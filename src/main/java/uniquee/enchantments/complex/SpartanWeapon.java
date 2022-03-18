@@ -7,7 +7,7 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class SpartanWeapon extends UniqueEnchantment
 {
@@ -28,6 +28,6 @@ public class SpartanWeapon extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.BERSERKER, UniqueEnchantments.PERPETUAL_STRIKE);
+		addIncompats(UE.BERSERKER, UE.PERPETUAL_STRIKE);
 	}
 }

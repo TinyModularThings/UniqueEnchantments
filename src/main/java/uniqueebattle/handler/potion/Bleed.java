@@ -10,7 +10,7 @@ public class Bleed extends Effect
 	public Bleed()
 	{
 		super(EffectType.HARMFUL, 0xFFFF0000);
-		setRegistryName("bleed");
+		setRegistryName("uniquebattle", "bleed");
 	}
 	
 	@Override

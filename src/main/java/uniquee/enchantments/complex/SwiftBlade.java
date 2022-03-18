@@ -7,7 +7,7 @@ import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class SwiftBlade extends UniqueEnchantment
 {
@@ -28,6 +28,6 @@ public class SwiftBlade extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.BERSERKER);
+		addIncompats(UE.BERSERKER);
 	}
 }

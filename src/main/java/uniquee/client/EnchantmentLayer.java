@@ -19,7 +19,7 @@ import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import uniquebase.utils.MiscUtil;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 import uniquee.enchantments.simple.TreasurersEyes;
 
 public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> extends LayerRenderer<T, M> 
@@ -33,7 +33,7 @@ public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> 
 	{
 		PlayerEntity player = Minecraft.getInstance().player;
 		if(player == base) return false;
-		int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.TREASURERS_EYES, player.getItemBySlot(EquipmentSlotType.HEAD));
+		int level = MiscUtil.getEnchantmentLevel(UE.TREASURERS_EYES, player.getItemBySlot(EquipmentSlotType.HEAD));
 		if(level > 0)
 		{
 			double maxDistance = TreasurersEyes.RANGE.getAsDouble(level);
@@ -49,31 +49,31 @@ public class EnchantmentLayer<T extends LivingEntity, M extends EntityModel<T>> 
 		long time = entity.level.getGameTime();
 		entity.getPersistentData().putLong("effectTimer", time);
 		if(!canSeeEffects(entity)) return;
-		if(time % 14 == 0 && MiscUtil.getEnchantmentLevel(UniqueEnchantments.ARES_BLESSING, entity.getItemBySlot(EquipmentSlotType.CHEST)) > 0)
+		if(time % 14 == 0 && MiscUtil.getEnchantmentLevel(UE.ARES_BLESSING, entity.getItemBySlot(EquipmentSlotType.CHEST)) > 0)
 		{
 			spawnParticle(ParticleTypes.ANGRY_VILLAGER, entity.level, entity.getBoundingBox(), 0F, 0.8F, 0F);
 		}
 		if(time % 2 == 0)
 		{
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(entity.getMainHandItem());
-			if(enchantments.getInt(UniqueEnchantments.BERSERKER) > 0)
+			if(enchantments.getInt(UE.BERSERKER) > 0)
 			{
 				spawnParticle(new RedstoneParticleData(1F, 0F, 0F, 1F), entity.level, entity.getBoundingBox(), 0F, 0F, 0F);
 			}
-			if(enchantments.getInt(UniqueEnchantments.PERPETUAL_STRIKE) > 0)
+			if(enchantments.getInt(UE.PERPETUAL_STRIKE) > 0)
 			{
 				spawnParticle(new RedstoneParticleData(0F, 0F, 1F, 1F), entity.level, entity.getBoundingBox(), 0F, 0F, 0F);				
 			}
-			if(enchantments.getInt(UniqueEnchantments.SPARTAN_WEAPON) > 0)
+			if(enchantments.getInt(UE.SPARTAN_WEAPON) > 0)
 			{
 				spawnParticle(new RedstoneParticleData(0F, 1F, 0F, 1F), entity.level, entity.getBoundingBox(), 0F, 0F, 0F);				
 			}
-			if(enchantments.getInt(UniqueEnchantments.ALCHEMISTS_GRACE) > 0)
+			if(enchantments.getInt(UE.ALCHEMISTS_GRACE) > 0)
 			{
 				int value = (int)(time % 90);
 				spawnParticle(new RedstoneParticleData(value >= 0 && value < 30 ? 1F : 0F, value >= 30 && value < 60 ? 1F : 0F, value >= 60 && value < 90 ? 1F : 0F, 1F), entity.level, entity.getBoundingBox(), 0F, 0F, 0F);
 			}
-			if(enchantments.getInt(UniqueEnchantments.PHOENIX_BLESSING) > 0)
+			if(enchantments.getInt(UE.PHOENIX_BLESSING) > 0)
 			{
 				AxisAlignedBB box = entity.getBoundingBox();
 				float width = (float)(box.maxX - box.minX);

@@ -8,7 +8,7 @@ import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniqueebattle.UniqueEnchantmentsBattle;
+import uniqueebattle.UEBattle;
 
 public class AresGrace extends UniqueEnchantment
 {
@@ -25,7 +25,7 @@ public class AresGrace extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantmentsBattle.ARES_FRAGMENT);
+		addIncompats(UEBattle.ARES_FRAGMENT);
 	}
 	
 	@Override

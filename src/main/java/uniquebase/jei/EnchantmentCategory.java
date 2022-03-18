@@ -110,7 +110,7 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 		int start = recipe.pageIndex * 9;
 		matrix.scale(0.5F, 0.5F, 1F);
 		font.draw(matrix, I18n.get("unique.base.jei.incompats"), 5, 162, 0);
-		for(int i = 0;i<11&&start+i<incomp.size();i++)
+		for(int i = 0;i<10&&start+i<incomp.size();i++)
 		{
 			font.draw(matrix, incomp.get(start+i), 5, 182 + (i * font.lineHeight), 0);
 		}

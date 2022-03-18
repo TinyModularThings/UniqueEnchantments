@@ -1,0 +1,43 @@
+{
+    "type": "uniqueapex:fusion",
+    "ingredients": [
+        {
+            "input": { "item": "minecraft:heart_of_the_sea" },
+            "amount": 1
+        },
+        {
+            "input": { "item": "minecraft:obsidian" },
+            "amount": 128
+        },
+        {
+            "input": { "item": "minecraft:sponge" },
+            "amount": 6
+        },
+        {
+            "input": { 
+				"type": "forge:nbt",
+				"item": "minecraft:potion",
+				"nbt": { "Potion": "minecraft:strong_swiftness"}
+			},
+            "amount": 4
+        },
+        { 
+            "input": { "item": "minecraft:netherite_block" }, 
+            "amount": 4
+        },
+        {
+            "input": { "item": "minecraft:enchanted_golden_apple" },
+            "amount": 2
+        }
+    ],
+    "enchantments": [
+        { "type": "minecraft:soul_speed", "level": 3 },
+        { "type": "minecraft:efficiency", "level": 5 },
+        { "type": "minecraft:channeling", "level": 1 },
+        { "type": "minecraft:mending", "level": 1 } 
+    ],
+	"lock": true,
+	"max": 2,
+    "output": "uniqueapex:aeons_fragment",
+    "output_mode": "average" 
+}

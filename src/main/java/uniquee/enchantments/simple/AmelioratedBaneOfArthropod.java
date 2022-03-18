@@ -14,7 +14,7 @@ import net.minecraft.potion.Effects;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntLevelStats;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 {
@@ -31,7 +31,7 @@ public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 	public void loadIncompats()
 	{
 		addIncompats(Enchantments.SHARPNESS, Enchantments.SMITE, Enchantments.BANE_OF_ARTHROPODS);
-		addIncompats(UniqueEnchantments.ADV_SHARPNESS, UniqueEnchantments.ADV_SMITE);
+		addIncompats(UE.ADV_SHARPNESS, UE.ADV_SMITE);
 	}
 	
 	@Override

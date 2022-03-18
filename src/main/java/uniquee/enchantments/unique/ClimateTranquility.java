@@ -22,7 +22,7 @@ import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 import uniquebase.utils.EnchantmentContainer;
 import uniquebase.utils.IntStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class ClimateTranquility extends UniqueEnchantment
 {
@@ -48,7 +48,7 @@ public class ClimateTranquility extends UniqueEnchantment
 	
 	public static void onClimate(PlayerEntity player, EnchantmentContainer container)
 	{
-		Object2IntMap.Entry<EquipmentSlotType> slot = container.getEnchantedItem(UniqueEnchantments.CLIMATE_TRANQUILITY);
+		Object2IntMap.Entry<EquipmentSlotType> slot = container.getEnchantedItem(UE.CLIMATE_TRANQUILITY);
 		AttributeModifierManager map = player.getAttributes();
 		ModifiableAttributeInstance speed = map.getInstance(Attributes.ATTACK_SPEED);
 		ModifiableAttributeInstance damage = map.getInstance(Attributes.ATTACK_DAMAGE);

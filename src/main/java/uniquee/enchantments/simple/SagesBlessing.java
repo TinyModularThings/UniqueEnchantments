@@ -7,7 +7,7 @@ import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class SagesBlessing extends UniqueEnchantment
 {
@@ -28,6 +28,6 @@ public class SagesBlessing extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.FAST_FOOD, Enchantments.SILK_TOUCH);
+		addIncompats(UE.FAST_FOOD, Enchantments.SILK_TOUCH);
 	}	
 }

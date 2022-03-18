@@ -15,7 +15,7 @@ import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IdStat;
 import uniquebase.utils.IntStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class Grimoire extends UniqueEnchantment
 {
@@ -37,8 +37,8 @@ public class Grimoire extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(Enchantments.MENDING, UniqueEnchantments.ENDER_MENDING);
-		INCOMPATS.addDefault(Enchantments.BLOCK_FORTUNE, Enchantments.BLOCK_EFFICIENCY, Enchantments.MOB_LOOTING, UniqueEnchantments.MIDAS_BLESSING, UniqueEnchantments.ENDEST_REAP, Enchantments.MENDING, Enchantments.SILK_TOUCH);
+		addIncompats(Enchantments.MENDING, UE.ENDER_MENDING);
+		INCOMPATS.addDefault(Enchantments.BLOCK_FORTUNE, Enchantments.BLOCK_EFFICIENCY, Enchantments.MOB_LOOTING, UE.MIDAS_BLESSING, UE.ENDEST_REAP, Enchantments.MENDING, Enchantments.SILK_TOUCH);
 	}
 		
 	public static void applyGrimore(ItemStack stack, int level, PlayerEntity player)
@@ -62,7 +62,7 @@ public class Grimoire extends UniqueEnchantment
 			compound.put(GRIMOIRE_STORAGE, ench);
 			compound.remove("Enchantments");
 			ListNBT list = new ListNBT();
-			String exclusion = UniqueEnchantments.GRIMOIRE.getRegistryName().toString();
+			String exclusion = UE.GRIMOIRE.getRegistryName().toString();
 			for(int i = 0,m=ench.size();i<m;i++)
 			{
 				CompoundNBT enchantment = ench.getCompound(i);

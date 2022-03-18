@@ -7,7 +7,7 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class WarriorsGrace extends UniqueEnchantment
 {
@@ -28,6 +28,6 @@ public class WarriorsGrace extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.ECOLOGICAL, UniqueEnchantments.ALCHEMISTS_GRACE, UniqueEnchantments.NATURES_GRACE, Enchantments.MENDING, Enchantments.UNBREAKING);
+		addIncompats(UE.ECOLOGICAL, UE.ALCHEMISTS_GRACE, UE.NATURES_GRACE, Enchantments.MENDING, Enchantments.UNBREAKING);
 	}	
 }

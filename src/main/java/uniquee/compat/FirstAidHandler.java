@@ -12,7 +12,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniquebase.utils.MiscUtil;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 import uniquee.enchantments.curse.DeathsOdium;
 import uniquee.enchantments.unique.AresBlessing;
 import uniquee.enchantments.unique.PhoenixBlessing;
@@ -30,7 +30,7 @@ public class FirstAidHandler
 			if(!source.isMagic() && source != DamageSource.FALL)
 			{
 				ItemStack stack = event.getEntityLiving().getItemBySlot(EquipmentSlotType.CHEST);
-				int level = MiscUtil.getEnchantmentLevel(UniqueEnchantments.ARES_BLESSING, stack);
+				int level = MiscUtil.getEnchantmentLevel(UE.ARES_BLESSING, stack);
 				if(level > 0 && stack.isDamageableItem())
 				{
 					float damage = event.getUndistributedDamage();
@@ -40,7 +40,7 @@ public class FirstAidHandler
 				}	
 			}
 			PlayerEntity living = event.getPlayer();
-			Object2IntMap.Entry<EquipmentSlotType> slot = MiscUtil.getEnchantedItem(UniqueEnchantments.PHOENIX_BLESSING, living);
+			Object2IntMap.Entry<EquipmentSlotType> slot = MiscUtil.getEnchantedItem(UE.PHOENIX_BLESSING, living);
 			if(slot.getIntValue() > 0)
 			{
 				living.heal(living.getMaxHealth());

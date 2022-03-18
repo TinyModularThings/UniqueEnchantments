@@ -55,3 +55,18 @@ license="MIT License"
 		versionRange="[1.0,)"
 		ordering="BEFORE"
 		side="BOTH"
+[[mods]]
+	modId="uniqueapex"
+	version="1.0.0"
+	displayName="Unique Apex Enchantments"
+	credits="Thanks Xaikii for the Mod Design, Thanks to Speiger for the Code"
+	authors="Speiger, Xaikii"
+	description='''
+	A Set of Unique Apex Enchantments
+	'''
+	[[dependencies.uniquebattle]]
+		modId="uniquebase"
+		mandatory=true
+		versionRange="[1.0,)"
+		ordering="BEFORE"
+		side="BOTH"

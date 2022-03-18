@@ -6,7 +6,7 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class FocusImpact extends UniqueEnchantment
 {
@@ -21,7 +21,7 @@ public class FocusImpact extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.SWIFT_BLADE);
+		addIncompats(UE.SWIFT_BLADE);
 	}
 	
 	@Override

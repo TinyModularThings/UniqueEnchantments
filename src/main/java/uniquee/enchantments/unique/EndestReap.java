@@ -16,7 +16,7 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class EndestReap extends UniqueEnchantment
 {
@@ -42,7 +42,7 @@ public class EndestReap extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(Enchantments.SHARPNESS, Enchantments.MENDING, UniqueEnchantments.ADV_SHARPNESS, UniqueEnchantments.ENDER_MENDING, UniqueEnchantments.SPARTAN_WEAPON, UniqueEnchantments.SAGES_BLESSING);
+		addIncompats(Enchantments.SHARPNESS, Enchantments.MENDING, UE.ADV_SHARPNESS, UE.ENDER_MENDING, UE.SPARTAN_WEAPON, UE.SAGES_BLESSING);
 	}
 	
 	@Override

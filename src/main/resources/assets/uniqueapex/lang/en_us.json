@@ -1,0 +1,14 @@
+{
+	"enchantment.uniqueapex.absolute_protection": "Absolute Protection",
+	"enchantment.uniqueapex.absolute_protection.desc": "Reduces all incoming Damage",
+	"enchantment.uniqueapex.blessed_blade": "Blessed Blade",
+	"enchantment.uniqueapex.blessed_blade.desc": "Increases Attack Damage and deals additional Magic Damage",
+	"enchantment.uniqueapex.second_life": "Second Life",
+	"enchantment.uniqueapex.second_life.desc": "If an Item reaches 1 Durability it'll restore a part of it's durability. Every restore reduces this Enchantment Level by 1",
+	"enchantment.uniqueapex.aeons_fragment": "Aeon's Fragment",
+	"enchantment.uniqueapex.aeons_fragment.desc": "Throwing a Trident will accelerate time around the area of impact. Trident has to be stationary to keep effect active",
+	"unique.apex.jei.name": "Enchantment Fusion",
+	"unique.apex.catalyst": "Catalyst",
+	"unique.apex.bases": "Bases",
+	"unique.apex.desc": "Catalysts go into side chests.\nEnchantments go into the top.\nOutput is the first slot in the top chest"
+}

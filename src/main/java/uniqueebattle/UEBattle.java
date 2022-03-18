@@ -6,7 +6,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
-import uniquebase.UniqueEnchantmentsBase;
+import uniquebase.UEBase;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.IKeyBind;
 import uniquebase.handler.BaseHandler;
@@ -32,7 +32,7 @@ import uniqueebattle.handler.potion.Toughend;
 
 
 @Mod("uniquebattle")
-public class UniqueEnchantmentsBattle extends BaseUEMod
+public class UEBattle extends BaseUEMod
 {
 	public static Enchantment LUNATIC_DESPAIR;
 	public static Enchantment CELESTIAL_BLESSING;
@@ -51,14 +51,17 @@ public class UniqueEnchantmentsBattle extends BaseUEMod
 	public static Enchantment SNARE;
 
 
-	public static final Effect TOUGHEND = new Toughend();
-	public static final Effect BLEED = new Bleed();
-	public static final Effect LOCK_DOWN = new Lockdown();
+	public static Effect TOUGHEND;
+	public static Effect BLEED;
+	public static Effect LOCK_DOWN;
 	public static IKeyBind GRANIS_SOUL_DASH = IKeyBind.empty();
 	
-	public UniqueEnchantmentsBattle()
+	public UEBattle()
 	{
-		GRANIS_SOUL_DASH = UniqueEnchantmentsBase.PROXY.registerKey("Granis Soul Dash", 341);
+		GRANIS_SOUL_DASH = UEBase.PROXY.registerKey("Granis Soul Dash", 341);
+		TOUGHEND = new Toughend();
+		BLEED = new Bleed();
+		LOCK_DOWN = new Lockdown();
 		ForgeRegistries.POTIONS.registerAll(TOUGHEND, BLEED, LOCK_DOWN);
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UniqueEnchantment-Battle.toml");
 		MinecraftForge.EVENT_BUS.register(BattleHandler.INSTANCE);

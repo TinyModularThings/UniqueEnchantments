@@ -5,7 +5,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class EnderMarksmen extends UniqueEnchantment
 {
@@ -20,6 +20,6 @@ public class EnderMarksmen extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.ECOLOGICAL, Enchantments.MENDING, Enchantments.INFINITY_ARROWS);
+		addIncompats(UE.ECOLOGICAL, Enchantments.MENDING, Enchantments.INFINITY_ARROWS);
 	}
 }

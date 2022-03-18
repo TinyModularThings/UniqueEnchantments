@@ -11,13 +11,13 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import uniquebase.UniqueEnchantmentsBase;
+import uniquebase.UEBase;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
 import uniquebase.utils.StackUtils;
-import uniqueeutils.UniqueEnchantmentsUtils;
+import uniqueeutils.UEUtils;
 import uniqueeutils.misc.HighlightPacket;
 
 public class Resonance extends UniqueEnchantment
@@ -96,8 +96,8 @@ public class Resonance extends UniqueEnchantment
 				BlockPos pos = positionsToCheck.get(currentIndex);
 				if(StackUtils.isOre(world.getBlockState(pos)))
 				{
-					world.playSound(null, pos.getX()+0.5D, pos.getY()+0.5D, pos.getZ()+0.5D, UniqueEnchantmentsUtils.RESONANCE_SOUND, SoundCategory.BLOCKS, 1F, 1F);
-					UniqueEnchantmentsBase.NETWORKING.sendToAllChunkWatchers((Chunk)world.getChunk(pos), new HighlightPacket(pos));
+					world.playSound(null, pos.getX()+0.5D, pos.getY()+0.5D, pos.getZ()+0.5D, UEUtils.RESONANCE_SOUND, SoundCategory.BLOCKS, 1F, 1F);
+					UEBase.NETWORKING.sendToAllChunkWatchers((Chunk)world.getChunk(pos), new HighlightPacket(pos));
 				}
 				currentIndex++;
 			}

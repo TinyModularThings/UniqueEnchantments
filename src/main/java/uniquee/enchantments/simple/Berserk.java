@@ -6,7 +6,7 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class Berserk extends UniqueEnchantment
 {
@@ -28,6 +28,6 @@ public class Berserk extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.SWIFT_BLADE, UniqueEnchantments.SPARTAN_WEAPON);
+		addIncompats(UE.SWIFT_BLADE, UE.SPARTAN_WEAPON);
 	}
 }

@@ -7,7 +7,7 @@ import net.minecraft.item.HoeItem;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniquee.UniqueEnchantments;
+import uniquee.UE;
 
 public class PerpetualStrike extends UniqueEnchantment
 {
@@ -32,6 +32,6 @@ public class PerpetualStrike extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UniqueEnchantments.SPARTAN_WEAPON);
+		addIncompats(UE.SPARTAN_WEAPON);
 	}
 }

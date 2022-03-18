@@ -15,6 +15,5 @@ public class PhanesRegret extends UniqueEnchantment
 		setCategory("utils");
 		addStats(CHANCE);
 		setCurse();
-		setDisableDefaultItems();
 	}
 }

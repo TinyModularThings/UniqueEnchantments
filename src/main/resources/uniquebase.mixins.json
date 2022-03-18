@@ -6,12 +6,14 @@
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
 		"ArrowMixin",
+		"BeaconMixin",
 		"EndermenMixin",
 		"EnchantmentMixin",
 		"EntityMixin",
 		"InteractionManagerMixin",
 		"MapDataMixin",
-		"FireworkMixin"
+		"FireworkMixin",
+		"StackMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
