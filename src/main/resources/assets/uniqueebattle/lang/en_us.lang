@@ -29,6 +29,6 @@ enchantment.uniqueebattle.lunatic_despair.desc=Receive a Damage Boost but also d
 enchantment.uniqueebattle.wars_odium=War's Odium
 enchantment.uniqueebattle.wars_odium.desc=Killing a Mob, has a Chance to respawn the Mob
 
-tooltip.uniqueebattle.stored.ender.name=Stored Ender Energy
+tooltip.uniqueebattle.stored.ender.name=Stored Ender Energy %s
 tooltip.uniqueebattle.stored.ender.souls.common.name=Basic Souls stored %s
 tooltip.uniqueebattle.stored.ender.souls.higher.name=Higher Souls stored %s
