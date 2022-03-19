@@ -843,7 +843,10 @@ public class EntityEvents
 				ItemStack stack = event.getEntityLiving().getItemStackFromSlot(slot);
 				if(MiscUtil.getEnchantmentLevel(UniqueEnchantments.DEATHS_ODIUM, stack) > 0)
 				{
-					StackUtils.setInt(stack, DeathsOdium.CURSE_STORAGE, Math.min(StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0) + 1, DeathsOdium.MAX_STORAGE.get(maxLevel)));
+					int value = StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0);
+					int newValue = Math.min(value + 1, DeathsOdium.MAX_STORAGE.get(maxLevel));
+					if(value == newValue) continue;
+					StackUtils.setInt(stack, DeathsOdium.CURSE_STORAGE, newValue);
 					break;
 				}
 			}
@@ -992,8 +995,7 @@ public class EntityEvents
 		EntityLivingBase living = event.getEntityLiving();
 		if(living instanceof EntityEnderman)
 		{
-	        IAttributeInstance iattributeinstance = living.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
-	        double distance = iattributeinstance == null ? 16.0D : iattributeinstance.getAttributeValue();
+	        double distance = MiscUtil.getAttribute(living, SharedMonsterAttributes.FOLLOW_RANGE, 16D);
 	        if(living.getEntityWorld().getNearestAttackablePlayer(living.posX, living.posY, living.posZ, distance, distance, null, EnderEyes.getPlayerFilter(living)) != null)
 	        {
 	        	event.setCanceled(true);

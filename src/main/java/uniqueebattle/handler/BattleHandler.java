@@ -15,6 +15,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -241,7 +242,8 @@ public class BattleHandler
 					{
 						if(!other.world.isRemote)
 						{
-							other.entityDropItem(other.getHeldItemMainhand(), 0F);
+							EntityItem entity = other.entityDropItem(other.getHeldItemMainhand(), 0F);
+							if(entity != null) entity.setPickupDelay(30);
 						}
 						other.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 					}
@@ -268,6 +270,7 @@ public class BattleHandler
 	@SubscribeEvent
 	public void onXPDrop(LivingExperienceDropEvent event)
 	{
+		if(event.getAttackingPlayer() == null) return;
 		Object2IntMap.Entry<EntityEquipmentSlot> entry = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.ARTEMIS_SOUL, event.getAttackingPlayer());
 		if(entry.getIntValue() > 0)
 		{
