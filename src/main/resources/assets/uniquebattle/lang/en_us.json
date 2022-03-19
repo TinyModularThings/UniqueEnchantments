@@ -21,7 +21,7 @@
 	"enchantment.uniquebattle.deep_wounds":"Deep Wounds",
 	"enchantment.uniquebattle.deep_wounds.desc":"Hitting an entity without Chestplace, will cause it to bleed. Bleeding enemy take damage over time and increased damage",
 	"enchantment.uniquebattle.ifrits_blessing":"Ifrit's Blessing'",
-	"enchantment.uniquebattle.ifrits_blessing.desc":"Brennende Einheiten erhalten erhoehten Schaden. Schaden ist verdoppelt wenn du auch brennst",
+	"enchantment.uniquebattle.ifrits_blessing.desc":"Hitting a burning Entity will deal additional Damage. Bonus is doubled if you're burning as well",
 	"enchantment.uniquebattle.granis_soul":"Grani's Soul",
 	"enchantment.uniquebattle.granis_soul.desc":"Press the specified Key to start dashing. Entities around the start and end location start bleeding",
 	
