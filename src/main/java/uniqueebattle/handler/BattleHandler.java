@@ -18,6 +18,7 @@ import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -31,7 +32,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -41,6 +44,7 @@ import net.minecraft.world.storage.loot.LootParameters;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
@@ -241,7 +245,8 @@ public class BattleHandler
 					{
 						if(!other.world.isRemote)
 						{
-							other.entityDropItem(other.getHeldItemMainhand(), 0F);
+							ItemEntity entity = other.entityDropItem(other.getHeldItemMainhand(), 0F);
+							if(entity != null) entity.setPickupDelay(30);
 						}
 						other.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
 					}
@@ -394,10 +399,30 @@ public class BattleHandler
 				source.hurtResistantTime = 0;
 				source.attackEntityFrom(DamageSource.MAGIC, (float)Math.pow(event.getAmount()*level, 0.25)-1);
 			}
-			level = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.SNARE, source).getIntValue();
+			level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.WARS_ODIUM, source);
 			if(level > 0)
 			{
-				event.getEntityLiving().addPotionEffect(new EffectInstance(UniqueEnchantmentsBattle.LOCK_DOWN, Snare.DURATION.get(level)));
+				CompoundNBT nbt = MiscUtil.getPersistentData(source);
+				nbt.putInt(WarsOdium.HIT_COUNTER, nbt.getInt(WarsOdium.HIT_COUNTER)+1);
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onArrowHit(ProjectileImpactEvent.Arrow event)
+	{
+		RayTraceResult result = event.getRayTraceResult();
+		if(!(result instanceof EntityRayTraceResult))
+		{
+			return;
+		}
+		Entity entity = ((EntityRayTraceResult)result).getEntity();
+		if(entity instanceof LivingEntity)
+		{
+			int level = MiscUtil.getEnchantmentLevel(UniqueEnchantmentsBattle.SNARE, StackUtils.getArrowStack(event.getArrow()));
+			if(level > 0)
+			{
+				((LivingEntity)entity).addPotionEffect(new EffectInstance(UniqueEnchantmentsBattle.LOCK_DOWN, Snare.DURATION.get(level)));
 			}
 		}
 	}
