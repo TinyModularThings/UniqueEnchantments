@@ -11,4 +11,5 @@ public interface EnchantmentMixin
 {
 	@Accessor("slots")
 	EquipmentSlotType[] getSlots();
+	
 }

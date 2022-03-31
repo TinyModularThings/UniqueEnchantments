@@ -76,6 +76,8 @@ public class BaseHandler
 		{
 			tooltipCounter = 0;
 		}
+		
+		
 	}
 	
 	@SubscribeEvent

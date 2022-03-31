@@ -1,7 +1,11 @@
 package uniquebase.utils;
 
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -35,15 +39,21 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import uniquebase.UEBase;
 import uniquebase.api.IToggleEnchantment;
 import uniquebase.utils.mixin.EnchantmentMixin;
 
 public class MiscUtil
 {
+	private static Random rand = new Random();
 	static final Object2IntMap.Entry<EquipmentSlotType> NO_ENCHANTMENT = new AbstractObject2IntMap.BasicEntry<>(null, 0);
 	static final Consumer<LivingEntity>[] SLOT_BASE = createSlots();
 	
@@ -356,4 +366,85 @@ public class MiscUtil
 		}
 		return --result;
 	}
+	
+	public static Style toColor(int color)
+    {
+        return Style.EMPTY.withColor(Color.fromRgb(color & 0xFFFFFF));
+    }
+	
+	public static int getAdjectiveCount(UniqueRarity rarity) {
+		if(rarity.chance == 0.0) return 0;
+		float chance = rarity.chance;
+		int total = 0;
+
+		for(int i=0;i<3;i++) {
+			if(rand.nextDouble() < chance) {
+				total++;
+				chance = chance * chance;
+			}
+		}
+
+		return Math.min(total, 3);
+	}
+	
+	public static ITextComponent itemNameGen(ItemStack item, Entity entity, double entityChance, double rarityChance, double locationChance, List<? extends String> person, List<? extends String> adjectives, List<? extends String> names, List<? extends String> suffix) {
+		String name = "";
+		
+		//To Be Done: Name Combo (if Person X was chosen, 10% to get Adjective/Name/Suffix Y)
+		
+		ITextComponent hoverName = item.getItem().getName(item);
+		UniqueRarity rarity = UniqueRarity.UNCOMMON;
+		
+		//Person from List, or Name of Entity slain
+		if(rand.nextDouble() < entityChance && entity != null && entity.getDisplayName() != null) {
+			name = name.concat(entity.getDisplayName().getString() + " ");
+		}
+		else if(rand.nextDouble() < rarity.chance) {
+			name = name.concat(NameString.getName(NameEnum.PERSON, rarity, ItemType.byId("sword")));
+		}
+		
+		//UniqueRarity of the Item
+		if(rarity.index >= 4 && rand.nextDouble() < (1-rarityChance) || rand.nextDouble() < rarityChance) name = name.concat(rarity.displayName + " ");
+		
+		//Adjectives
+		int adjCount = getAdjectiveCount(rarity);
+		UEBase.LOGGER.info(adjCount);
+		List<String> adj = new ArrayList<String>();
+		if(adjCount > 0) {
+			for(int i=1; i<=adjCount; i++) adj.add(NameString.getName(NameEnum.ADJECTIVE, rarity, ItemType.byId("sword")));
+			for(String ad : adj) name = name.concat(ad);
+		}
+		
+		//Name
+		if(rand.nextDouble() < Math.pow(rarity.chance,2)) {
+			name = name.concat(NameString.getName(NameEnum.NAME, rarity, ItemType.byId("sword")));
+		} else {
+			name = name.concat(hoverName.getString() + " ");
+		}
+		
+		//Location OR Suffix
+		if(rand.nextDouble() < locationChance && entity instanceof LivingEntity) {
+			name = name.concat(entity.getY() < 63.0 ? "from the " : "of the " + entity.level.getBiome(entity.blockPosition()).getRegistryName().getPath());
+		} else if(rand.nextDouble() < rarity.chance) {
+			name = name.concat(NameString.getName(NameEnum.SUFFIX, rarity, ItemType.byId("sword")));
+		}
+		UEBase.LOGGER.info(name);
+		
+		return (ITextComponent) (!name.isEmpty() ? new TranslationTextComponent(name) : item.getHoverName());
+	}
+	
+	public static boolean matchingEquipSlot(String list, ItemStack item) {
+		Set<String> acceptedSlots = new HashSet<String>();
+		
+		String[] slots = list.split(",");
+		for (String slot : slots) {
+			ItemType it = ItemType.byId(slot);
+			if(it != null) {
+				acceptedSlots.add(slot);
+			}
+			
+		}
+		return acceptedSlots.size() >= 1;
+	}
+
 }

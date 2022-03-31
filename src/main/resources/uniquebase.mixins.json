@@ -9,8 +9,10 @@
 		"BeaconMixin",
 		"EndermenMixin",
 		"EnchantmentMixin",
+		"EnchantmentsMixin",
 		"EntityMixin",
 		"InteractionManagerMixin",
+		"ItemStackMixin",
 		"MapDataMixin",
 		"FireworkMixin",
 		"StackMixin"
