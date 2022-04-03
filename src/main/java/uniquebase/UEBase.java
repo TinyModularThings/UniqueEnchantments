@@ -30,6 +30,7 @@ import uniquebase.api.IKeyBind;
 import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
 import uniquebase.handler.ClientProxy;
+import uniquebase.handler.EnchantmentHandler;
 import uniquebase.handler.Proxy;
 import uniquebase.handler.flavor.Flavor;
 import uniquebase.handler.flavor.FlavorTarget;
@@ -66,7 +67,6 @@ public class UEBase
 	
 	public UEBase()
 	{
-		
 		ENCHANTMENT_GUI = PROXY.registerKey("Enchantment Gui", 342);
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 		builder.push("obfuscator");
@@ -92,6 +92,7 @@ public class UEBase
 		CONFIG = builder.build();
 		ModLoadingContext.get().registerConfig(Type.COMMON, CONFIG, "UEBase.toml");
 		MinecraftForge.EVENT_BUS.register(BaseHandler.INSTANCE);
+		MinecraftForge.EVENT_BUS.register(EnchantmentHandler.INSTANCE);
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		
 		Flavor.fillMap(PEOPLE_LIST, FlavorTarget.PERSON);
@@ -115,10 +116,10 @@ public class UEBase
 	{
 		CropHarvestRegistry.INSTANCE.init();
 		ItemType.init();
+		EnchantmentHandler.INSTANCE.init();
 		PROXY.init();
 	}
     
-    @SuppressWarnings("deprecation")
 	protected void reloadConfig()
     {
     	CONFIG_RELOAD_TASKS.forEach(Runnable::run);
@@ -127,7 +128,7 @@ public class UEBase
 		for (int i = 0; i < list.size(); i++) {
 			String[] split = list.get(i).split(";");
 			if(split.length == 2) {
-				COLOR_MAP.put(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(split[0])), Integer.decode(split[1]));
+				COLOR_MAP.put(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(split[0])), Integer.decode(split[1]).intValue());
 			}
 		}
     }

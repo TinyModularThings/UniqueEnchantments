@@ -13,9 +13,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.text.StringTextComponent;
@@ -85,14 +83,13 @@ public class BaseHandler
 	@OnlyIn(Dist.CLIENT)
 	public void onToolTipEvent(ItemTooltipEvent event)
 	{
-	
 		ItemStack stack = event.getItemStack();
 		
-		if(stack.getItem() == Items.ENCHANTED_BOOK) {
-			Object2IntMap.Entry<Enchantment> enchantment = MiscUtil.getFirstEnchantment(stack);
-			
-			if(EnchantedBookItem.getEnchantments(stack).size() == 1 && event.getToolTip().size() >= 2) event.getToolTip().remove(enchantment.getKey().getFullname(enchantment.getIntValue()));
-		} 
+//		if(stack.getItem() == Items.ENCHANTED_BOOK) {
+//			Object2IntMap.Entry<Enchantment> enchantment = MiscUtil.getFirstEnchantment(stack);
+//			
+//			if(EnchantedBookItem.getEnchantments(stack).size() == 1 && event.getToolTip().size() >= 2) event.getToolTip().remove(enchantment.getKey().getFullname(enchantment.getIntValue()));
+//		} 
 		
 		TooltipHelper.addStatTooltip(stack, event);
 		

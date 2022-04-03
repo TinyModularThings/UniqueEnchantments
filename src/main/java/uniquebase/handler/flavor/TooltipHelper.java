@@ -3,16 +3,11 @@ package uniquebase.handler.flavor;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.TieredItem;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import uniquebase.UEBase;
-import uniqueeutils.handler.UtilsHandler;
 
 public class TooltipHelper {
 	
