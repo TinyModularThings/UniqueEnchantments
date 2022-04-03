@@ -1,4 +1,4 @@
-package uniquebase.utils;
+package uniquebase.handler.flavor;
 
 import java.util.HashMap;
 import java.util.Map;

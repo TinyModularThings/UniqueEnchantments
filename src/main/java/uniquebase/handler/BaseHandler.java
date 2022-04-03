@@ -33,10 +33,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniquebase.UEBase;
 import uniquebase.gui.EnchantmentGui;
-import uniquebase.utils.ItemType;
+import uniquebase.handler.flavor.ItemType;
+import uniquebase.handler.flavor.TooltipHelper;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
-import uniquebase.utils.TooltipHelper;
 import uniquebase.utils.Triple;
 
 public class BaseHandler

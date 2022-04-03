@@ -1,8 +1,6 @@
 package uniqueeutils.handler;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
@@ -234,7 +232,7 @@ public class UtilsHandler
 			}
 			
 			if(k % 20 == 0) {
-				armor.setHoverName(MiscUtil.itemNameGen(armor, (Entity)player, UEBase.entityChance.get(), UEBase.rarityChance.get(), UEBase.locationChance.get(), UEBase.persons.get(), UEBase.adjectives.get(), UEBase.names.get(), UEBase.suffix.get()));
+				armor.setHoverName(MiscUtil.itemNameGen(armor, player, UEBase.entityChance.get(), UEBase.rarityChance.get(), UEBase.locationChance.get()));
 			}
 			k++;
 		}

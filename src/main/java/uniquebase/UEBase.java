@@ -31,9 +31,10 @@ import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
 import uniquebase.handler.ClientProxy;
 import uniquebase.handler.Proxy;
+import uniquebase.handler.flavor.FlavorTarget;
+import uniquebase.handler.flavor.ItemType;
+import uniquebase.handler.flavor.Flavor;
 import uniquebase.networking.PacketHandler;
-import uniquebase.utils.NameEnum;
-import uniquebase.utils.NameString;
 
 @Mod("uniquebase")
 public class UEBase
@@ -42,6 +43,7 @@ public class UEBase
 	public static final PacketHandler NETWORKING = new PacketHandler();
 	public static final Proxy PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> Proxy::new);
 	public static IKeyBind ENCHANTMENT_GUI = IKeyBind.empty();
+	private static final List<Runnable> CONFIG_RELOAD_TASKS = new ObjectArrayList<>();
 	
 	public static ForgeConfigSpec config;
 
@@ -93,12 +95,12 @@ public class UEBase
 		MinecraftForge.EVENT_BUS.register(BaseHandler.INSTANCE);
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		
-		NameString.fillMap(persons, NameEnum.PERSON);
-		NameString.fillMap(adjectives, NameEnum.ADJECTIVE);
-		NameString.fillMap(names, NameEnum.NAME);
-		NameString.fillMap(suffix, NameEnum.SUFFIX);
+		Flavor.fillMap(persons, FlavorTarget.PERSON);
+		Flavor.fillMap(adjectives, FlavorTarget.ADJECTIVE);
+		Flavor.fillMap(names, FlavorTarget.NAME);
+		Flavor.fillMap(suffix, FlavorTarget.SUFFIX);
 		
-		NameString.printer();
+		Flavor.printer();
 		
 		
 		bus.addListener(this::onLoad);
@@ -113,11 +115,13 @@ public class UEBase
 	public void postInit(FMLCommonSetupEvent setup) 
 	{
 		CropHarvestRegistry.INSTANCE.init();
+		ItemType.init();
 	}
     
     @SuppressWarnings("deprecation")
 	protected void reloadConfig()
     {
+    	CONFIG_RELOAD_TASKS.forEach(Runnable::run);
     	colorMap.clear();
 		List<? extends String> list = color.get();
 		for (int i = 0; i < list.size(); i++) {
