@@ -1,6 +1,8 @@
 package uniqueeutils.handler;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 
@@ -718,6 +720,7 @@ public class UtilsHandler
 		}
 		PlayerEntity player = event.getPlayer();
 		ItemStack held = player.getMainHandItem();
+		
 		int level = MiscUtil.getEnchantmentLevel(UEUtils.ADEPT, player.getItemBySlot(EquipmentSlotType.HEAD));
 		if(level > 0)
 		{

@@ -7,13 +7,17 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.ToolItem;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.text.StringTextComponent;
@@ -21,6 +25,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -28,8 +33,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniquebase.UEBase;
 import uniquebase.gui.EnchantmentGui;
+import uniquebase.utils.ItemType;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
+import uniquebase.utils.TooltipHelper;
 import uniquebase.utils.Triple;
 
 public class BaseHandler
@@ -84,8 +91,19 @@ public class BaseHandler
 	@OnlyIn(Dist.CLIENT)
 	public void onToolTipEvent(ItemTooltipEvent event)
 	{
+	
 		ItemStack stack = event.getItemStack();
+		
+		if(stack.getItem() == Items.ENCHANTED_BOOK) {
+			Object2IntMap.Entry<Enchantment> enchantment = MiscUtil.getFirstEnchantment(stack);
+			
+			if(EnchantedBookItem.getEnchantments(stack).size() == 1 && event.getToolTip().size() >= 2) event.getToolTip().remove(enchantment.getKey().getFullname(enchantment.getIntValue()));
+		} 
+		
+		TooltipHelper.addStatTooltip(stack, event);
+		
 		Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
+		
 		for(int i = 0,m=tooltips.size();i<m;i++)
 		{
 			Tuple<Enchantment, String[]> entry = tooltips.get(i);

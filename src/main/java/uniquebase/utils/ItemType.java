@@ -8,6 +8,7 @@ import java.util.function.Predicate;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -59,6 +60,10 @@ public class ItemType
     {
         return new ItemType(id, T -> test.test(T.getItem()));
     }
+    
+   public static List<ItemType> getAllTypes() {
+	   return new ObjectArrayList<>(REGISTRY.values());
+   }
     
     public static ItemType byId(String id)
     {

@@ -22,7 +22,7 @@ import uniquebase.utils.MiscUtil;
 
 @Mixin(Enchantment.class)
 public class EnchantmentsMixin {
-	
+	/*
 	@Inject(method="getFullname", at=@At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void rebuildName(int level, CallbackInfoReturnable<ITextComponent> ci) {
 		boolean obfuscated = true;
@@ -43,6 +43,7 @@ public class EnchantmentsMixin {
 		
 		ci.setReturnValue(textComponent);
 	}
+	*/
 	
 	@SuppressWarnings("resource")
 	@OnlyIn(Dist.CLIENT)
