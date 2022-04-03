@@ -19,6 +19,7 @@ import net.minecraft.block.CommandBlockBlock;
 import net.minecraft.block.JigsawBlock;
 import net.minecraft.block.StructureBlock;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantment.Rarity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -41,6 +42,7 @@ import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -372,6 +374,18 @@ public class MiscUtil
     {
         return Style.EMPTY.withColor(Color.fromRgb(color & 0xFFFFFF));
     }
+	
+	public static TextFormatting getFormatting(Rarity rarity)
+	{
+		switch(rarity)
+		{
+			case COMMON: return TextFormatting.WHITE;
+			case RARE: return TextFormatting.AQUA;
+			case UNCOMMON: return TextFormatting.YELLOW;
+			case VERY_RARE: return TextFormatting.LIGHT_PURPLE;
+			default: return TextFormatting.OBFUSCATED;
+		}
+	}
 	
 	public static int getAdjectiveCount(float chance, Random rand) {
 		if(chance <= 0F) return 0;

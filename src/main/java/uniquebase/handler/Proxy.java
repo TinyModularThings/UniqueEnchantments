@@ -15,6 +15,11 @@ public class Proxy
 {
 	Map<UUID, PlayerKeys> keyMap = new Object2ObjectOpenHashMap<>();
 	
+	public void init()
+	{
+		
+	}
+	
 	public void update()
 	{
 		

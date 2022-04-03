@@ -13,7 +13,14 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 import net.minecraft.client.util.InputMappings.Input;
 import net.minecraft.client.util.InputMappings.Type;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.EnchantedBookItem;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,19 +28,57 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.api.IKeyBind;
 import uniquebase.networking.KeyPacket;
+import uniquebase.utils.MiscUtil;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends Proxy
 {
 	Map<String, ClientPlayerKey> keys = new Object2ObjectLinkedOpenHashMap<>();
 	Object2BooleanMap<String> lastKeyState = Object2BooleanMaps.emptyMap();
+	public int counter = 0;
+	
+	@Override
+	public void init()
+	{
+		ItemModelsProperties.register(Items.ENCHANTED_BOOK, new ResourceLocation("ue", "enchantment_attributes"), (I, W, L) -> {
+			Enchantment ench = getEnchantment(I);
+			return ench == null ? 0F : (ench.isTradeable() ? 1F : 0F) + (ench.isCurse() ? 2F : 0F) + (ench.isTreasureOnly() ? 3F : 0F);
+		});
+		Minecraft.getInstance().getItemColors().register((I, T) -> {
+			if(T == 1) return UEBase.COLOR_MAP.getInt(getEnchantment(I));
+			if(T == 2)
+			{
+				Enchantment ench = getEnchantment(I);
+				if(ench != null) return MiscUtil.getFormatting(ench.getRarity()).getColor() | 0xFF000000;
+			}
+			return -1;
+		}, Items.ENCHANTED_BOOK);
+	}
+	
+	private Enchantment getEnchantment(ItemStack stack)
+	{
+		ListNBT list = stack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(stack) : stack.getEnchantmentTags();
+		if(list.isEmpty()) return null;
+		int index = (counter / 40) % list.size();
+		int tries = 0;
+		while(tries < list.size())
+		{
+			Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(list.getCompound(index).getString("id")));
+			if(enchantment != null) return enchantment;
+			tries++;
+			index = ++index % list.size();
+		}
+		return null;
+	}
 	
 	@Override
 	public void update()
 	{
+		counter++;
 		Object2BooleanMap<String> keyState = new Object2BooleanOpenHashMap<>();
 		for(ClientPlayerKey key : keys.values())
 		{

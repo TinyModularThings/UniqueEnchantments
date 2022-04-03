@@ -232,7 +232,7 @@ public class UtilsHandler
 			}
 			
 			if(k % 20 == 0) {
-				armor.setHoverName(MiscUtil.itemNameGen(armor, player, UEBase.entityChance.get(), UEBase.rarityChance.get(), UEBase.locationChance.get()));
+				armor.setHoverName(MiscUtil.itemNameGen(armor, player, UEBase.ENTITY_NAME_CHANCE.get(), UEBase.RARITY_NAME_CHANCE.get(), UEBase.LOCATION_NAME_CHANCE.get()));
 			}
 			k++;
 		}

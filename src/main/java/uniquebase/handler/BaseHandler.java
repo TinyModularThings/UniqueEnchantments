@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -17,7 +16,6 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.ToolItem;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.text.StringTextComponent;
@@ -25,7 +23,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -33,7 +30,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniquebase.UEBase;
 import uniquebase.gui.EnchantmentGui;
-import uniquebase.handler.flavor.ItemType;
 import uniquebase.handler.flavor.TooltipHelper;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
@@ -70,7 +66,7 @@ public class BaseHandler
 			if(slot != null && slot.hasItem() && EnchantmentHelper.getEnchantments(slot.getItem()).size() > 0)
 			{
 				tooltipCounter++;
-				if(tooltipCounter >= 40) {
+				if(tooltipCounter >= UEBase.VIEW_COOLDOWN.get()) {
 					mc.setScreen(new EnchantmentGui(slot.getItem().copy(), mc.player, mc.screen));
 				}
 			}
@@ -83,8 +79,6 @@ public class BaseHandler
 		{
 			tooltipCounter = 0;
 		}
-		
-		
 	}
 	
 	@SubscribeEvent

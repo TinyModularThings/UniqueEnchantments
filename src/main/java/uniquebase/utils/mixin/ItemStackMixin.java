@@ -37,10 +37,10 @@ public class ItemStackMixin {
 				if(FMLEnvironment.dist.isClient()) {
 					obfuscated = !isHoveringSlot();
 				}
-				obfuscated = UEBase.obfuscate.get();
+				obfuscated = UEBase.IS_OBFUSCATED.get();
 				IFormattableTextComponent textComponent = new TranslationTextComponent(enchantment.getDescriptionId());
 
-				textComponent.withStyle(MiscUtil.toColor(UEBase.colorMap.getInt(enchantment)));
+				textComponent.withStyle(MiscUtil.toColor(UEBase.COLOR_MAP.getInt(enchantment)));
 				if(obfuscated) {
 					textComponent.append(" ").append(new TranslationTextComponent("111").withStyle(TextFormatting.OBFUSCATED));
 				}

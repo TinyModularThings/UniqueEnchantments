@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantment.Rarity;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,6 +22,7 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import uniquebase.utils.MiscUtil;
 
 public class EnchantmentContainer extends Container
 {
@@ -39,7 +39,7 @@ public class EnchantmentContainer extends Container
 			addToolTip(item, TextFormatting.DARK_AQUA.toString()+I18n.get("unique.base.jei.max_level", TextFormatting.WHITE.toString()+entry.getKey().getMaxLevel()));
 			addToolTip(item, TextFormatting.GOLD.toString()+I18n.get("unique.base.jei.treasure")+(entry.getKey().isTreasureOnly() ? TextFormatting.GREEN.toString()+"Yes" : TextFormatting.RED.toString()+"No"));
 			addToolTip(item, TextFormatting.DARK_RED.toString()+I18n.get("unique.base.jei.curse")+(entry.getKey().isCurse() ? TextFormatting.RED.toString()+"Yes" : TextFormatting.GREEN.toString()+"No"));
-			addToolTip(item, TextFormatting.DARK_PURPLE.toString()+I18n.get("unique.base.jei.rarity", getFormatting(entry.getKey().getRarity())+I18n.get("unique.base.jei."+entry.getKey().getRarity().name().toLowerCase())));
+			addToolTip(item, TextFormatting.DARK_PURPLE.toString()+I18n.get("unique.base.jei.rarity", MiscUtil.getFormatting(entry.getKey().getRarity())+I18n.get("unique.base.jei."+entry.getKey().getRarity().name().toLowerCase())));
 			enchantments.add(item);
 		}
 		inventory = new Inventory(enchantments.size()+1);
@@ -54,18 +54,6 @@ public class EnchantmentContainer extends Container
 			int x = i % 8;
 			int y = i / 8;
 			addSlot(new LockedSlot(inventory, i+1, 17+x*18, 37+y*18));
-		}
-	}
-	
-	private TextFormatting getFormatting(Rarity rarity)
-	{
-		switch(rarity)
-		{
-			case COMMON: return TextFormatting.WHITE;
-			case RARE: return TextFormatting.AQUA;
-			case UNCOMMON: return TextFormatting.YELLOW;
-			case VERY_RARE: return TextFormatting.LIGHT_PURPLE;
-			default: return TextFormatting.OBFUSCATED;
 		}
 	}
 	
