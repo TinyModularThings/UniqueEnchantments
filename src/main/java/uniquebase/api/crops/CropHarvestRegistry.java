@@ -2,6 +2,7 @@ package uniquebase.api.crops;
 
 import java.util.Map;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -17,7 +18,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class CropHarvestRegistry
 {
 	public static CropHarvestRegistry INSTANCE = new CropHarvestRegistry();
-	Map<Block, ICropHarvest> harvesters = new Object2ObjectOpenHashMap<Block, ICropHarvest>();
+	Map<Block, ICropHarvest> harvesters = Object2ObjectMaps.synchronize(new Object2ObjectOpenHashMap<>());
 	
 	public void init()
 	{

@@ -17,6 +17,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -25,6 +26,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeableArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.TieredItem;
 import net.minecraft.nbt.ByteNBT;
 import net.minecraft.nbt.CompoundNBT;
@@ -36,6 +38,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.util.text.event.HoverEvent.Action;
 import net.minecraft.util.text.event.HoverEvent.ItemHover;
@@ -46,6 +50,7 @@ import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 
@@ -103,9 +108,15 @@ public class EnchantmentHandler
 		RenderSystem.popMatrix();
 	}
 	
-	public boolean addEnchantmentInfo(ListNBT list, List<ITextComponent> tooltip)
+	@OnlyIn(Dist.CLIENT)
+	public boolean addEnchantmentInfo(ListNBT list, List<ITextComponent> tooltip, Item item)
 	{
-		if(!UEBase.ICONS.get()) return false;
+		boolean hideCurses = UEBase.HIDE_CURSES.get();
+		boolean icons = UEBase.ICONS.get();
+		boolean desciptions = !ModList.get().isLoaded("enchdesc");
+		if(!hideCurses && !icons && !desciptions) return false;
+		boolean tools = UEBase.SHOW_NON_BOOKS.get();
+		boolean shiftPressed = Screen.hasShiftDown();
 		int elements = UEBase.ICON_ROW_ELEMENTS.get();
 		int total = UEBase.ICON_ROWS.get() * elements;
 		int cycleTime = UEBase.ICON_CYCLE_TIME.get();
@@ -113,24 +124,45 @@ public class EnchantmentHandler
 		{
 			CompoundNBT compoundnbt = list.getCompound(i);
 			Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(compoundnbt.getString("id")));
-			if(ench == null) continue;
+			if(ench == null || (ench.isCurse() && hideCurses && !shiftPressed)) continue;
 			tooltip.add(ench.getFullname(compoundnbt.getInt("lvl")));
-			IFormattableTextComponent text = new StringTextComponent("").withStyle(Style.EMPTY.withFont(new ResourceLocation("ue", "hacking")));
-			List<ItemStack> items = enchantedItems.getOrDefault(ench.getRegistryName(), ObjectLists.emptyList());
-			int start = items.size() >= total ? ((ticker / cycleTime) % MathHelper.ceil(items.size() / (double)total)) * total : 0;
-			for(int j = 1+start,x=0,m=items.size();j<=m&&x<total;j++,x++)
-			{
-				ItemStack stack = items.get(j-1).copy();
-				stack.addTagElement("ueicon", ByteNBT.ONE);
-				text.append(new StringTextComponent(" ").setStyle(Style.EMPTY.withFont(new ResourceLocation("ue", "hacking")).withHoverEvent(new HoverEvent(Action.SHOW_ITEM, new ItemHover(stack)))));
-				if(j % elements == 0) {
-					tooltip.add(text);
-					text = new StringTextComponent("").withStyle(Style.EMPTY.withFont(new ResourceLocation("ue", "hacking")));
-				}
-			}
-			if(text.getSiblings().size() > 0) tooltip.add(text);
+			if(icons) addEnchantment(tooltip, ench, elements, total, cycleTime);
+			if(desciptions && (item == Items.ENCHANTED_BOOK || tools)) addDescriptions(tooltip, ench);
+			
 		}
 		return true;
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	private void addDescriptions(List<ITextComponent> list, Enchantment ench)
+	{
+		if(!Screen.hasShiftDown())
+		{
+			list.add(new TranslationTextComponent("unique.base.desc").withStyle(TextFormatting.DARK_GRAY));
+			return;
+		}
+		String s = ench.getDescriptionId() + ".desc";
+		if(I18n.exists(s)) list.add(new TranslationTextComponent(s).withStyle(TextFormatting.DARK_GRAY));
+		else list.add(new TranslationTextComponent("unique.base.jei.no.description"));
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	private void addEnchantment(List<ITextComponent> list, Enchantment ench, int elements, int total, int cycleTime)
+	{
+		IFormattableTextComponent text = new StringTextComponent("").withStyle(Style.EMPTY.withFont(new ResourceLocation("ue", "hacking")));
+		List<ItemStack> items = enchantedItems.getOrDefault(ench.getRegistryName(), ObjectLists.emptyList());
+		int start = items.size() >= total ? ((ticker / cycleTime) % MathHelper.ceil(items.size() / (double)total)) * total : 0;
+		for(int j = 1+start,x=0,m=items.size();j<=m&&x<total;j++,x++)
+		{
+			ItemStack stack = items.get(j-1).copy();
+			stack.addTagElement("ueicon", ByteNBT.ONE);
+			text.append(new StringTextComponent(" ").setStyle(Style.EMPTY.withFont(new ResourceLocation("ue", "hacking")).withHoverEvent(new HoverEvent(Action.SHOW_ITEM, new ItemHover(stack)))));
+			if(j % elements == 0) {
+				list.add(text);
+				text = new StringTextComponent("").withStyle(Style.EMPTY.withFont(new ResourceLocation("ue", "hacking")));
+			}
+		}
+		if(text.getSiblings().size() > 0) list.add(text);
 	}
 	
 	public void init()

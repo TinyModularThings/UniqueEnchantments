@@ -55,6 +55,8 @@ public class UEBase
 	public static IntValue ICON_ROW_ELEMENTS;
 	public static IntValue ICON_CYCLE_TIME;
 	public static BooleanValue ENCHANTED_GLINT;
+	public static BooleanValue HIDE_CURSES;
+	public static BooleanValue SHOW_NON_BOOKS;
 	
 	public static ForgeConfigSpec CONFIG;
 
@@ -78,6 +80,8 @@ public class UEBase
 		IS_OBFUSCATED = builder.define("obfuscate", true);
 		VIEW_COOLDOWN = builder.defineInRange("enchantment_view_cooldown", 40, 1, 1200);
 		ENCHANTED_GLINT = builder.define("enchanted_glint", false);
+		HIDE_CURSES = builder.define("hide_curses", false);
+		SHOW_NON_BOOKS = builder.define("show_non_tools", false);
 		builder.pop();
 		//TODO sort this properly
 		builder.push("Enchantment Coloring");

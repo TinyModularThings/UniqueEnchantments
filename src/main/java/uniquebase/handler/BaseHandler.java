@@ -89,7 +89,7 @@ public class BaseHandler
 //			Object2IntMap.Entry<Enchantment> enchantment = MiscUtil.getFirstEnchantment(stack);
 //			
 //			if(EnchantedBookItem.getEnchantments(stack).size() == 1 && event.getToolTip().size() >= 2) event.getToolTip().remove(enchantment.getKey().getFullname(enchantment.getIntValue()));
-//		} 
+//		}
 		
 		TooltipHelper.addStatTooltip(stack, event);
 		
