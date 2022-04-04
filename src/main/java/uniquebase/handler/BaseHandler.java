@@ -114,7 +114,8 @@ public class BaseHandler
 				{
 					StringBuilder builder = new StringBuilder();
 					int i = 0;
-					for(;i<tooltipCounter;i++)
+					int max = (int)((tooltipCounter / (double)UEBase.VIEW_COOLDOWN.get()) * 40);
+					for(;i<max;i++)
 					{
 						builder.append("|");
 					}

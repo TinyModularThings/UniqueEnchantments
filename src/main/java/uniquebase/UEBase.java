@@ -50,6 +50,10 @@ public class UEBase
 	public static ConfigValue<List<? extends String>> COLOR_CONFIG;
 	
 	public static IntValue VIEW_COOLDOWN;
+	public static BooleanValue ICONS;
+	public static IntValue ICON_ROWS;
+	public static IntValue ICON_ROW_ELEMENTS;
+	public static IntValue ICON_CYCLE_TIME;
 	
 	public static ForgeConfigSpec CONFIG;
 
@@ -73,9 +77,15 @@ public class UEBase
 		IS_OBFUSCATED = builder.define("obfuscate", true);
 		VIEW_COOLDOWN = builder.defineInRange("enchantment_view_cooldown", 40, 1, 1200);
 		builder.pop();
-		
+		//TODO sort this properly
 		builder.push("Enchantment Coloring");
 		COLOR_CONFIG = builder.defineList("enchantmentColor", ObjectArrayList.wrap(new String[]{"minecraft:sharpness;#32f094"}), T -> true);
+		builder.pop();
+		builder.push("Enchantment Icons");
+		ICONS = builder.define("enable", true);
+		ICON_ROWS = builder.defineInRange("rows", 3, 1, 100);
+		ICON_ROW_ELEMENTS = builder.defineInRange("row_elements", 18, 1, 100);
+		ICON_CYCLE_TIME = builder.defineInRange("cycleTime", 40, 5, 10000);
 		builder.pop();
 		
 		builder.push("Item Name Generator");

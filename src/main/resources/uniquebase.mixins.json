@@ -17,6 +17,9 @@
 		"FireworkMixin",
 		"StackMixin"
 	],
+	"client": [
+		"FontMixin"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	}

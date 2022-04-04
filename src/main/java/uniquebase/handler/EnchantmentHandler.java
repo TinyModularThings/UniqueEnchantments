@@ -16,6 +16,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -23,14 +24,13 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeableArmorItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.TieredItem;
 import net.minecraft.nbt.ByteNBT;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
@@ -43,22 +43,37 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import uniquebase.UEBase;
 
 public class EnchantmentHandler
 {
 	public static final EnchantmentHandler INSTANCE = new EnchantmentHandler();
 	Map<ResourceLocation, List<ItemStack>> enchantedItems = new Object2ObjectLinkedOpenHashMap<>();
+	int ticker = 0;
+	
+	@SubscribeEvent
+	@OnlyIn(Dist.CLIENT)	
+	public void onClientTick(ClientTickEvent event)
+	{
+		if(event.phase == Phase.START) return;
+		if(Screen.hasControlDown()) ticker = 0;
+		ticker += Screen.hasShiftDown() ? 0 : 1;
+	}
 	
 	@SuppressWarnings("deprecation")
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
 	public void renderTooltip(RenderTooltipEvent.PostText event)
 	{
+		if(!UEBase.ICONS.get()) return;
+		//TODO copy IC2Classics UI Renderer code into here to remove OpenGL requirements.
 		RenderSystem.pushMatrix();
 		RenderSystem.translatef(event.getX(), event.getY() + 12, 500);
-		RenderSystem.scalef(0.5f, 0.5f, 1.0f);
+		RenderSystem.scalef(0.5F, 0.5F, 1.0F);
 		Minecraft mc = Minecraft.getInstance();
 		List<? extends ITextProperties> tooltip = event.getLines();
 		MutableInt xOff = new MutableInt();
@@ -88,28 +103,34 @@ public class EnchantmentHandler
 		RenderSystem.popMatrix();
 	}
 	
-	public void addEnchantmentInfo(ListNBT list, List<ITextComponent> tooltip)
+	public boolean addEnchantmentInfo(ListNBT list, List<ITextComponent> tooltip)
 	{
+		if(!UEBase.ICONS.get()) return false;
+		int elements = UEBase.ICON_ROW_ELEMENTS.get();
+		int total = UEBase.ICON_ROWS.get() * elements;
+		int cycleTime = UEBase.ICON_CYCLE_TIME.get();
 		for(int i = 0;i < list.size();++i)
 		{
 			CompoundNBT compoundnbt = list.getCompound(i);
 			Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(compoundnbt.getString("id")));
 			if(ench == null) continue;
 			tooltip.add(ench.getFullname(compoundnbt.getInt("lvl")));
-			IFormattableTextComponent text = new StringTextComponent("");
+			IFormattableTextComponent text = new StringTextComponent("").withStyle(Style.EMPTY.withFont(new ResourceLocation("ue", "hacking")));
 			List<ItemStack> items = enchantedItems.getOrDefault(ench.getRegistryName(), ObjectLists.emptyList());
-			for(int j = 1,m=items.size();j<=m;j++)
+			int start = items.size() >= total ? ((ticker / cycleTime) % MathHelper.ceil(items.size() / (double)total)) * total : 0;
+			for(int j = 1+start,x=0,m=items.size();j<=m&&x<total;j++,x++)
 			{
 				ItemStack stack = items.get(j-1).copy();
 				stack.addTagElement("ueicon", ByteNBT.ONE);
-				text.append(new StringTextComponent(" ").setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(Action.SHOW_ITEM, new ItemHover(stack)))));
-				if(j % 17 == 0) {
+				text.append(new StringTextComponent(" ").setStyle(Style.EMPTY.withFont(new ResourceLocation("ue", "hacking")).withHoverEvent(new HoverEvent(Action.SHOW_ITEM, new ItemHover(stack)))));
+				if(j % elements == 0) {
 					tooltip.add(text);
-					text = new StringTextComponent("");
+					text = new StringTextComponent("").withStyle(Style.EMPTY.withFont(new ResourceLocation("ue", "hacking")));
 				}
 			}
 			if(text.getSiblings().size() > 0) tooltip.add(text);
 		}
+		return true;
 	}
 	
 	public void init()
@@ -129,11 +150,7 @@ public class EnchantmentHandler
 		Collector<ArmorEntry> armor = new Collector<>();
 		for(Item item : ForgeRegistries.ITEMS)
 		{
-			NonNullList<ItemStack> list = NonNullList.create();
-			item.fillItemCategory(ItemGroup.TAB_SEARCH, list);
-			if(list.isEmpty())
-				continue;
-			ItemStack stack = list.get(0);
+			ItemStack stack = new ItemStack(item);
 			if(ench.canApplyAtEnchantingTable(stack))
 			{
 				Set<ToolType> type = stack.getToolTypes();
