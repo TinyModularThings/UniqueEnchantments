@@ -1,0 +1,14 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "uniquebase:item/enchant_base_layer",
+    "layer1": "uniquebase:item/enchant_recolor_layer",
+    "layer2": "uniquebase:item/enchant_wrap_layer"
+  },
+  "overrides": [
+        { "predicate": { "ue:enchantment_attributes": 0.0 }, "model": "item/enchanted_book" },
+        { "predicate": { "ue:enchantment_attributes": 2.0 }, "model": "uniquebase:item/enchanted_book_2" },
+        { "predicate": { "ue:enchantment_attributes": 4.0 }, "model": "uniquebase:item/enchanted_book_4" },
+        { "predicate": { "ue:enchantment_attributes": 6.0 }, "model": "uniquebase:item/enchanted_book_6" }
+    ]
+}

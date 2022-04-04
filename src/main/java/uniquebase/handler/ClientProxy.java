@@ -46,7 +46,7 @@ public class ClientProxy extends Proxy
 	{
 		ItemModelsProperties.register(Items.ENCHANTED_BOOK, new ResourceLocation("ue", "enchantment_attributes"), (I, W, L) -> {
 			Enchantment ench = getEnchantment(I);
-			return ench == null ? 0F : (ench.isTradeable() ? 1F : 0F) + (ench.isCurse() ? 2F : 0F) + (ench.isTreasureOnly() ? 3F : 0F);
+			return ench == null ? 0F : (ench.isTradeable() ? 1F : 0F) + (ench.isCurse() ? 2F : 0F) + (ench.isTreasureOnly() ? 4F : 0F);
 		});
 		Minecraft.getInstance().getItemColors().register((I, T) -> {
 			if(T == 1) return UEBase.COLOR_MAP.getInt(getEnchantment(I));

@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "uniquebase:item/enchant_base_layer",
+    "layer1": "uniquebase:item/enchant_recolor_layer",
+    "layer2": "uniquebase:item/enchant_wrap_layer",
+    "layer3": "uniquebase:item/enchant_cursed_layer"
+  }
+}
