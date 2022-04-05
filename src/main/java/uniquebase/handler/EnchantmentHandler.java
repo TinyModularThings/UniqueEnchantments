@@ -14,11 +14,11 @@ import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
@@ -57,8 +57,18 @@ import uniquebase.UEBase;
 public class EnchantmentHandler
 {
 	public static final EnchantmentHandler INSTANCE = new EnchantmentHandler();
-	Map<ResourceLocation, List<ItemStack>> enchantedItems = new Object2ObjectLinkedOpenHashMap<>();
+	Map<Enchantment, List<ItemStack>> enchantedItems = new Object2ObjectLinkedOpenHashMap<>();
 	int ticker = 0;
+	
+	public void limitEnchantments(ListNBT list, ItemStack stack)
+	{
+		stack.getOrCreateTag().put(stack.getItem() == Items.ENCHANTED_BOOK ? "StoredEnchantments" : "Enchantments", list);
+	}
+	
+	public void limitEnchantments(List<EnchantmentData> list, ItemStack item)
+	{
+		
+	}
 	
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)	
@@ -149,8 +159,9 @@ public class EnchantmentHandler
 	@OnlyIn(Dist.CLIENT)
 	private void addEnchantment(List<ITextComponent> list, Enchantment ench, int elements, int total, int cycleTime)
 	{
+		List<ItemStack> items = getItemsForEnchantment(ench);
+		if(items.isEmpty()) return;
 		IFormattableTextComponent text = new StringTextComponent("").withStyle(Style.EMPTY.withFont(new ResourceLocation("ue", "hacking")));
-		List<ItemStack> items = enchantedItems.getOrDefault(ench.getRegistryName(), ObjectLists.emptyList());
 		int start = items.size() >= total ? ((ticker / cycleTime) % MathHelper.ceil(items.size() / (double)total)) * total : 0;
 		for(int j = 1+start,x=0,m=items.size();j<=m&&x<total;j++,x++)
 		{
@@ -165,15 +176,12 @@ public class EnchantmentHandler
 		if(text.getSiblings().size() > 0) list.add(text);
 	}
 	
-	public void init()
+	private List<ItemStack> getItemsForEnchantment(Enchantment ench)
 	{
-		for(Enchantment ench : ForgeRegistries.ENCHANTMENTS)
-		{
-			enchantedItems.put(ench.getRegistryName(), getItemsForEnchantment(ench));
-		}
+		return enchantedItems.computeIfAbsent(ench, this::createItemsForEnchantments);
 	}
 	
-	private List<ItemStack> getItemsForEnchantment(Enchantment ench)
+	private List<ItemStack> createItemsForEnchantments(Enchantment ench)
 	{
 		List<ItemStack> validItems = new ObjectArrayList<>();
 		List<ItemStack> validBlocks = new ObjectArrayList<>();
