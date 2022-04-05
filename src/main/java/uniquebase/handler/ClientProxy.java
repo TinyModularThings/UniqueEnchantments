@@ -49,8 +49,8 @@ public class ClientProxy extends Proxy
 			return ench == null ? 0F : (ench.isTradeable() ? 1F : 0F) + (ench.isCurse() ? 2F : 0F) + (ench.isTreasureOnly() ? 4F : 0F);
 		});
 		Minecraft.getInstance().getItemColors().register((I, T) -> {
-			if(T == 1) return UEBase.COLOR_MAP.getInt(getEnchantment(I));
-			if(T == 2)
+			if(T == 0) return UEBase.COLOR_MAP.getInt(getEnchantment(I));
+			if(T == 1)
 			{
 				Enchantment ench = getEnchantment(I);
 				if(ench != null) return MiscUtil.getFormatting(ench.getRarity()).getColor() | 0xFF000000;

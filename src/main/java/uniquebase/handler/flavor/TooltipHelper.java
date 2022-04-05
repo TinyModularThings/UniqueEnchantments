@@ -18,8 +18,11 @@ public class TooltipHelper {
 		PlayerEntity player = event.getPlayer();
 		if(player != null) {
 			if(stack.getItem() instanceof TieredItem) {
-				event.getToolTip().add(new TranslationTextComponent("Mining Speed: " + ((TieredItem)stack.getItem()).getTier().getSpeed()));
-				event.getToolTip().add(new TranslationTextComponent("Mining Level: " + ((TieredItem)stack.getItem()).getTier().getLevel()));
+				if(((TieredItem)stack.getItem()).getTier().getSpeed() > 1.1) {
+					event.getToolTip().add(new TranslationTextComponent("Mining Speed: " + ((TieredItem)stack.getItem()).getTier().getSpeed()));
+					event.getToolTip().add(new TranslationTextComponent("Mining Level: " + ((TieredItem)stack.getItem()).getTier().getLevel()));
+				}
+				
 			}
 		}
 	}

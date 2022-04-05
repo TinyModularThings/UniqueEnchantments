@@ -375,6 +375,14 @@ public class MiscUtil
         return Style.EMPTY.withColor(Color.fromRgb(color & 0xFFFFFF));
     }
 	
+	public static int toRGBA(int r, int g, int b, int a) {
+		return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b & 0xFF) << 0);
+	}
+	public static int parseColor(String s)
+    {
+        return toRGBA(Integer.decode("#"+s.substring(1, 3)), Integer.decode("#"+s.substring(3, 5)), Integer.decode("#"+s.substring(5, 7)), Integer.decode("#"+s.substring(7, 9)));
+    }
+	
 	public static TextFormatting getFormatting(Rarity rarity)
 	{
 		switch(rarity)

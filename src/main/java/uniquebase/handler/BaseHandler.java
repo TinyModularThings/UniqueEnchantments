@@ -14,13 +14,16 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Tuple;
+import net.minecraft.util.text.Color;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -76,6 +79,25 @@ public class BaseHandler
 		else
 		{
 			tooltipCounter = 0;
+		}
+	}
+	
+	@SubscribeEvent
+	@OnlyIn(Dist.CLIENT)
+	public void onToolTipRenderEvent(RenderTooltipEvent.Color event) {
+		ItemStack stack = event.getStack();
+		if(stack.isEmpty()) return;
+
+		if(stack.isEnchanted() || stack.getItem() == Items.ENCHANTED_BOOK) {
+			Enchantment ench = MiscUtil.getFirstEnchantment(stack).getKey();
+			int topTooltip = UEBase.TOP_TOOLTIP_COLOR_MAP.getOrDefault(ench, UEBase.COLOR_MAP.getInt(ench));
+			int bottomTooltip = UEBase.BOTTOM_TOOLTIP_COLOR_MAP.getOrDefault(ench, topTooltip);
+			int backgroundTooltip = UEBase.BACKGROUND_TOOLTIP_COLOR_MAP.getOrDefault(ench, -1);
+			if(topTooltip != -1) event.setBorderStart(topTooltip);
+			if(bottomTooltip != -1) event.setBorderEnd(bottomTooltip);
+			if(backgroundTooltip != -1) event.setBackground(backgroundTooltip);
+				
+				
 		}
 	}
 	

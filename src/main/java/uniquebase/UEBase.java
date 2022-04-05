@@ -36,6 +36,7 @@ import uniquebase.handler.flavor.Flavor;
 import uniquebase.handler.flavor.FlavorTarget;
 import uniquebase.handler.flavor.ItemType;
 import uniquebase.networking.PacketHandler;
+import uniquebase.utils.MiscUtil;
 
 @Mod("uniquebase")
 public class UEBase
@@ -47,7 +48,13 @@ public class UEBase
 	private static final List<Runnable> CONFIG_RELOAD_TASKS = new ObjectArrayList<>();
 
 	public static final Object2IntMap<Enchantment> COLOR_MAP = new Object2IntOpenHashMap<>();
+	public static final Object2IntMap<Enchantment> TOP_TOOLTIP_COLOR_MAP = new Object2IntOpenHashMap<>();
+	public static final Object2IntMap<Enchantment> BOTTOM_TOOLTIP_COLOR_MAP = new Object2IntOpenHashMap<>();
+	public static final Object2IntMap<Enchantment> BACKGROUND_TOOLTIP_COLOR_MAP = new Object2IntOpenHashMap<>();
 	public static ConfigValue<List<? extends String>> COLOR_CONFIG;
+	public static ConfigValue<List<? extends String>> TOP_TOOLTIP_COLOR_CONFIG;
+	public static ConfigValue<List<? extends String>> BOTTOM_TOOLTIP_COLOR_CONFIG;
+	public static ConfigValue<List<? extends String>> BACKGROUND_TOOLTIP_COLOR_CONFIG;
 	
 	public static IntValue VIEW_COOLDOWN;
 	public static BooleanValue ICONS;
@@ -86,6 +93,9 @@ public class UEBase
 		//TODO sort this properly
 		builder.push("Enchantment Coloring");
 		COLOR_CONFIG = builder.defineList("enchantmentColor", ObjectArrayList.wrap(new String[]{"minecraft:sharpness;#32f094"}), T -> true);
+		TOP_TOOLTIP_COLOR_CONFIG = builder.defineList("enchantmentTopTooltipColor", ObjectArrayList.wrap(new String[]{"minecraft:sharpness;#ad93dbff"}), T -> true);
+		BOTTOM_TOOLTIP_COLOR_CONFIG = builder.defineList("enchantmentBottomTooltipColor", ObjectArrayList.wrap(new String[]{"minecraft:sharpness;#3beb84cc"}), T -> true);
+		BACKGROUND_TOOLTIP_COLOR_CONFIG = builder.defineList("enchantmentBackgroundTooltipColor", ObjectArrayList.wrap(new String[]{"minecraft:sharpness;#4f2869f2"}), T -> true);
 		builder.pop();
 		builder.push("Enchantment Icons");
 		ICONS = builder.define("enable", true);
@@ -145,6 +155,30 @@ public class UEBase
 			String[] split = list.get(i).split(";");
 			if(split.length == 2) {
 				COLOR_MAP.put(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(split[0])), Integer.decode(split[1]).intValue());
+			}
+		}
+		TOP_TOOLTIP_COLOR_MAP.clear();
+		List<? extends String> list1 = TOP_TOOLTIP_COLOR_CONFIG.get();
+		for (int i = 0; i < list1.size(); i++) {
+			String[] split = list1.get(i).split(";");
+			if(split.length == 2) {
+				TOP_TOOLTIP_COLOR_MAP.put(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(split[0])), MiscUtil.parseColor(split[1]));
+			}
+		}
+		BOTTOM_TOOLTIP_COLOR_MAP.clear();
+		List<? extends String> list2 = BOTTOM_TOOLTIP_COLOR_CONFIG.get();
+		for (int i = 0; i < list2.size(); i++) {
+			String[] split = list2.get(i).split(";");
+			if(split.length == 2) {
+				BOTTOM_TOOLTIP_COLOR_MAP.put(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(split[0])), MiscUtil.parseColor(split[1]));
+			}
+		}
+		BACKGROUND_TOOLTIP_COLOR_MAP.clear();
+		List<? extends String> list3 = BACKGROUND_TOOLTIP_COLOR_CONFIG.get();
+		for (int i = 0; i < list3.size(); i++) {
+			String[] split = list3.get(i).split(";");
+			if(split.length == 2) {
+				BACKGROUND_TOOLTIP_COLOR_MAP.put(ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(split[0])), MiscUtil.parseColor(split[1]));
 			}
 		}
     }

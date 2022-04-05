@@ -48,7 +48,7 @@ public class Grimoire extends UniqueEnchantment
 		int nextLevel = Math.max(0, MathHelper.floor(Math.log((Math.max(1, START_LEVEL.get())+player.experienceLevel)*level)*LEVEL_SCALING.get()-STEP_SKIP.get()));
 		int grimoreCount = compound.contains(GRIMOIRE_STORAGE) ? compound.getList(GRIMOIRE_STORAGE, 10).size() : 0;
 		int enchCount = compound.contains("Enchantments") ? compound.getList("Enchantments", 10).size() : 0;
-		System.out.println(nextLevel);
+
 		compound.remove(GRIMOIRE_LEVEL);
 		if(compound.getInt(GRIMOIRE_LEVEL) != nextLevel || grimoreCount != enchCount)
 		{
