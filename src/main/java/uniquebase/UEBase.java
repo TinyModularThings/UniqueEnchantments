@@ -58,6 +58,11 @@ public class UEBase
 	public static BooleanValue HIDE_CURSES;
 	public static BooleanValue SHOW_NON_BOOKS;
 	
+	public static BooleanValue XP_OVERRIDE_ENCHANT;
+	public static DoubleValue XP_MULTIPLIER_ENCHANT;
+	public static BooleanValue XP_OVERRIDE_ANVIL;
+	public static DoubleValue XP_MULTIPLIER_ANVIL;
+	
 	public static ForgeConfigSpec CONFIG;
 
 	public static BooleanValue IS_OBFUSCATED;
@@ -82,6 +87,12 @@ public class UEBase
 		ENCHANTED_GLINT = builder.define("enchanted_glint", false);
 		HIDE_CURSES = builder.define("hide_curses", false);
 		SHOW_NON_BOOKS = builder.define("show_non_tools", false);
+		builder.pop();
+		builder.push("XP Override");
+		XP_OVERRIDE_ENCHANT = builder.define("enchanting XP override", false);
+		XP_MULTIPLIER_ENCHANT = builder.defineInRange("enchanting XP multiplier", 1D, 0.1D, 1000D);
+		XP_OVERRIDE_ANVIL = builder.define("anvil XP override", false);
+		XP_MULTIPLIER_ANVIL = builder.defineInRange("anvil XP multiplier", 1D, 0.1D, 1000D);
 		builder.pop();
 		//TODO sort this properly
 		builder.push("Enchantment Coloring");
@@ -132,7 +143,6 @@ public class UEBase
 	{
 		CropHarvestRegistry.INSTANCE.init();
 		ItemType.init();
-		EnchantmentHandler.INSTANCE.init();
 		PROXY.init();
 	}
     
