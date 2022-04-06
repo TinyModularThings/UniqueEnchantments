@@ -73,6 +73,7 @@ public class UEBase
 	public static ForgeConfigSpec CONFIG;
 
 	public static BooleanValue IS_OBFUSCATED;
+	public static BooleanValue ITEMTOOLTIPS;
 	
 	public static DoubleValue ENTITY_NAME_CHANCE;
 	public static ConfigValue<List<? extends String>> PEOPLE_LIST;
@@ -94,6 +95,7 @@ public class UEBase
 		ENCHANTED_GLINT = builder.define("enchanted_glint", false);
 		HIDE_CURSES = builder.define("hide_curses", false);
 		SHOW_NON_BOOKS = builder.define("show_non_tools", false);
+		ITEMTOOLTIPS = builder.define("item_tooltips", false);
 		builder.pop();
 		builder.push("XP Override");
 		XP_OVERRIDE_ENCHANT = builder.define("enchanting XP override", false);
@@ -103,10 +105,11 @@ public class UEBase
 		builder.pop();
 		//TODO sort this properly
 		builder.push("Enchantment Coloring");
+		builder.comment("Visit https://hugabor.github.io/color-picker/ for help with colors. Name uses RGB hex, Tooltip uses RGBA hex");
 		COLOR_CONFIG = builder.defineList("enchantmentColor", ObjectArrayList.wrap(new String[]{"minecraft:sharpness;#32f094"}), T -> true);
-		TOP_TOOLTIP_COLOR_CONFIG = builder.defineList("enchantmentTopTooltipColor", ObjectArrayList.wrap(new String[]{"minecraft:sharpness;#ad93dbff"}), T -> true);
-		BOTTOM_TOOLTIP_COLOR_CONFIG = builder.defineList("enchantmentBottomTooltipColor", ObjectArrayList.wrap(new String[]{"minecraft:sharpness;#3beb84cc"}), T -> true);
-		BACKGROUND_TOOLTIP_COLOR_CONFIG = builder.defineList("enchantmentBackgroundTooltipColor", ObjectArrayList.wrap(new String[]{"minecraft:sharpness;#4f2869f2"}), T -> true);
+		TOP_TOOLTIP_COLOR_CONFIG = builder.defineList("enchantmentTopTooltipColor", ObjectArrayList.wrap(new String[]{"minecraft:curse_of_binding;#C22237FF","minecraft:curse_of_vanishing;#C22237FF","uniquee:deaths_odium;#C22237FF","uniquee:pestilences_odium;#C22237FF","uniquee:grimoire;#C22237FF","uniquee:pestilences_odium;#C22237FF","uniquebattle:ifrits_judgement;#C22237FF","uniquebattle:lunatic_despair;#C22237FF","uniquebattle:wars_odium;#C22237FF","uniqueutil:phanes_regret;#C22237FF","uniqueutil:rocketman;#C22237FF","uniqueutil:famines_odium;#C22237FF","uniqueapex:absolute_protection;#EAB8A3FF","uniqueapex:blessed_blade;#EAB8A3FF","uniqueapex:second_life;#EAB8A3FF","uniqueapex:aeons_fragment;#EAB8A3FF"}), T -> true);
+		BOTTOM_TOOLTIP_COLOR_CONFIG = builder.defineList("enchantmentBottomTooltipColor", ObjectArrayList.wrap(new String[]{"minecraft:curse_of_binding;#EA0087FF","minecraft:curse_of_vanishing;#EA0087FF","uniquee:deaths_odium;#EA0087FF","uniquee:pestilences_odium;#EA0087FF","uniquee:grimoire;#EA0087FF","uniquee:pestilences_odium;#EA0087FF","uniquebattle:ifrits_judgement;#EA0087FF","uniquebattle:lunatic_despair;#EA0087FF","uniquebattle:wars_odium;#EA0087FF","uniqueutil:phanes_regret;#EA0087FF","uniqueutil:rocketman;#EA0087FF","uniqueutil:famines_odium;#EA0087FF","uniqueapex:absolute_protection;#EAB8A3FF","uniqueapex:blessed_blade;#EAB8A3FF","uniqueapex:second_life;#EAB8A3FF","uniqueapex:aeons_fragment;#EAB8A3FF"}), T -> true);
+		BACKGROUND_TOOLTIP_COLOR_CONFIG = builder.defineList("enchantmentBackgroundTooltipColor", ObjectArrayList.wrap(new String[]{}), T -> true);
 		builder.pop();
 		builder.push("Enchantment Icons");
 		ICONS = builder.define("enable", true);

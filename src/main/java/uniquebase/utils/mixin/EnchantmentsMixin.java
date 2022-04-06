@@ -26,7 +26,7 @@ public class EnchantmentsMixin {
 		Enchantment enchantment = ((Enchantment)(Object)this);
 		IFormattableTextComponent textComponent = new TranslationTextComponent(enchantment.getDescriptionId());
 
-		textComponent.withStyle(MiscUtil.toColor(UEBase.COLOR_MAP.getInt(enchantment)));
+		textComponent.withStyle(MiscUtil.toColor(UEBase.COLOR_MAP.getOrDefault(enchantment, enchantment.isCurse() ? 0xFF5555 : UEBase.COLOR_MAP.defaultReturnValue())));
 		
 		if(enchantment.getMaxLevel() != 1) {
 			textComponent.append(" ").append(new TranslationTextComponent("enchantment.level." + level));

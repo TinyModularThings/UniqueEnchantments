@@ -395,68 +395,6 @@ public class MiscUtil
 		}
 	}
 	
-	public static int getAdjectiveCount(float chance, Random rand) {
-		if(chance <= 0F) return 0;
-		int total = 0;
-		for(int i=0;i<3;i++) {
-			if(rand.nextDouble() < chance) {
-				total++;
-				chance = chance * chance;
-			}
-		}
-
-		return Math.min(total, 3);
-	}
-	
-	public static ITextComponent itemNameGen(ItemStack item, Entity entity, double entityChance, double rarityChance, double locationChance) {
-		Random rand = entity.level.getRandom();
-		IFormattableTextComponent result = new StringTextComponent("").setStyle(Style.EMPTY.withItalic(false));
-		
-		//To Be Done: Name Combo (if Person X was chosen, 10% to get Adjective/Name/Suffix Y)
-		
-		ITextComponent hoverName = item.getItem().getName(item);
-		FlavorRarity rarity = FlavorRarity.UNCOMMON;
-		float chance = rarity.getChance();
-		
-		//Person from List, or Name of Entity slain
-		if(rand.nextDouble() < entityChance && entity != null) {
-			result.append(entity.getDisplayName()).append(" ");
-		}
-		else if(rand.nextDouble() < chance) {
-			result.append(Flavor.getFlavor(FlavorTarget.PERSON, rarity, ItemType.byId("sword"), rand));
-		}
-		
-		//UniqueRarity of the Item
-		if(rarity.getIndex() >= 4 && rand.nextDouble() < (1-rarityChance) || rand.nextDouble() < rarityChance) {
-			result.append(rarity.getName()).append(" ");
-		}
-		
-		//Adjectives
-		int adjCount = getAdjectiveCount(chance, rand);
-		UEBase.LOGGER.info(adjCount);
-		if(adjCount > 0) {
-			for(int i=1; i<=adjCount; i++) {
-				result.append(Flavor.getFlavor(FlavorTarget.ADJECTIVE, rarity, ItemType.byId("sword"), rand));
-			}
-		}
-		
-		//Name
-		if(rand.nextDouble() < chance * chance) {
-			result.append(Flavor.getFlavor(FlavorTarget.NAME, rarity, ItemType.byId("sword"), rand));
-		} else {
-			result.append(hoverName.getString()).append(" ");
-		}
-		
-		//Location OR Suffix
-		if(rand.nextDouble() < locationChance && entity instanceof LivingEntity) {
-			result.append((entity.getY() < 63.0 ? "from the " : "of the ") + toPascalCase(entity.level.getBiome(entity.blockPosition()).getRegistryName().getPath()));
-		} else if(rand.nextDouble() < chance) {
-			result.append(Flavor.getFlavor(FlavorTarget.SUFFIX, rarity, ItemType.byId("sword"), rand));
-		}
-		UEBase.LOGGER.info(result.getString());
-		return !result.getSiblings().isEmpty() ? result : item.getHoverName();
-	}
-	
 	public static String firstLetterUppercase(String string) {
 		if(string == null || string.isEmpty()) {
 			return string;

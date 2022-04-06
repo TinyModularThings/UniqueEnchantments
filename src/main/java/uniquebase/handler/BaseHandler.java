@@ -96,8 +96,6 @@ public class BaseHandler
 			if(topTooltip != -1) event.setBorderStart(topTooltip);
 			if(bottomTooltip != -1) event.setBorderEnd(bottomTooltip);
 			if(backgroundTooltip != -1) event.setBackground(backgroundTooltip);
-				
-				
 		}
 	}
 	
