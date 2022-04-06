@@ -90,7 +90,7 @@ public class BaseHandler
 
 		if(stack.isEnchanted() || stack.getItem() == Items.ENCHANTED_BOOK) {
 			Enchantment ench = MiscUtil.getFirstEnchantment(stack).getKey();
-			int topTooltip = UEBase.TOP_TOOLTIP_COLOR_MAP.getOrDefault(ench, UEBase.COLOR_MAP.getInt(ench));
+			int topTooltip = UEBase.TOP_TOOLTIP_COLOR_MAP.getOrDefault(ench, -1);
 			int bottomTooltip = UEBase.BOTTOM_TOOLTIP_COLOR_MAP.getOrDefault(ench, topTooltip);
 			int backgroundTooltip = UEBase.BACKGROUND_TOOLTIP_COLOR_MAP.getOrDefault(ench, -1);
 			if(topTooltip != -1) event.setBorderStart(topTooltip);
