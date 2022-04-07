@@ -1,4 +1,4 @@
-package uniquebase.utils.mixin;
+package uniquebase.utils.mixin.common.entity;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

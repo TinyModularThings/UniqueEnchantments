@@ -46,7 +46,7 @@ import uniqueapex.handler.structure.RecipeStorage;
 import uniqueapex.handler.structure.TrackedRecipe;
 import uniqueapex.network.SyncRecipePacket;
 import uniquebase.UEBase;
-import uniquebase.utils.mixin.BeaconMixin;
+import uniquebase.utils.mixin.common.tile.BeaconMixin;
 
 public class FusionHandler
 {

@@ -126,7 +126,7 @@ public final class FusionContext extends Inventory
 	public boolean isValidTool(Enchantment ench)
 	{
 		ItemStack stack = mainChest.getStackInSlot(0);
-		return ench.canApplyAtEnchantingTable(stack) && (!stack.hasTag() || !stack.getTag().getBoolean("fusioned"));
+		return (!stack.hasTag() || !stack.getTag().getBoolean("fusioned"));
 	}
 	
 	public Object2IntMap<Enchantment> getEnchantmentInputs(Set<Enchantment> enchantments)

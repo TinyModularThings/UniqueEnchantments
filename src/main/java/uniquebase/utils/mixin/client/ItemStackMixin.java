@@ -1,4 +1,4 @@
-package uniquebase.utils.mixin;
+package uniquebase.utils.mixin.client;
 
 import java.util.List;
 
@@ -12,9 +12,12 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import uniquebase.handler.EnchantmentHandler;
 
 @Mixin(ItemStack.class)
+@OnlyIn(Dist.CLIENT)
 public class ItemStackMixin {
 	
 	private static final ThreadLocal<ItemStack> ACTIVE_STACK = ThreadLocal.withInitial(() -> ItemStack.EMPTY);

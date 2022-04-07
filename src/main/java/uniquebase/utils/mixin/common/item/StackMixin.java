@@ -1,4 +1,4 @@
-package uniquebase.utils.mixin;
+package uniquebase.utils.mixin.common.item;
 
 import java.util.function.Consumer;
 

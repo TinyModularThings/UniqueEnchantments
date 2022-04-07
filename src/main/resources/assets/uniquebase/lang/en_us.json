@@ -12,8 +12,8 @@
 	"unique.base.jei.no.incompat": "Nothing",
 	"unique.base.jei.no.description": "No Description",
 	"unique.base.jei.name": "UE Enchantment View",
-	"unique.base.jei.press_gui":"Hold %s to View Enchantments",
-	"unique.base.desc": "Press §dShift§r to see Enchantment Description",
+	"unique.base.jei.press_gui":"Hold §d[%s]§r to View Enchantments",
+	"unique.base.desc": "Press §d[Shift]§r to see Enchantment Description",
 	
 	"enchantment.minecraft.aqua_affinity.desc":"Increases mining speed while underwater",
 	"enchantment.minecraft.bane_of_arthropod.desc":"Increased damage against arthropod, like Spiders. Also slows them on hit",

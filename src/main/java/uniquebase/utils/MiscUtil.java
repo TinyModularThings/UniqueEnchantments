@@ -44,7 +44,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.IToggleEnchantment;
-import uniquebase.utils.mixin.EnchantmentMixin;
+import uniquebase.utils.mixin.common.enchantments.EnchantmentMixin;
 
 public class MiscUtil
 {

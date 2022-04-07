@@ -62,12 +62,19 @@ public class EnchantmentHandler
 	
 	public void limitEnchantments(ListNBT list, ItemStack stack)
 	{
+		int limit = UEBase.ENCHANTMENT_LIMITS.getInt(stack.getItem());
+		while(list.size() > limit) {
+			list.remove(list.size()-1);
+		}
 		stack.getOrCreateTag().put(stack.getItem() == Items.ENCHANTED_BOOK ? "StoredEnchantments" : "Enchantments", list);
 	}
 	
 	public void limitEnchantments(List<EnchantmentData> list, ItemStack item)
 	{
-		
+		int limit = UEBase.ENCHANTMENT_LIMITS.getInt(item.getItem());
+		while(list.size() > limit) {
+			list.remove(list.size()-1);
+		}
 	}
 	
 	@SubscribeEvent

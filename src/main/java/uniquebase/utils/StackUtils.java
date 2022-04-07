@@ -19,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Tags;
-import uniquebase.utils.mixin.ArrowMixin;
+import uniquebase.utils.mixin.common.entity.ArrowMixin;
 
 public class StackUtils
 {

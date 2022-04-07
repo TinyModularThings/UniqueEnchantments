@@ -1,4 +1,4 @@
-package uniquebase.utils.mixin;
+package uniquebase.utils.mixin.common.tile;
 
 import java.util.List;
 
