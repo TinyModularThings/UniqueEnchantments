@@ -143,7 +143,7 @@ public class UEBase
 		List<? extends String> list = COLOR_CONFIGS.get();
 		for (int i = 0; i < list.size(); i++) {
 			String[] split = list.get(i).split(";");
-			if(split.length != 5) continue;
+			if(split.length < 2) continue;
 			ColorConfig color = ColorConfig.fromText(split);
 			if(color != null) {
 				Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(split[0]));

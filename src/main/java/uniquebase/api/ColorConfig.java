@@ -79,7 +79,7 @@ public class ColorConfig
 			builder.append(M == null ? "" : M).append(";");
 			builder.append(B == null ? "" : B).append(";");
 			builder.append(S == null ? "" : S).append(";");
-			builder.append(T == null ? "" : T).append(";");
+			builder.append(T == null ? "" : T);
 			list.add(builder.toString());
 			builder.setLength(0);
 		});
