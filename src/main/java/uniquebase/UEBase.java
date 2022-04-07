@@ -69,7 +69,6 @@ public class UEBase
 	
 	public static ForgeConfigSpec CONFIG;	
 	
-	
 	public UEBase()
 	{
 		ENCHANTMENT_GUI = PROXY.registerKey("Enchantment Gui", 342);
