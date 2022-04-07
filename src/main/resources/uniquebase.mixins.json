@@ -5,8 +5,8 @@
 	"minVersion": "0.7",
 	"compatibilityLevel": "JAVA_8",
 	"mixins": [
-		"common.enchantment.EnchantmentMixin",
-		"common.enchantment.EnchantmentsMixin",
+		"common.enchantments.EnchantmentMixin",
+		"common.enchantments.EnchantmentsMixin",
 		"common.entity.ArrowMixin",
 		"common.entity.EndermenMixin",
 		"common.entity.EntityMixin",
@@ -17,7 +17,7 @@
 		"common.tile.AnvilMixin",
 		"common.tile.BeaconMixin",
 		"common.tile.EnchTableMixin",
-		"InteractionManagerMixin"
+		"common.InteractionManagerMixin"
 	],
 	"client": [
 		"client.FontMixin",
