@@ -126,8 +126,6 @@ public class UtilsHandler
 	private List<RenderEntry> toRender = new ObjectArrayList<>();
 	static final ThreadLocal<Boolean> PHANES_REGRET_ACTIVE = ThreadLocal.withInitial(() -> false); 
 	
-	int k = 0;
-	
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)	
 	public void onTick(ClientTickEvent event)
@@ -230,11 +228,6 @@ public class UtilsHandler
 					player.moveRelative(1F, new Vector3d(0F, (float)Math.log10(110+Math.pow(AnemoiFragment.BOOST.get(level*player.experienceLevel), 0.125))-2, 0F));
 				}
 			}
-			
-			if(k % 20 == 0) {
-				//armor.setHoverName(MiscUtil.itemNameGen(armor, player, UEBase.ENTITY_NAME_CHANCE.get(), UEBase.RARITY_NAME_CHANCE.get(), UEBase.LOCATION_NAME_CHANCE.get()));
-			}
-			k++;
 		}
 		Entity ridden = player.getRootVehicle();
 		if(ridden instanceof HorseEntity)
