@@ -118,6 +118,8 @@ public class EnchantmentHandler
 		RenderSystem.popMatrix();
 	}
 	
+	
+	
 	@OnlyIn(Dist.CLIENT)
 	public boolean addEnchantmentInfo(ListNBT list, List<ITextComponent> tooltip, Item item)
 	{
@@ -146,11 +148,7 @@ public class EnchantmentHandler
 	@OnlyIn(Dist.CLIENT)
 	private void addDescriptions(List<ITextComponent> list, Enchantment ench)
 	{
-		if(!Screen.hasShiftDown())
-		{
-			list.add(new TranslationTextComponent("unique.base.desc").withStyle(TextFormatting.DARK_GRAY));
-			return;
-		}
+		if(!Screen.hasShiftDown()) return;
 		String s = ench.getDescriptionId() + ".desc";
 		if(I18n.exists(s)) list.add(new TranslationTextComponent(s).withStyle(TextFormatting.DARK_GRAY));
 		else list.add(new TranslationTextComponent("unique.base.jei.no.description"));

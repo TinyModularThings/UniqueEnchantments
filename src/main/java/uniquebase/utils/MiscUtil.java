@@ -2,7 +2,6 @@ package uniquebase.utils;
 
 import java.math.RoundingMode;
 import java.util.Collections;
-import java.util.Random;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -38,21 +37,13 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Color;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-import uniquebase.UEBase;
 import uniquebase.api.IToggleEnchantment;
-import uniquebase.handler.flavor.Flavor;
-import uniquebase.handler.flavor.FlavorRarity;
-import uniquebase.handler.flavor.FlavorTarget;
-import uniquebase.handler.flavor.ItemType;
 import uniquebase.utils.mixin.EnchantmentMixin;
 
 public class MiscUtil
@@ -375,13 +366,16 @@ public class MiscUtil
         return Style.EMPTY.withColor(Color.fromRgb(color & 0xFFFFFF));
     }
 	
-	public static int toRGBA(int r, int g, int b, int a) {
-		return ((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b & 0xFF) << 0);
+	public static int parseColor(String color, int defaultColor) {
+		if(color == null || color.isEmpty()) return defaultColor;
+		int size = color.length();
+		if(color.startsWith("#")) size--;
+		else if(color.startsWith("0x")) size-=2;
+		else throw new UnsupportedOperationException("Format Unsupported, please use HTML/Hex format");
+		if(size <= 6) return Integer.decode(color);
+		int offset = 6 + (color.length() - size);
+		return Integer.decode(color.substring(0, offset)) | Integer.decode("#"+color.substring(offset, offset+2)) << 24;
 	}
-	public static int parseColor(String s)
-    {
-        return toRGBA(Integer.decode("#"+s.substring(1, 3)), Integer.decode("#"+s.substring(3, 5)), Integer.decode("#"+s.substring(5, 7)), Integer.decode("#"+s.substring(7, 9)));
-    }
 	
 	public static TextFormatting getFormatting(Rarity rarity)
 	{

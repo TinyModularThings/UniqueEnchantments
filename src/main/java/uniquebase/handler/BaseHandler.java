@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.text.Color;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -30,8 +29,8 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniquebase.UEBase;
+import uniquebase.api.ColorConfig;
 import uniquebase.gui.EnchantmentGui;
-import uniquebase.handler.flavor.TooltipHelper;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.Triple;
@@ -89,13 +88,11 @@ public class BaseHandler
 		if(stack.isEmpty()) return;
 
 		if(stack.isEnchanted() || stack.getItem() == Items.ENCHANTED_BOOK) {
-			Enchantment ench = MiscUtil.getFirstEnchantment(stack).getKey();
-			int topTooltip = UEBase.TOP_TOOLTIP_COLOR_MAP.getOrDefault(ench, -1);
-			int bottomTooltip = UEBase.BOTTOM_TOOLTIP_COLOR_MAP.getOrDefault(ench, topTooltip);
-			int backgroundTooltip = UEBase.BACKGROUND_TOOLTIP_COLOR_MAP.getOrDefault(ench, -1);
-			if(topTooltip != -1) event.setBorderStart(topTooltip);
-			if(bottomTooltip != -1) event.setBorderEnd(bottomTooltip);
-			if(backgroundTooltip != -1) event.setBackground(backgroundTooltip);
+			ColorConfig config = UEBase.COLOR_SETTINGS.get(MiscUtil.getFirstEnchantment(stack).getKey());
+			if(config.isDefault()) return;
+			if(config.getBorderStartColor() != -1) event.setBorderStart(config.getBorderStartColor());
+			if(config.getBorderEndColor() != -1) event.setBorderEnd(config.getBorderEndColor());
+			if(config.getBackgroundColor() != -1) event.setBackground(config.getBackgroundColor());
 		}
 	}
 	
@@ -104,17 +101,11 @@ public class BaseHandler
 	public void onToolTipEvent(ItemTooltipEvent event)
 	{
 		ItemStack stack = event.getItemStack();
-		
-//		if(stack.getItem() == Items.ENCHANTED_BOOK) {
-//			Object2IntMap.Entry<Enchantment> enchantment = MiscUtil.getFirstEnchantment(stack);
-//			
-//			if(EnchantedBookItem.getEnchantments(stack).size() == 1 && event.getToolTip().size() >= 2) event.getToolTip().remove(enchantment.getKey().getFullname(enchantment.getIntValue()));
-//		}
-		
-		TooltipHelper.addStatTooltip(stack, event);
-		
 		Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
-		
+		if(UEBase.SHOW_DESCRIPTION.get() && !Screen.hasShiftDown() && (stack.getItem() == Items.ENCHANTED_BOOK || UEBase.SHOW_NON_BOOKS.get()) && EnchantmentHelper.getEnchantments(stack).size() > 0)
+		{
+			event.getToolTip().add(new TranslationTextComponent("unique.base.desc").withStyle(TextFormatting.DARK_GRAY));
+		}
 		for(int i = 0,m=tooltips.size();i<m;i++)
 		{
 			Tuple<Enchantment, String[]> entry = tooltips.get(i);
@@ -144,11 +135,11 @@ public class BaseHandler
 					{
 						builder.append("|");						
 					}
-					event.getToolTip().add(1, new StringTextComponent(builder.toString()));
+					event.getToolTip().add(new StringTextComponent(builder.toString()));
 				}
 				else
 				{
-					event.getToolTip().add(1, new TranslationTextComponent("unique.base.jei.press_gui", UEBase.ENCHANTMENT_GUI.getKeyName()));					
+					event.getToolTip().add(new TranslationTextComponent("unique.base.jei.press_gui", UEBase.ENCHANTMENT_GUI.getKeyName()).withStyle(TextFormatting.GRAY));
 				}
 			}
 		}
