@@ -31,5 +31,6 @@ public class FontMixin
 		{
 			returnType.setReturnValue(font);
 		}
+		
 	}
 }

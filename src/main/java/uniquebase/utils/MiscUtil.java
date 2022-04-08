@@ -361,9 +361,20 @@ public class MiscUtil
 		return --result;
 	}
 	
+	public static int getColorFromText(String s)
+    {
+        s = s == null ? "" : s;
+        return (s.hashCode() & 11184810) + 4473924;
+    }
+	
 	public static Style toColor(int color)
     {
         return Style.EMPTY.withColor(Color.fromRgb(color & 0xFFFFFF));
+    }
+	
+	public static String toHex(int color)
+    {
+        return "#"+Integer.toHexString((1 << 24) | (color & 0xFFFFFF)).substring(1);
     }
 	
 	public static int parseColor(String color, int defaultColor) {
