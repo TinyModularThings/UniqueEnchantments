@@ -10,8 +10,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.LanguageMap;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -28,7 +31,18 @@ public class EnchantmentsMixin {
 		Enchantment enchantment = ((Enchantment)(Object)this);
 		IFormattableTextComponent textComponent = new TranslationTextComponent(enchantment.getDescriptionId()).setStyle(getEnchantmentColor(enchantment));
 		
-		ci.setReturnValue(enchantment.getMaxLevel() != 1 ? textComponent.append(" ").append(new TranslationTextComponent("enchantment.level." + level)) : textComponent);
+		if(enchantment.getMaxLevel() != 1) {
+			textComponent.append(" ").append(new TranslationTextComponent("enchantment.level." + level));
+		}
+		IFormattableTextComponent result = new StringTextComponent("");
+		LanguageMap map = LanguageMap.getInstance();
+		String s = enchantment.getDescriptionId()+".icon";
+		if(map.has(s)) {
+			result.append(new TranslationTextComponent(s).withStyle(Style.EMPTY.withFont(new ResourceLocation("uniquebase:icons"))));
+			result.append(" ");
+		}
+		result.append(textComponent);
+		ci.setReturnValue(result);
 	}
 	
 	private Style getEnchantmentColor(Enchantment ench) {

@@ -139,7 +139,7 @@ public class BaseHandler
 				}
 				else
 				{
-					event.getToolTip().add(new TranslationTextComponent("unique.base.jei.press_gui", UEBase.ENCHANTMENT_GUI.getKeyName()).withStyle(TextFormatting.GRAY));
+					event.getToolTip().add(new TranslationTextComponent("unique.base.jei.press_gui", UEBase.ENCHANTMENT_GUI.getKeyName().copy().withStyle(TextFormatting.LIGHT_PURPLE)).withStyle(TextFormatting.GRAY));
 				}
 			}
 		}
