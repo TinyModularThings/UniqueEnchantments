@@ -14,12 +14,14 @@ import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.BlockItem;
@@ -58,6 +60,7 @@ public class EnchantmentHandler
 {
 	public static final EnchantmentHandler INSTANCE = new EnchantmentHandler();
 	Map<Enchantment, List<ItemStack>> enchantedItems = new Object2ObjectLinkedOpenHashMap<>();
+	boolean toggle = false;
 	int ticker = 0;
 	
 	public void limitEnchantments(ListNBT list, ItemStack stack)
@@ -82,8 +85,22 @@ public class EnchantmentHandler
 	public void onClientTick(ClientTickEvent event)
 	{
 		if(event.phase == Phase.START) return;
-		if(Screen.hasControlDown()) ticker = 0;
-		ticker += Screen.hasShiftDown() ? 0 : 1;
+		if(UEBase.ICONS.get()) {
+			if(Screen.hasControlDown()) ticker = 0;
+			ticker += Screen.hasShiftDown() ? 0 : 1;
+		}
+		PlayerEntity player = Minecraft.getInstance().player;
+		if(player != null) {
+			boolean isPressed = UEBase.ENCHANTMENT_ICONS.test(player);
+			if(isPressed && !toggle) {
+				toggle = true;
+				UEBase.ICONS.set(!UEBase.ICONS.get());
+				UEBase.CONFIG.save();
+			}
+			else if(!isPressed && toggle) {
+				toggle = false;
+			}
+		}
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -193,6 +210,7 @@ public class EnchantmentHandler
 		Collector<Set<ToolType>> tools = new Collector<>();
 		Collector<Class<?>> classBased = new Collector<>();
 		Collector<ArmorEntry> armor = new Collector<>();
+		Set<Class<?>> clz = new ObjectOpenHashSet<>();
 		for(Item item : ForgeRegistries.ITEMS)
 		{
 			ItemStack stack = new ItemStack(item);
@@ -219,7 +237,9 @@ public class EnchantmentHandler
 				}
 				else
 				{
-					validItems.add(stack);
+					if(clz.add(item.getClass())) {
+						validItems.add(stack);
+					}
 				}
 			}
 		}

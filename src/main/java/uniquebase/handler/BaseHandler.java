@@ -102,9 +102,13 @@ public class BaseHandler
 	{
 		ItemStack stack = event.getItemStack();
 		Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
-		if(UEBase.SHOW_DESCRIPTION.get() && !Screen.hasShiftDown() && (stack.getItem() == Items.ENCHANTED_BOOK || UEBase.SHOW_NON_BOOKS.get()) && EnchantmentHelper.getEnchantments(stack).size() > 0)
+		boolean hasEnchantments = (stack.getItem() == Items.ENCHANTED_BOOK || UEBase.SHOW_NON_BOOKS.get()) && EnchantmentHelper.getEnchantments(stack).size() > 0;
+		if(hasEnchantments && UEBase.SHOW_DESCRIPTION.get() && !Screen.hasShiftDown())
 		{
 			event.getToolTip().add(new TranslationTextComponent("unique.base.desc").withStyle(TextFormatting.DARK_GRAY));
+		}
+		if(hasEnchantments && !UEBase.ENCHANTMENT_ICONS.test(event.getPlayer())) {
+			event.getToolTip().add(new TranslationTextComponent("unique.base.icon", UEBase.ENCHANTMENT_ICONS.getKeyName().copy().withStyle(TextFormatting.LIGHT_PURPLE)).withStyle(TextFormatting.DARK_GRAY));			
 		}
 		for(int i = 0,m=tooltips.size();i<m;i++)
 		{

@@ -48,6 +48,19 @@ minecraft {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+sourceSets {
+	tools {
+		java {
+    		compileClasspath += main.output
+        	runtimeClasspath += main.output
+    	}
+   	}
+}
+
+configurations {
+    toolsCompile.extendsFrom compile;
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.0.40'
     compile fg.deobf("curse.maven:firstaid-276837:3152708")
@@ -61,6 +74,14 @@ dependencies {
 
 mixin {
     add sourceSets.main, "mixins.uniquebase.refmap.json"
+}
+
+task runAutomatedIconGen(type: JavaExec) {
+	group = 'internal'
+	description = 'Generates the Icon Uniquecodes automatically'
+    classpath = sourceSets.tools.runtimeClasspath
+    main = 'automation.AutomatedIconGen'
+    args file('src/main/resources').absolutePath, file('src/tools/resources/icons.json')
 }
 
 jar {

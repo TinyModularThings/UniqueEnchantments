@@ -45,6 +45,7 @@ public class UEBase
 	public static final PacketHandler NETWORKING = new PacketHandler();
 	public static final Proxy PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> Proxy::new);
 	public static IKeyBind ENCHANTMENT_GUI = IKeyBind.empty();
+	public static IKeyBind ENCHANTMENT_ICONS = IKeyBind.empty();
 	
 	public static final Object2ObjectMap<Enchantment, ColorConfig> COLOR_SETTINGS = new Object2ObjectLinkedOpenHashMap<>();
 	public static ConfigValue<List<? extends String>> COLOR_CONFIGS;
@@ -72,6 +73,7 @@ public class UEBase
 	public UEBase()
 	{
 		ENCHANTMENT_GUI = PROXY.registerKey("Enchantment Gui", 342);
+		ENCHANTMENT_ICONS = PROXY.registerKey("Enchantment Icons", 342);
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 		builder.push("general");
 		builder.comment("Allows to set how long it takes to view the enchantments on");

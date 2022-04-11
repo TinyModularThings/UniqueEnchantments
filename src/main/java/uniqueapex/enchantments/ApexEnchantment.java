@@ -57,13 +57,13 @@ public class ApexEnchantment extends UniqueEnchantment implements IApexEnchantme
 	@Override
 	public int getMinCost(int enchantmentLevel)
 	{
-		return 0;
+		return Integer.MAX_VALUE;
 	}
 
 	@Override
 	public int getMaxCost(int enchantmentLevel)
 	{
-		return 0;
+		return Integer.MAX_VALUE;
 	}
 
 	@Override
