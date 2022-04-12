@@ -1,5 +1,6 @@
 package uniquebase.handler;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -61,6 +62,7 @@ public class EnchantmentHandler
 	public static final EnchantmentHandler INSTANCE = new EnchantmentHandler();
 	Map<Enchantment, List<ItemStack>> enchantedItems = new Object2ObjectLinkedOpenHashMap<>();
 	boolean toggle = false;
+	public boolean isLoaded = false;
 	int ticker = 0;
 	
 	public void limitEnchantments(ListNBT list, ItemStack stack)
@@ -200,6 +202,7 @@ public class EnchantmentHandler
 	
 	private List<ItemStack> getItemsForEnchantment(Enchantment ench)
 	{
+		if(!isLoaded) return Collections.emptyList();
 		return enchantedItems.computeIfAbsent(ench, this::createItemsForEnchantments);
 	}
 	

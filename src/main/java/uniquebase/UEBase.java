@@ -27,6 +27,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.ColorConfig;
@@ -138,6 +139,12 @@ public class UEBase
 		CropHarvestRegistry.INSTANCE.init();
 		PROXY.init();
 	}
+    
+    @SubscribeEvent
+    public void onLoadComplete(FMLLoadCompleteEvent event)
+    {
+    	EnchantmentHandler.INSTANCE.isLoaded = true;
+    }
     
 	protected void reloadConfig()
     {
