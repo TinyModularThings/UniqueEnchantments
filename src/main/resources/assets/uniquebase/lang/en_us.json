@@ -42,7 +42,7 @@
 	"enchantment.minecraft.mending.desc": "Collected experience orbs are converted into Durability instead of player experience",
 	"enchantment.minecraft.mending.icon": "?",
 	"enchantment.minecraft.multishot.desc": "Increases amount of arrows shot",
-	"enchantment.minecraft.multishot.icon": "\u006f",
+	"enchantment.minecraft.multishot.icon": "o",
 	"enchantment.minecraft.piercing.desc": "Arrows penetrate entities and shields",
 	"enchantment.minecraft.piercing.icon": "I",
 	"enchantment.minecraft.power.desc": "Increased damage by arrows",
