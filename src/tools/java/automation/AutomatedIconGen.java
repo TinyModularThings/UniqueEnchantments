@@ -39,7 +39,12 @@ public class AutomatedIconGen
 			JsonArray icons = new JsonParser().parse(reader).getAsJsonObject().getAsJsonArray("icons");
 			for(int i = 0,m=icons.size();i<m;i++) {
 				String s = icons.get(i).getAsString();
-				map.get(s).addLangEntry(s+".icon", i+1);
+				LangFile file = map.get(s+".desc");
+				if(file == null) {
+					System.out.println("["+s+".desc] wasn't found in the language file, Skipping");
+					continue;
+				}
+				file.addLangEntry(s+".icon", i+1);
 			}
 			for(LangFile file : list) {
 				file.save();
