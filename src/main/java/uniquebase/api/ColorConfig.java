@@ -148,13 +148,13 @@ public class ColorConfig
 		acceptor.addColor(new ResourceLocation("uniquee:undead"), "#e4ca3a", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:vitae"), "#c1cfd4", null, null, null);
 
-		acceptor.addColor(new ResourceLocation("uniquee:ender_mending"), "#32f094", null, null, null); //TODO
+		acceptor.addColor(new ResourceLocation("uniquee:ender_mending"), "#b54ee9", null, null, null); //TODO
 		acceptor.addColor(new ResourceLocation("uniquee:climate_tranquility"), "#b1502a", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:momentum"), "#899aa0", null, null, null); //TODO
+		acceptor.addColor(new ResourceLocation("uniquee:momentum"), "#50cf66", null, null, null); //TODO
 		acceptor.addColor(new ResourceLocation("uniquee:perpetualstrike"), "#4b5163", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:smart_ass"), "#793303", null, null, null); //TODO
+		acceptor.addColor(new ResourceLocation("uniquee:smart_ass"), "#4b5163", null, null, null); //TODO
 		acceptor.addColor(new ResourceLocation("uniquee:spartanweapon"), "#899aa0", null, null, null); //TODO
-		acceptor.addColor(new ResourceLocation("uniquee:swiftblade"), "#373f52", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:swiftblade"), "#e4ca3a", null, null, null);
 		
 		acceptor.addColor(new ResourceLocation("uniquee:alchemistsgrace"), "#e4ca3a", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:aresblessing"), "#20b63a", null, null, null);
