@@ -51,6 +51,7 @@ public class UEBase
 	public static final Object2ObjectMap<Enchantment, ColorConfig> COLOR_SETTINGS = new Object2ObjectLinkedOpenHashMap<>();
 	public static ConfigValue<List<? extends String>> COLOR_CONFIGS;
 	public static Object2IntMap<Item> ENCHANTMENT_LIMITS = new Object2IntOpenHashMap<>();
+	public static ConfigValue<Integer> ENCHANTMENT_LIMIT_DEFAULT;
 	public static ConfigValue<List<? extends String>> ENCHANTMENT_LIMITS_CONFIGS;
 	public static IntValue VIEW_COOLDOWN;
 	public static BooleanValue ENCHANTED_GLINT;
@@ -89,6 +90,8 @@ public class UEBase
 		XP_OVERRIDE_ANVIL = builder.define("Anvil XP override", false);
 		builder.comment("Allows modify the conversion rate from Level to XP points. This can result in consuming more then the player actually has");
 		XP_MULTIPLIER_ANVIL = builder.defineInRange("Anvil XP multiplier", 1D, 0.1D, 1000D);
+		builder.comment("The default limit for each Item, if not further specified in the List");
+		ENCHANTMENT_LIMIT_DEFAULT = builder.define("Item Enchantment Limit Default", Integer.MAX_VALUE);
 		builder.comment("Allows to limit how many Enchantments can be put on to a Item. Excess gets deleted", 
 				"Format: ItemRegistryName;MaxEnchantment (example: minecraft:diamond;2");
 		ENCHANTMENT_LIMITS_CONFIGS = builder.defineList("Item Enchantment Limits", ObjectLists.emptyList(), T -> true);
@@ -130,7 +133,7 @@ public class UEBase
 		bus.register(this);
 		
 		COLOR_SETTINGS.defaultReturnValue(new ColorConfig());
-		ENCHANTMENT_LIMITS.defaultReturnValue(Integer.MAX_VALUE);
+		ENCHANTMENT_LIMITS.defaultReturnValue(ENCHANTMENT_LIMIT_DEFAULT.get());
 	}
 	
     @SubscribeEvent

@@ -150,9 +150,9 @@ public class ColorConfig
 
 		acceptor.addColor(new ResourceLocation("uniquee:ender_mending"), "#b54ee9", null, null, null); //TODO
 		acceptor.addColor(new ResourceLocation("uniquee:climate_tranquility"), "#b1502a", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:momentum"), "#50cf66", null, null, null); //TODO
+		acceptor.addColor(new ResourceLocation("uniquee:momentum"), "#75e580", null, null, null); //TODO
 		acceptor.addColor(new ResourceLocation("uniquee:perpetualstrike"), "#4b5163", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:smart_ass"), "#4b5163", null, null, null); //TODO
+		acceptor.addColor(new ResourceLocation("uniquee:smart_ass"), "#373f52", null, null, null); //TODO
 		acceptor.addColor(new ResourceLocation("uniquee:spartanweapon"), "#899aa0", null, null, null); //TODO
 		acceptor.addColor(new ResourceLocation("uniquee:swiftblade"), "#e4ca3a", null, null, null);
 		
@@ -195,7 +195,7 @@ public class ColorConfig
 		acceptor.addColor(new ResourceLocation("uniqueutil:sleipnirs_grace"), "#e4ca3a", null, null, null);
 		
 		acceptor.addColor(new ResourceLocation("uniqueutil:ambrosia"), "#e4ca3a", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniqueutil:anemoi_fragment"), "#a53e6e", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniqueutil:anemoi_fragment"), "#a6b5ba", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniqueutil:demeters_soul"), "#899aa0", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniqueutil:mounting_aegis"), "#899aa0", null, null, null); //TODO
 		acceptor.addColor(new ResourceLocation("uniqueutil:pegasus_soul"), "#899aa0", null, null, null);

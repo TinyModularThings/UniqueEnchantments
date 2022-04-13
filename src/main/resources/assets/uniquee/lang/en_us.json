@@ -43,7 +43,7 @@
 	"enchantment.uniquee.ender_librarian.icon": " ",
 	"enchantment.uniquee.ender_mending": "Ender Mending",
 	"enchantment.uniquee.ender_mending.desc": "Improved Version of Mending, will store exceeding Experience in the Tool. Ender Mending will split it's Experience to every Item that has either Ender Mending or Mending",
-	"enchantment.uniquee.ender_mending.icon": "!",
+	"enchantment.uniquee.ender_mending.icon": "\u0020",
 	"enchantment.uniquee.endermarksmen": "Ender's Markmen",
 	"enchantment.uniquee.endermarksmen.desc": "Hitting a target with a Bow, will replenish Durability and grant your Arrow back",
 	"enchantment.uniquee.endermarksmen.icon": "\"",

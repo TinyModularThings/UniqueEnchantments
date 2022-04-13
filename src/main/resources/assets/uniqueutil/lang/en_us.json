@@ -10,7 +10,7 @@
 	"enchantment.uniqueutil.ambrosia.icon": "\u0002",
 	"enchantment.uniqueutil.anemoi_fragment": "Anemoi Fragment",
 	"enchantment.uniqueutil.anemoi_fragment.desc": "Shift-rightclicking an Anvil with this Item, will consume burnable Items in your Inventory. While in-air, press the dedicated Hotkey (by default Ctrl) to gain an upwards boost",
-	"enchantment.uniqueutil.anemoi_fragment.icon": "m",
+	"enchantment.uniqueutil.anemoi_fragment.icon": "\u0006",
 	"enchantment.uniqueutil.climber": "Climber",
 	"enchantment.uniqueutil.climber.desc": "Shift-rightclicking a climbable Block, will teleport you the most upper block after some seconds. You're not allowed to move meanwhile",
 	"enchantment.uniqueutil.climber.icon": "\u0014",
