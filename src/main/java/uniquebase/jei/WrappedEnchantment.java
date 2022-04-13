@@ -7,11 +7,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantment.Rarity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -32,7 +29,7 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 	ExtendedButton right = new ExtendedButton(54, 68, 10, 10, new StringTextComponent(">"), T -> {});
 	
 	
-	public WrappedEnchantment(Enchantment ench)
+	public WrappedEnchantment(Enchantment ench, List<ItemStack> items)
 	{
 		this.ench = ench;
 		for(Enchantment entry : ForgeRegistries.ENCHANTMENTS)
@@ -41,20 +38,14 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 			if(ench == entry) continue;
 			incompats.add(entry);
 		}
-		for(Item item : ForgeRegistries.ITEMS)
-		{
-			NonNullList<ItemStack> temp = NonNullList.create();
-			item.fillItemCategory(ItemGroup.TAB_SEARCH, temp);
-			for(int i = 0,m=temp.size();i<m;i++)
-			{
-				if(ench.canEnchant(temp.get(i))) validItems.add(temp.get(i));
-			}
+		for(int i = 0,m=items.size();i<m;i++) {
+			ItemStack stack = items.get(i);
+			if(ench.canApplyAtEnchantingTable(stack)) validItems.add(stack);
 		}
 		if(ench instanceof ICustomItemEnchantment)
 		{
 			((ICustomItemEnchantment)ench).addCustomItems(validItems);
 		}
-		validItems.removeIf(ItemStack::isEmpty);
 	}
 	
 	@Override
