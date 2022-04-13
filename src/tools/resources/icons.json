@@ -1,6 +1,6 @@
 {
 	"icons": [
-		"enchantment.uniqueutil.alchemists_blessing",
+		"enchantment.uniquee.alchemists_grace",
 		"enchantment.uniqueutil.ambrosia",
 		"enchantment.uniquee.arthropods",
 		"enchantment.uniquee.all",
@@ -31,7 +31,7 @@
 		"enchantment.uniquee.ecological",
 		"enchantment.minecraft.efficiency",
 		"enchantment.uniquee.ender_eyes",
-		"enchantment.uniquee.ender_librarian",
+		"",
 		"enchantment.uniquee.ender_mending",
 		"enchantment.uniquee.endermarksmen",
 		"enchantment.uniquee.endest_reap",
@@ -110,6 +110,8 @@
 		"enchantment.uniqueutil.adept",
 		"enchantment.uniqueapex.aeons_fragment",
 		"enchantment.uniqueapex.absolute_protection",
-		"enchantment.minecraft.multishot"
+		"enchantment.minecraft.multishot",
+		"enchantment.uniqueutil.alchemists_blessing",
+		"enchantment.uniquee.ender_librarian"
 	]
 }
