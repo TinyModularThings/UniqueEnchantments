@@ -28,6 +28,7 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import uniquebase.api.BaseUEMod;
 import uniquebase.api.ColorConfig;
 import uniquebase.api.IKeyBind;
 import uniquebase.api.crops.CropHarvestRegistry;
@@ -122,7 +123,8 @@ public class UEBase
 		builder.pop();
 		
 		CONFIG = builder.build();
-		ModLoadingContext.get().registerConfig(Type.COMMON, CONFIG, "UEBase.toml");
+		BaseUEMod.validateConfigFolder();
+		ModLoadingContext.get().registerConfig(Type.COMMON, CONFIG, "ue/UEBase.toml");
 		MinecraftForge.EVENT_BUS.register(BaseHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(EnchantmentHandler.INSTANCE);
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();

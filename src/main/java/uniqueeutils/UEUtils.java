@@ -71,7 +71,7 @@ public class UEUtils extends BaseUEMod
 		BOOST_KEY = UEBase.PROXY.registerKey("Pegasus Soul Key", 341);
 		SATURATION = new SaturationEffect();
 		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Effect.class, this::registerPotion);
-		init(FMLJavaModLoadingContext.get().getModEventBus(), "UniqueEnchantment-Utils.toml");
+		init(FMLJavaModLoadingContext.get().getModEventBus(), "UEUtils.toml");
 		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);
 		BaseHandler.INSTANCE.registerAnvilHelper(THICK_PICK, ThickPick.VALIDATOR, ThickPick.TAG);
 		BaseHandler.INSTANCE.registerAnvilHelper(ANEMOIS_FRAGMENT, AnemoiFragment.FUEL_SOURCE, AnemoiFragment.STORAGE);

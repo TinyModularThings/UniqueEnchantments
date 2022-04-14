@@ -124,7 +124,7 @@ public class UE extends BaseUEMod
 		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
 		
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-		init(bus, "UniqueEnchantment.toml");
+		init(bus, "UE.toml");
 		bus.register(this);
 		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(this);

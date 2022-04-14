@@ -63,7 +63,7 @@ public class UEBattle extends BaseUEMod
 		BLEED = new Bleed();
 		LOCK_DOWN = new Lockdown();
 		ForgeRegistries.POTIONS.registerAll(TOUGHEND, BLEED, LOCK_DOWN);
-		init(FMLJavaModLoadingContext.get().getModEventBus(), "UniqueEnchantment-Battle.toml");
+		init(FMLJavaModLoadingContext.get().getModEventBus(), "UEBattle.toml");
 		MinecraftForge.EVENT_BUS.register(BattleHandler.INSTANCE);
 		BaseHandler.INSTANCE.registerStorageTooltip(ARTEMIS_SOUL, "tooltip.uniquebattle.stored.ender.name", ArtemisSoul.ENDER_STORAGE);
 		BaseHandler.INSTANCE.registerStorageTooltip(ARTEMIS_SOUL, "tooltip.uniquebattle.stored.ender.souls.common.name", ArtemisSoul.TEMPORARY_SOUL_COUNT);

@@ -1,5 +1,7 @@
 package uniquebase.api;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -12,6 +14,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.config.ModConfig.Type;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 public abstract class BaseUEMod
 {
@@ -31,6 +34,18 @@ public abstract class BaseUEMod
 		return ALL_MODS.contains(mod);
 	}
 	
+	public static void validateConfigFolder() {
+		Path path = FMLPaths.CONFIGDIR.get().resolve("ue");
+		try {
+			if(Files.notExists(path)) {
+				Files.createDirectories(path);
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void init(IEventBus bus, String name)
 	{
 		bus.addGenericListener(Enchantment.class, this::registerEnchantments);
@@ -47,7 +62,8 @@ public abstract class BaseUEMod
 		}
 		builder.pop();
 		config = builder.build();
-		ModLoadingContext.get().registerConfig(Type.COMMON, config, name);
+		validateConfigFolder();
+		ModLoadingContext.get().registerConfig(Type.COMMON, config, "ue/"+name);
 	}
 	
 	protected abstract void loadEnchantments();

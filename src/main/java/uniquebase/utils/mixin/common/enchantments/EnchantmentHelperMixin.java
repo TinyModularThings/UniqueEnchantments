@@ -18,7 +18,7 @@ import uniquebase.api.IApexEnchantment;
 public class EnchantmentHelperMixin
 {
 	@Inject(method = "getAvailableEnchantmentResults", at = @At(value = "TAIL", shift = Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	public static void removeApexEnchantments(int level, ItemStack stack, boolean treasure, CallbackInfoReturnable<List<EnchantmentData>> result, List<EnchantmentData> list) {
+	private static void removeApexEnchantments(int level, ItemStack stack, boolean treasure, CallbackInfoReturnable<List<EnchantmentData>> result, List<EnchantmentData> list) {
 		for(int i = 0,m=list.size();i<m;i++) {
 			if(list.get(i).enchantment instanceof IApexEnchantment) {
 				list.remove(i--);
