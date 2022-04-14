@@ -11,7 +11,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
@@ -29,7 +28,6 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.ColorConfig;
 import uniquebase.api.IKeyBind;
 import uniquebase.api.crops.CropHarvestRegistry;
@@ -48,10 +46,11 @@ public class UEBase
 	public static IKeyBind ENCHANTMENT_GUI = IKeyBind.empty();
 	public static IKeyBind ENCHANTMENT_ICONS = IKeyBind.empty();
 	
-	public static final Object2ObjectMap<Enchantment, ColorConfig> COLOR_SETTINGS = new Object2ObjectLinkedOpenHashMap<>();
+	public static final Object2ObjectMap<ResourceLocation, ColorConfig> COLOR_SETTINGS = new Object2ObjectLinkedOpenHashMap<>();
 	public static ConfigValue<List<? extends String>> COLOR_CONFIGS;
-	public static Object2IntMap<Item> ENCHANTMENT_LIMITS = new Object2IntOpenHashMap<>();
-	public static ConfigValue<Integer> ENCHANTMENT_LIMIT_DEFAULT;
+	public static BooleanValue ITEM_COLORING_ENABLED;
+	public static Object2IntMap<ResourceLocation> ENCHANTMENT_LIMITS = new Object2IntOpenHashMap<>();
+	public static IntValue ENCHANTMENT_LIMIT_DEFAULT;
 	public static ConfigValue<List<? extends String>> ENCHANTMENT_LIMITS_CONFIGS;
 	public static IntValue VIEW_COOLDOWN;
 	public static BooleanValue ENCHANTED_GLINT;
@@ -91,7 +90,7 @@ public class UEBase
 		builder.comment("Allows modify the conversion rate from Level to XP points. This can result in consuming more then the player actually has");
 		XP_MULTIPLIER_ANVIL = builder.defineInRange("Anvil XP multiplier", 1D, 0.1D, 1000D);
 		builder.comment("The default limit for each Item, if not further specified in the List");
-		ENCHANTMENT_LIMIT_DEFAULT = builder.define("Item Enchantment Limit Default", Integer.MAX_VALUE);
+		ENCHANTMENT_LIMIT_DEFAULT = builder.defineInRange("Item Enchantment Limit Default", Integer.MAX_VALUE, 0, Integer.MAX_VALUE);
 		builder.comment("Allows to limit how many Enchantments can be put on to a Item. Excess gets deleted", 
 				"Format: ItemRegistryName;MaxEnchantment (example: minecraft:diamond;2");
 		ENCHANTMENT_LIMITS_CONFIGS = builder.defineList("Item Enchantment Limits", ObjectLists.emptyList(), T -> true);
@@ -118,6 +117,8 @@ public class UEBase
 				"Format: EnchantmentRegistryId;TextColor;BackgroundColor;BorderColorTop;BorderColorBottom",
 				"Supports RGBA and expects a # or 0x at the beginning of the color string");
 		COLOR_CONFIGS = builder.defineList("enchantmentColors", ColorConfig.createColorConfig(), T -> true);
+		builder.comment("Toggle for Item Overlay Coloring of Enchanted Books so if the texture is disabled you can turn this optioanlly of too so we don't ruin your texture");
+		ITEM_COLORING_ENABLED = builder.define("Enable Item Coloring", true);
 		builder.pop();
 		
 		CONFIG = builder.build();
@@ -133,7 +134,7 @@ public class UEBase
 		bus.register(this);
 		
 		COLOR_SETTINGS.defaultReturnValue(new ColorConfig());
-		ENCHANTMENT_LIMITS.defaultReturnValue(ENCHANTMENT_LIMIT_DEFAULT.get());
+		ENCHANTMENT_LIMITS.defaultReturnValue(Integer.MAX_VALUE);
 	}
 	
     @SubscribeEvent
@@ -149,6 +150,10 @@ public class UEBase
     	EnchantmentHandler.INSTANCE.isLoaded = true;
     }
     
+    public static ColorConfig getEnchantmentColor(Enchantment ench) {
+    	return COLOR_SETTINGS.get(ench == null ? null : ench.getRegistryName());
+    }
+    
 	protected void reloadConfig()
     {
 		COLOR_SETTINGS.clear();
@@ -158,16 +163,17 @@ public class UEBase
 			if(split.length < 2) continue;
 			ColorConfig color = ColorConfig.fromText(split);
 			if(color != null) {
-				Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(split[0]));
+				ResourceLocation ench = ResourceLocation.tryParse(split[0]);
 				if(ench != null) COLOR_SETTINGS.put(ench, color);
 			}
 		}
 		ENCHANTMENT_LIMITS.clear();
+		ENCHANTMENT_LIMITS.defaultReturnValue(ENCHANTMENT_LIMIT_DEFAULT.get());
 		list = ENCHANTMENT_LIMITS_CONFIGS.get();
 		for(int i = 0; i < list.size(); i++) {
 			String[] split = list.get(i).split(";");
 			if(split.length != 2) continue;
-			Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryParse(split[0]));
+			ResourceLocation item = ResourceLocation.tryParse(split[0]);
 			if(item != null) {
 				try { ENCHANTMENT_LIMITS.put(item, Integer.parseInt(split[1])); }
 				catch(Exception e) { UEBase.LOGGER.info("Failed To load: "+list.get(i)+", Error: "+e); }

@@ -37,12 +37,18 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Color;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.LanguageMap;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.registries.ForgeRegistries;
+import uniquebase.UEBase;
+import uniquebase.api.ColorConfig;
 import uniquebase.api.IToggleEnchantment;
 import uniquebase.utils.mixin.common.enchantments.EnchantmentMixin;
 
@@ -418,4 +424,24 @@ public class MiscUtil
 		return builder.substring(0, builder.length() - 1);
 	}
 	
+	public static IFormattableTextComponent createEnchantmentName(Enchantment ench, int level, boolean allowCurse) {
+		IFormattableTextComponent textComponent = new TranslationTextComponent(ench.getDescriptionId()).setStyle(getEnchantmentColor(ench, allowCurse));
+		if(ench.getMaxLevel() != 1) {
+			textComponent.append(" ").append(new TranslationTextComponent("enchantment.level." + level));
+		}
+		IFormattableTextComponent result = new StringTextComponent("");
+		LanguageMap map = LanguageMap.getInstance();
+		String s = ench.getDescriptionId()+".icon";
+		if(map.has(s)) {
+			result.append(new TranslationTextComponent(s).withStyle(Style.EMPTY.withFont(new ResourceLocation("uniquebase:icons"))));
+			result.append(" ");
+		}
+		result.append(textComponent);
+		return result;
+	}
+	
+	public static Style getEnchantmentColor(Enchantment ench, boolean allowCurseColor) {
+		ColorConfig config = UEBase.getEnchantmentColor(ench);
+		return MiscUtil.toColor(config.getTextColor() == -1 ? (ench.isCurse() && allowCurseColor ? 0xFF5555 : 0xAAAAAAAA) : config.getTextColor());
+	}
 }

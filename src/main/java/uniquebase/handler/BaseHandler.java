@@ -89,7 +89,7 @@ public class BaseHandler
 		if(stack.isEmpty()) return;
 
 		if(stack.isEnchanted() || stack.getItem() == Items.ENCHANTED_BOOK) {
-			ColorConfig config = UEBase.COLOR_SETTINGS.get(MiscUtil.getFirstEnchantment(stack).getKey());
+			ColorConfig config = UEBase.getEnchantmentColor(MiscUtil.getFirstEnchantment(stack).getKey());
 			if(config.isDefault()) return;
 			if(config.getBorderStartColor() != -1) event.setBorderStart(config.getBorderStartColor());
 			if(config.getBorderEndColor() != -1) event.setBorderEnd(config.getBorderEndColor());
