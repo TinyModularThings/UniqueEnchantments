@@ -102,14 +102,15 @@ public class BaseHandler
 	public void onToolTipEvent(ItemTooltipEvent event)
 	{
 		ItemStack stack = event.getItemStack();
+		int flags = UEBase.TOOLTIPS_FLAGS.get();
 		Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
 		boolean hasEnchantments = (stack.getItem() == Items.ENCHANTED_BOOK || UEBase.SHOW_NON_BOOKS.get()) && EnchantmentHelper.getEnchantments(stack).size() > 0;
-		if(hasEnchantments && UEBase.SHOW_DESCRIPTION.get() && !Screen.hasShiftDown())
+		if((flags & 1) != 0 && hasEnchantments && UEBase.SHOW_DESCRIPTION.get() && !Screen.hasShiftDown())
 		{
 			event.getToolTip().add(new TranslationTextComponent("unique.base.desc").withStyle(TextFormatting.DARK_GRAY));
 		}
-		if(hasEnchantments && !UEBase.ENCHANTMENT_ICONS.test(event.getPlayer())) {
-			event.getToolTip().add(new TranslationTextComponent("unique.base.icon", UEBase.ENCHANTMENT_ICONS.getKeyName().copy().withStyle(TextFormatting.LIGHT_PURPLE)).withStyle(TextFormatting.DARK_GRAY));			
+		if((flags & 2) != 0 && hasEnchantments && UEBase.ICONS.get() && !UEBase.ENCHANTMENT_ICONS.test(event.getPlayer())) {
+			event.getToolTip().add(new TranslationTextComponent("unique.base.icon", UEBase.ENCHANTMENT_ICONS.getKeyName().copy().withStyle(TextFormatting.LIGHT_PURPLE)).withStyle(TextFormatting.DARK_GRAY));
 		}
 		for(int i = 0,m=tooltips.size();i<m;i++)
 		{
@@ -138,11 +139,11 @@ public class BaseHandler
 					builder.append(TextFormatting.DARK_GRAY);
 					for(;i<40;i++)
 					{
-						builder.append("|");						
+						builder.append("|");
 					}
 					event.getToolTip().add(new StringTextComponent(builder.toString()));
 				}
-				else
+				else if((flags & 4) != 0)
 				{
 					event.getToolTip().add(new TranslationTextComponent("unique.base.jei.press_gui", UEBase.ENCHANTMENT_GUI.getKeyName().copy().withStyle(TextFormatting.LIGHT_PURPLE)).withStyle(TextFormatting.GRAY));
 				}

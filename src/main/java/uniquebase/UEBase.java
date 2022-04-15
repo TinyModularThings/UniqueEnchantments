@@ -26,7 +26,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.ColorConfig;
@@ -58,9 +57,10 @@ public class UEBase
 	public static BooleanValue HIDE_CURSES;
 	public static BooleanValue SHOW_DESCRIPTION;
 	public static BooleanValue SHOW_NON_BOOKS;
-
+	public static IntValue TOOLTIPS_FLAGS;
 	
 	public static BooleanValue ICONS;
+	public static BooleanValue ICONS_VISIBLE;
 	public static IntValue ICON_ROWS;
 	public static IntValue ICON_ROW_ELEMENTS;
 	public static IntValue ICON_CYCLE_TIME;
@@ -97,6 +97,8 @@ public class UEBase
 		ENCHANTMENT_LIMITS_CONFIGS = builder.defineList("Item Enchantment Limits", ObjectLists.emptyList(), T -> true);
 		builder.pop();
 		builder.push("tooltips");
+		builder.comment("Allows to control which Keybind Tooltips are displayed, 1 => Description, 2 => Icons, 4 => View, they can be added together if wanted.", "This won't disable functionality just hide the keybinding tooltip itself");
+		TOOLTIPS_FLAGS = builder.defineInRange("Visible Tooltips", 7, 0, 7);
 		builder.comment("Hides curses from items until shift is pressed");
 		HIDE_CURSES = builder.define("Hide Curses", false);
 		builder.comment("Shows Enchantment descriptions on items. Automatically disabled if said mod is detected");
@@ -105,6 +107,8 @@ public class UEBase
 		SHOW_NON_BOOKS = builder.define("Show on Items", false);
 		builder.comment("If valid Target Icons should be shown");
 		ICONS = builder.define("Enchantment Icons", true);
+		builder.comment("If Icons should be displayed. Can be toggled ingame with a key");
+		ICONS_VISIBLE = builder.define("Enchantment Icons Visible", false);
 		builder.comment("How many Icon Rows should exists");
 		ICON_ROWS = builder.defineInRange("Enchantment Icon Rows", 3, 1, 100);
 		builder.comment("How many Icons per Row should be Shown");
@@ -117,7 +121,7 @@ public class UEBase
 		builder.comment("Allows to override colors of Enchantment Text, Tooltip Border/Background of each individual Enchantment", 
 				"Format: EnchantmentRegistryId;TextColor;BackgroundColor;BorderColorTop;BorderColorBottom",
 				"Supports RGBA and expects a # or 0x at the beginning of the color string");
-		COLOR_CONFIGS = builder.defineList("enchantmentColors", ColorConfig.createColorConfig(), T -> true);
+		COLOR_CONFIGS = builder.defineList("enchantmentColors", ColorConfig::createColorConfig, T -> true);
 		builder.comment("Toggle for Item Overlay Coloring of Enchanted Books so if the texture is disabled you can turn this optioanlly of too so we don't ruin your texture");
 		ITEM_COLORING_ENABLED = builder.define("Enable Item Coloring", true);
 		builder.pop();
@@ -145,12 +149,6 @@ public class UEBase
 		CropHarvestRegistry.INSTANCE.init();
 		PROXY.init();
 	}
-    
-    @SubscribeEvent
-    public void onLoadComplete(FMLLoadCompleteEvent event)
-    {
-    	EnchantmentHandler.INSTANCE.isLoaded = true;
-    }
     
     public static ColorConfig getEnchantmentColor(Enchantment ench) {
     	return COLOR_SETTINGS.get(ench == null ? null : ench.getRegistryName());

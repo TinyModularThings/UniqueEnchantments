@@ -62,7 +62,6 @@ public class EnchantmentHandler
 	public static final EnchantmentHandler INSTANCE = new EnchantmentHandler();
 	Map<Enchantment, List<ItemStack>> enchantedItems = new Object2ObjectLinkedOpenHashMap<>();
 	boolean toggle = false;
-	public boolean isLoaded = false;
 	int ticker = 0;
 	
 	public void limitEnchantments(ListNBT list, ItemStack stack)
@@ -87,20 +86,22 @@ public class EnchantmentHandler
 	public void onClientTick(ClientTickEvent event)
 	{
 		if(event.phase == Phase.START) return;
-		if(UEBase.ICONS.get()) {
+		if(UEBase.ICONS_VISIBLE.get()) {
 			if(Screen.hasControlDown()) ticker = 0;
 			ticker += Screen.hasShiftDown() ? 0 : 1;
 		}
-		PlayerEntity player = Minecraft.getInstance().player;
-		if(player != null) {
-			boolean isPressed = UEBase.ENCHANTMENT_ICONS.test(player);
-			if(isPressed && !toggle) {
-				toggle = true;
-				UEBase.ICONS.set(!UEBase.ICONS.get());
-				UEBase.CONFIG.save();
-			}
-			else if(!isPressed && toggle) {
-				toggle = false;
+		if(UEBase.ICONS.get()) {
+			PlayerEntity player = Minecraft.getInstance().player;
+			if(player != null) {
+				boolean isPressed = UEBase.ENCHANTMENT_ICONS.test(player);
+				if(isPressed && !toggle) {
+					toggle = true;
+					UEBase.ICONS_VISIBLE.set(!UEBase.ICONS_VISIBLE.get());
+					UEBase.CONFIG.save();
+				}
+				else if(!isPressed && toggle) {
+					toggle = false;
+				}
 			}
 		}
 	}
@@ -144,13 +145,11 @@ public class EnchantmentHandler
 		RenderSystem.popMatrix();
 	}
 	
-	
-	
 	@OnlyIn(Dist.CLIENT)
 	public boolean addEnchantmentInfo(ListNBT list, List<ITextComponent> tooltip, Item item)
 	{
 		boolean hideCurses = UEBase.HIDE_CURSES.get();
-		boolean icons = UEBase.ICONS.get();
+		boolean icons = UEBase.ICONS.get() && UEBase.ICONS_VISIBLE.get();
 		boolean desciptions = !ModList.get().isLoaded("enchdesc");
 		if(!hideCurses && !icons && !desciptions) return false;
 		boolean tools = UEBase.SHOW_NON_BOOKS.get();
@@ -200,9 +199,10 @@ public class EnchantmentHandler
 		if(text.getSiblings().size() > 0) list.add(text);
 	}
 	
+	@OnlyIn(Dist.CLIENT)
 	private List<ItemStack> getItemsForEnchantment(Enchantment ench)
 	{
-		if(!isLoaded) return Collections.emptyList();
+		if(Minecraft.getInstance().player == null) return Collections.emptyList();
 		return enchantedItems.computeIfAbsent(ench, this::createItemsForEnchantments);
 	}
 	
@@ -240,7 +240,7 @@ public class EnchantmentHandler
 				}
 				else
 				{
-					if(clz.add(item.getClass())) {
+					if(item.getRegistryName().getNamespace().equalsIgnoreCase("minecraft") || clz.add(item.getClass())) {
 						validItems.add(stack);
 					}
 				}
