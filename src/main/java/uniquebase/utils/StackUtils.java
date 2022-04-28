@@ -65,7 +65,7 @@ public class StackUtils
 		{
 			ItemStack stack = ((ArrowMixin)arrow).getArrowItem();
 			if(stack == null) {
-				if(!UEBase.LOG_BROKEN_MODS.get()) {
+				if(UEBase.LOG_BROKEN_MODS.get()) {
 					boolean mcCreator = ObjectArrayList.wrap(arrow.getClass().getName().split("\\.")).contains("mcreator");
 					ResourceLocation id = arrow.getType().getRegistryName();
 					if(mcCreator) UEBase.LOGGER.info("A MCreator mod ["+id.getNamespace()+"] with a broken Custom Projectile has been found. Please make sure to ask them to export the said mod again with the MCreator 2020.1 again, if it has been released already.");
