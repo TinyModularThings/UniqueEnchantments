@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.item.Item;
@@ -20,8 +21,8 @@ public abstract class BaseUEMod
 {
 	private static final ThreadLocal<Boolean> CHECKING = ThreadLocal.withInitial(() -> false);
 	public static final EnchantmentType ALL_TYPES = EnchantmentType.create("ANY", BaseUEMod::canEnchant);
-	static final List<BaseUEMod> ALL_MODS = new ObjectArrayList<>();
-	List<IToggleEnchantment> enchantments = new ObjectArrayList<IToggleEnchantment>();
+	static final List<BaseUEMod> ALL_MODS = ObjectLists.synchronize(new ObjectArrayList<>());
+	List<IToggleEnchantment> enchantments = new ObjectArrayList<>();
 	public ForgeConfigSpec config;
 
 	public BaseUEMod()

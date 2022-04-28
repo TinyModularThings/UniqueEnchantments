@@ -58,6 +58,7 @@ public class UEBase
 	public static BooleanValue SHOW_DESCRIPTION;
 	public static BooleanValue SHOW_NON_BOOKS;
 	public static IntValue TOOLTIPS_FLAGS;
+	public static BooleanValue LOG_BROKEN_MODS;
 	
 	public static BooleanValue ICONS;
 	public static BooleanValue ICONS_VISIBLE;
@@ -95,6 +96,8 @@ public class UEBase
 		builder.comment("Allows to limit how many Enchantments can be put on to a Item. Excess gets deleted", 
 				"Format: ItemRegistryName;MaxEnchantment (example: minecraft:diamond;2");
 		ENCHANTMENT_LIMITS_CONFIGS = builder.defineList("Item Enchantment Limits", ObjectLists.emptyList(), T -> true);
+		builder.comment("Enable the logging of Mods that create Invalid ItemStacks that will crash the game");
+		LOG_BROKEN_MODS = builder.define("Log Invalid ItemStacks", true);
 		builder.pop();
 		builder.push("tooltips");
 		builder.comment("Allows to control which Keybind Tooltips are displayed, 1 => Description, 2 => Icons, 4 => View, they can be added together if wanted.", "This won't disable functionality just hide the keybinding tooltip itself");

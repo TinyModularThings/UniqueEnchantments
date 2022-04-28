@@ -9,6 +9,7 @@
 		"common.enchantments.EnchantmentsMixin",
 		"common.enchantments.EnchantmentHelperMixin",
 		"common.entity.ArrowMixin",
+		"common.entity.DragonManagerMixin",
 		"common.entity.EndermenMixin",
 		"common.entity.EntityMixin",
 		"common.entity.FireworkMixin",

@@ -19,6 +19,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.entity.ai.attributes.AttributeModifierManager;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -42,6 +43,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.end.DragonFightManager;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -63,6 +65,7 @@ import net.minecraftforge.items.wrapper.EmptyHandler;
 import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
+import uniquebase.utils.mixin.common.entity.DragonManagerMixin;
 import uniqueebattle.UEBattle;
 import uniqueebattle.enchantments.AresFragment;
 import uniqueebattle.enchantments.AresGrace;
@@ -465,7 +468,7 @@ public class BattleHandler
 				}
 			}
 			int level = MiscUtil.getCombinedEnchantmentLevel(UEBattle.WARS_ODIUM, source);
-			if(level > 0 && !(event.getEntity() instanceof PlayerEntity))
+			if(level > 0 && !(event.getEntity() instanceof PlayerEntity) && !WarsOdium.BLACKLIST.contains(event.getEntity().getType().getRegistryName()))
 			{
 				CompoundNBT nbt = MiscUtil.getPersistentData(source);
 				double chance = WarsOdium.SPAWN_CHANCE.getAsDouble(nbt.getInt(WarsOdium.HIT_COUNTER)) * MathCache.LOG_ADD_MAX.get(level);
@@ -497,6 +500,12 @@ public class BattleHandler
 									base.setHealth(base.getMaxHealth());
 									event.getEntity().level.addFreshEntity(toSpawn);
 									base.playAmbientSound();
+									World world = event.getEntity().level;
+									if(base instanceof EnderDragonEntity && world instanceof ServerWorld)
+									{
+										DragonFightManager manager = ((ServerWorld)world).dragonFight();
+										if(manager != null) ((DragonManagerMixin)manager).setNewDragon(base.getUUID());
+									}
 								}
 							}
 						}

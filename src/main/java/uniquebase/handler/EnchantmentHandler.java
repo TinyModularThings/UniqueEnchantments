@@ -64,17 +64,14 @@ public class EnchantmentHandler
 	boolean toggle = false;
 	int ticker = 0;
 	
-	public void limitEnchantments(ListNBT list, ItemStack stack)
-	{
+	public void limitEnchantments(ListNBT list, ItemStack stack) {
 		int limit = UEBase.ENCHANTMENT_LIMITS.getInt(stack.getItem().getRegistryName());
 		while(list.size() > limit) {
 			list.remove(list.size()-1);
 		}
-		stack.getOrCreateTag().put(stack.getItem() == Items.ENCHANTED_BOOK ? "StoredEnchantments" : "Enchantments", list);
 	}
 	
-	public void limitEnchantments(List<EnchantmentData> list, ItemStack item)
-	{
+	public void limitEnchantments(List<EnchantmentData> list, ItemStack item) {
 		int limit = UEBase.ENCHANTMENT_LIMITS.getInt(item.getItem().getRegistryName());
 		while(list.size() > limit) {
 			list.remove(list.size()-1);
@@ -150,7 +147,7 @@ public class EnchantmentHandler
 	{
 		boolean hideCurses = UEBase.HIDE_CURSES.get();
 		boolean icons = UEBase.ICONS.get() && UEBase.ICONS_VISIBLE.get();
-		boolean desciptions = !ModList.get().isLoaded("enchdesc");
+		boolean desciptions = !ModList.get().isLoaded("enchdesc") && UEBase.SHOW_DESCRIPTION.get();
 		if(!hideCurses && !icons && !desciptions) return false;
 		boolean tools = UEBase.SHOW_NON_BOOKS.get();
 		boolean shiftPressed = Screen.hasShiftDown();
@@ -175,7 +172,7 @@ public class EnchantmentHandler
 	{
 		if(!Screen.hasShiftDown()) return;
 		String s = ench.getDescriptionId() + ".desc";
-		if(I18n.exists(s)) list.add(new TranslationTextComponent(s).withStyle(TextFormatting.DARK_GRAY));
+		if(I18n.exists(s)) list.add(new TranslationTextComponent(s).withStyle(TextFormatting.DARK_AQUA));
 		else list.add(new TranslationTextComponent("unique.base.jei.no.description"));
 	}
 	

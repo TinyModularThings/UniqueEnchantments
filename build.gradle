@@ -66,7 +66,7 @@ dependencies {
     compile fg.deobf("curse.maven:firstaid-276837:3152708")
     compile fg.deobf("curse.maven:configured-457570:3340535")
     compile fg.deobf("curse.maven:jei-238222:3514175")
-//	compile fg.deobf("curse.maven:enchantment-descriptions-250419:3488440")
+	compile fg.deobf("curse.maven:enchantment-descriptions-250419:3488440")
 	compile fg.deobf("curse.maven:bookshelf-228525:3474499")
 	
     annotationProcessor 'org.spongepowered:mixin:0.8:processor'

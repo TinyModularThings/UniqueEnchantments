@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.ToIntFunction;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
@@ -15,10 +16,12 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.IntNBT;
 import net.minecraft.nbt.LongNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Tags;
+import uniquebase.UEBase;
 import uniquebase.utils.mixin.common.entity.ArrowMixin;
 
 public class StackUtils
@@ -60,7 +63,18 @@ public class StackUtils
 	{
 		try
 		{
-			return ((ArrowMixin)arrow).getArrowItem();
+			ItemStack stack = ((ArrowMixin)arrow).getArrowItem();
+			if(stack == null) {
+				if(!UEBase.LOG_BROKEN_MODS.get()) {
+					boolean mcCreator = ObjectArrayList.wrap(arrow.getClass().getName().split("\\.")).contains("mcreator");
+					ResourceLocation id = arrow.getType().getRegistryName();
+					if(mcCreator) UEBase.LOGGER.info("A MCreator mod ["+id.getNamespace()+"] with a broken Custom Projectile has been found. Please make sure to ask them to export the said mod again with the MCreator 2020.1 again, if it has been released already.");
+					else UEBase.LOGGER.info("Entity ["+id.getPath()+"] from the mod ["+id.getNamespace()+"] creates a Null-ItemStack in a custom Projectile. Please report it to the said Mod that they should fix this. For the modder: getItem/getArrowStack/getPickupItem is the function they need to fix.");
+				}
+				//Planned annoying Error log.
+				return ItemStack.EMPTY;
+			}
+			return stack;
 		}
 		catch(Exception e)
 		{

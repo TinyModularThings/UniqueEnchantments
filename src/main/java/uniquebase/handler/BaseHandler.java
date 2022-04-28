@@ -82,14 +82,16 @@ public class BaseHandler
 		}
 	}
 	
-	@SubscribeEvent(priority = EventPriority.LOWEST)
 	@OnlyIn(Dist.CLIENT)
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onToolTipRenderEvent(RenderTooltipEvent.Color event) {
 		ItemStack stack = event.getStack();
 		if(stack.isEmpty()) return;
 
 		if(stack.isEnchanted() || stack.getItem() == Items.ENCHANTED_BOOK) {
-			ColorConfig config = UEBase.getEnchantmentColor(MiscUtil.getFirstEnchantment(stack).getKey());
+			Object2IntMap.Entry<Enchantment> ench = MiscUtil.getFirstEnchantment(stack);
+			if(ench == null) return;
+			ColorConfig config = UEBase.getEnchantmentColor(ench.getKey());
 			if(config.isDefault()) return;
 			if(config.getBorderStartColor() != -1) event.setBorderStart(config.getBorderStartColor());
 			if(config.getBorderEndColor() != -1) event.setBorderEnd(config.getBorderEndColor());
