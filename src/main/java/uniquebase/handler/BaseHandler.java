@@ -13,16 +13,12 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -50,18 +46,6 @@ public class BaseHandler
 	public void registerAnvilHelper(Enchantment ench, ToIntFunction<ItemStack> helper, String tag)
 	{
 		anvilHelpers.add(Triple.create(ench, helper, tag));
-	}
-	
-	@SubscribeEvent
-	public void onEntityInteraction(EntityInteract interact)
-	{
-		if(interact.getItemStack().getItem() == Items.STICK)
-		{
-			NBTTagCompound nbt = new NBTTagCompound();
-			interact.getTarget().writeToNBT(nbt);
-			interact.getEntityPlayer().sendStatusMessage(new TextComponentString(nbt.toString()), false);
-			interact.setCancellationResult(EnumActionResult.SUCCESS);
-		}
 	}
 	
 	@SubscribeEvent

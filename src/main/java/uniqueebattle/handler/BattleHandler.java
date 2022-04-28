@@ -46,7 +46,6 @@ import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -464,8 +463,6 @@ public class BattleHandler
 				int playerLevel = MiscUtil.getPlayerLevel(source, 70);
 				int max = (int)Math.max(Math.sqrt(playerLevel*ArtemisSoul.CAP_SCALE.get())*ArtemisSoul.CAP_FACTOR.get(), ArtemisSoul.CAP_BASE.get());
 				int gain = MathCache.LOG10.getInt((int)(10+(entity.world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, stack)+1)+1)*level*ArtemisSoul.REAP_SCALE.get()*playerLevel));
-				int preLog = (int)(10+(entity.world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, stack)+1)+1)*level*ArtemisSoul.REAP_SCALE.get()*playerLevel);
-				FMLLog.log.info("Gain: "+gain+", PreLog: "+preLog+", Looting: "+(entity.world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, stack)+1)+1)+", Level: "+level+", PlayerLevel: "+playerLevel);
 				StackUtils.setInt(stack, key, Math.min(StackUtils.getInt(stack, key, 0)+gain, max));
 			}
 		}
