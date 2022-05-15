@@ -1,5 +1,7 @@
 package uniqueebattle.handler;
 
+import java.util.List;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -33,10 +35,12 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -50,8 +54,10 @@ import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
@@ -62,6 +68,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.EmptyHandler;
+import uniquebase.UEBase;
 import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
@@ -212,9 +219,24 @@ public class BattleHandler
 			int negRolls = maxRolls - posRolls;
 			if(negRolls >= posRolls) return;
 			event.setResult(Result.ALLOW);
-			event.setDamageModifier(1.5F);
+			if(MiscUtil.isTranscendent(source, UEBattle.ARES_FRAGMENT)) {
+				event.setDamageModifier(1.5F + AresFragment.TRANSCENDED_CRIT_MULTIPLIER.getFloat()*(event.isVanillaCritical() ? 1.0F : 0.0F));
+			} else {
+				event.setDamageModifier(1.5F);
+			}
 			dropPlayerHand(event.getTarget(), ench.getInt(UEBattle.FURY));
 		}
+	}
+	
+	@SubscribeEvent
+	public void onItemUseTick(LivingEntityUseItemEvent.Tick event)
+	{
+		int level = MiscUtil.getEnchantmentLevel(UEBattle.CELESTIAL_BLESSING, event.getItem());
+		if(level > 0) {
+			double num = (1+ (event.getEntityLiving().level.isNight() ? CelestialBlessing.SPEED_BONUS.getAsFloat(level) * CelestialBlessing.SPEED_BONUS.getAsFloat(level) : CelestialBlessing.SPEED_BONUS.getAsFloat(level)));
+			event.setDuration((int) Math.max(10,event.getDuration() / num));
+			UEBase.LOGGER.info(event.getDuration());
+		};
 	}
 
 	protected void dropPlayerHand(Entity target, int level)
@@ -343,7 +365,7 @@ public class BattleHandler
 			level = MiscUtil.getEnchantedItem(UEBattle.ARES_GRACE, source).getIntValue();
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() + (float)Math.log(1+Math.sqrt(MiscUtil.getArmorProtection(target)*target.getHealth())*MiscUtil.getPlayerLevel(source, 0)*level*AresGrace.DAMAGE.get()));
+				event.setAmount(event.getAmount() + (float)Math.log(1+Math.sqrt(MiscUtil.getArmorProtection(target)*target.getHealth()*MiscUtil.getPlayerLevel(source, 0)*level)*AresGrace.DAMAGE.get()));
 				source.getMainHandItem().hurtAndBreak(MathHelper.ceil(AresGrace.DURABILITY.get(Math.log(1+level*source.getHealth()))), source, MiscUtil.get(EquipmentSlotType.MAINHAND));
 			}
 			EquipmentSlotType slot = null;
@@ -521,6 +543,7 @@ public class BattleHandler
 				int playerLevel = MiscUtil.getPlayerLevel(source, 70);
 				int max = (int)Math.max(Math.sqrt(playerLevel*ArtemisSoul.CAP_SCALE.get())*ArtemisSoul.CAP_FACTOR.get(), ArtemisSoul.CAP_BASE.get());
 				int gain = MathCache.LOG10.getInt((int)(10+(entity.level.random.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.MOB_LOOTING, stack)+1)+1)*level*ArtemisSoul.REAP_SCALE.get()*playerLevel));
+				gain = MiscUtil.isTranscendent(entity, UEBattle.ARTEMIS_SOUL) ? (int) (gain * ArtemisSoul.TRANSCENDED_REAP_MULTIPLIER.getFloat()) : gain;
 				StackUtils.setInt(stack, key, Math.min(StackUtils.getInt(stack, key, 0)+gain, max));
 			}
 		}
@@ -542,14 +565,40 @@ public class BattleHandler
 		}
 	}
 	
+	@SubscribeEvent
+	public void onFall(LivingFallEvent event) {
+		LivingEntity entity = event.getEntityLiving();
+		float distance = event.getDistance();
+		
+		if(distance >= 4.0f) {
+			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(entity.getItemBySlot(EquipmentSlotType.CHEST));
+			int level = enchantments.getInt(UEBattle.GOLEM_SOUL);
+			if(MiscUtil.isTranscendent(entity, UEBattle.GOLEM_SOUL)) {
+				List<Entity> entities = entity.level.getEntities(null, new AxisAlignedBB(entity.blockPosition()).inflate(Math.min(distance, 16)));
+				for(Entity ent:entities) {
+					if(ent instanceof LivingEntity && !ent.equals(entity)) {
+						((LivingEntity)ent).addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, GolemSoul.TRANSCENDED_SLOW_TIME.get() * level, Math.min(level-1,5)));
+					}
+				}
+			}
+		}
+		
+	}
+	
 	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(LivingEntity entity, ItemStack stack, EquipmentSlotType slot, World world)
 	{
 		Multimap<Attribute, AttributeModifier> mods = HashMultimap.create();
 		Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
+
 		int level = enchantments.getInt(UEBattle.CELESTIAL_BLESSING);
 		if(level > 0)
 		{
-			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(CelestialBlessing.SPEED_MOD, "speed_boost", world.isDay() ? 0F : CelestialBlessing.SPEED_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL));
+			if(MiscUtil.isTranscendent(entity, UEBattle.CELESTIAL_BLESSING)) {
+				mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(CelestialBlessing.SPEED_MOD, "speed_boost_transcended", world.isDay() ? 0F : Math.pow(1+CelestialBlessing.SPEED_BONUS.getAsDouble(level),2)-1, Operation.MULTIPLY_TOTAL));
+			} else {
+				mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(CelestialBlessing.SPEED_MOD, "speed_boost", world.isDay() ? 0F : CelestialBlessing.SPEED_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL));
+			}
+			
 		}
 		level = enchantments.getInt(UEBattle.IRON_BIRD);
 		if(level > 0)

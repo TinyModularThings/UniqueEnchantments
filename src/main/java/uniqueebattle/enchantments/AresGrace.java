@@ -14,6 +14,8 @@ public class AresGrace extends UniqueEnchantment
 {
 	public static final DoubleStat DAMAGE = new DoubleStat(1D, "damage");
 	public static final DoubleStat DURABILITY = new DoubleStat(1D, "durability");
+	public static final DoubleStat TRANSCENDED_ARMOR = new DoubleStat(0.5, "transcended_armor");
+	public static final DoubleStat TRANSCENDED_TOUGHNESS = new DoubleStat(0.8, "transcended_toughness");
 	
 	public AresGrace()
 	{

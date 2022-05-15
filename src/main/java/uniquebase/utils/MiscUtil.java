@@ -88,9 +88,9 @@ public class MiscUtil
 		return entity instanceof PlayerEntity ? ((PlayerEntity)entity).experienceLevel : defaultValue;
 	}
 	
-	public static boolean isTransendent(Entity entity, Enchantment enchantment)
+	public static boolean isTranscendent(Entity entity, Enchantment enchantment)
 	{
-		return getPlayerLevel(entity, 0) > 1000;//TODO enchantment check later that allows to disable transcendence.
+		return getPlayerLevel(entity, 200) >= 1000;//TODO enchantment check later that allows to disable transcendence.
 	}
 	
 	public static double getArmorProtection(LivingEntity entity)

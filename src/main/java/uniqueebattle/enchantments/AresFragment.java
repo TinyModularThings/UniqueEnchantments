@@ -20,10 +20,11 @@ public class AresFragment extends UniqueEnchantment
 	public static final DoubleStat DURABILITY_DISTRIBUTION = new DoubleStat(0.6D, "durability_distribution");
 	public static final DoubleStat DURABILITY_REDUCTION_SCALING = new DoubleStat(1.3D, "durability_reduction_scaling");
 	public static final IntStat DURABILITY_ANTI_SCALING = new IntStat(11, "durability_anti_scaling");
+	public static final DoubleStat TRANSCENDED_CRIT_MULTIPLIER = new DoubleStat(1.5, "transcended_crit_damage_multiplier");
 	
 	public AresFragment()
 	{
-		super(new DefaultData("ares_fragment", Rarity.RARE, 4, true, false, 25, 35, 10), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("ares_fragment", Rarity.RARE, 4, true, false, 10, 35, 10), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
 		setCategory("battle");
 		addStats(ARMOR_PERCENTAGE, BASE_ROLL, BASE_ROLL_MULTIPLIER, DURABILITY_REDUCTION_SCALING, DURABILITY_ANTI_SCALING, DURABILITY_DISTRIBUTION);
 	}

@@ -36,6 +36,7 @@ public class ArtemisSoul extends UniqueEnchantment
 	public static final DoubleStat DROP_SOUL_SCALE = new DoubleStat(1D, "drop_scale");
 	public static final DoubleStat TEMP_SOUL_SCALE = new DoubleStat(1D, "temp_soul_scale");
 	public static final DoubleStat PERM_SOUL_SCALE = new DoubleStat(1D, "perm_soul_scale");
+	public static final DoubleStat TRANSCENDED_REAP_MULTIPLIER = new DoubleStat(2.0D, "transcended_reap_scaling");
 	
 	
 	public ArtemisSoul()
