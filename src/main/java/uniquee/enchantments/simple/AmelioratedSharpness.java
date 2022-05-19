@@ -13,11 +13,12 @@ import uniquee.UE;
 public class AmelioratedSharpness extends UniqueEnchantment
 {
 	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(1D, "bonus_attack_damage");
+	public static final DoubleStat TRANSCENDED_DAMAGE_MULTIPLIER = new DoubleStat(2.0D, "transcended_damage_multiplier");
 	
 	public AmelioratedSharpness()
 	{
-		super(new DefaultData("all", Rarity.RARE, 5, true, false, 15, 5, 40), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
-		addStats(BONUS_DAMAGE);
+		super(new DefaultData("all", Rarity.VERY_RARE, 5, true, false, 25, 8, 20), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		addStats(BONUS_DAMAGE, TRANSCENDED_DAMAGE_MULTIPLIER);
 	}
 	
 	@Override

@@ -12,11 +12,12 @@ import uniquebase.utils.DoubleStat;
 public class BoneCrusher extends UniqueEnchantment
 {
 	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(0.15D, "bonus_damage");
+	public static final DoubleStat TRANSCENDED_CHANCE = new DoubleStat(0.4D, "transcended_loot_chance");
 	
 	public BoneCrusher()
 	{
 		super(new DefaultData("bone_crusher", Rarity.VERY_RARE, 4, true, true, 2, 8, 20), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
-		addStats(BONUS_DAMAGE);
+		addStats(BONUS_DAMAGE, TRANSCENDED_CHANCE);
 	}
 	
 	@Override

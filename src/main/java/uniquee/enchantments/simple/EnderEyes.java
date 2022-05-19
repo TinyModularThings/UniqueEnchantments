@@ -8,14 +8,19 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 import uniquebase.utils.MiscUtil;
 import uniquee.UE;
 
 public class EnderEyes extends UniqueEnchantment
 {
+	
+	public static final DoubleStat TRANSCENDED_CHANCE = new DoubleStat(0.6, "transcended_chance");
+	
 	public EnderEyes()
 	{
 		super(new DefaultData("ender_eyes", Rarity.UNCOMMON, 1, false, false, 10, 2, 5), EnchantmentType.ARMOR_HEAD, EquipmentSlotType.HEAD);
+		addStats(TRANSCENDED_CHANCE);
 	}
 	
 	@Override

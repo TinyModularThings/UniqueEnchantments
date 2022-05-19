@@ -16,7 +16,7 @@ public class Range extends UniqueEnchantment
 	
 	public Range()
 	{
-		super(new DefaultData("ranged", Rarity.COMMON, 4, false, false, 12, 8, 75), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("ranged", Rarity.UNCOMMON, 4, false, false, 10, 10, 75), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
 		addStats(RANGE, REDUCTION);
 	}
 		

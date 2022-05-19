@@ -1,7 +1,5 @@
 package uniqueebattle.handler;
 
-import java.util.List;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -232,8 +230,10 @@ public class BattleHandler
 	public void onItemUseTick(LivingEntityUseItemEvent.Tick event)
 	{
 		int level = MiscUtil.getEnchantmentLevel(UEBattle.CELESTIAL_BLESSING, event.getItem());
+		LivingEntity entity = event.getEntityLiving();
 		if(level > 0) {
-			double num = (1+ (event.getEntityLiving().level.isNight() ? CelestialBlessing.SPEED_BONUS.getAsFloat(level) * CelestialBlessing.SPEED_BONUS.getAsFloat(level) : CelestialBlessing.SPEED_BONUS.getAsFloat(level)));
+			float boost = MiscUtil.isTranscendent(entity.getEntity(), UEBattle.CELESTIAL_BLESSING) ? CelestialBlessing.SPEED_BONUS.getAsFloat(level) * CelestialBlessing.SPEED_BONUS.getAsFloat(level) : CelestialBlessing.SPEED_BONUS.getAsFloat(level);
+			double num = (1+ (event.getEntityLiving().level.isNight() ? boost : 0));
 			event.setDuration((int) Math.max(10,event.getDuration() / num));
 			UEBase.LOGGER.info(event.getDuration());
 		};
@@ -570,19 +570,14 @@ public class BattleHandler
 		LivingEntity entity = event.getEntityLiving();
 		float distance = event.getDistance();
 		
-		if(distance >= 4.0f) {
-			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(entity.getItemBySlot(EquipmentSlotType.CHEST));
-			int level = enchantments.getInt(UEBattle.GOLEM_SOUL);
-			if(MiscUtil.isTranscendent(entity, UEBattle.GOLEM_SOUL)) {
-				List<Entity> entities = entity.level.getEntities(null, new AxisAlignedBB(entity.blockPosition()).inflate(Math.min(distance, 16)));
-				for(Entity ent:entities) {
-					if(ent instanceof LivingEntity && !ent.equals(entity)) {
-						((LivingEntity)ent).addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, GolemSoul.TRANSCENDED_SLOW_TIME.get() * level, Math.min(level-1,5)));
-					}
+		if(distance >= 4.0f && MiscUtil.isTranscendent(entity, UEBattle.GOLEM_SOUL)) {
+			int level = MiscUtil.getEnchantmentLevel(UEBattle.GOLEM_SOUL, entity.getItemBySlot(EquipmentSlotType.CHEST));
+			for(Entity ent : entity.level.getEntities(entity, new AxisAlignedBB(entity.blockPosition()).inflate(Math.min(distance, 16)))) {
+				if(ent instanceof LivingEntity) {
+					((LivingEntity)ent).addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, GolemSoul.TRANSCENDED_SLOW_TIME.get(level), Math.min(level-1,5)));
 				}
 			}
 		}
-		
 	}
 	
 	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(LivingEntity entity, ItemStack stack, EquipmentSlotType slot, World world)

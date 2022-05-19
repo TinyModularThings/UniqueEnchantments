@@ -20,6 +20,7 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.UniqueEnchantment;
+import uniquebase.utils.DoubleStat;
 import uniquebase.utils.MiscUtil;
 import uniquee.UE;
 
@@ -27,6 +28,7 @@ public class AlchemistsGrace extends UniqueEnchantment
 {
 	public static final List<List<PotionPlan>> EFFECTS = new ObjectArrayList<>();
 	static ConfigValue<List<? extends String>> EFFECT_CONFIG;
+	public static final DoubleStat TRANSCENDED_MULTIPLIER = new DoubleStat(0.25, "transcended_duration_multiplier");
 	
 	public AlchemistsGrace()
 	{

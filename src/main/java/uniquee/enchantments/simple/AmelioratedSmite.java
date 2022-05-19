@@ -14,11 +14,12 @@ import uniquee.UE;
 public class AmelioratedSmite extends UniqueEnchantment
 {
 	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(3D, "bonus_damage");
+	public static final DoubleStat TRANSCENDED_DAMAGE_EXPONENT = new DoubleStat(0.25D, "transcended_damage_exponent");
 
 	public AmelioratedSmite()
 	{
 		super(new DefaultData("undead", Rarity.RARE, 5, true, false, 6, 4, 30), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
-		addStats(BONUS_DAMAGE);
+		addStats(BONUS_DAMAGE, TRANSCENDED_DAMAGE_EXPONENT);
 	}
 	
 	@Override

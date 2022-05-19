@@ -23,14 +23,15 @@ public class EndestReap extends UniqueEnchantment
 	public static final String REAP_STORAGE = "reap_storage";
 	public static final DoubleStat BONUS_DAMAGE_LEVEL = new DoubleStat(0.5D, "bonus_damage_level");
 	public static final DoubleStat REAP_MULTIPLIER = new DoubleStat(0.01D, "reap_multiplier");
+	public static final DoubleStat TRANSCENDED_CHACNE = new DoubleStat(0.25, "transcended_chance");
 	
 	static final Object2IntMap<ResourceLocation> VALID_MOBS = new Object2IntLinkedOpenHashMap<>();
 	static ConfigValue<List<? extends String>> VALID_CONFIG;
 	
 	public EndestReap()
 	{
-		super(new DefaultData("endest_reap", Rarity.VERY_RARE, 4, true, false, 30, 15, 20), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
-		addStats(BONUS_DAMAGE_LEVEL, REAP_MULTIPLIER);
+		super(new DefaultData("endest_reap", Rarity.VERY_RARE, 4, true, false, 30, 10, 30), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		addStats(BONUS_DAMAGE_LEVEL, REAP_MULTIPLIER, TRANSCENDED_CHACNE);
 	}
 	
 	@Override

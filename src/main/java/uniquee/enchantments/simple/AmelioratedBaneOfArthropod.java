@@ -20,11 +20,12 @@ public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 {
 	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(3D, "bonus_damage");
 	public static final IntLevelStats SLOW_DURATION = new IntLevelStats("slow_duration", 40, 15);
+	public static final DoubleStat TRANSCENDED_DAMAGE_EXPONENT = new DoubleStat(0.25D, "transcended_damage_exponent");
 	
 	public AmelioratedBaneOfArthropod()
 	{
 		super(new DefaultData("arthropods", Rarity.RARE, 5, true, false, 6, 4, 30), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
-		addStats(BONUS_DAMAGE, SLOW_DURATION);
+		addStats(BONUS_DAMAGE, SLOW_DURATION, TRANSCENDED_DAMAGE_EXPONENT);
 	}
 	
 	@Override

@@ -449,4 +449,5 @@ public class MiscUtil
 		ColorConfig config = UEBase.getEnchantmentColor(ench);
 		return MiscUtil.toColor(config.getTextColor() == -1 ? (ench.isCurse() && allowCurseColor ? 0xFF5555 : 0xAAAAAAAA) : config.getTextColor());
 	}
+	
 }

@@ -66,6 +66,7 @@ import uniquee.enchantments.unique.PhoenixBlessing;
 import uniquee.enchantments.unique.WarriorsGrace;
 import uniquee.handler.EntityEvents;
 import uniquee.handler.LootModifier;
+import uniquee.handler.potion.EternalFlamePotion;
 import uniquee.handler.potion.PestilencesOdiumPotion;
 
 @Mod("uniquee")
@@ -116,11 +117,13 @@ public class UE extends BaseUEMod
 	public static Enchantment DEATHS_ODIUM;
 	
 	//Potions
+	public static Effect ETERNAL_FLAME_POTION;
 	public static Effect PESTILENCES_ODIUM_POTION;
 	public static ForgeConfigSpec CONFIG;
 	
 	public UE()
 	{
+		ETERNAL_FLAME_POTION = new EternalFlamePotion();
 		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
 		
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -246,5 +249,6 @@ public class UE extends BaseUEMod
     public void loadPotion(RegistryEvent.Register<Effect> event)
     {
     	event.getRegistry().register(PESTILENCES_ODIUM_POTION);
+    	event.getRegistry().register(ETERNAL_FLAME_POTION);
     }
 }

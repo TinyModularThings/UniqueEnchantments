@@ -15,12 +15,11 @@ public class GolemSoul extends UniqueEnchantment
 	public static final UUID SPEED_MOD = UUID.fromString("135847c6-f6ca-11eb-9a03-0242ac130003");
 	public static final DoubleStat SPEED = new DoubleStat(0.05D, "speed");
 	public static final IntStat TRANSCENDED_SLOW_TIME = new IntStat(20, "transcended_slow_time");
-	public static final DoubleStat TRANSCENDED_SLOW = new DoubleStat(0.8D, "transcended_Slow_time");
 	
 	public GolemSoul()
 	{
 		super(new DefaultData("golem_soul", Rarity.COMMON, 4, false, true, 16, 3, 50), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
 		setCategory("battle");
-		addStats(KNOCKBACK, SPEED);
+		addStats(KNOCKBACK, SPEED, TRANSCENDED_SLOW_TIME);
 	}
 }

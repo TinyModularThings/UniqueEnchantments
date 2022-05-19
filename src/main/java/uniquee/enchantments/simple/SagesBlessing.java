@@ -3,26 +3,19 @@ package uniquee.enchantments.simple;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.ItemStack;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquee.UE;
 
 public class SagesBlessing extends UniqueEnchantment
 {
-	public static final DoubleStat XP_BOOST = new DoubleStat(0.2D, "xp_boost");
+	public static final DoubleStat XP_BOOST = new DoubleStat(0.1D, "xp_boost");
+	public static final DoubleStat TRANSCENDED_BOOST = new DoubleStat(2.0, "transcended_exponent");
 	
 	public SagesBlessing()
 	{
-		super(new DefaultData("sages_blessing", Rarity.COMMON, 5, false, false, 5, 5, 20), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
-		addStats(XP_BOOST);
-	}
-	
-	@Override
-	protected boolean canApplyToItem(ItemStack stack)
-	{
-		return EnchantmentType.WEAPON.canEnchant(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
+		super(new DefaultData("sages_blessing", Rarity.COMMON, 5, false, false, 5, 5, 20), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		addStats(XP_BOOST, TRANSCENDED_BOOST);
 	}
 	
 	@Override
