@@ -1,0 +1,9 @@
+{
+	"second_life": {
+		"category": "blocks",
+		"subtitle": "Item revived",
+		"sounds": [
+			{"name": "uniqueapex:second_life", "stream": true }
+		]
+	}
+}

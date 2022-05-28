@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.lwjgl.opengl.GL46;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -13,6 +12,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
@@ -28,6 +28,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.ColorConfig;
 import uniquebase.api.IKeyBind;
@@ -73,6 +74,8 @@ public class UEBase
 	public static DoubleValue XP_MULTIPLIER_ANVIL;
 	
 	public static ForgeConfigSpec CONFIG;	
+	
+	public static final SoundEvent ANVIL_STACK = new SoundEvent(new ResourceLocation("uniquebase", "anvil_stacks"));
 	
 	public UEBase()
 	{
@@ -145,6 +148,8 @@ public class UEBase
 		
 		COLOR_SETTINGS.defaultReturnValue(new ColorConfig());
 		ENCHANTMENT_LIMITS.defaultReturnValue(Integer.MAX_VALUE);
+		
+		ForgeRegistries.SOUND_EVENTS.register(ANVIL_STACK.setRegistryName("anvil_stacks"));
 	}
 	
     @SubscribeEvent

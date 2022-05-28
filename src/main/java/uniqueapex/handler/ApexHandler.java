@@ -17,6 +17,7 @@ import net.minecraft.item.Items;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos.Mutable;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
@@ -73,6 +74,7 @@ public class ApexHandler
 			float restore = ((-1/(1+MathCache.LOG.getFloat((int)(1+MiscUtil.getPlayerLevel(event.entity, 100)*SecondLife.RESTORE.getFloat()))))+1);
 			stack.setDamageValue(Math.max(0, stack.getDamageValue()-Math.max(5, (int)(stack.getMaxDamage()*restore))));
 			MiscUtil.replaceEnchantmentLevel(UEApex.SECOND_LIFE, stack, level-1);
+			event.entity.level.playSound(null, event.entity.blockPosition(), UEApex.SECOND_LIFE_SOUND, SoundCategory.AMBIENT, 1F, 1F);
 		}
 	}
 	

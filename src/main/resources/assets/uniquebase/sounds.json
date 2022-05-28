@@ -1,0 +1,9 @@
+{
+	"anvil_stacks": {
+		"category": "blocks",
+		"subtitle": "Item Charged",
+		"sounds": [
+			{"name": "uniquebase:anvil_stacks", "stream": true }
+		]
+	}
+}

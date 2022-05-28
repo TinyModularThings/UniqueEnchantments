@@ -1,0 +1,23 @@
+{
+	"ender_librarian": {
+		"category": "blocks",
+		"subtitle": "Librarian teleport",
+		"sounds": [
+			{"name": "uniquee:ender_librarian", "stream": true }
+		]
+	},
+	"grimoire": {
+		"category": "blocks",
+		"subtitle": "Grimoire Refresh",
+		"sounds": [
+			{"name": "uniquee:grimoire", "stream": true }
+		]
+	},
+	"momentum": {
+		"category": "blocks",
+		"subtitle": "Momentum charge",
+		"sounds": [
+			{"name": "uniquee:momentum", "stream": true}
+		]
+	}
+}

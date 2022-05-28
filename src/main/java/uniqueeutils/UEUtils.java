@@ -62,6 +62,7 @@ public class UEUtils extends BaseUEMod
 	public static Effect SATURATION;
 	
 	public static final SoundEvent RESONANCE_SOUND = new SoundEvent(new ResourceLocation("uniqueutil", "resonance_found"));
+	public static final SoundEvent ALCHEMIST_BLESSING_SOUND = new SoundEvent(new ResourceLocation("uniqueutil", "alchemist_blessing_transmutate"));
 	
 	public static IKeyBind BOOST_KEY = IKeyBind.empty();
 	
@@ -82,6 +83,7 @@ public class UEUtils extends BaseUEMod
 		BaseHandler.INSTANCE.registerStorageTooltip(SAGES_SOUL, "tooltip.uniqueutil.stored.soul.name", SagesSoul.STORED_XP);
 		BaseHandler.INSTANCE.registerStorageTooltip(REINFORCED, "tooltip.uniqueutil.stored.shield.name", Reinforced.SHIELD);
 		ForgeRegistries.SOUND_EVENTS.register(RESONANCE_SOUND.setRegistryName("resonance_found"));
+		ForgeRegistries.SOUND_EVENTS.register(ALCHEMIST_BLESSING_SOUND.setRegistryName("alchemist_blessing_transmutate"));	
 	}
 	
 	public void registerPotion(RegistryEvent.Register<Effect> event)

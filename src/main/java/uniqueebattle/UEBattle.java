@@ -2,6 +2,8 @@ package uniqueebattle;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.potion.Effect;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -56,6 +58,11 @@ public class UEBattle extends BaseUEMod
 	public static Effect LOCK_DOWN;
 	public static IKeyBind GRANIS_SOUL_DASH = IKeyBind.empty();
 	
+	public static final SoundEvent CELESTIAL_BLESSING_START_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "celestial_blessing_start"));
+	public static final SoundEvent CELESTIAL_BLESSING_END_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "celestial_blessing_end"));
+	public static final SoundEvent FURY_DROP_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "fury_drop"));
+	public static final SoundEvent WARS_ODIUM_REVIVE_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "wars_odium_revive"));
+	
 	public UEBattle()
 	{
 		GRANIS_SOUL_DASH = UEBase.PROXY.registerKey("Granis Soul Dash", 341);
@@ -69,6 +76,10 @@ public class UEBattle extends BaseUEMod
 		BaseHandler.INSTANCE.registerStorageTooltip(ARTEMIS_SOUL, "tooltip.uniquebattle.stored.ender.souls.common.name", ArtemisSoul.TEMPORARY_SOUL_COUNT);
 		BaseHandler.INSTANCE.registerStorageTooltip(ARTEMIS_SOUL, "tooltip.uniquebattle.stored.ender.souls.higher.name", ArtemisSoul.PERSISTEN_SOUL_COUNT);
 		BaseHandler.INSTANCE.registerAnvilHelper(ARTEMIS_SOUL, ArtemisSoul.VALID_ITEMS, ArtemisSoul.ENDER_STORAGE);
+		ForgeRegistries.SOUND_EVENTS.register(CELESTIAL_BLESSING_START_SOUND.setRegistryName("celestial_blessing_start"));
+		ForgeRegistries.SOUND_EVENTS.register(CELESTIAL_BLESSING_END_SOUND.setRegistryName("celestial_blessing_end"));
+		ForgeRegistries.SOUND_EVENTS.register(FURY_DROP_SOUND.setRegistryName("fury_drop"));
+		ForgeRegistries.SOUND_EVENTS.register(WARS_ODIUM_REVIVE_SOUND.setRegistryName("wars_odium_revive"));
 	}
 	
 	@Override

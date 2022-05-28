@@ -38,6 +38,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
@@ -66,7 +67,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.EmptyHandler;
-import uniquebase.UEBase;
 import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
@@ -91,12 +91,29 @@ import uniqueebattle.enchantments.WarsOdium;
 public class BattleHandler
 {
 	public static final BattleHandler INSTANCE = new BattleHandler();
+	boolean celestial = false;
 	
 	@SubscribeEvent
 	public void onPlayerTick(PlayerTickEvent event)
 	{
+		
+		
 		if(event.phase == Phase.START || event.side.isClient()) return;
 		PlayerEntity player = event.player;
+		
+		if(player.level.getGameTime() % 100 == 0) {
+			int level = MiscUtil.getEnchantmentLevel(UEBattle.CELESTIAL_BLESSING, player.getMainHandItem());
+			if(level > 0) {
+				if(player.level.isDay() && celestial) {
+					celestial = false;
+					player.level.playSound(null, player.blockPosition(), UEBattle.CELESTIAL_BLESSING_END_SOUND, SoundCategory.AMBIENT, 1F, 1F);
+				} else if(!player.level.isDay() && !celestial) {
+					celestial = true;
+					player.level.playSound(null, player.blockPosition(), UEBattle.CELESTIAL_BLESSING_START_SOUND, SoundCategory.AMBIENT, 1F, 1F);
+				}
+			}
+			
+		}
 		if(player.isOnGround() && player.level.getGameTime() % 40 == 0)
 		{
 			int level = MiscUtil.getEnchantmentLevel(UEBattle.IRON_BIRD, player.getItemBySlot(EquipmentSlotType.CHEST));
@@ -235,7 +252,6 @@ public class BattleHandler
 			float boost = MiscUtil.isTranscendent(entity.getEntity(), UEBattle.CELESTIAL_BLESSING) ? CelestialBlessing.SPEED_BONUS.getAsFloat(level) * CelestialBlessing.SPEED_BONUS.getAsFloat(level) : CelestialBlessing.SPEED_BONUS.getAsFloat(level);
 			double num = (1+ (event.getEntityLiving().level.isNight() ? boost : 0));
 			event.setDuration((int) Math.max(10,event.getDuration() / num));
-			UEBase.LOGGER.info(event.getDuration());
 		};
 	}
 
@@ -245,6 +261,7 @@ public class BattleHandler
 		{
 			if(target instanceof PlayerEntity)
 			{
+				target.level.playSound(null, target.blockPosition(), UEBattle.FURY_DROP_SOUND, SoundCategory.AMBIENT, 10F, 1F);
 				PlayerInventory player = ((PlayerEntity)target).inventory;
 				int firstEmpty = player.getFreeSlot();
 				if(firstEmpty == -1)
@@ -521,6 +538,7 @@ public class BattleHandler
 									base.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(WarsOdium.HEALTH_MOD, "wars_spawn_buff", extraHealth, Operation.MULTIPLY_TOTAL));
 									base.setHealth(base.getMaxHealth());
 									event.getEntity().level.addFreshEntity(toSpawn);
+									toSpawn.level.playSound(null, toSpawn.blockPosition(), UEBattle.WARS_ODIUM_REVIVE_SOUND, SoundCategory.AMBIENT, 1F, 1F);
 									base.playAmbientSound();
 									World world = event.getEntity().level;
 									if(base instanceof EnderDragonEntity && world instanceof ServerWorld)

@@ -1,0 +1,30 @@
+{
+	"celestial_blessing_start": {
+		"category": "blocks",
+		"subtitle": "Celestial Blessing active",
+		"sounds": [
+			{"name": "uniquebattle:celestial_blessing_start", "stream": true }
+		]
+	},
+	"celestial_blessing_end": {
+		"category": "blocks",
+		"subtitle": "Celestial Blessing deactivate",
+		"sounds": [
+			{"name": "uniquebattle:celestial_blessing_end", "stream": true }
+		]
+	},
+	"fury_drop": {
+		"category": "blocks",
+		"subtitle": "Fury activated",
+		"sounds": [
+			{"name": "uniquebattle:fury_drop", "stream": true }
+		]
+	},
+	"wars_odium_revive": {
+		"category": "blocks",
+		"subtitle": "Wars Odium Revive",
+		"sounds": [
+			{"name": "uniquebattle:wars_odium_revive", "stream": true}
+		]
+	}
+}

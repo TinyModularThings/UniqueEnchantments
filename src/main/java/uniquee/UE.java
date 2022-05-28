@@ -11,6 +11,8 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.Effect;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -24,6 +26,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
@@ -121,6 +124,11 @@ public class UE extends BaseUEMod
 	public static Effect PESTILENCES_ODIUM_POTION;
 	public static ForgeConfigSpec CONFIG;
 	
+
+	public static final SoundEvent ENDER_LIBRARIAN_SOUND = new SoundEvent(new ResourceLocation("uniquee", "ender_librarian"));
+	public static final SoundEvent GRIMOIRE_SOUND = new SoundEvent(new ResourceLocation("uniquee", "grimoire"));
+	public static final SoundEvent MOMENTUM_SOUND = new SoundEvent(new ResourceLocation("uniquee", "momentum"));
+	
 	public UE()
 	{
 		ETERNAL_FLAME_POTION = new EternalFlamePotion();
@@ -143,6 +151,10 @@ public class UE extends BaseUEMod
 		BaseHandler.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessing.VALIDATOR, MidasBlessing.GOLD_COUNTER);
 		BaseHandler.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGrace.VALIDATOR, IfritsGrace.LAVA_COUNT);
 		BaseHandler.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, IcarusAegis.VALIDATOR, IcarusAegis.FEATHER_TAG);
+		
+		ForgeRegistries.SOUND_EVENTS.register(ENDER_LIBRARIAN_SOUND.setRegistryName("ender_librarian"));
+		ForgeRegistries.SOUND_EVENTS.register(GRIMOIRE_SOUND.setRegistryName("grimoire"));
+		ForgeRegistries.SOUND_EVENTS.register(MOMENTUM_SOUND.setRegistryName("momentum"));
 	}
     
 	@Override
@@ -232,6 +244,7 @@ public class UE extends BaseUEMod
 		addLayer(EntityType.DROWNED, manager);
 		addLayer(EntityType.ZOMBIE, manager);
 		addLayer(EntityType.HUSK, manager);
+		
     }
     
 	@SuppressWarnings("unchecked")

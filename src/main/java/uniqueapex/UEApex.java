@@ -4,6 +4,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -38,6 +39,8 @@ public class UEApex extends BaseUEMod
 	//Unique
 	public static Enchantment AEONS_FRAGMENT;
 	
+	public static final SoundEvent SECOND_LIFE_SOUND = new SoundEvent(new ResourceLocation("uniqueapex", "second_life"));
+	
 	public UEApex()
 	{
 		UEBase.NETWORKING.registerInternalPacket(this, SyncRecipePacket.class, SyncRecipePacket::new, 30);
@@ -46,6 +49,7 @@ public class UEApex extends BaseUEMod
 		MinecraftForge.EVENT_BUS.register(ApexHandler.INSTANCE);
 		ForgeRegistries.RECIPE_SERIALIZERS.register(FUSION_SERIALIZER);
 		Registry.register(Registry.RECIPE_TYPE, new ResourceLocation("uniqueapex", "fusion"), FUSION);
+		ForgeRegistries.SOUND_EVENTS.register(SECOND_LIFE_SOUND.setRegistryName("second_life"));
 	}
 	
 	@Override

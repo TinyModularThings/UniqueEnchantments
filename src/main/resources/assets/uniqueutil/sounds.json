@@ -3,7 +3,15 @@
 		"category": "blocks",
 		"subtitle": "Resonance",
 		"sounds": [
-			{"name": "uniqueutil:resonance_found", "stream": true }
+			{"name": "uniqueutil:resonance_found", "stream": true },
+			{"name": "uniqueutil:alchemist_blessing_transmutate", "stream": true }
+		]
+	},
+	"alchemist_blessing_transmutate": {
+		"category": "blocks",
+		"subtitle": "Transmutate",
+		"sounds": [
+			{"name": "uniqueutil:alchemist_blessing_transmutate", "stream": true }
 		]
 	}
 }

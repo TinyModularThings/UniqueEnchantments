@@ -52,6 +52,7 @@ import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.RegistryKey;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -246,6 +247,7 @@ public class EntityEvents
 					if(level > 0)
 					{
 						Grimoire.applyGrimore(player.getItemBySlot(slots[i]), level, player);
+						player.level.playSound(null, player.blockPosition(), UE.GRIMOIRE_SOUND, SoundCategory.AMBIENT, 1F, 1F);
 					}
 				}
 			}
@@ -535,8 +537,9 @@ public class EntityEvents
 		ItemStack stack = event.getItemStack();
 		if(!event.getWorld().isClientSide && stack.getItem() instanceof FilledMapItem && MiscUtil.getEnchantmentLevel(UE.ENDER_LIBRARIAN, stack) > 0)
 		{
-			MapData data = FilledMapItem.getOrCreateSavedData(stack, event.getWorld());
-			if(data == null || !data.dimension.location().equals(event.getWorld().dimension().location()))
+			World world = event.getWorld();
+			MapData data = FilledMapItem.getOrCreateSavedData(stack, world);
+			if(data == null || !data.dimension.location().equals(world.dimension().location()))
 			{
 				return;
 			}
@@ -562,7 +565,7 @@ public class EntityEvents
 					List<MapBanner> banner = new ObjectArrayList<>(((MapDataMixin)data).getBanners().values());
 					if(banner.size() > 0)
 					{
-						position = banner.get(event.getWorld().random.nextInt(banner.size())).getPos();
+						position = banner.get(world.random.nextInt(banner.size())).getPos();
 						isBanner = true;
 					}
 	            }
@@ -570,7 +573,8 @@ public class EntityEvents
 	        if(position != null)
 	        {
 				BlockPos pos = event.getWorld().getHeightmapPos(Type.MOTION_BLOCKING, position);
-				event.getPlayer().teleportTo(pos.getX() + 0.5F, Math.max(isBanner ? 0 : event.getWorld().getSeaLevel(), pos.getY() + 1), pos.getZ() + 0.5F);
+				event.getPlayer().teleportTo(pos.getX() + 0.5F, Math.max(isBanner ? 0 : world.getSeaLevel(), pos.getY() + 1), pos.getZ() + 0.5F);
+				world.playSound(null, event.getPlayer().blockPosition(), UE.ENDER_LIBRARIAN_SOUND, SoundCategory.AMBIENT, 100F, 2F);
 	        }
 	        else
 	        {
@@ -578,7 +582,8 @@ public class EntityEvents
 		        int xOffset = (int)((event.getWorld().random.nextDouble() - 0.5D) * limit);
 		        int zOffset = (int)((event.getWorld().random.nextDouble() - 0.5D) * limit);
 				BlockPos pos = event.getWorld().getHeightmapPos(Type.MOTION_BLOCKING, new BlockPos(x + xOffset, 255, z + zOffset));
-				event.getPlayer().teleportTo(pos.getX() + 0.5F, Math.max(event.getWorld().getSeaLevel(), pos.getY() + 1), pos.getZ() + 0.5F);
+				event.getPlayer().teleportTo(pos.getX() + 0.5F, Math.max(world.getSeaLevel(), pos.getY() + 1), pos.getZ() + 0.5F);
+				world.playSound(null, event.getPlayer().blockPosition(), UE.ENDER_LIBRARIAN_SOUND, SoundCategory.AMBIENT, 100F, 2F);
 	        }
 	        stack.shrink(1);
 		}
@@ -603,6 +608,7 @@ public class EntityEvents
 	{
 		LivingEntity target = event.getEntityLiving();
 		Entity entity = event.getSource().getEntity();
+		
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity base = (LivingEntity)entity;
@@ -699,6 +705,7 @@ public class EntityEvents
 	{
 		LivingEntity target = event.getEntityLiving();
 		Entity entity = event.getSource().getEntity();
+		
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity base = (LivingEntity)entity;
@@ -1044,6 +1051,13 @@ public class EntityEvents
 		LivingEntity entity = event.getEntityLiving();
 		AttributeModifierManager attribute = entity.getAttributes();
 		Multimap<Attribute, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), entity, event.getSlot());
+		Multimap<Attribute, AttributeModifier> entityMods = HashMultimap.create();
+		int xpLevel = entity instanceof PlayerEntity ? ((PlayerEntity)entity).experienceLevel : 100;
+		int level = MiscUtil.getCombinedEnchantmentLevel(UE.VITAE, entity);
+
+		entityMods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD, "Vitae", Math.log10(10+Vitae.BASE_BOOST.get(level)+Math.sqrt(xpLevel*Vitae.SCALE_BOOST.get()*level)), Operation.MULTIPLY_BASE));
+
+		
 		
 		ItemStack item = event.getTo();
 		
@@ -1051,11 +1065,25 @@ public class EntityEvents
 		{
 			attribute.removeAttributeModifiers(mods);
 		}
+		if(!entityMods.isEmpty()) {
+			attribute.removeAttributeModifiers(entityMods);
+		}
+		
 		mods = createModifiersFromStack(item, entity, event.getSlot());
+		
+		xpLevel = entity instanceof PlayerEntity ? ((PlayerEntity)entity).experienceLevel : 100;
+		level = MiscUtil.getCombinedEnchantmentLevel(UE.VITAE, entity);
+		entityMods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD, "Vitae", Math.log10(10+Vitae.BASE_BOOST.get(level)+Math.sqrt(xpLevel*Vitae.SCALE_BOOST.get()*level)), Operation.MULTIPLY_BASE));
+
+		
 		if(!mods.isEmpty())
 		{
 			attribute.addTransientAttributeModifiers(mods);
 		}
+		if(!entityMods.isEmpty()) {
+			attribute.addTransientAttributeModifiers(entityMods);
+		}
+		
 	}
 	
 	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(ItemStack stack, LivingEntity living, EquipmentSlotType slot)
@@ -1066,8 +1094,7 @@ public class EntityEvents
 		int level = enchantments.getInt(UE.VITAE);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.VITAE).contains(slot))
 		{
-			int xpLevel = living instanceof PlayerEntity ? ((PlayerEntity)living).experienceLevel : 100;
-			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD.getId(slot), "Vitae Boost", Math.log10(100+(Vitae.BASE_BOOST.get(level))+Math.pow(Vitae.SCALE_BOOST.get(xpLevel), 0.333D))-2, Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.TRANSCENDED_HEALTH_MOD.getId(slot), "Vitae Boost", Vitae.TRANSCENDED_HEALTH_BOOST.get(level), Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UE.SWIFT);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT).contains(slot))

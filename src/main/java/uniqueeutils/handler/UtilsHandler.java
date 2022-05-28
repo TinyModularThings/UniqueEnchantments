@@ -603,6 +603,7 @@ public class UtilsHandler
 						if(items.isEmpty()) return;
 						int consumed = 0;
 						int xpToSpawn = 0;
+						world.playSound(event.getPlayer(), pos.above(), UEUtils.ALCHEMIST_BLESSING_SOUND, SoundCategory.BLOCKS, 100F, 1F);
 						for(ItemEntity item : items)
 						{
 							ItemStack stack = item.getItem();
@@ -622,7 +623,10 @@ public class UtilsHandler
 								world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, drop));
 							}
 						}
-						if(xpToSpawn > 0) world.addFreshEntity(new ExperienceOrbEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, MathHelper.ceil(Math.sqrt(AlchemistsBlessing.BASE_XP_USAGE.get(level))+Math.sqrt(AlchemistsBlessing.LVL_XP_USAGE.get(level*world.random.nextDouble()))) * xpToSpawn));
+						if(xpToSpawn > 0) {
+							world.addFreshEntity(new ExperienceOrbEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, MathHelper.ceil(Math.sqrt(AlchemistsBlessing.BASE_XP_USAGE.get(level))+Math.sqrt(AlchemistsBlessing.LVL_XP_USAGE.get(level*world.random.nextDouble()))) * xpToSpawn));
+							
+						}
 						consumed = MathHelper.ceil(Math.pow((level*consumed*AlchemistsBlessing.CONSUMTION.get()), 0.6505));
 						int stored = StackUtils.getInt(event.getItemStack(), AlchemistsBlessing.STORED_REDSTONE, 0) - consumed;
 						StackUtils.setInt(event.getItemStack(), AlchemistsBlessing.STORED_REDSTONE, Math.max(0, stored));
