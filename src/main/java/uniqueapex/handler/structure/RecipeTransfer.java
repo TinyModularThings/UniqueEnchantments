@@ -16,7 +16,7 @@ public class RecipeTransfer
 	List<Vector3d> basePositions;
 	int tick;
 	
-	public RecipeTransfer(TrackedRecipe recipe)
+	public RecipeTransfer(BaseTrackedRecipe recipe)
 	{
 		pos = recipe.getPos();
 		entityIds = recipe.getEntities();

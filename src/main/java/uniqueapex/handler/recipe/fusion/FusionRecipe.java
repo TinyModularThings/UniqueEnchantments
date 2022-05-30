@@ -1,4 +1,4 @@
-package uniqueapex.handler.recipe;
+package uniqueapex.handler.recipe.fusion;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +25,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniqueapex.UEApex;
+import uniqueapex.handler.recipe.FusionContext;
 
 public abstract class FusionRecipe implements IRecipe<FusionContext>
 {

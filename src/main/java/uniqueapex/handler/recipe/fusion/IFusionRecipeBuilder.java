@@ -1,4 +1,4 @@
-package uniqueapex.handler.recipe;
+package uniqueapex.handler.recipe.fusion;
 
 import java.util.List;
 

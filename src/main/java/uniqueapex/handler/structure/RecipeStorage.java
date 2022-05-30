@@ -24,8 +24,8 @@ import uniquebase.UEBase;
 
 public class RecipeStorage extends WorldSavedData
 {
-	List<TrackedRecipe> activeRecipes = new ObjectArrayList<>();
-	Long2ObjectMap<Set<TrackedRecipe>> chunkRecipes = new Long2ObjectOpenHashMap<>();
+	List<BaseTrackedRecipe> activeRecipes = new ObjectArrayList<>();
+	Long2ObjectMap<Set<BaseTrackedRecipe>> chunkRecipes = new Long2ObjectOpenHashMap<>();
 	LongSet activeBeacons = new LongOpenHashSet();
 	
 	public RecipeStorage()
@@ -44,17 +44,17 @@ public class RecipeStorage extends WorldSavedData
 	}
 	
 	public SyncRecipePacket getSyncPacket(ChunkPos pos) {
-		Set<TrackedRecipe> recipes = chunkRecipes.get(pos.toLong());
+		Set<BaseTrackedRecipe> recipes = chunkRecipes.get(pos.toLong());
 		if(recipes == null || recipes.isEmpty()) return null;
 		return new SyncRecipePacket(new ObjectArrayList<>(Lists.transform(new ObjectArrayList<>(recipes), RecipeTransfer::new)));
 	}
 	
-	public void addRecipe(TrackedRecipe recipe)
+	public void addRecipe(BaseTrackedRecipe recipe)
 	{
 		addRecipe(recipe, true);
 	}
 	
-	private void addRecipe(TrackedRecipe recipe, boolean notLoading)
+	private void addRecipe(BaseTrackedRecipe recipe, boolean notLoading)
 	{
 		activeRecipes.add(recipe);
 		activeBeacons.add(recipe.getPos().asLong());
@@ -66,10 +66,10 @@ public class RecipeStorage extends WorldSavedData
 		}
 	}
 	
-	private void remove(TrackedRecipe recipe) {
+	private void remove(BaseTrackedRecipe recipe) {
 		activeBeacons.remove(recipe.getPos().asLong());
 		long pos = ChunkPos.asLong(recipe.getPos().getX() >> 4, recipe.getPos().getZ() >> 4);
-		Set<TrackedRecipe> recipes = chunkRecipes.get(pos);
+		Set<BaseTrackedRecipe> recipes = chunkRecipes.get(pos);
 		if(recipes == null) return;
 		if(recipes.remove(recipe) && recipes.isEmpty()) {
 			chunkRecipes.remove(pos);
@@ -78,9 +78,9 @@ public class RecipeStorage extends WorldSavedData
 	
 	public void onTick() {
 		if(activeRecipes.isEmpty()) return;
-		for(Iterator<TrackedRecipe> iter = activeRecipes.iterator();iter.hasNext();)
+		for(Iterator<BaseTrackedRecipe> iter = activeRecipes.iterator();iter.hasNext();)
 		{
-			TrackedRecipe recipe = iter.next();
+			BaseTrackedRecipe recipe = iter.next();
 			recipe.tick();
 			if(recipe.isDone()) {
 				recipe.finishRecipe();
@@ -96,8 +96,8 @@ public class RecipeStorage extends WorldSavedData
 	public CompoundNBT save(CompoundNBT nbt)
 	{
 		ListNBT list = new ListNBT();
-		for(TrackedRecipe recipe : activeRecipes) {
-			list.add(recipe.save());
+		for(BaseTrackedRecipe recipe : activeRecipes) {
+			list.add(recipe.save(new CompoundNBT()));
 		}
 		nbt.put("recipes", list);
 		return nbt;
@@ -108,7 +108,7 @@ public class RecipeStorage extends WorldSavedData
 	{
 		ListNBT list = nbt.getList("recipes", 10);
 		for(int i = 0,m=list.size();i<m;i++) {
-			TrackedRecipe recipe = TrackedRecipe.loadRecipe(list.getCompound(i));
+			BaseTrackedRecipe recipe = BaseTrackedRecipe.loadRecipe(list.getCompound(i));
 			if(recipe != null) addRecipe(recipe, false);
 		}
 	}

@@ -1,7 +1,6 @@
 package uniqueapex;
 
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -16,8 +15,10 @@ import uniqueapex.enchantments.simple.SecondLife;
 import uniqueapex.enchantments.unique.AeonsFragment;
 import uniqueapex.handler.ApexHandler;
 import uniqueapex.handler.FusionHandler;
-import uniqueapex.handler.recipe.FusionRecipe;
-import uniqueapex.handler.recipe.FusionRecipeSerializer;
+import uniqueapex.handler.recipe.fusion.FusionRecipe;
+import uniqueapex.handler.recipe.fusion.FusionRecipeSerializer;
+import uniqueapex.handler.recipe.upgrade.FusionUpgradeRecipe;
+import uniqueapex.handler.recipe.upgrade.FusionUpgradeSerializer;
 import uniqueapex.network.SyncRecipePacket;
 import uniquebase.UEBase;
 import uniquebase.api.BaseUEMod;
@@ -29,7 +30,12 @@ public class UEApex extends BaseUEMod
 		@Override
 		public String toString() { return "fusion"; }
 	}; 
-	public static final IRecipeSerializer<FusionRecipe> FUSION_SERIALIZER = new FusionRecipeSerializer();
+	public static final IRecipeType<FusionUpgradeRecipe> FUSION_UPGRADE = new IRecipeType<FusionUpgradeRecipe>() {
+		@Override
+		public String toString() { return "fusion_upgrade"; }
+	};
+	public static final FusionRecipeSerializer FUSION_SERIALIZER = new FusionRecipeSerializer();
+	public static final FusionUpgradeSerializer UPGRADE_SERIALIZER = new FusionUpgradeSerializer();
 	
 	//Simple
 	public static Enchantment ABSOLUTE_PROTECTION;
@@ -47,8 +53,9 @@ public class UEApex extends BaseUEMod
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UEApex.toml");
 		MinecraftForge.EVENT_BUS.register(FusionHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(ApexHandler.INSTANCE);
-		ForgeRegistries.RECIPE_SERIALIZERS.register(FUSION_SERIALIZER);
+		ForgeRegistries.RECIPE_SERIALIZERS.registerAll(FUSION_SERIALIZER.init(), UPGRADE_SERIALIZER.init());
 		Registry.register(Registry.RECIPE_TYPE, new ResourceLocation("uniqueapex", "fusion"), FUSION);
+		Registry.register(Registry.RECIPE_TYPE, new ResourceLocation("uniqueapex", "fusion_upgrade"), FUSION_UPGRADE);
 		ForgeRegistries.SOUND_EVENTS.register(SECOND_LIFE_SOUND.setRegistryName("second_life"));
 	}
 	

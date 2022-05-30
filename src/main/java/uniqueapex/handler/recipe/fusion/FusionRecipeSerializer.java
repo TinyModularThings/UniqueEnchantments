@@ -1,4 +1,4 @@
-package uniqueapex.handler.recipe;
+package uniqueapex.handler.recipe.fusion;
 
 import java.util.List;
 
@@ -16,18 +16,19 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
-import uniqueapex.handler.recipe.FusionRecipes.AverageFusionRecipe;
-import uniqueapex.handler.recipe.FusionRecipes.MaxFusionRecipe;
-import uniqueapex.handler.recipe.FusionRecipes.MinFusionRecipe;
-import uniqueapex.handler.recipe.FusionRecipes.MulFusionRecipe;
-import uniqueapex.handler.recipe.FusionRecipes.SumFusionRecipe;
+import uniqueapex.handler.recipe.fusion.FusionRecipes.AverageFusionRecipe;
+import uniqueapex.handler.recipe.fusion.FusionRecipes.MaxFusionRecipe;
+import uniqueapex.handler.recipe.fusion.FusionRecipes.MinFusionRecipe;
+import uniqueapex.handler.recipe.fusion.FusionRecipes.MulFusionRecipe;
+import uniqueapex.handler.recipe.fusion.FusionRecipes.SumFusionRecipe;
 import uniquebase.UEBase;
 
 public class FusionRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FusionRecipe>
 {
-	public FusionRecipeSerializer()
+	public FusionRecipeSerializer init()
 	{
 		setRegistryName("uniqueapex", "fusion");
+		return this;
 	}
 	
 	@Override

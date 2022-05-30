@@ -91,25 +91,24 @@ import uniqueebattle.enchantments.WarsOdium;
 public class BattleHandler
 {
 	public static final BattleHandler INSTANCE = new BattleHandler();
-	boolean celestial = false;
 	
 	@SubscribeEvent
 	public void onPlayerTick(PlayerTickEvent event)
 	{
-		
-		
 		if(event.phase == Phase.START || event.side.isClient()) return;
 		PlayerEntity player = event.player;
 		
-		if(player.level.getGameTime() % 100 == 0) {
+		if(player.level.getGameTime() % 100 == 0)
+		{
 			int level = MiscUtil.getEnchantmentLevel(UEBattle.CELESTIAL_BLESSING, player.getMainHandItem());
-			if(level > 0) {
-				if(player.level.isDay() && celestial) {
-					celestial = false;
-					player.level.playSound(null, player.blockPosition(), UEBattle.CELESTIAL_BLESSING_END_SOUND, SoundCategory.AMBIENT, 1F, 1F);
-				} else if(!player.level.isDay() && !celestial) {
-					celestial = true;
-					player.level.playSound(null, player.blockPosition(), UEBattle.CELESTIAL_BLESSING_START_SOUND, SoundCategory.AMBIENT, 1F, 1F);
+			if(level > 0)
+			{
+				CompoundNBT data = player.getPersistentData();
+				boolean celestial = data.getBoolean(CelestialBlessing.CELESTIAL_DAY);
+				if(player.level.isDay() == celestial)
+				{
+					player.level.playSound(null, player.blockPosition(), celestial ? UEBattle.CELESTIAL_BLESSING_END_SOUND : UEBattle.CELESTIAL_BLESSING_START_SOUND, SoundCategory.AMBIENT, 1F, 1F);					
+					data.putBoolean(CelestialBlessing.CELESTIAL_DAY, !celestial);
 				}
 			}
 			
@@ -234,10 +233,10 @@ public class BattleHandler
 			int negRolls = maxRolls - posRolls;
 			if(negRolls >= posRolls) return;
 			event.setResult(Result.ALLOW);
-			if(MiscUtil.isTranscendent(source, UEBattle.ARES_FRAGMENT)) {
-				event.setDamageModifier(1.5F + AresFragment.TRANSCENDED_CRIT_MULTIPLIER.getFloat()*(event.isVanillaCritical() ? 1.0F : 0.0F));
-			} else {
-				event.setDamageModifier(1.5F);
+			event.setDamageModifier(1.5F);
+			if(MiscUtil.isTranscendent(source, UEBattle.ARES_FRAGMENT))
+			{
+				event.setDamageModifier(event.getDamageModifier() + AresFragment.TRANSCENDED_CRIT_MULTIPLIER.getFloat()*(event.isVanillaCritical() ? 1.0F : 0.0F));
 			}
 			dropPlayerHand(event.getTarget(), ench.getInt(UEBattle.FURY));
 		}
@@ -248,13 +247,14 @@ public class BattleHandler
 	{
 		int level = MiscUtil.getEnchantmentLevel(UEBattle.CELESTIAL_BLESSING, event.getItem());
 		LivingEntity entity = event.getEntityLiving();
-		if(level > 0) {
+		if(level > 0)
+		{
 			float boost = MiscUtil.isTranscendent(entity.getEntity(), UEBattle.CELESTIAL_BLESSING) ? CelestialBlessing.SPEED_BONUS.getAsFloat(level) * CelestialBlessing.SPEED_BONUS.getAsFloat(level) : CelestialBlessing.SPEED_BONUS.getAsFloat(level);
-			double num = (1+ (event.getEntityLiving().level.isNight() ? boost : 0));
+			double num = (1 + (event.getEntityLiving().level.isNight() ? boost : 0));
 			event.setDuration((int) Math.max(10,event.getDuration() / num));
-		};
+		}
 	}
-
+	
 	protected void dropPlayerHand(Entity target, int level)
 	{
 		if(level > 0 && target.level.random.nextDouble() < Fury.DROP_CHANCE.getDevided(level))
@@ -606,12 +606,8 @@ public class BattleHandler
 		int level = enchantments.getInt(UEBattle.CELESTIAL_BLESSING);
 		if(level > 0)
 		{
-			if(MiscUtil.isTranscendent(entity, UEBattle.CELESTIAL_BLESSING)) {
-				mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(CelestialBlessing.SPEED_MOD, "speed_boost_transcended", world.isDay() ? 0F : Math.pow(1+CelestialBlessing.SPEED_BONUS.getAsDouble(level),2)-1, Operation.MULTIPLY_TOTAL));
-			} else {
-				mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(CelestialBlessing.SPEED_MOD, "speed_boost", world.isDay() ? 0F : CelestialBlessing.SPEED_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL));
-			}
-			
+			double value = world.isDay() ? (MiscUtil.isTranscendent(entity, UEBattle.CELESTIAL_BLESSING) ? Math.pow(1+CelestialBlessing.SPEED_BONUS.getAsDouble(level),2)-1 : CelestialBlessing.SPEED_BONUS.getAsDouble(level)) : 0;
+			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(CelestialBlessing.SPEED_MOD, "speed_boost", value, Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UEBattle.IRON_BIRD);
 		if(level > 0)

@@ -11,8 +11,10 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.item.EnderCrystalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.ByteNBT;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.BeaconTileEntity;
@@ -21,11 +23,14 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -39,13 +44,17 @@ import net.minecraftforge.registries.ForgeRegistries;
 import uniqueapex.UEApex;
 import uniqueapex.enchantments.ApexEnchantment;
 import uniqueapex.handler.recipe.FusionContext;
-import uniqueapex.handler.recipe.FusionRecipe;
+import uniqueapex.handler.recipe.fusion.FusionRecipe;
+import uniqueapex.handler.recipe.upgrade.DefaultFusionUpgradeRecipe;
+import uniqueapex.handler.recipe.upgrade.FusionUpgradeRecipe;
 import uniqueapex.handler.structure.ClientRecipeStorage;
 import uniqueapex.handler.structure.RecipeAnimator;
 import uniqueapex.handler.structure.RecipeStorage;
 import uniqueapex.handler.structure.TrackedRecipe;
+import uniqueapex.handler.structure.TrackedUpgradeRecipe;
 import uniqueapex.network.SyncRecipePacket;
 import uniquebase.UEBase;
+import uniquebase.utils.MiscUtil;
 import uniquebase.utils.mixin.common.tile.BeaconMixin;
 
 public class FusionHandler
@@ -56,7 +65,9 @@ public class FusionHandler
 	@SubscribeEvent
 	public void onBlockClick(RightClickBlock event)
 	{
-		if(event.getFace() == Direction.DOWN || event.getItemStack().getItem() != Items.END_CRYSTAL) return;
+		if(event.getFace() == Direction.DOWN) return;
+		Item item = event.getItemStack().getItem();
+		if(item != Items.END_CRYSTAL && item != Items.TOTEM_OF_UNDYING) return;
 		World world = event.getWorld();
 		BlockPos pos = event.getPos();
 		if(world.getBlockState(pos).getBlock() != Blocks.CHEST) return;
@@ -69,17 +80,68 @@ public class FusionHandler
 			event.setCanceled(true);
 			return;
 		}
-		FusionRecipe recipe = getFusionRecipe(world, context);
-		if(recipe == null) return;
-		RecipeStorage storage = RecipeStorage.get((ServerWorld)world);
-		if(storage.isInUse(pos)) return;
-		storage.addRecipe(new TrackedRecipe(world, pos, recipe, context, beaconSize, getCrystals(world, pos, beaconSize)));
-		if(!event.getPlayer().isCreative())
+		if(item == Items.TOTEM_OF_UNDYING)
 		{
-			event.getItemStack().shrink(1);
+			FusionUpgradeRecipe recipe = getUpgradeRecipe(world, context);
+			if(recipe == null) return;
+			int xp = recipe.getRequiredXP(context);
+			if(MiscUtil.getXP(event.getPlayer()) < xp) {
+				event.getPlayer().displayClientMessage(new StringTextComponent("["+MiscUtil.getLvlForXP(xp)+"] levels Required").withStyle(TextFormatting.RED), true);
+				return;
+			}
+			MiscUtil.drainExperience(event.getPlayer(), xp);
+			RecipeStorage storage = RecipeStorage.get((ServerWorld)world);
+			if(storage.isInUse(pos)) return;
+			storage.addRecipe(new TrackedUpgradeRecipe(world, pos, recipe, context, beaconSize, getCrystals(world, pos, beaconSize)));
+			if(!event.getPlayer().isCreative())
+			{
+				event.getItemStack().shrink(1);
+			}
+			event.setCancellationResult(ActionResultType.SUCCESS);
+			event.setCanceled(true);
 		}
-		event.setCancellationResult(ActionResultType.SUCCESS);
-		event.setCanceled(true);
+		else if(item == Items.END_CRYSTAL)
+		{
+			FusionRecipe recipe = getFusionRecipe(world, context);
+			if(recipe == null) return;
+			RecipeStorage storage = RecipeStorage.get((ServerWorld)world);
+			if(storage.isInUse(pos)) return;
+			storage.addRecipe(new TrackedRecipe(world, pos, recipe, context, beaconSize, getCrystals(world, pos, beaconSize)));
+			if(!event.getPlayer().isCreative())
+			{
+				event.getItemStack().shrink(1);
+			}
+			event.setCancellationResult(ActionResultType.SUCCESS);
+			event.setCanceled(true);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onAnvilEvent(AnvilUpdateEvent event)
+	{	
+		if(event.getLeft().hasTag() && event.getLeft().getTag().getByte("fusioned") == 2 && event.getRight().getItem() == Items.RABBIT_FOOT) {
+			int level = Math.min(countApexLevels(event.getLeft().getEnchantmentTags()), event.getRight().getMaxStackSize());
+			if(event.getRight().getCount() < level) return;
+			ItemStack copy = event.getLeft().copy();
+			copy.getTag().put("fusioned", ByteNBT.ONE);
+			event.setOutput(copy);
+			event.setCost(level * 4);
+			event.setMaterialCost(level);
+		}
+	}
+	
+	private int countApexLevels(ListNBT list)
+	{
+		int result = 0;
+		for(int i = 0,m=list.size();i<m;i++)
+		{
+			Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(list.getCompound(i).getString("id")));
+			if(ench instanceof ApexEnchantment)
+			{
+				result += list.getCompound(i).getInt("lvl");
+			}
+		}
+		return result;
 	}
 	
 	@SubscribeEvent
@@ -98,7 +160,6 @@ public class FusionHandler
 					clearApex(stack);
 					continue;
 				}
-				data.put("Enchantments", data.get("fusion_backup").copy());
 			}
 		}
 	}
@@ -144,6 +205,11 @@ public class FusionHandler
 	public void renderLastEvent(RenderWorldLastEvent event)
 	{
 		ClientRecipeStorage.INSTANCE.render(event.getPartialTicks());
+	}
+	
+	public FusionUpgradeRecipe getUpgradeRecipe(World world, FusionContext context)
+	{
+		return world.getRecipeManager().getRecipeFor(UEApex.FUSION_UPGRADE, context, world).orElse(new DefaultFusionUpgradeRecipe(context.getLargestEnchantment()));
 	}
 	
 	public FusionRecipe getFusionRecipe(World world, FusionContext context)

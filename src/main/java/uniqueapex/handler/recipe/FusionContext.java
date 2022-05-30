@@ -15,6 +15,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -23,13 +24,20 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import uniquebase.UEBase;
+import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 
 public final class FusionContext extends Inventory
 {
+	public static final ByteNBT TWO = ByteNBT.valueOf((byte)2);
 	IItemHandler[] originals;
 	IInventory[] copies;
 	IItemHandler mainChest;
+	boolean init = false;
+	Enchantment largestEnchantment;
+	int largestLevel;
+	int largestCount;
+	
 	
 	public FusionContext(IItemHandler mainChest, IItemHandler[] originals)
 	{
@@ -83,7 +91,10 @@ public final class FusionContext extends Inventory
 			list.remove(list.size()-1);
 		}
 		Map<Enchantment, Integer> enchs = EnchantmentHelper.getEnchantments(stack);
-		enchs.put(ench, level+(enchs.getOrDefault(ench, 0) == level ? 1 : 0));
+		int existingLevel = enchs.getOrDefault(ench, 0);
+		if(existingLevel <= level) {
+			enchs.put(ench, level+(existingLevel == level ? 1 : 0));
+		}
 		boolean replace = false;
 		if(stack.getItem() == Items.ENCHANTED_BOOK) stack.removeTagKey("StoredEnchantments");
 		else if(stack.getItem() == Items.BOOK)
@@ -93,8 +104,7 @@ public final class FusionContext extends Inventory
 		}
 		EnchantmentHelper.setEnchantments(enchs, stack);
 		if(lock) {
-			stack.addTagElement("fusioned", ByteNBT.ONE);
-			stack.addTagElement("fusion_backup", stack.getEnchantmentTags().copy());
+			stack.addTagElement("fusioned", TWO);
 		}
 		if(replace)
 		{
@@ -126,7 +136,100 @@ public final class FusionContext extends Inventory
 	public boolean isValidTool(Enchantment ench)
 	{
 		ItemStack stack = mainChest.getStackInSlot(0);
-		return (!stack.hasTag() || !stack.getTag().getBoolean("fusioned"));
+		return (!stack.hasTag() || stack.getTag().getByte("fusioned") != 2);
+	}
+	
+	public void mergeEnchantments(int bookCount)
+	{
+		ItemStack stack = mainChest.getStackInSlot(0);
+		Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(stack);
+		Enchantment ench = getLargestEnchantment();
+		int level = getAchievedLevel(bookCount);
+		if(level >= map.getOrDefault(ench, 0))
+		{
+			map.put(ench, level);
+		}
+		EnchantmentHelper.setEnchantments(map, stack);
+		
+		String enchantment = getLargestEnchantment().getRegistryName().toString();
+		for(int i = 1,m=mainChest.getSlots();i<m;i++)
+		{
+			removeEnchantments(mainChest, i, enchantment);
+		}
+	}
+	
+	protected void removeEnchantments(IItemHandler handler, int slot, String enchantment)
+	{
+		ItemStack stack = handler.getStackInSlot(slot);
+		ListNBT list = stack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(stack) : stack.getEnchantmentTags();
+		for(int i = 0,m=list.size();i<m;i++)
+		{
+			if(list.getCompound(i).getString("id").equals(enchantment))
+			{
+				list.remove(i--);
+				break;
+			}
+		}
+		if(stack.getItem() == Items.ENCHANTED_BOOK && list.isEmpty())
+		{
+			int count = stack.getCount();
+			handler.extractItem(slot, Integer.MAX_VALUE, false);
+			handler.insertItem(slot, new ItemStack(Items.BOOK, count), false);
+		}
+	}
+	
+	protected void init()
+	{
+		if(init) return;
+		Object2IntMap<Enchantment> instances = new Object2IntLinkedOpenHashMap<>();
+		Object2IntMap<Enchantment> totalLevels = new Object2IntLinkedOpenHashMap<>();
+		countEnchantments(instances, totalLevels);
+		for(Object2IntMap.Entry<Enchantment> ench : instances.object2IntEntrySet()) {
+			int count = ench.getIntValue();
+			if(count > largestCount) {
+				largestCount = count;
+				largestEnchantment = ench.getKey();
+			}
+		}
+		largestLevel = totalLevels.getInt(largestEnchantment);
+		init = true;
+	}
+	
+	public Enchantment getLargestEnchantment()
+	{
+		init();
+		return largestEnchantment;
+	}
+	
+	public int getLargestCount()
+	{
+		init();
+		return largestCount;
+	}
+	
+	public int getLargestLevel()
+	{
+		init();
+		return largestLevel;
+	}
+	
+	public int getAchievedLevel(int books)
+	{
+		return (int)(MathCache.LOG10.get(getLargestLevel()) / MathCache.LOG10.get(books));
+	}
+	
+	public void countEnchantments(Object2IntMap<Enchantment> instances, Object2IntMap<Enchantment> totalLevels)
+	{
+		for(int i = 0,m=mainChest.getSlots();i<m;i++)
+		{
+			ItemStack stack = mainChest.getStackInSlot(i);
+			if(!stack.hasTag()) continue;
+			for(Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(stack).entrySet())
+			{
+				if(i != 0) ((Object2IntLinkedOpenHashMap<Enchantment>)instances).addTo(entry.getKey(), 1);
+				((Object2IntLinkedOpenHashMap<Enchantment>)totalLevels).addTo(entry.getKey(), entry.getValue());
+			}
+		}
 	}
 	
 	public Object2IntMap<Enchantment> getEnchantmentInputs(Set<Enchantment> enchantments)

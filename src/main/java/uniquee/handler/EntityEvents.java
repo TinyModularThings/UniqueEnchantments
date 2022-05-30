@@ -1,6 +1,5 @@
 package uniquee.handler;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -204,12 +203,14 @@ public class EntityEvents
 			}
 			if(player.level.getGameTime() % 400 == 0)
 			{
-				if(MiscUtil.isTranscendent(player, UE.FAST_FOOD)) {
+				if(MiscUtil.isTranscendent(player, UE.FAST_FOOD))
+				{
 					ItemStack stack = player.getMainHandItem();
 					FoodStats food = player.getFoodData();
 					int stored = StackUtils.getInt(stack, FastFood.FASTFOOD, 0);
-					int num = 20-food.getFoodLevel();
-					if(food.getFoodLevel() < 20 && num < stored) {
+					int num = Math.min(stored, 20-food.getFoodLevel());
+					if(num > 0)
+					{
 						food.eat(num, num);
 						StackUtils.setInt(stack, FastFood.FASTFOOD, stored-num);
 					}
@@ -486,7 +487,7 @@ public class EntityEvents
 		level = enchs.getInt(UE.SMART_ASS);
 		if(level > 0)
 		{
-			if(!BREAKING.get() &&SmartAss.VALID_STATES.test(event.getState()))
+			if(!BREAKING.get() && SmartAss.VALID_STATES.test(event.getState()))
 			{
 				Block block = event.getState().getBlock();
 				int limit = SmartAss.RANGE.get(level);
@@ -590,10 +591,12 @@ public class EntityEvents
 	}
 	
 	@SubscribeEvent
-	public void onEntityHeal(LivingHealEvent event) {
+	public void onEntityHeal(LivingHealEvent event)
+	{
 		LivingEntity entity = event.getEntityLiving();
-		if(!MiscUtil.isTranscendent(entity, UE.BERSERKER) && entity.getHealth() > (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get()-0.25F)) {
-			event.setAmount(0.0f);
+		if(!MiscUtil.isTranscendent(entity, UE.BERSERKER) && entity.getHealth() > (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get()-0.25F))
+		{
+			event.setAmount(0F);
 		}
 	}
 	
@@ -667,29 +670,30 @@ public class EntityEvents
 				int lastEntity = StackUtils.getInt(held, PerpetualStrike.HIT_ID, 0);
 				int mercy = StackUtils.getInt(held, "mercy", PerpetualStrike.TRANSCENDED_MERCY.get());
 				int mercyReset = PerpetualStrike.TRANSCENDED_MERCY.get();
-				
-				if(lastEntity != target.getId())
+				if(MiscUtil.isTranscendent(base, UE.PERPETUAL_STRIKE))
 				{
-					System.out.println(mercy);
-					if(MiscUtil.isTranscendent(base, UE.PERPETUAL_STRIKE)) {
-						if(mercy < 1) {
+					if(lastEntity != target.getId())
+					{
+						if(mercy-- > 0)
+						{
 							count = 0;
 							mercy = mercyReset;
-						} else {
-							mercy--;
 						}
-					} else {
-						count = 0;
 					}
-					StackUtils.setInt(held, PerpetualStrike.HIT_ID, event.getEntityLiving().getId());
-				} else {
-					mercy = mercyReset;
+					else
+					{
+						mercy = mercyReset;
+					}
+					StackUtils.setInt(held, "mercy", mercy);
+				}
+				else if(lastEntity != target.getId())
+				{
+					count = 0;
 				}
 				double damage = target.getHealth() * (Math.pow(count+1, 0.25)/(100*base.getAttributeValue(Attributes.ATTACK_SPEED)));
 				double multiplier = Math.log10(10+damage*count);
 				event.setAmount((float)((event.getAmount()+damage)*multiplier));
 				StackUtils.setInt(held, PerpetualStrike.HIT_COUNT, count+1);
-				StackUtils.setInt(held, "mercy", mercy);
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ENDER_EYES, target.getItemBySlot(EquipmentSlotType.HEAD));
 			if(level > 0 && base.getType() == EntityType.ENDERMAN && !base.level.isClientSide()) {
@@ -725,19 +729,25 @@ public class EntityEvents
 				event.setAmount(event.getAmount() + (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + (float)Math.sqrt(EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE)))));
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ADV_SHARPNESS, stack);
-			if(level > 0) {
-				if(stack.getItem() instanceof TieredItem) {
+			if(level > 0)
+			{
+				if(stack.getItem() instanceof TieredItem)
+				{
 					event.setAmount(event.getAmount() + (float)Math.sqrt(rand.nextDouble() * AmelioratedSharpness.TRANSCENDED_DAMAGE_MULTIPLIER.get() * (((TieredItem)stack.getItem()).getTier().getAttackDamageBonus() + EnchantmentHelper.getDamageBonus(stack, CreatureAttribute.UNDEFINED) * (base.hasEffect(Effects.DAMAGE_BOOST) ? 2 : 1))));
-				} else {
+				}
+				else
+				{
 					event.setAmount(event.getAmount() + (float)Math.sqrt(rand.nextDouble() * AmelioratedSharpness.TRANSCENDED_DAMAGE_MULTIPLIER.get() * EnchantmentHelper.getDamageBonus(stack, CreatureAttribute.UNDEFINED) * (base.hasEffect(Effects.DAMAGE_BOOST) ? 2 : 1)));
 				}
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ADV_SMITE, stack);
-			if(level > 0) {
+			if(level > 0)
+			{
 				event.setAmount(event.getAmount() + (float)(Math.pow(target.getHealth(), AmelioratedSmite.TRANSCENDED_DAMAGE_EXPONENT.get())));
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ADV_BANE_OF_ARTHROPODS, stack);
-			if(level > 0) {
+			if(level > 0)
+			{
 				event.setAmount(event.getAmount() + (float)(Math.pow(target.getHealth(), AmelioratedBaneOfArthropod.TRANSCENDED_DAMAGE_EXPONENT.get())));
 			}
 		}
@@ -930,8 +940,6 @@ public class EntityEvents
 		{
 			return;
 		}
-//		Object2IntMap.Entry<EquipmentSlotType> slot = MiscUtil.getEnchantedItem(UE.SAGES_BLESSING, event.getAttackingPlayer());
-//		int level = slot.getIntValue();
 		int level = MiscUtil.getCombinedEnchantmentLevel(UE.SAGES_BLESSING, event.getAttackingPlayer());
 		if(level > 0)
 		{
@@ -960,21 +968,25 @@ public class EntityEvents
 	public void onEntityDrops(LivingDropsEvent event)
 	{
 		Entity entity = event.getSource().getEntity();
-		if(entity instanceof PlayerEntity )
+		if(entity instanceof PlayerEntity)
 		{
 			PlayerEntity base = (PlayerEntity)entity;
 			ItemStack stack = base.getMainHandItem();
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
 			int level = enchantments.getInt(UE.FAST_FOOD);
-			if(event.getEntityLiving() instanceof AnimalEntity && level > 0) {
+			if(event.getEntityLiving() instanceof AnimalEntity && level > 0)
+			{
 				int stored = StackUtils.getInt(stack, EnderMending.ENDER_TAG, 0);
 				int looting = base.level.random.nextInt(1+MiscUtil.getEnchantmentLevel(Enchantments.MOB_LOOTING, base.getMainHandItem()));
 				int burning = event.getEntityLiving().isOnFire() ? 2 : 1;
 				int num = FastFood.NURISHMENT.get(level+looting) * burning;
 				FoodStats food = base.getFoodData();
-				if(food.getFoodLevel() >= 20.0 && MiscUtil.isTranscendent(entity, UE.FAST_FOOD)) {
+				if(food.getFoodLevel() >= 20 && MiscUtil.isTranscendent(entity, UE.FAST_FOOD))
+				{
 					StackUtils.setInt(stack, FastFood.FASTFOOD, stored+num);
-				} else {
+				}
+				else 
+				{
 					food.eat(num, FastFood.SATURATION.getFloat(level+looting) * burning);
 					StackUtils.setInt(stack, FastFood.FASTFOOD, stored);
 				}
@@ -982,11 +994,13 @@ public class EntityEvents
 			}
 			
 			level = enchantments.getInt(UE.BONE_CRUSH);
-			if(level > 0 && event.getEntityLiving() instanceof AbstractSkeletonEntity && BoneCrusher.isNotArmored((AbstractSkeletonEntity)event.getEntityLiving())) {
-				Collection<ItemEntity> drops = event.getDrops();
-				for(ItemEntity drop : drops) {
-					if(!(drop.getItem().getItem() instanceof ArmorItem) && rand.nextDouble() < BoneCrusher.TRANSCENDED_CHANCE.get()) {
-						drop.level.addFreshEntity(drop.copy());
+			if(level > 0 && event.getEntityLiving() instanceof AbstractSkeletonEntity && BoneCrusher.isNotArmored((AbstractSkeletonEntity)event.getEntityLiving()))
+			{
+				for(ItemEntity drop : event.getDrops())
+				{
+					if(!(drop.getItem().getItem() instanceof ArmorItem) && rand.nextDouble() < BoneCrusher.TRANSCENDED_CHANCE.get())
+					{
+						event.getEntityLiving().spawnAtLocation(drop.getItem().copy());
 					}
 				}
 			}
@@ -1051,39 +1065,15 @@ public class EntityEvents
 		LivingEntity entity = event.getEntityLiving();
 		AttributeModifierManager attribute = entity.getAttributes();
 		Multimap<Attribute, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), entity, event.getSlot());
-		Multimap<Attribute, AttributeModifier> entityMods = HashMultimap.create();
-		int xpLevel = entity instanceof PlayerEntity ? ((PlayerEntity)entity).experienceLevel : 100;
-		int level = MiscUtil.getCombinedEnchantmentLevel(UE.VITAE, entity);
-
-		entityMods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD, "Vitae", Math.log10(10+Vitae.BASE_BOOST.get(level)+Math.sqrt(xpLevel*Vitae.SCALE_BOOST.get()*level)), Operation.MULTIPLY_BASE));
-
-		
-		
-		ItemStack item = event.getTo();
-		
 		if(!mods.isEmpty())
 		{
 			attribute.removeAttributeModifiers(mods);
-		}
-		if(!entityMods.isEmpty()) {
-			attribute.removeAttributeModifiers(entityMods);
-		}
-		
-		mods = createModifiersFromStack(item, entity, event.getSlot());
-		
-		xpLevel = entity instanceof PlayerEntity ? ((PlayerEntity)entity).experienceLevel : 100;
-		level = MiscUtil.getCombinedEnchantmentLevel(UE.VITAE, entity);
-		entityMods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD, "Vitae", Math.log10(10+Vitae.BASE_BOOST.get(level)+Math.sqrt(xpLevel*Vitae.SCALE_BOOST.get()*level)), Operation.MULTIPLY_BASE));
-
-		
+		}		
+		mods = createModifiersFromStack(event.getTo(), entity, event.getSlot());
 		if(!mods.isEmpty())
 		{
 			attribute.addTransientAttributeModifiers(mods);
-		}
-		if(!entityMods.isEmpty()) {
-			attribute.addTransientAttributeModifiers(entityMods);
-		}
-		
+		}		
 	}
 	
 	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(ItemStack stack, LivingEntity living, EquipmentSlotType slot)
@@ -1094,7 +1084,8 @@ public class EntityEvents
 		int level = enchantments.getInt(UE.VITAE);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.VITAE).contains(slot))
 		{
-			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.TRANSCENDED_HEALTH_MOD.getId(slot), "Vitae Boost", Vitae.TRANSCENDED_HEALTH_BOOST.get(level), Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD, "Vitae", MathCache.LOG10.get((int)(10+Vitae.BASE_BOOST.get(level)+Math.sqrt(Vitae.SCALE_BOOST.get(MiscUtil.getPlayerLevel(living, 100) * level)))), Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.TRANSCENDED_HEALTH_MOD.getId(slot), "Vitae Boost", Vitae.TRANSCENDED_HEALTH_BOOST.get(level), Operation.ADDITION));
 		}
 		level = enchantments.getInt(UE.SWIFT);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT).contains(slot))
@@ -1116,16 +1107,14 @@ public class EntityEvents
 			}
 		}
 		level = enchantments.getInt(UE.FOCUS_IMPACT);
-		if(level > 0  && MiscUtil.getSlotsFor(UE.FOCUS_IMPACT).contains(slot)) {
-			if(MiscUtil.isTranscendent(living, UE.FOCUS_IMPACT)) {
-				mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(FocusImpact.IMPACT_MOD, "Focus Impact", FocusImpact.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
-			}
+		if(level > 0 && MiscUtil.getSlotsFor(UE.FOCUS_IMPACT).contains(slot) && MiscUtil.isTranscendent(living, UE.FOCUS_IMPACT))
+		{
+			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(FocusImpact.IMPACT_MOD, "Focus Impact", FocusImpact.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UE.SWIFT_BLADE);
-		if(level > 0  && MiscUtil.getSlotsFor(UE.SWIFT_BLADE).contains(slot)) {
-			if(MiscUtil.isTranscendent(living, UE.SWIFT_BLADE)) {
-				mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SwiftBlade.SWIFT_MOD, "Swift Blade", SwiftBlade.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
-			}
+		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT_BLADE).contains(slot) && MiscUtil.isTranscendent(living, UE.SWIFT_BLADE))
+		{
+			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SwiftBlade.SWIFT_MOD, "Swift Blade", SwiftBlade.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
 		}
 		return mods;
 	}

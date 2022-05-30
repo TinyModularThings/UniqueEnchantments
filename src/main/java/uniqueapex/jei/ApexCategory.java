@@ -26,7 +26,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TranslationTextComponent;
-import uniqueapex.handler.recipe.FusionRecipe;
+import uniqueapex.handler.recipe.fusion.FusionRecipe;
 
 public class ApexCategory implements IRecipeCategory<FusionRecipe>
 {
