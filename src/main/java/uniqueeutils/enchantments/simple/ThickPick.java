@@ -50,7 +50,8 @@ public class ThickPick extends UniqueEnchantment
 	{
 		super.onConfigChanged();
 		ITEMS.clear();
-		ITEMS.put(Items.DIAMOND, 8);
+		//ITEMS.put(Items.AMETHYST_SHARD, 12);
+		ITEMS.put(Items.DIAMOND, 6);
 		ITEMS.put(Items.EMERALD, 3);
 		ITEMS.put(Items.QUARTZ, 1);
 		List<? extends String> items = ITEMS_CONFIG.get();

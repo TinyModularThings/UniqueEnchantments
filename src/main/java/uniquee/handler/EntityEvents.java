@@ -448,8 +448,8 @@ public class EntityEvents
 				count = 0;
 				nbt.putDouble(Momentum.COUNT, count);
 			}
-			double flat = Math.log(1 + Momentum.SPEED.get(count)/Math.pow((1+event.getNewSpeed()), 0.25D));
-			double percent = 1 + (Math.pow(Momentum.SPEED_MULTIPLIER.get(count), 0.55F)/level);
+			double flat = Math.log(1 + Momentum.SPEED.get(count));
+			double percent = Math.log10(10+(Momentum.SPEED_MULTIPLIER.get(count))/100);
 			event.setNewSpeed((float)((event.getNewSpeed() + flat) * percent));
 			nbt.putLong(Momentum.LAST_MINE, worldTime);
 		}
@@ -525,7 +525,7 @@ public class EntityEvents
 		if(level > 0)
 		{
 			double cap = Momentum.CAP.get() * Math.pow(Momentum.CAP_MULTIPLIER.get(level), 2);
-			double extra = Math.min(1000, event.getState().getDestroySpeed(event.getWorld(), event.getPos())) * Math.pow(1 + ((level * level) / 100), 1+(level/100));
+			double extra = Math.ceil(Math.pow(event.getState().getDestroySpeed(event.getWorld(), event.getPos())+1, 1+(level/100)));
 			CompoundNBT nbt = event.getPlayer().getPersistentData();
 			nbt.putDouble(Momentum.COUNT, Math.min(nbt.getDouble(Momentum.COUNT) + extra, cap));
 			if(!player.level.isClientSide) UEBase.NETWORKING.sendToPlayer(new EntityPacket(player.getId(), nbt), player);
@@ -1084,8 +1084,7 @@ public class EntityEvents
 		int level = enchantments.getInt(UE.VITAE);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.VITAE).contains(slot))
 		{
-			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD, "Vitae", MathCache.LOG10.get((int)(10+Vitae.BASE_BOOST.get(level)+Math.sqrt(Vitae.SCALE_BOOST.get(MiscUtil.getPlayerLevel(living, 100) * level)))), Operation.MULTIPLY_TOTAL));
-			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.TRANSCENDED_HEALTH_MOD.getId(slot), "Vitae Boost", Vitae.TRANSCENDED_HEALTH_BOOST.get(level), Operation.ADDITION));
+			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD.getId(slot), "Vitae", MathCache.LOG10.get((int)(1+Vitae.SCALE_BOOST.get(MiscUtil.getPlayerLevel(living, 1000)))), Operation.ADDITION));
 		}
 		level = enchantments.getInt(UE.SWIFT);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT).contains(slot))

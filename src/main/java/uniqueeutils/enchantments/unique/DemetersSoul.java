@@ -11,7 +11,6 @@ import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.HarvestEntry;
-import uniquebase.utils.IntLevelStats;
 import uniquebase.utils.IntStat;
 
 public class DemetersSoul extends UniqueEnchantment
@@ -20,7 +19,7 @@ public class DemetersSoul extends UniqueEnchantment
 	public static final String QUEUE_INDEX = "index_queue";
 	public static final IntStat DELAY = new IntStat(20, "delay");
 	public static final DoubleStat SCALING = new DoubleStat(0.9D, "base_cap");
-	public static final IntLevelStats CAP = new IntLevelStats("crop_cap", 25, 10);
+	public static final IntStat CAP = new IntStat(25, "crop_cap");
 	
 	public DemetersSoul()
 	{

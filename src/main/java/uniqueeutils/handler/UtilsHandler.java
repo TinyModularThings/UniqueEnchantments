@@ -655,7 +655,7 @@ public class UtilsHandler
 					}
 					if(!found)
 					{
-						if(list.size() >= DemetersSoul.CAP.get(level))
+						if(list.size() >= DemetersSoul.CAP.get())
 						{
 							event.getPlayer().displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.crops.full.name"), false);
 							event.setCancellationResult(ActionResultType.SUCCESS);
@@ -749,8 +749,8 @@ public class UtilsHandler
 		level = ench.getInt(UEUtils.REINFORCED);
 		if(level > 0)
 		{
-			double base = Reinforced.BASE_REDUCTION.get();
-			event.setNewSpeed((float)(event.getNewSpeed() * Math.pow((base+((1D-base)*0.01D)*level), Math.sqrt(level))));
+			//event.setNewSpeed((float)(event.getNewSpeed() * Math.pow((base+((1D-base)*0.01D)*level), Math.sqrt(level))));
+			event.setNewSpeed((float)(event.getNewSpeed() / (1+Reinforced.BASE_REDUCTION.get(level)/100)));
 		}
 	}
 	

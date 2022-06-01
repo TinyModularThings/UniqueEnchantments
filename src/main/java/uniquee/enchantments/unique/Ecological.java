@@ -19,20 +19,20 @@ import uniquee.UE;
 
 public class Ecological extends UniqueEnchantment
 {
-	public static final INamedTag<Block> ECHOLOGICAL = BlockTags.createOptional(new ResourceLocation("uniquee", "ecological"));
+	public static final INamedTag<Block> ECOLOGICAL = BlockTags.createOptional(new ResourceLocation("uniquee", "ecological"));
 	public static ToIntFunction<BlockState> STATES = new ToIntFunction<BlockState>() {
 		@Override
 		public int applyAsInt(BlockState t)
 		{
-			return BlockTags.LOGS.contains(t.getBlock()) || BlockTags.LEAVES.contains(t.getBlock()) || ECHOLOGICAL.contains(t.getBlock()) ? 1 : 0;
+			return BlockTags.LOGS.contains(t.getBlock()) || BlockTags.LEAVES.contains(t.getBlock()) || ECOLOGICAL.contains(t.getBlock()) ? 1 : 0;
 		}
 	};
-	public static final IntStat SPEED = new IntStat(220, "baseDuration");
+	public static final IntStat SPEED = new IntStat(330, "baseDuration");
 	public static final DoubleStat SPEED_SCALE = new DoubleStat(16D, "scalingReduction");
 	
 	public Ecological()
 	{
-		super(new DefaultData("ecological", Rarity.RARE, 3, true, true, 4, 8, 10), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		super(new DefaultData("ecological", Rarity.RARE, 3, false, true, 20, 8, 10), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
 		addStats(SPEED, SPEED_SCALE);
 	}
 	

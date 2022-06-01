@@ -68,6 +68,7 @@ dependencies {
     compile fg.deobf("curse.maven:jei-238222:3514175")
 	compile fg.deobf("curse.maven:enchantment-descriptions-250419:3488440")
 	compile fg.deobf("curse.maven:bookshelf-228525:3474499")
+	compile fg.deobf("curse.maven:patchouli-306770:3459118")
 	
     annotationProcessor 'org.spongepowered:mixin:0.8:processor'
 }

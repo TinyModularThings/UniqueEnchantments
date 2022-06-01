@@ -50,7 +50,7 @@ public class ApexHandler
 		int level = MiscUtil.getEnchantedItem(UEApex.ABSOLUTE_PROTECTION, event.getEntityLiving()).getIntValue();
 		if(level > 0)
 		{
-			event.setAmount(event.getAmount() * (1F / (MathCache.LOG10.getFloat((int)(1000+AbsoluteProtection.SCALE.get(level*level))) - 2)));
+			event.setAmount(event.getAmount() * (1F / (MathCache.LOG10.getFloat((int)(10+Math.sqrt(AbsoluteProtection.SCALE.get(level)))))));
 		}
 		Entity entity = event.getSource().getEntity();
 		if(entity instanceof LivingEntity)

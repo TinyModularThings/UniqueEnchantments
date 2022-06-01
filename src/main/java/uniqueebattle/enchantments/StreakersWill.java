@@ -11,7 +11,7 @@ import uniquebase.utils.DoubleStat;
 
 public class StreakersWill extends UniqueEnchantment
 {
-	public static final DoubleStat LOSS_PER_LEVEL = new DoubleStat(11.25D, "loss");
+	public static final DoubleStat LOSS_PER_LEVEL = new DoubleStat(4.25D, "loss");
 	public static final DoubleLevelStats CHANCE = new DoubleLevelStats("chance", 0.1D, 0.15D);
 	
 	public StreakersWill()
