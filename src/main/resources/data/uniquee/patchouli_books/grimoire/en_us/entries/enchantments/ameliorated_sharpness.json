@@ -1,0 +1,22 @@
+{
+	"name": "Ameliorated Sharpness",
+	"icon": "uniquebase:textures/icons/ameliorated_sharpness.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:ameliorated_sharpness',lvl:5}]}",
+			"text": "$(li)Max Level = 5 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Description",
+			"text": "Will improve your weapons attack damage with $(6)each $() enchantment level"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 300 $(br2)Deals increased damage scaling with your weapons attack damage"
+		}
+	]
+}

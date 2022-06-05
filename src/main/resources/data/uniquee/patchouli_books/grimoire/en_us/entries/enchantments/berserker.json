@@ -1,0 +1,22 @@
+{
+	"name": "Berserker",
+	"icon": "uniquebase:textures/icons/berserker.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:berserker',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Description",
+			"text": "Increases your damage dealt, up to 100% bonus damage, scaling with your current health compared to max health"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 200 $(br2)Keeps the holders healt at 50% and below $(br2)Values can be different from pack to pack"
+		}
+	]
+}

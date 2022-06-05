@@ -15,7 +15,7 @@ public class WarriorsGrace extends UniqueEnchantment
 
 	public WarriorsGrace()
 	{
-		super(new DefaultData("warriorsgrace", Rarity.VERY_RARE, 1, true, false, 22, 2, 5), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("warriors_grace", Rarity.VERY_RARE, 1, true, false, 22, 2, 5), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
 		addStats(DURABILITY_GAIN);
 	}
 		

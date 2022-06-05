@@ -33,12 +33,6 @@ public class Climber extends UniqueEnchantment
 	}
 	
 	@Override
-	public void loadIncompats()
-	{
-		addIncompats(new ResourceLocation("uniquee", "swift"));
-	}
-	
-	@Override
 	public void loadData(Builder config)
 	{
 		values = config.defineList("climb_speed", ObjectArrayList.wrap(new String[]{"minecraft:ladder;2", "minecraft:vine;5", "minecraft:scaffolding;5"}), T -> true);

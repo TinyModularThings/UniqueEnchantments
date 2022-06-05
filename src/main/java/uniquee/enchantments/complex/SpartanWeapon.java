@@ -15,7 +15,7 @@ public class SpartanWeapon extends UniqueEnchantment
 
 	public SpartanWeapon()
 	{
-		super(new DefaultData("spartanweapon", Rarity.UNCOMMON, 5, true, false, 25, 3, 50), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("spartan_weapon", Rarity.UNCOMMON, 5, true, false, 25, 3, 50), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(EXTRA_DAMAGE);
 	}
 	

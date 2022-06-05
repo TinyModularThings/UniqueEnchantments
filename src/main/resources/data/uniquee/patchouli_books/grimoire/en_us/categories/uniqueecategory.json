@@ -1,5 +1,6 @@
 {
     "name": "Unique Enchantments",
     "description": "Enchantments in this Category have all sorts of Types, including Armor, Tools and Weapon Enchantments",
-    "icon": "minecraft:writable_book"
+    "icon": "minecraft:writable_book",
+    "sortnum": 10
 }
