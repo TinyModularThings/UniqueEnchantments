@@ -121,6 +121,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	}
 	
 	@Override
+	public int getTranscendedLevel()
+	{
+		return values.getTranscendedLevel();
+	}
+	
+	@Override
 	protected boolean checkCompatibility(Enchantment ench)
 	{
 		return super.checkCompatibility(ench) && !values.incompats.contains(ench.getRegistryName());
@@ -201,6 +207,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		int levelCost;
 		int rangeCost;
 		int hardCap = 100;
+		Integer trancendence = null;
 		
 		EnumValue<Rarity> rare_Config;
 		BooleanValue isTreasure_Config;
@@ -211,6 +218,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		IntValue minLevel_Config;
 		IntValue maxLevel_Config;
 		IntValue hardCap_Config;
+		IntValue trancendence_Config;
 		IdStat incompats = new IdStat("incompats", ForgeRegistries.ENCHANTMENTS);
 		IdStat incompatibleItems = new IdStat("incompatible_items", "Allows to add custom incompatible Items", ForgeRegistries.ITEMS);
 		IdStat compatibleItems = new IdStat("compatible_items", "Allows to add custom compatible Items", ForgeRegistries.ITEMS);
@@ -253,6 +261,11 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 			rangeCost_Config = config.defineInRange("cost_limit", rangeCost, 0, Integer.MAX_VALUE);
 			config.comment("Hard Limit of where the Enchantment will be capped even if the level is higher");
 			hardCap_Config = config.defineInRange("hard_cap", hardCap, 0, Integer.MAX_VALUE);
+			if(trancendence != null)
+			{
+				config.comment("Defines the Required XP level to trigger the Trancendence Effect");
+				trancendence_Config = config.defineInRange("trancendence", trancendence, 1, Integer.MAX_VALUE);
+			}
 			config.comment("Enchantments that are not compatible with this Enchantment");
 			incompats.handleConfig(config);
 			incompatibleItems.handleConfig(config);
@@ -272,6 +285,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		public DefaultData setHardCap(int newCap)
 		{
 			hardCap = newCap;
+			return this;
+		}
+		
+		public DefaultData setTrancendenceLevel(int newLevel)
+		{
+			trancendence = newLevel;
 			return this;
 		}
 		
@@ -301,6 +320,11 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		public String getName()
 		{
 			return name;
+		}
+		
+		public int getTranscendedLevel()
+		{
+			return trancendence == null || trancendence_Config == null ? 1000 : trancendence_Config.get();
 		}
 		
 		public int getMinLevel()

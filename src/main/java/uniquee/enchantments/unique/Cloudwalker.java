@@ -16,7 +16,7 @@ public class Cloudwalker extends UniqueEnchantment
 	
 	public Cloudwalker()
 	{
-		super(new DefaultData("cloudwalker", Rarity.RARE, 4, true, false, 12, 4, 16), EnchantmentType.ARMOR_FEET, EquipmentSlotType.FEET);
-		addStats(TICKS);
+		super(new DefaultData("cloudwalker", Rarity.RARE, 4, true, false, 12, 4, 16).setTrancendenceLevel(500), EnchantmentType.ARMOR_FEET, EquipmentSlotType.FEET);
+		addStats(TICKS, TRANSCENDED_EXPONENT);
 	}
 }

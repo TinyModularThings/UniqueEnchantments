@@ -145,12 +145,12 @@ public final class FusionContext extends Inventory
 		Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(stack);
 		Enchantment ench = getLargestEnchantment();
 		int level = getAchievedLevel(bookCount);
+		System.out.println(level+", "+bookCount+", "+getLargestLevel());
 		if(level >= map.getOrDefault(ench, 0))
 		{
 			map.put(ench, level);
 		}
 		EnchantmentHelper.setEnchantments(map, stack);
-		
 		String enchantment = getLargestEnchantment().getRegistryName().toString();
 		for(int i = 1,m=mainChest.getSlots();i<m;i++)
 		{
@@ -227,7 +227,7 @@ public final class FusionContext extends Inventory
 			for(Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(stack).entrySet())
 			{
 				if(i != 0) ((Object2IntLinkedOpenHashMap<Enchantment>)instances).addTo(entry.getKey(), 1);
-				((Object2IntLinkedOpenHashMap<Enchantment>)totalLevels).addTo(entry.getKey(), entry.getValue());
+				((Object2IntLinkedOpenHashMap<Enchantment>)totalLevels).addTo(entry.getKey(), (int)Math.pow(entry.getValue(), 2));
 			}
 		}
 	}

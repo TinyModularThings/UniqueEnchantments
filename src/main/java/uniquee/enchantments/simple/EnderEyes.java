@@ -14,12 +14,11 @@ import uniquee.UE;
 
 public class EnderEyes extends UniqueEnchantment
 {
-	
 	public static final DoubleStat TRANSCENDED_CHANCE = new DoubleStat(0.6, "transcended_chance");
 	
 	public EnderEyes()
 	{
-		super(new DefaultData("ender_eyes", Rarity.UNCOMMON, 1, false, false, 10, 2, 5), EnchantmentType.ARMOR_HEAD, EquipmentSlotType.HEAD);
+		super(new DefaultData("ender_eyes", Rarity.UNCOMMON, 1, false, false, 10, 2, 5).setTrancendenceLevel(200), EnchantmentType.ARMOR_HEAD, EquipmentSlotType.HEAD);
 		addStats(TRANSCENDED_CHANCE);
 	}
 	

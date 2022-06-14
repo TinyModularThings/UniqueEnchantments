@@ -70,7 +70,7 @@ public class FusionUpgradeRecipe implements IRecipe<FusionContext>
 	public int getRequiredXP(FusionContext context)
 	{
 		Enchantment ench = context.getLargestEnchantment();
-		int level = (int)(context.getAchievedLevel(requiredBooks) * Math.sqrt(ench.getRarity().getWeight()*ench.getMinCost(0)));
+		int level = (int)(context.getAchievedLevel(requiredBooks) * Math.sqrt((double)ench.getRarity().getWeight()*(double)ench.getMinCost(1)));
 		return (int)(requiredExperience + Math.pow(level, 2));
 	}
 	

@@ -18,7 +18,7 @@ public class AmelioratedSmite extends UniqueEnchantment
 
 	public AmelioratedSmite()
 	{
-		super(new DefaultData("ameliorated_smite", Rarity.RARE, 5, true, false, 6, 4, 30), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("ameliorated_smite", Rarity.RARE, 5, true, false, 6, 4, 30).setTrancendenceLevel(200), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
 		addStats(BONUS_DAMAGE, TRANSCENDED_DAMAGE_EXPONENT);
 	}
 	

@@ -11,4 +11,5 @@ public interface IToggleEnchantment
 	public default void loadIncompats(){}
 	public boolean isEnabled();
 	public int getHardCap();
+	public default int getTranscendedLevel() { return 1000; }
 }

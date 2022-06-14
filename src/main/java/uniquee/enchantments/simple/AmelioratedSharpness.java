@@ -17,7 +17,7 @@ public class AmelioratedSharpness extends UniqueEnchantment
 	
 	public AmelioratedSharpness()
 	{
-		super(new DefaultData("ameliorated_sharpness", Rarity.VERY_RARE, 5, true, false, 25, 8, 20), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("ameliorated_sharpness", Rarity.VERY_RARE, 5, true, false, 25, 8, 20).setTrancendenceLevel(300), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
 		addStats(BONUS_DAMAGE, TRANSCENDED_DAMAGE_MULTIPLIER);
 	}
 	

@@ -41,7 +41,7 @@ public class ArtemisSoul extends UniqueEnchantment
 	
 	public ArtemisSoul()
 	{
-		super(new DefaultData("artemis_soul", Rarity.VERY_RARE, 7, true, false, 15, 60, 45), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("artemis_soul", Rarity.VERY_RARE, 7, true, false, 15, 60, 45).setTrancendenceLevel(500), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(VALID_MOBS, CAP_BASE, CAP_FACTOR, CAP_FACTOR, CAP_SCALE, REAP_SCALE, DROP_SOUL_SCALE, TEMP_SOUL_SCALE, PERM_SOUL_SCALE, TRANSCENDED_REAP_MULTIPLIER);
 		setCategory("battle");
 	}
