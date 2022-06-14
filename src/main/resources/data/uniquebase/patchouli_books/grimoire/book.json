@@ -1,5 +1,6 @@
 {
 	"name": "Hekate's Grimoire",
 	"landing_text": "Welcome oh dear Sage",
-	"version": 295
+	"version": 295,
+	"show_toasts": false
 }

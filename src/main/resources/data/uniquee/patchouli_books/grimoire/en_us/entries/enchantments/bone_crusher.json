@@ -1,0 +1,22 @@
+{
+	"name": "Bone Crusher",
+	"icon": "uniquebase:textures/icons/bone_crusher.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:bone_crusher',lvl:2}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Description",
+			"text": "Deals increased damage against unarmored targets"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 500 $(br2)Unarmored targets have a chance to drop loot twice $(br2)Values can be different from pack to pack"
+		}
+	]
+}

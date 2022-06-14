@@ -28,7 +28,7 @@ public class NaturesGrace extends UniqueEnchantment
 	
 	public NaturesGrace()
 	{
-		super(new DefaultData("naturesgrace", Rarity.RARE, 2, true, false, 10, 16, 10), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
+		super(new DefaultData("natures_grace", Rarity.RARE, 2, true, false, 10, 16, 10), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
 		addStats(HEALING, DELAY);
 	}
 	

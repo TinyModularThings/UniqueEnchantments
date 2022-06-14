@@ -20,4 +20,5 @@ public class Vitae extends UniqueEnchantment
 		super(new DefaultData("vitae", Rarity.RARE, 5, false, false, 5, 5, 5), EnchantmentType.ARMOR, EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET);
 		addStats(BASE_BOOST, SCALE_BOOST);
 	}
+	
 }

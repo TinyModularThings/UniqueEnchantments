@@ -1084,7 +1084,7 @@ public class EntityEvents
 		int level = enchantments.getInt(UE.VITAE);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.VITAE).contains(slot))
 		{
-			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD.getId(slot), "Vitae", MathCache.LOG10.get((int)(1+Vitae.SCALE_BOOST.get(MiscUtil.getPlayerLevel(living, 1000)))), Operation.ADDITION));
+			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD.getId(slot), "Vitae", Math.sqrt((level*MiscUtil.getPlayerLevel(living, 200))/100), Operation.ADDITION));
 		}
 		level = enchantments.getInt(UE.SWIFT);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT).contains(slot))
