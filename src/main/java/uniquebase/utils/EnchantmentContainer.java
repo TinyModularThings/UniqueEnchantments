@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -181,5 +182,10 @@ public class EnchantmentContainer
 		{
 			return new AbstractMap.SimpleEntry<>(slots[i], enchantments[i++]);
 		}
+	}
+	
+	public static class ThornsClass {
+		public static boolean ONCE = false;
+		public static Entity ENT = null;
 	}
 }

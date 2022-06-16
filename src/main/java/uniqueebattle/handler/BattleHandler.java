@@ -363,7 +363,7 @@ public class BattleHandler
 				EffectInstance effect = target.getEffect(UEBattle.BLEED);
 				if(effect != null)
 				{
-					event.setAmount(event.getAmount() * MathCache.LOG.getFloat(10+((int)Math.pow(DeepWounds.BLEED_SCALE.get(MiscUtil.getPlayerLevel(source, 70))/100, 2))));
+					event.setAmount(event.getAmount() * MathCache.LOG.getFloat(10+((int) DeepWounds.BLEED_SCALE.get(MiscUtil.getPlayerLevel(source, 70))/100)));
 				}
 				target.addEffect(new EffectInstance(UEBattle.BLEED, (int)Math.pow(DeepWounds.DURATION.get(level), 0.4D)*20, effect == null ? 0 : effect.getAmplifier()+1));
 			}

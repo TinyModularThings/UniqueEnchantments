@@ -2,6 +2,7 @@ package uniquee.enchantments.simple;
 
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.enchantment.ProtectionEnchantment;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
