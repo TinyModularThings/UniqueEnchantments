@@ -1,0 +1,19 @@
+{
+	"name": "Ender Librarian",
+	"icon": "uniquebase:textures/icons/ender_librarian.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:ender_librarian',lvl:3}]}",
+			"text": "$(li)Max Level = 1 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Very_Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Teleports you to a random location on the Map. $(br)Banner can make it accurate",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Ender-Librarian",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

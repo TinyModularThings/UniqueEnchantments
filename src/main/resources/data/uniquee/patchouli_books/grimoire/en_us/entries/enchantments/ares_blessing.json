@@ -1,0 +1,24 @@
+{
+	"name": "Ares Blessing",
+	"icon": "uniquebase:textures/icons/ares_blessing.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:ares_blessing',lvl:3}]}",
+			"text": "$(li)Max Level = 3 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Lethal damage will be converted into durability loss. $(br)Exceptions are magic & fall damage",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Ares-Blessing",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 200 $(br2)Fall Damage no longer bypasses this"
+		}
+	]
+}

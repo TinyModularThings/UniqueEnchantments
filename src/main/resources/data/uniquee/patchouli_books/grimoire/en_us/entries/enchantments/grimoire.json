@@ -1,0 +1,19 @@
+{
+	"name": "Grimoire",
+	"icon": "uniquebase:textures/icons/grimoire.png",
+	"category": "uniquebase:uniquecurses",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:grimoire',lvl:5}]}",
+			"text": "$(li)Max Level = 5 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Increases enchantment levels on the same item. $(br)Gets better the more knowledge you have",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Grimoire",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

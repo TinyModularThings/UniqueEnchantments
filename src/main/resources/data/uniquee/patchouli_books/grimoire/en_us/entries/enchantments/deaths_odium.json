@@ -1,0 +1,19 @@
+{
+	"name": "Death's Odium",
+	"icon": "uniquebase:textures/icons/deaths_odium.png",
+	"category": "uniquebase:uniquecurses",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:deaths_odium',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Whenever an entity dies with this curse active, transfers 5% of health to the item enchanted",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Death%27s-Odium",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

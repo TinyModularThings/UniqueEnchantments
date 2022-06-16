@@ -1,0 +1,19 @@
+{
+	"name": "Swift",
+	"icon": "uniquebase:textures/icons/swift.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:swift',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Entity moves faster, but so does it exhaust. $(br)Climbing speed is increased",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Swift",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

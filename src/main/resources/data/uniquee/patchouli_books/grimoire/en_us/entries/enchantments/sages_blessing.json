@@ -1,0 +1,24 @@
+{
+	"name": "Sage's Blessing",
+	"icon": "uniquebase:textures/icons/sages_blessing.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:sages_blessing',lvl:5}]}",
+			"text": "$(li)Max Level = 5 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Common $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Increases experience gain. $(br)Exhausts you over time",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Sage%27s-Blessing",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 500 $(br2)Increases experience exponentially. $(br)No longer exhausts you"
+		}
+	]
+}

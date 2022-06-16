@@ -1,0 +1,19 @@
+{
+	"name": "Pestilence's Odium",
+	"icon": "uniquebase:textures/icons/pestilences_odium.png",
+	"category": "uniquebase:uniquecurses",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:pestilences_odium',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = True $(li)Tradeable = true $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Entities around you will be continuesly damaged",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Pestilence%27s-Odium",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

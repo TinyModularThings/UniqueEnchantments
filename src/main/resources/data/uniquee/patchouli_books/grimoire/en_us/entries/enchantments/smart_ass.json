@@ -1,0 +1,19 @@
+{
+	"name": "Smart Ass",
+	"icon": "uniquebase:textures/icons/smart_ass.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:smart_ass',lvl:3}]}",
+			"text": "$(li)Max Level = 3 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Mines logs and falling blocks in reverse, top to bottom",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Smart-Ass",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

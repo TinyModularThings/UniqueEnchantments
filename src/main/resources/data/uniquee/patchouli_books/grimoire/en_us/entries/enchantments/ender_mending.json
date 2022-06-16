@@ -1,0 +1,19 @@
+{
+	"name": "Ender Mending",
+	"icon": "uniquebase:textures/icons/ender_mending.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:ender_mending',lvl:3}]}",
+			"text": "$(li)Max Level = 3 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Mending, but can also store exceeding experience and distribute it to other slots",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Ender-Mending",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

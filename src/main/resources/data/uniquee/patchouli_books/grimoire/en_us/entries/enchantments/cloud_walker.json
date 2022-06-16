@@ -1,0 +1,24 @@
+{
+	"name": "Cloud Walker",
+	"icon": "uniquebase:textures/icons/cloud_walker.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:cloud_walker',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Sneak to change between modes. $(br)When active you stop falling for some while. Consumes durability",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Cloudwalker",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 500 $(br2)Duration is now infinite. $(br)Frequency is increased"
+		}
+	]
+}

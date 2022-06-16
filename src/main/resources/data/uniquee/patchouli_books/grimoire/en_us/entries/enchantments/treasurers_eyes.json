@@ -1,0 +1,19 @@
+{
+	"name": "Treasurer's Eyes",
+	"icon": "uniquebase:textures/icons/treasurers_eyes.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:treasurers_eyes',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Entities with certain enchantments on them, will have special effects on them, while you have this enchantment active. $(br)Piglins tolerate you, but Brutes do not",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Treasurer%27s-Eyes",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

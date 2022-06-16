@@ -1,0 +1,19 @@
+{
+	"name": "Nature's Grace",
+	"icon": "uniquebase:textures/icons/natures_grace.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:natures_grace',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Heals you while near fauna, only while you havent received damage recently",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Nature%27s-Grace",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

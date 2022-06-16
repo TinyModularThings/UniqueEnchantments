@@ -1,0 +1,24 @@
+{
+	"name": "Ender Eyes",
+	"icon": "uniquebase:textures/icons/ender_eyes.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:ender_eyes',lvl:1}]}",
+			"text": "$(li)Max Level = 1 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Endermans you look at can no longer teleport nor aggro on you",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Ender-Eyes",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 200 $(br2)Certain entities have a chance to instantly die when hitting you"
+		}
+	]
+}

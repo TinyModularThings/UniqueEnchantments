@@ -21,7 +21,7 @@ public class CelestialBlessing extends UniqueEnchantment
 	
 	public CelestialBlessing()
 	{
-		super(new DefaultData("celestial_blessing", Rarity.UNCOMMON, 3, false, false, 20, 5, 15).setTrancendenceLevel(200), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("hecates_blessing", Rarity.UNCOMMON, 3, false, false, 20, 5, 15).setTrancendenceLevel(200), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(SPEED_BONUS);
 		setCategory("battle");
 	}

@@ -1,0 +1,19 @@
+{
+	"name": "Ecological",
+	"icon": "uniquebase:textures/icons/ecological.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:ecological',lvl:3}]}",
+			"text": "$(li)Max Level = 3 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Slowly restores durability, while nearby nature",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Ecological",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

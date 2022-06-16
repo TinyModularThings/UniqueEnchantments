@@ -1,0 +1,19 @@
+{
+	"name": "Vitae",
+	"icon": "uniquebase:textures/icons/vitae.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:vitae',lvl:5}]}",
+			"text": "$(li)Max Level = 5 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Increases your maximum health",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Vitae",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

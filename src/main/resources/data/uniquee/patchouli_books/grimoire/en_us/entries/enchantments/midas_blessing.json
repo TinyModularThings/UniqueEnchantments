@@ -1,0 +1,19 @@
+{
+	"name": "Midas Blessing",
+	"icon": "uniquebase:textures/icons/midas_blessing.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:midas_blessing',lvl:3}]}",
+			"text": "$(li)Max Level = 3 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Store gold stuff in the tool. $(br)Consumes some to have a guaranteed Fortune effect for gem ores",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Midas-Blessing",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

@@ -1,0 +1,24 @@
+{
+	"name": "Phoenix's Blessing",
+	"icon": "uniquebase:textures/icons/phoenixs_blessing.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:phoenixs_blessing',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "When used, it'll restore full health and hunger. $(br)Sets nearby entities on fire",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Phoenix%27s-Blessing",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 500 $(br2)Grants 'Eternal Flame' effect"
+		}
+	]
+}

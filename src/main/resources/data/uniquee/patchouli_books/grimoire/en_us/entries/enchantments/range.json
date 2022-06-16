@@ -1,0 +1,19 @@
+{
+	"name": "Range",
+	"icon": "uniquebase:textures/icons/range.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:range',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Increases reach distance (not combat distance). However it decreases mining speed when range is in use",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Range",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}
