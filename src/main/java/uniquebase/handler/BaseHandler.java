@@ -12,11 +12,19 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Tuple;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -25,6 +33,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -51,6 +62,48 @@ public class BaseHandler
 	public void registerAnvilHelper(Enchantment ench, ToIntFunction<ItemStack> helper, String tag)
 	{
 		anvilHelpers.add(Triple.create(ench, helper, tag));
+	}
+	
+	@SubscribeEvent
+	public void onProjectileImpact(ProjectileImpactEvent event) {
+		if(event.getEntity() instanceof AbstractArrowEntity) {
+			ItemStack stack = StackUtils.getArrowStack((AbstractArrowEntity)event.getEntity());
+			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
+			AbstractArrowEntity ent = (AbstractArrowEntity)event.getEntity();
+			Vector3d temp = event.getRayTraceResult().getLocation();
+			List<LivingEntity> list = event.getEntity().getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(new BlockPos(temp.x, temp.y, temp.z)));
+			int level = enchantments.getInt(Enchantments.POWER_ARROWS);
+			if(level > 0) {
+				ent.setBaseDamage(ent.getBaseDamage() + 0.5 * level + 0.5);
+			}
+			level = enchantments.getInt(Enchantments.FLAMING_ARROWS);
+			if(level > 0) {
+				for(LivingEntity entry : list) {
+					entry.setSecondsOnFire(100*level);
+		        }
+			}
+			level = enchantments.getInt(Enchantments.PUNCH_ARROWS);
+			if(level > 0) {
+				for(LivingEntity entry : list) {
+					Vector3d vec = ent.position().subtract(event.getRayTraceResult().getLocation()) ;
+					entry.knockback(level, vec.x(), vec.z());
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEntityDamaged(LivingDamageEvent event) {
+		LivingEntity target = event.getEntityLiving();
+		Entity ent = event.getSource().getEntity();
+		
+		if(target.isInWaterRainOrBubble() && ent instanceof LivingEntity ) {
+			LivingEntity source = (LivingEntity)ent;
+			int level = MiscUtil.getEnchantmentLevel(Enchantments.IMPALING, source.getMainHandItem().isEmpty() ? source.getOffhandItem() : source.getMainHandItem());
+			if(level > 0) {
+				event.setAmount(event.getAmount()+2.5f*level);
+			}
+		}
 	}
 	
 	@SubscribeEvent
@@ -149,6 +202,21 @@ public class BaseHandler
 				{
 					event.getToolTip().add(new TranslationTextComponent("unique.base.jei.press_gui", UEBase.ENCHANTMENT_GUI.getKeyName().copy().withStyle(TextFormatting.LIGHT_PURPLE)).withStyle(TextFormatting.GRAY));
 				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEntitySpawn(EntityJoinWorldEvent event) {
+		Entity entity = event.getEntity();
+		if(entity instanceof ItemEntity && ((ItemEntity) entity).getItem().isEnchanted())
+		{
+			ItemEntity ent = (ItemEntity)entity;
+
+			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(ent.getItem());
+			if(ench.getInt(Enchantments.ALL_DAMAGE_PROTECTION) > 0)
+			{
+				ent.lifespan *= Math.pow(MiscUtil.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION, ((ItemEntity)entity).getItem())+1, 2);
 			}
 		}
 	}
