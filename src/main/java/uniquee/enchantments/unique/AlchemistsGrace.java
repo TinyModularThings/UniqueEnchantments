@@ -32,7 +32,8 @@ public class AlchemistsGrace extends UniqueEnchantment
 	
 	public AlchemistsGrace()
 	{
-		super(new DefaultData("alchemists_grace", Rarity.VERY_RARE, 4, true, false, 18, 6, 40).setHardCap(33), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("alchemistsgrace", Rarity.VERY_RARE, 4, true, false, 18, 6, 40).setTrancendenceLevel(200).setHardCap(33), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		addStats(TRANSCENDED_MULTIPLIER);
 	}
 	
 	@Override

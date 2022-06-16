@@ -16,7 +16,7 @@ public class BoneCrusher extends UniqueEnchantment
 	
 	public BoneCrusher()
 	{
-		super(new DefaultData("bone_crusher", Rarity.VERY_RARE, 4, true, true, 2, 8, 20), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("bone_crusher", Rarity.VERY_RARE, 4, true, true, 2, 8, 20).setTrancendenceLevel(500), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
 		addStats(BONUS_DAMAGE, TRANSCENDED_CHANCE);
 	}
 	

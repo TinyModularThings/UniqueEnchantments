@@ -18,8 +18,8 @@ public class FocusImpact extends UniqueEnchantment
 	
 	public FocusImpact()
 	{
-		super(new DefaultData("focus_impact", Rarity.RARE, 3, false, true, 2, 8, 17), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
-		addStats(BASE_SPEED);
+		super(new DefaultData("focus_impact", Rarity.RARE, 3, false, true, 2, 8, 17).setTrancendenceLevel(200), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		addStats(BASE_SPEED, TRANSCENDED_ATTACK_SPEED_MULTIPLIER);
 	}
 		
 	@Override

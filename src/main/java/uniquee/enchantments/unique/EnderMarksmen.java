@@ -10,8 +10,6 @@ import uniquee.UE;
 public class EnderMarksmen extends UniqueEnchantment
 {
 	public static final DoubleStat EXTRA_DURABILITY = new DoubleStat(2D, "extra_durability");
-	public static final DoubleStat TRANSCENDE_CHANCE = new DoubleStat(0.2D, "transcended_chance_level_scaling");
-	public static final DoubleStat TRANSCENDE_DAMAGE = new DoubleStat(2.0D, "transcended_damage_base");
 	
 	public EnderMarksmen()
 	{

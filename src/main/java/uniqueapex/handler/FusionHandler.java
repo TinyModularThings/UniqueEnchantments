@@ -85,7 +85,7 @@ public class FusionHandler
 			FusionUpgradeRecipe recipe = getUpgradeRecipe(world, context);
 			if(recipe == null) return;
 			int xp = recipe.getRequiredXP(context);
-			if(MiscUtil.getXP(event.getPlayer()) < xp) {
+			if(MiscUtil.getXP(event.getPlayer()) < xp && !event.getPlayer().isCreative()) {
 				event.getPlayer().displayClientMessage(new StringTextComponent("["+MiscUtil.getLvlForXP(xp)+"] levels Required").withStyle(TextFormatting.RED), true);
 				return;
 			}
@@ -209,7 +209,8 @@ public class FusionHandler
 	
 	public FusionUpgradeRecipe getUpgradeRecipe(World world, FusionContext context)
 	{
-		return world.getRecipeManager().getRecipeFor(UEApex.FUSION_UPGRADE, context, world).orElse(new DefaultFusionUpgradeRecipe(context.getLargestEnchantment()));
+		Enchantment ench = context.getLargestEnchantment();
+		return world.getRecipeManager().getRecipeFor(UEApex.FUSION_UPGRADE, context, world).orElse(ench == null ? null : new DefaultFusionUpgradeRecipe(ench));
 	}
 	
 	public FusionRecipe getFusionRecipe(World world, FusionContext context)

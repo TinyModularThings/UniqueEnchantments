@@ -30,7 +30,7 @@ public class EndestReap extends UniqueEnchantment
 	
 	public EndestReap()
 	{
-		super(new DefaultData("endest_reap", Rarity.VERY_RARE, 4, true, false, 30, 10, 30), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("endest_reap", Rarity.VERY_RARE, 4, true, false, 30, 10, 30).setTrancendenceLevel(1000), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
 		addStats(BONUS_DAMAGE_LEVEL, REAP_MULTIPLIER, TRANSCENDED_CHACNE);
 	}
 	
