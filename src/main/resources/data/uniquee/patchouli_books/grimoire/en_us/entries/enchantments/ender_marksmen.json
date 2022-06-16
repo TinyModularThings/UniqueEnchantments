@@ -1,0 +1,19 @@
+{
+	"name": "Ender Marksmen",
+	"icon": "uniquebase:textures/icons/ender_marksmen.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:ender_marksmen',lvl:5}]}",
+			"text": "$(li)Max Level = 5 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very_Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "If your arrow hits an entity, returns the arrow to you. $(br) Additionally your bow restores durability",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Ender-Marksmen",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

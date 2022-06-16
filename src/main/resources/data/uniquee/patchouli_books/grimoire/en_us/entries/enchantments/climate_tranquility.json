@@ -1,0 +1,19 @@
+{
+	"name": "Climate Tranquility",
+	"icon": "uniquebase:textures/icons/climate_tranquility.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:climate_tranquility',lvl:3}]}",
+			"text": "$(li)Max Level = 5 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Receives buff depending on current biome counterpart. $(br)Cold receives hot buff. $(br)Hot receives cold buff",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Climate-Tranquility",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

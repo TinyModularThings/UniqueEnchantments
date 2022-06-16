@@ -1,0 +1,19 @@
+{
+	"name": "Spartan Weapon",
+	"icon": "uniquebase:textures/icons/spartan_weapon.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:spartan_weapon',lvl:5}]}",
+			"text": "$(li)Max Level = 5 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Increases damage while having a shield equipped",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Spartan-Weapon",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

@@ -11,7 +11,9 @@
 		{
 			"type": "patchouli:text",
 			"title": "Description",
-			"text": "Deals increased damage against unarmored targets"
+			"text": "Deals increased damage against unarmored targets",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Perpetual-Strike",
+			"link_text": "Detailed Wiki"
 		},
 		{
 			"type": "patchouli:text",

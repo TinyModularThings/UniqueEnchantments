@@ -9,9 +9,11 @@
 			"text": "$(li)Max Level = 5 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
 		},
 		{
-			"type": "patchouli:text",
+			"type": "patchouli:link",
 			"title": "Description",
-			"text": "Will increase damage dealt against Artropod (spiders & insects) with $(6)each $() enchantment level"
+			"text": "Will increase damage dealt against Artropod (spiders & insects) with $(6)each $() enchantment level",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Ameliorated-Bane-of-Arthropod",
+			"link_text": "Detailed Wiki"
 		},
 		{
 			"type": "patchouli:text",

@@ -1,0 +1,24 @@
+{
+	"name": "Endest Reap",
+	"icon": "uniquebase:textures/icons/endest_reap.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:endest_reap',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very_Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Deals bonus magic damage on-hit scaling with Stacks. $(br)Stacks can be gained by killing higher entities. $(br)Stacks are capped with PlayerLevel",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Endest-Reap",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 1000 $(br2)Stacks are uncapped, however each individual stack can fail to be gained"
+		}
+	]
+}

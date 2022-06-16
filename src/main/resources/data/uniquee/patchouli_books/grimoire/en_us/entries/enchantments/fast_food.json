@@ -1,0 +1,24 @@
+{
+	"name": "Fast Food",
+	"icon": "uniquebase:textures/icons/fast_food.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:fast_food',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Killing animals will nourish you instead of dropping items.",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Fast-Food",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 200 $(br2)Exceeding nourishment is stored and granted when required."
+		}
+	]
+}

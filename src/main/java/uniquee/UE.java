@@ -45,7 +45,7 @@ import uniquee.enchantments.simple.AmelioratedSmite;
 import uniquee.enchantments.simple.Berserk;
 import uniquee.enchantments.simple.BoneCrusher;
 import uniquee.enchantments.simple.EnderEyes;
-import uniquee.enchantments.simple.FocusImpact;
+import uniquee.enchantments.simple.FocusedImpact;
 import uniquee.enchantments.simple.Range;
 import uniquee.enchantments.simple.SagesBlessing;
 import uniquee.enchantments.simple.Swift;
@@ -168,7 +168,7 @@ public class UE extends BaseUEMod
 		SWIFT = register(new Swift());
 		SAGES_BLESSING = register(new SagesBlessing());
 		ENDER_EYES = register(new EnderEyes());
-		FOCUS_IMPACT = register(new FocusImpact());
+		FOCUS_IMPACT = register(new FocusedImpact());
 		BONE_CRUSH = register(new BoneCrusher());
 		RANGE = register(new Range());
 		TREASURERS_EYES = register(new TreasurersEyes());

@@ -1,0 +1,24 @@
+{
+	"name": "Focused Impact",
+	"icon": "uniquebase:textures/icons/focused_impact.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:focused_impact',lvl:3}]}",
+			"text": "$(li)Max Level = 3 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Increases damage the lower your attack speed is. $(br)Faster weapons will deal less damage",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Focused-Impact",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 200 $(br2)Attack Speed will be reduced"
+		}
+	]
+}

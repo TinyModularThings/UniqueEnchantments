@@ -1,0 +1,19 @@
+{
+	"name": "Warrior's Grace",
+	"icon": "uniquebase:textures/icons/warriors_grace.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:warriors_grace',lvl:1}]}",
+			"text": "$(li)Max Level = 1 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Restores durability scaling with slain entities max health",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Warrior%27s-Grace",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

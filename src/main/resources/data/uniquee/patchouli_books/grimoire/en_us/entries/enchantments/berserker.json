@@ -9,9 +9,11 @@
 			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
 		},
 		{
-			"type": "patchouli:text",
+			"type": "patchouli:link",
 			"title": "Description",
-			"text": "Increases your damage dealt, up to 100% bonus damage, scaling with your current health compared to max health"
+			"text": "Increases your damage dealt, up to 100% bonus damage, scaling with your current health compared to max health",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Berserker",
+			"link_text": "Detailed Wiki"
 		},
 		{
 			"type": "patchouli:text",

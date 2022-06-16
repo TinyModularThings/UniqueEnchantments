@@ -9,9 +9,11 @@
 			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
 		},
 		{
-			"type": "patchouli:text",
+			"type": "patchouli:link",
 			"title": "Description",
-			"text": "Deals increased damage against unarmored targets"
+			"text": "Deals increased damage against unarmored targets",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Bone-Crusher",
+			"link_text": "Detailed Wiki"
 		},
 		{
 			"type": "patchouli:text",

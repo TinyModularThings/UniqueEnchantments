@@ -113,7 +113,7 @@ import uniquee.enchantments.simple.AmelioratedSmite;
 import uniquee.enchantments.simple.Berserk;
 import uniquee.enchantments.simple.BoneCrusher;
 import uniquee.enchantments.simple.EnderEyes;
-import uniquee.enchantments.simple.FocusImpact;
+import uniquee.enchantments.simple.FocusedImpact;
 import uniquee.enchantments.simple.Range;
 import uniquee.enchantments.simple.SagesBlessing;
 import uniquee.enchantments.simple.Swift;
@@ -631,7 +631,7 @@ public class EntityEvents
 				ModifiableAttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (1F + (float)Math.log10(Math.pow(FocusImpact.BASE_SPEED.get() / attr.getValue(), 2D)*MathCache.LOG.get(6+level))));
+					event.setAmount(event.getAmount() * (1F + (float)Math.log10(Math.pow(FocusedImpact.BASE_SPEED.get() / attr.getValue(), 2D)*MathCache.LOG.get(6+level))));
 				}
 			}
 			level = MiscUtil.getEnchantedItem(UE.CLIMATE_TRANQUILITY, base).getIntValue();
@@ -1108,7 +1108,7 @@ public class EntityEvents
 		level = enchantments.getInt(UE.FOCUS_IMPACT);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.FOCUS_IMPACT).contains(slot) && MiscUtil.isTranscendent(living, UE.FOCUS_IMPACT))
 		{
-			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(FocusImpact.IMPACT_MOD, "Focus Impact", FocusImpact.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(FocusedImpact.IMPACT_MOD, "Focus Impact", FocusedImpact.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UE.SWIFT_BLADE);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT_BLADE).contains(slot) && MiscUtil.isTranscendent(living, UE.SWIFT_BLADE))

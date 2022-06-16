@@ -1,0 +1,24 @@
+{
+	"name": "Swift Blade",
+	"icon": "uniquebase:textures/icons/swift_blade.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:swift_blade',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very_Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Increases damage the faster your attack speed is. $(br)Slower weapons will deal less damage",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Swift-Blade",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 200 $(br2)Attack Speed will be increased"
+		}
+	]
+}

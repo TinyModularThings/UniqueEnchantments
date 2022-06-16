@@ -1,0 +1,19 @@
+{
+	"name": "Alchemist's Grace",
+	"icon": "uniquebase:textures/icons/alchemists_grace.png",
+	"category": "uniquee:uniqueecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:alchemists_grace',lvl:4}]}",
+			"text": "$(li)Max Level = 5 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Upon attacking entities, grants potion effects. $(br)Also grants potion effects upon mining. $(br)Effects can be similar. $(br)Values can be different from pack to pack",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Alchemist%27s-Grace",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}
