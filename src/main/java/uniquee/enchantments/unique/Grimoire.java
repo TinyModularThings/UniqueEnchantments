@@ -41,17 +41,18 @@ public class Grimoire extends UniqueEnchantment
 		INCOMPATS.addDefault(Enchantments.BLOCK_FORTUNE, Enchantments.BLOCK_EFFICIENCY, Enchantments.MOB_LOOTING, UE.MIDAS_BLESSING, UE.ENDEST_REAP, Enchantments.MENDING, Enchantments.SILK_TOUCH);
 	}
 		
-	public static void applyGrimore(ItemStack stack, int level, PlayerEntity player)
+	public static boolean applyGrimore(ItemStack stack, int level, PlayerEntity player)
 	{
 		CompoundNBT compound = stack.getTag();
 		if(compound == null) compound = new CompoundNBT();
 		int nextLevel = Math.max(0, MathHelper.floor(Math.log((Math.max(1, START_LEVEL.get())+player.experienceLevel)*level)*LEVEL_SCALING.get()-STEP_SKIP.get()));
 		int grimoreCount = compound.contains(GRIMOIRE_STORAGE) ? compound.getList(GRIMOIRE_STORAGE, 10).size() : 0;
 		int enchCount = compound.contains("Enchantments") ? compound.getList("Enchantments", 10).size() : 0;
-
+		boolean result = false;
 		compound.remove(GRIMOIRE_LEVEL);
 		if(compound.getInt(GRIMOIRE_LEVEL) != nextLevel || grimoreCount != enchCount)
 		{
+			result = true;
 			compound.putInt(GRIMOIRE_LEVEL, nextLevel);
 			if(compound.contains(GRIMOIRE_STORAGE))
 			{
@@ -86,5 +87,6 @@ public class Grimoire extends UniqueEnchantment
 			compound.putUUID(GRIMOIRE_OWNER, player.getUUID());
 		}
 		stack.setTag(compound);
+		return result;
 	}
 }

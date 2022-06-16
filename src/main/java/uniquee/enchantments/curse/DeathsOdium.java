@@ -13,7 +13,9 @@ import uniquebase.utils.SlotUUID;
 
 public class DeathsOdium extends UniqueEnchantment
 {
+	public static final String CURSE_DISABLED = "curse_disabled";
 	public static final String CURSE_STORAGE = "curse_storage";
+	public static final String CURSE_COUNTER = "curse_counter";
 	public static final String CURSE_TIMER = "curse_regain_timer";
 	public static final String CURSE_DAMAGE = "curse_regain_damage";
 	public static final String CURSE_RESET = "curse_reset";

@@ -56,6 +56,7 @@ public class MiscUtil
 {
 	static final Object2IntMap.Entry<EquipmentSlotType> NO_ENCHANTMENT = new AbstractObject2IntMap.BasicEntry<>(null, 0);
 	static final Consumer<LivingEntity>[] SLOT_BASE = createSlots();
+	static final String TRANCENDENCE_BLOCK = "block_trancedence";
 	
 	@SuppressWarnings("unchecked")
 	static Consumer<LivingEntity>[] createSlots()
@@ -88,9 +89,25 @@ public class MiscUtil
 		return entity instanceof PlayerEntity ? ((PlayerEntity)entity).experienceLevel : defaultValue;
 	}
 	
-	public static boolean isTranscendent(Entity entity, Enchantment enchantment)
+	public static int getTrancendenceLevel(Enchantment enchantment)
 	{
-		return getPlayerLevel(entity, 200) >= 1000;//TODO enchantment check later that allows to disable transcendence.
+		return enchantment instanceof IToggleEnchantment ? ((IToggleEnchantment)enchantment).getTranscendedLevel() : 1000;
+	}
+	
+	public static boolean isTrancendenceDisbaled(ItemStack stack)
+	{
+		return stack.hasTag() && stack.getTag().getBoolean(TRANCENDENCE_BLOCK); 
+	}
+	
+	public static void toggleTrancendence(ItemStack stack)
+	{
+		if(isTrancendenceDisbaled(stack)) stack.removeTagKey(TRANCENDENCE_BLOCK);
+		else stack.getOrCreateTag().putBoolean(TRANCENDENCE_BLOCK, true);
+	}
+	
+	public static boolean isTranscendent(Entity entity, ItemStack stack, Enchantment enchantment)
+	{
+		return !isTrancendenceDisbaled(stack) && getPlayerLevel(entity, 200) >= getTrancendenceLevel(enchantment);
 	}
 	
 	public static double getArmorProtection(LivingEntity entity)
