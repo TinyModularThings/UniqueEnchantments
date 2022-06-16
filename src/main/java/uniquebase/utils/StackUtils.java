@@ -13,6 +13,7 @@ import net.minecraft.entity.projectile.SpectralArrowEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.FloatNBT;
 import net.minecraft.nbt.IntNBT;
 import net.minecraft.nbt.LongNBT;
 import net.minecraft.util.NonNullList;
@@ -35,6 +36,17 @@ public class StackUtils
 	public static void setInt(ItemStack stack, String tagName, int value)
 	{
 		stack.addTagElement(tagName, IntNBT.valueOf(value));
+	}
+	
+	public static float getFloat(ItemStack stack, String tagName, float defaultValue)
+	{
+		CompoundNBT nbt = stack.getTag();
+		return nbt == null || !nbt.contains(tagName) ? defaultValue : nbt.getInt(tagName);
+	}
+	
+	public static void setFloat(ItemStack stack, String tagName, float value)
+	{
+		stack.addTagElement(tagName, FloatNBT.valueOf(value));
 	}
 	
 	public static long getLong(ItemStack stack, String tagName, long defaultValue)

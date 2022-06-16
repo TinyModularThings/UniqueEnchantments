@@ -28,11 +28,12 @@ public class Resonance extends UniqueEnchantment
 	public static final DoubleLevelStats RANGE = new DoubleLevelStats("range", 5D, 0.6D);
 	public static final DoubleStat BASE_DAMAGE = new DoubleStat(1D, "base_damage");
 	public static final IntStat COOLDOWN = new IntStat(400, "cooldown");
+	public static final IntStat AMOUNT = new IntStat(6, "amount", "The amount of blocks that are checked per tick");
 	
 	public Resonance()
 	{
 		super(new DefaultData("resonance", Rarity.UNCOMMON, 4, false, false, 10, 4, 75), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
-		addStats(RANGE, BASE_DAMAGE, COOLDOWN);
+		addStats(RANGE, BASE_DAMAGE, COOLDOWN, AMOUNT);
 		setCategory("utils");
 	}
 	
@@ -91,7 +92,8 @@ public class Resonance extends UniqueEnchantment
 		
 		public boolean tick(World world)
 		{
-			for(int i = 0;i < 4 && currentIndex < positionsToCheck.size();i++)
+			int max = AMOUNT.get();
+			for(int i = 0;i < max && currentIndex < positionsToCheck.size();i++)
 			{
 				BlockPos pos = positionsToCheck.get(currentIndex);
 				if(StackUtils.isOre(world.getBlockState(pos)))

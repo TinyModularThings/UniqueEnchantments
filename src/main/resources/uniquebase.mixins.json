@@ -13,6 +13,7 @@
 		"common.entity.EndermenMixin",
 		"common.entity.EntityMixin",
 		"common.entity.FireworkMixin",
+		"common.entity.PiglinMixin",
 		"common.item.EnchantedBookMixin",
 		"common.item.MapDataMixin",
 		"common.item.StackMixin",

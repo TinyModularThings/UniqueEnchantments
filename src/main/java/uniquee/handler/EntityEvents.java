@@ -96,6 +96,7 @@ import uniquebase.utils.EnchantmentContainer;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.events.EndermenLookEvent;
+import uniquebase.utils.events.PiglinWearableCheckEvent;
 import uniquebase.utils.mixin.common.InteractionManagerMixin;
 import uniquebase.utils.mixin.common.item.MapDataMixin;
 import uniquee.UE;
@@ -176,8 +177,19 @@ public class EntityEvents
 		LivingEntity entity = event.getEntityLiving();
 		
 		if(entity.getHealth() < (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get())) return;
-		if(MiscUtil.getEnchantmentLevel(UE.BERSERKER, entity.getItemBySlot(EquipmentSlotType.CHEST)) > 0 && MiscUtil.isTranscendent(entity, UE.BERSERKER)) {
-			entity.setHealth(entity.getMaxHealth()/2);
+		ItemStack stack = entity.getItemBySlot(EquipmentSlotType.CHEST);
+		if(MiscUtil.getEnchantmentLevel(UE.BERSERKER, stack) > 0 && MiscUtil.isTranscendent(entity, stack, UE.BERSERKER))
+		{
+			entity.setHealth(entity.getMaxHealth()*0.5F);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onPiglinCheck(PiglinWearableCheckEvent event)
+	{
+		if(MiscUtil.getEnchantedItem(UE.TREASURERS_EYES, event.getEntity()).getIntValue() > 0)
+		{
+			event.setCanceled(true);
 		}
 	}
 	
@@ -203,9 +215,9 @@ public class EntityEvents
 			}
 			if(player.level.getGameTime() % 400 == 0)
 			{
-				if(MiscUtil.isTranscendent(player, UE.FAST_FOOD))
+				ItemStack stack = player.getMainHandItem();
+				if(MiscUtil.isTranscendent(player, stack, UE.FAST_FOOD))
 				{
-					ItemStack stack = player.getMainHandItem();
 					FoodStats food = player.getFoodData();
 					int stored = StackUtils.getInt(stack, FastFood.FASTFOOD, 0);
 					int num = Math.min(stored, 20-food.getFoodLevel());
@@ -247,8 +259,10 @@ public class EntityEvents
 					int level = container.getEnchantment(UE.GRIMOIRE, slots[i]);
 					if(level > 0)
 					{
-						Grimoire.applyGrimore(player.getItemBySlot(slots[i]), level, player);
-						player.level.playSound(null, player.blockPosition(), UE.GRIMOIRE_SOUND, SoundCategory.AMBIENT, 1F, 1F);
+						if(Grimoire.applyGrimore(player.getItemBySlot(slots[i]), level, player))
+						{
+							player.level.playSound(null, player.blockPosition(), UE.GRIMOIRE_SOUND, SoundCategory.AMBIENT, 1F, 1F);
+						}
 					}
 				}
 			}
@@ -594,7 +608,7 @@ public class EntityEvents
 	public void onEntityHeal(LivingHealEvent event)
 	{
 		LivingEntity entity = event.getEntityLiving();
-		if(!MiscUtil.isTranscendent(entity, UE.BERSERKER) && entity.getHealth() > (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get()-0.25F))
+		if(!MiscUtil.isTranscendent(entity, entity.getItemBySlot(EquipmentSlotType.CHEST), UE.BERSERKER) && entity.getHealth() > (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get()-0.25F))
 		{
 			event.setAmount(0F);
 		}
@@ -670,7 +684,7 @@ public class EntityEvents
 				int lastEntity = StackUtils.getInt(held, PerpetualStrike.HIT_ID, 0);
 				int mercy = StackUtils.getInt(held, "mercy", PerpetualStrike.TRANSCENDED_MERCY.get());
 				int mercyReset = PerpetualStrike.TRANSCENDED_MERCY.get();
-				if(MiscUtil.isTranscendent(base, UE.PERPETUAL_STRIKE))
+				if(MiscUtil.isTranscendent(base, held, UE.PERPETUAL_STRIKE))
 				{
 					if(lastEntity != target.getId())
 					{
@@ -773,10 +787,11 @@ public class EntityEvents
 			DamageSource source = event.getSource();
 			if(!source.isMagic())
 			{
-				if(!MiscUtil.isTranscendent(entity, UE.ARES_BLESSING)) {
+				ItemStack stack = event.getEntityLiving().getItemBySlot(EquipmentSlotType.CHEST);
+				if(!MiscUtil.isTranscendent(entity, stack, UE.ARES_BLESSING))
+				{
 					if(source == DamageSource.FALL) return;
 				}
-				ItemStack stack = event.getEntityLiving().getItemBySlot(EquipmentSlotType.CHEST);
 				int level = MiscUtil.getEnchantmentLevel(UE.ARES_BLESSING, stack);
 				if(level > 0 && stack.isDamageableItem())
 				{
@@ -865,51 +880,66 @@ public class EntityEvents
 					if(level > 0)
 					{
 						CompoundNBT nbt = MiscUtil.getPersistentData(entity);
-						nbt.putInt(EndestReap.REAP_STORAGE, Math.min(nbt.getInt(EndestReap.REAP_STORAGE)+amount, MiscUtil.isTranscendent(base, UE.ENDEST_REAP) ? Integer.MAX_VALUE : ((PlayerEntity)base).experienceLevel));
+						nbt.putInt(EndestReap.REAP_STORAGE, Math.min(nbt.getInt(EndestReap.REAP_STORAGE)+amount, MiscUtil.isTranscendent(base, base.getMainHandItem(), UE.ENDEST_REAP) ? Integer.MAX_VALUE : ((PlayerEntity)base).experienceLevel));
 						StackUtils.setInt(base.getMainHandItem(), EndestReap.REAP_STORAGE, nbt.getInt(EndestReap.REAP_STORAGE));
 					}
 				}
 			}
 		}
-		int maxLevel = MiscUtil.getCombinedEnchantmentLevel(UE.DEATHS_ODIUM, event.getEntityLiving());
-		if(maxLevel > 0)
+		CompoundNBT nbt = MiscUtil.getPersistentData(event.getEntityLiving());
+		if(!nbt.getBoolean(DeathsOdium.CURSE_DISABLED))
 		{
-			for(EquipmentSlotType slot : EquipmentSlotType.values())
+			int maxLevel = MiscUtil.getCombinedEnchantmentLevel(UE.DEATHS_ODIUM, event.getEntityLiving());
+			if(maxLevel > 0)
 			{
-				ItemStack stack = event.getEntityLiving().getItemBySlot(slot);
-				if(MiscUtil.getEnchantmentLevel(UE.DEATHS_ODIUM, stack) > 0)
-				{
-					int value = StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0);
-					int newValue = Math.min(value + 1, DeathsOdium.MAX_STORAGE.get(maxLevel));
-					if(value == newValue) continue;
-					StackUtils.setInt(stack, DeathsOdium.CURSE_STORAGE, newValue);
-					break;
-				}
-			}
-			ModifiableAttributeInstance instance = event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH);
-			AttributeModifier mod = instance.getModifier(DeathsOdium.REMOVE_UUID);
-			float toRemove = 0F;
-			if(mod != null)
-			{
-				toRemove += mod.getAmount();
-				instance.removeModifier(mod);
-			}
-			CompoundNBT nbt = MiscUtil.getPersistentData(event.getEntityLiving());
-			if(nbt.getBoolean(DeathsOdium.CURSE_RESET))
-			{
-				nbt.remove(DeathsOdium.CURSE_RESET);
-				nbt.remove(DeathsOdium.CURSE_STORAGE);
+				int lowest = Integer.MAX_VALUE;
+				EquipmentSlotType lowestSlot = null;
+				int max = DeathsOdium.MAX_STORAGE.get(maxLevel);
 				for(EquipmentSlotType slot : EquipmentSlotType.values())
 				{
 					ItemStack stack = event.getEntityLiving().getItemBySlot(slot);
 					if(MiscUtil.getEnchantmentLevel(UE.DEATHS_ODIUM, stack) > 0)
 					{
-						stack.getTag().remove(DeathsOdium.CURSE_STORAGE);
+						int value = StackUtils.getInt(stack, DeathsOdium.CURSE_COUNTER, 0);
+						int newValue = Math.min(value + 1, max);
+						if(value == newValue) continue;
+						if(lowest > value)
+						{
+							value = lowest;
+							lowestSlot = slot;
+						}
 					}
 				}
-				return;
+				if(lowestSlot != null) {
+					ItemStack stack = event.getEntityLiving().getItemBySlot(lowestSlot);
+					StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
+					StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + (event.getEntityLiving().getMaxHealth() * 0.05F));
+				}
+				ModifiableAttributeInstance instance = event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH);
+				AttributeModifier mod = instance.getModifier(DeathsOdium.REMOVE_UUID);
+				float toRemove = 0F;
+				if(mod != null)
+				{
+					toRemove += mod.getAmount();
+					instance.removeModifier(mod);
+				}
+				if(nbt.getBoolean(DeathsOdium.CURSE_RESET))
+				{
+					nbt.remove(DeathsOdium.CURSE_RESET);
+					nbt.remove(DeathsOdium.CURSE_STORAGE);
+					nbt.putBoolean(DeathsOdium.CURSE_DISABLED, true);
+					for(EquipmentSlotType slot : EquipmentSlotType.values())
+					{
+						ItemStack stack = event.getEntityLiving().getItemBySlot(slot);
+						if(MiscUtil.getEnchantmentLevel(UE.DEATHS_ODIUM, stack) > 0)
+						{
+							stack.getTag().remove(DeathsOdium.CURSE_STORAGE);
+						}
+					}
+					return;
+				}
+				nbt.putFloat(DeathsOdium.CURSE_STORAGE, (toRemove+1F));
 			}
-			nbt.putFloat(DeathsOdium.CURSE_STORAGE, toRemove - (float)Math.ceil(Math.sqrt(DeathsOdium.BASE_LOSS.get(maxLevel))));
 		}
 	}
 	
@@ -919,7 +949,7 @@ public class EntityEvents
 		float f = MiscUtil.getPersistentData(event.getPlayer()).getFloat(DeathsOdium.CURSE_STORAGE);
 		if(f != 0F)
 		{
-			event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH).addTransientModifier(new AttributeModifier(DeathsOdium.REMOVE_UUID, "odiums_curse", f, Operation.ADDITION));
+			event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH).addTransientModifier(new AttributeModifier(DeathsOdium.REMOVE_UUID, "odiums_curse", f, Operation.MULTIPLY_TOTAL));
 		}
 	}
 	
@@ -945,7 +975,7 @@ public class EntityEvents
 		{
 			level += (event.getAttackingPlayer().level.random.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.MOB_LOOTING, event.getAttackingPlayer().getItemBySlot(EquipmentSlotType.MAINHAND))+1));
 			double num = (event.getDroppedExperience() + event.getDroppedExperience() * (SagesBlessing.XP_BOOST.get(level)));
-			event.setDroppedExperience((int) (MiscUtil.isTranscendent(event.getAttackingPlayer(), UE.SAGES_BLESSING) ? Math.pow(num, SagesBlessing.TRANSCENDED_BOOST.get()) : num));
+			event.setDroppedExperience((int) (MiscUtil.isTranscendent(event.getAttackingPlayer(), ItemStack.EMPTY, UE.SAGES_BLESSING) ? Math.pow(num, SagesBlessing.TRANSCENDED_BOOST.get()) : num));
 		}
 	}
 	
@@ -981,7 +1011,7 @@ public class EntityEvents
 				int burning = event.getEntityLiving().isOnFire() ? 2 : 1;
 				int num = FastFood.NURISHMENT.get(level+looting) * burning;
 				FoodStats food = base.getFoodData();
-				if(food.getFoodLevel() >= 20 && MiscUtil.isTranscendent(entity, UE.FAST_FOOD))
+				if(food.getFoodLevel() >= 20 && MiscUtil.isTranscendent(entity, base.getMainHandItem(), UE.FAST_FOOD))
 				{
 					StackUtils.setInt(stack, FastFood.FASTFOOD, stored+num);
 				}
@@ -1100,18 +1130,18 @@ public class EntityEvents
 		if(level > 0 && MiscUtil.getSlotsFor(UE.DEATHS_ODIUM).contains(slot))
 		{
 			int value = StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0);
-			if(value > 0)
+			if(value > 0 && !MiscUtil.getPersistentData(living).getBoolean(DeathsOdium.CURSE_DISABLED))
 			{
-				mods.put(Attributes.MAX_HEALTH, new AttributeModifier(DeathsOdium.GENERAL_MOD.getId(slot), "Death Odiums Restore", DeathsOdium.BASE_LOSS.get(value), Operation.ADDITION));
+				mods.put(Attributes.MAX_HEALTH, new AttributeModifier(DeathsOdium.GENERAL_MOD.getId(slot), "Death Odiums Restore", value, Operation.ADDITION));
 			}
 		}
 		level = enchantments.getInt(UE.FOCUS_IMPACT);
-		if(level > 0 && MiscUtil.getSlotsFor(UE.FOCUS_IMPACT).contains(slot) && MiscUtil.isTranscendent(living, UE.FOCUS_IMPACT))
+		if(level > 0 && MiscUtil.getSlotsFor(UE.FOCUS_IMPACT).contains(slot) && MiscUtil.isTranscendent(living, stack, UE.FOCUS_IMPACT))
 		{
 			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(FocusImpact.IMPACT_MOD, "Focus Impact", FocusImpact.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UE.SWIFT_BLADE);
-		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT_BLADE).contains(slot) && MiscUtil.isTranscendent(living, UE.SWIFT_BLADE))
+		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT_BLADE).contains(slot) && MiscUtil.isTranscendent(living, stack, UE.SWIFT_BLADE))
 		{
 			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SwiftBlade.SWIFT_MOD, "Swift Blade", SwiftBlade.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
 		}

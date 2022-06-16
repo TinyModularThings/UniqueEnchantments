@@ -229,6 +229,20 @@ public class UtilsHandler
 				}
 			}
 		}
+		armor = player.getItemBySlot(EquipmentSlotType.LEGS);
+		if(armor.isEmpty())
+		{
+			int level = MiscUtil.getEnchantmentLevel(UEUtils.CLIMBER, armor);
+			if(level >= 0 && player.onClimbable() && !player.isShiftKeyDown() && !player.isSpectator() && !player.isInWater() && !player.isInLava())
+			{
+				int motion = -Math.min(0, (int)(player.getRotationVector().x-25F)/25);
+				if(motion >= 1)
+				{
+					float data = (0.9125F-((2 - motion) * 0.1F));
+					player.setDeltaMovement(player.getDeltaMovement().add(0, data * 0.1, 0));
+				}
+			}
+		}
 		Entity ridden = player.getRootVehicle();
 		if(ridden instanceof HorseEntity)
 		{
@@ -535,7 +549,7 @@ public class UtilsHandler
 			if(state.getBlock().isLadder(state, event.getWorld(), event.getPos(), event.getEntityLiving()))
 			{
 				int level = MiscUtil.getEnchantmentLevel(UEUtils.CLIMBER, event.getPlayer().getItemBySlot(EquipmentSlotType.LEGS));
-				if(level > 0)
+				if(level > 0 && MiscUtil.isTranscendent(event.getEntity(), event.getPlayer().getItemBySlot(EquipmentSlotType.LEGS), UEUtils.CLIMBER))
 				{
 					Mutable pos = new Mutable().set(event.getPos());
 					List<Block> blocks = new ObjectArrayList<>();
