@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
@@ -23,6 +24,7 @@ public abstract class BaseUEMod
 	public static final EnchantmentType ALL_TYPES = EnchantmentType.create("ANY", BaseUEMod::canEnchant);
 	static final List<BaseUEMod> ALL_MODS = ObjectLists.synchronize(new ObjectArrayList<>());
 	List<IToggleEnchantment> enchantments = new ObjectArrayList<>();
+	ObjectList<EnchantedUpgrade> upgrades = new ObjectArrayList<>();
 	public ForgeConfigSpec config;
 
 	public BaseUEMod()
@@ -56,6 +58,11 @@ public abstract class BaseUEMod
 		builder.push("general");
 		addConfig(builder);
 		loadEnchantments();
+		loadUpgrades();
+		for(int i = 0,m=upgrades.size();i<m;i++)
+		{
+			upgrades.get(i).register();
+		}
 		for(int i = 0,m=enchantments.size();i<m;i++)
 		{
 			enchantments.get(i).loadIncompats();
@@ -68,8 +75,15 @@ public abstract class BaseUEMod
 	}
 	
 	protected abstract void loadEnchantments();
+	protected void loadUpgrades() {};
+	
 	
 	protected void addConfig(ForgeConfigSpec.Builder builder) {}
+	
+	protected void registerUpgrade(EnchantedUpgrade upgrades)
+	{
+		this.upgrades.add(upgrades);
+	}
 	
 	protected Enchantment register(Enchantment ench)
 	{

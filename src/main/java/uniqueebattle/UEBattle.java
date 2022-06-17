@@ -10,23 +10,25 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.api.BaseUEMod;
+import uniquebase.api.EnchantedUpgrade;
 import uniquebase.api.IKeyBind;
 import uniquebase.handler.BaseHandler;
-import uniqueebattle.enchantments.AresFragment;
-import uniqueebattle.enchantments.AresGrace;
-import uniqueebattle.enchantments.ArtemisSoul;
-import uniqueebattle.enchantments.CelestialBlessing;
-import uniqueebattle.enchantments.DeepWounds;
-import uniqueebattle.enchantments.Fury;
-import uniqueebattle.enchantments.GolemSoul;
-import uniqueebattle.enchantments.GranisSoul;
-import uniqueebattle.enchantments.IfritsBlessing;
-import uniqueebattle.enchantments.IfritsJudgement;
-import uniqueebattle.enchantments.IronBird;
-import uniqueebattle.enchantments.LunaticDespair;
-import uniqueebattle.enchantments.Snare;
-import uniqueebattle.enchantments.StreakersWill;
-import uniqueebattle.enchantments.WarsOdium;
+import uniqueebattle.enchantments.complex.AresFragment;
+import uniqueebattle.enchantments.complex.ArtemisSoul;
+import uniqueebattle.enchantments.complex.DeepWounds;
+import uniqueebattle.enchantments.complex.GranisSoul;
+import uniqueebattle.enchantments.complex.IfritsBlessing;
+import uniqueebattle.enchantments.curse.IfritsJudgement;
+import uniqueebattle.enchantments.curse.LunaticDespair;
+import uniqueebattle.enchantments.curse.WarsOdium;
+import uniqueebattle.enchantments.simple.AresGrace;
+import uniqueebattle.enchantments.simple.CelestialBlessing;
+import uniqueebattle.enchantments.simple.Fury;
+import uniqueebattle.enchantments.simple.GolemSoul;
+import uniqueebattle.enchantments.simple.IronBird;
+import uniqueebattle.enchantments.simple.Snare;
+import uniqueebattle.enchantments.simple.StreakersWill;
+import uniqueebattle.enchantments.upgrades.AresUpgrade;
 import uniqueebattle.handler.BattleHandler;
 import uniqueebattle.handler.potion.Bleed;
 import uniqueebattle.handler.potion.Lockdown;
@@ -52,7 +54,7 @@ public class UEBattle extends BaseUEMod
 	public static Enchantment ARTEMIS_SOUL;
 	public static Enchantment SNARE;
 
-
+	
 	public static Effect TOUGHEND;
 	public static Effect BLEED;
 	public static Effect LOCK_DOWN;
@@ -62,6 +64,8 @@ public class UEBattle extends BaseUEMod
 	public static final SoundEvent CELESTIAL_BLESSING_END_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "celestial_blessing_end"));
 	public static final SoundEvent FURY_DROP_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "fury_drop"));
 	public static final SoundEvent WARS_ODIUM_REVIVE_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "wars_odium_revive"));
+	
+	public static final EnchantedUpgrade ARES_UPGRADE = new AresUpgrade();
 	
 	public UEBattle()
 	{
@@ -80,6 +84,12 @@ public class UEBattle extends BaseUEMod
 		ForgeRegistries.SOUND_EVENTS.register(CELESTIAL_BLESSING_END_SOUND.setRegistryName("celestial_blessing_end"));
 		ForgeRegistries.SOUND_EVENTS.register(FURY_DROP_SOUND.setRegistryName("fury_drop"));
 		ForgeRegistries.SOUND_EVENTS.register(WARS_ODIUM_REVIVE_SOUND.setRegistryName("wars_odium_revive"));
+	}
+	
+	@Override
+	protected void loadUpgrades()
+	{
+		registerUpgrade(ARES_UPGRADE);
 	}
 	
 	@Override

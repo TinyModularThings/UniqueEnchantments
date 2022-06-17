@@ -90,6 +90,7 @@ import net.minecraftforge.event.entity.player.PlayerXpEvent.PickupXp;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniquebase.UEBase;
+import uniquebase.api.events.ItemDurabilityChangeEvent;
 import uniquebase.handler.MathCache;
 import uniquebase.networking.EntityPacket;
 import uniquebase.utils.EnchantmentContainer;
@@ -132,6 +133,7 @@ import uniquee.enchantments.unique.IcarusAegis;
 import uniquee.enchantments.unique.NaturesGrace;
 import uniquee.enchantments.unique.PhoenixBlessing;
 import uniquee.enchantments.unique.WarriorsGrace;
+import uniquee.enchantments.upgrades.AmelioratedUpgrade;
 
 public class EntityEvents
 {
@@ -728,7 +730,12 @@ public class EntityEvents
 		{
 			LivingEntity base = (LivingEntity)entity;
 			ItemStack stack = base.getMainHandItem();
-			int level = MiscUtil.getEnchantmentLevel(UE.SPARTAN_WEAPON, stack);
+			int level = UE.DEATHS_UPGRADE.getPoints(stack);
+			if(level > 0)
+			{
+				event.setAmount(event.getAmount() + (target.getHealth() * MathCache.SQRT_EXTRA_SPECIAL.getFloat(level)));
+			}
+			level = MiscUtil.getEnchantmentLevel(UE.SPARTAN_WEAPON, stack);
 			if(level > 0 && base.getOffhandItem().getItem() instanceof ShieldItem)
 			{
 				ModifiableAttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
@@ -964,6 +971,17 @@ public class EntityEvents
 	}
 	
 	@SubscribeEvent
+	public void onItemDamaged(ItemDurabilityChangeEvent event)
+	{
+		if(event.damageDone <= 0) return;
+		int points = UE.GRIMOIRES_UPGRADE.getPoints(event.item);
+		if(points > 0 && event.entity.getRandom().nextDouble() < (Math.sqrt(points)*0.01))
+		{
+			event.item.hurt(-event.damageDone, event.entity.getRandom(), null);
+		}
+	}
+	
+	@SubscribeEvent
 	public void onXPDrop(LivingExperienceDropEvent event)
 	{
 		if(event.getAttackingPlayer() == null)
@@ -1144,6 +1162,11 @@ public class EntityEvents
 		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT_BLADE).contains(slot) && MiscUtil.isTranscendent(living, stack, UE.SWIFT_BLADE))
 		{
 			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SwiftBlade.SWIFT_MOD, "Swift Blade", SwiftBlade.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
+		}
+		level = UE.AMELIORATED_UPGRADE.isValid(stack) ? UE.AMELIORATED_UPGRADE.getPoints(stack) : 0;
+		if(level > 0 && UE.AMELIORATED_UPGRADE.isValidSlot(slot))
+		{
+			mods.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(AmelioratedUpgrade.DAMAGE_ID, "Ameliorated Upgrade", MathCache.SQRT_EXTRA_SPECIAL.get(level), Operation.ADDITION));
 		}
 		return mods;
 	}

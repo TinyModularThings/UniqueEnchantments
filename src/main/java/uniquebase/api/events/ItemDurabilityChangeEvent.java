@@ -8,11 +8,13 @@ public class ItemDurabilityChangeEvent extends Event
 {
 	public final ItemStack item;
 	public final LivingEntity entity;
+	public final int damageDone;
 	
-	public ItemDurabilityChangeEvent(ItemStack item, LivingEntity entity)
+	public ItemDurabilityChangeEvent(ItemStack item, int damageDone, LivingEntity entity)
 	{
 		this.item = item;
 		this.entity = entity;
+		this.damageDone = damageDone;
 	}
 	
 }

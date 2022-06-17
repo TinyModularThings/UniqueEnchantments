@@ -72,21 +72,21 @@ import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.mixin.common.entity.DragonManagerMixin;
 import uniqueebattle.UEBattle;
-import uniqueebattle.enchantments.AresFragment;
-import uniqueebattle.enchantments.AresGrace;
-import uniqueebattle.enchantments.ArtemisSoul;
-import uniqueebattle.enchantments.CelestialBlessing;
-import uniqueebattle.enchantments.DeepWounds;
-import uniqueebattle.enchantments.Fury;
-import uniqueebattle.enchantments.GolemSoul;
-import uniqueebattle.enchantments.GranisSoul;
-import uniqueebattle.enchantments.IfritsBlessing;
-import uniqueebattle.enchantments.IfritsJudgement;
-import uniqueebattle.enchantments.IronBird;
-import uniqueebattle.enchantments.LunaticDespair;
-import uniqueebattle.enchantments.Snare;
-import uniqueebattle.enchantments.StreakersWill;
-import uniqueebattle.enchantments.WarsOdium;
+import uniqueebattle.enchantments.complex.AresFragment;
+import uniqueebattle.enchantments.complex.ArtemisSoul;
+import uniqueebattle.enchantments.complex.DeepWounds;
+import uniqueebattle.enchantments.complex.GranisSoul;
+import uniqueebattle.enchantments.complex.IfritsBlessing;
+import uniqueebattle.enchantments.curse.IfritsJudgement;
+import uniqueebattle.enchantments.curse.LunaticDespair;
+import uniqueebattle.enchantments.curse.WarsOdium;
+import uniqueebattle.enchantments.simple.AresGrace;
+import uniqueebattle.enchantments.simple.CelestialBlessing;
+import uniqueebattle.enchantments.simple.Fury;
+import uniqueebattle.enchantments.simple.GolemSoul;
+import uniqueebattle.enchantments.simple.IronBird;
+import uniqueebattle.enchantments.simple.Snare;
+import uniqueebattle.enchantments.simple.StreakersWill;
 
 public class BattleHandler
 {
@@ -221,6 +221,8 @@ public class BattleHandler
 		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(source.getMainHandItem());
 		if(event.isVanillaCritical())
 		{
+			int points = UEBattle.ARES_UPGRADE.getPoints(source.getMainHandItem());
+			if(points > 0) event.setDamageModifier(event.getDamageModifier() + MathCache.SQRT_SPECIAL.getFloat(points));
 			dropPlayerHand(event.getTarget(), ench.getInt(UEBattle.FURY));
 			return;
 		}
@@ -238,6 +240,8 @@ public class BattleHandler
 			{
 				event.setDamageModifier(event.getDamageModifier() + AresFragment.TRANSCENDED_CRIT_MULTIPLIER.getFloat()*(event.isVanillaCritical() ? 1.0F : 0.0F));
 			}
+			int points = UEBattle.ARES_UPGRADE.getPoints(source.getMainHandItem());
+			if(points > 0) event.setDamageModifier(event.getDamageModifier() + MathCache.SQRT_SPECIAL.getFloat(points));
 			dropPlayerHand(event.getTarget(), ench.getInt(UEBattle.FURY));
 		}
 	}

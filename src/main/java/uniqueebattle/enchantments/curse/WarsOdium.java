@@ -1,4 +1,4 @@
-package uniqueebattle.enchantments;
+package uniqueebattle.enchantments.curse;
 
 import java.util.UUID;
 

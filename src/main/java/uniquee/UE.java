@@ -28,6 +28,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.BaseUEMod;
+import uniquebase.api.EnchantedUpgrade;
 import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
 import uniquee.client.EnchantmentLayer;
@@ -67,6 +68,9 @@ import uniquee.enchantments.unique.MidasBlessing;
 import uniquee.enchantments.unique.NaturesGrace;
 import uniquee.enchantments.unique.PhoenixBlessing;
 import uniquee.enchantments.unique.WarriorsGrace;
+import uniquee.enchantments.upgrades.AmelioratedUpgrade;
+import uniquee.enchantments.upgrades.DeathsUpgrade;
+import uniquee.enchantments.upgrades.GrimoiresUpgrade;
 import uniquee.handler.EntityEvents;
 import uniquee.handler.LootModifier;
 import uniquee.handler.potion.EternalFlamePotion;
@@ -129,11 +133,14 @@ public class UE extends BaseUEMod
 	public static final SoundEvent GRIMOIRE_SOUND = new SoundEvent(new ResourceLocation("uniquee", "grimoire"));
 	public static final SoundEvent MOMENTUM_SOUND = new SoundEvent(new ResourceLocation("uniquee", "momentum"));
 	
+	public static final EnchantedUpgrade AMELIORATED_UPGRADE = new AmelioratedUpgrade();
+	public static final EnchantedUpgrade DEATHS_UPGRADE = new DeathsUpgrade();
+	public static final EnchantedUpgrade GRIMOIRES_UPGRADE = new GrimoiresUpgrade();
+	
 	public UE()
 	{
 		ETERNAL_FLAME_POTION = new EternalFlamePotion();
 		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
-		
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		init(bus, "UE.toml");
 		bus.register(this);
@@ -155,6 +162,14 @@ public class UE extends BaseUEMod
 		ForgeRegistries.SOUND_EVENTS.register(ENDER_LIBRARIAN_SOUND.setRegistryName("ender_librarian"));
 		ForgeRegistries.SOUND_EVENTS.register(GRIMOIRE_SOUND.setRegistryName("grimoire"));
 		ForgeRegistries.SOUND_EVENTS.register(MOMENTUM_SOUND.setRegistryName("momentum"));
+	}
+	
+	@Override
+	protected void loadUpgrades()
+	{
+		registerUpgrade(AMELIORATED_UPGRADE);
+		registerUpgrade(DEATHS_UPGRADE);
+		registerUpgrade(GRIMOIRES_UPGRADE);
 	}
     
 	@Override

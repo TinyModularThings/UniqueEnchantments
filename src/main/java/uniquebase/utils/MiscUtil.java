@@ -56,6 +56,7 @@ public class MiscUtil
 {
 	static final Object2IntMap.Entry<EquipmentSlotType> NO_ENCHANTMENT = new AbstractObject2IntMap.BasicEntry<>(null, 0);
 	static final Consumer<LivingEntity>[] SLOT_BASE = createSlots();
+	static final String UPGRADE_TAG = "ue_upgrades";
 	static final String TRANCENDENCE_BLOCK = "block_trancedence";
 	
 	@SuppressWarnings("unchecked")
@@ -147,6 +148,27 @@ public class MiscUtil
 		CompoundNBT data = entity.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
 		if(data.isEmpty()) entity.getPersistentData().put(PlayerEntity.PERSISTED_NBT_TAG, data);
 		return data;
+	}
+	
+	public static int getStoredPoints(ItemStack stack, String id)
+	{
+		return stack.isEmpty() || stack.getTag() == null ? 0 : stack.getTag().getCompound(UPGRADE_TAG).getInt(id);
+	}
+	
+	public static void storePoints(ItemStack stack, String id, int points)
+	{
+		if(stack.isEmpty()) return;
+		CompoundNBT data = stack.getOrCreateTagElement(UPGRADE_TAG);
+		data.putInt(id, data.getInt(id)+points);
+	}
+	
+	public static int getCombinedPoints(LivingEntity living, String id)
+	{
+		int total = 0;
+		for(EquipmentSlotType slot : EquipmentSlotType.values()) {
+			total += getStoredPoints(living.getItemBySlot(slot), id);
+		}
+		return total;
 	}
 	
 	public static int getEnchantmentLevel(Enchantment ench, ItemStack stack)

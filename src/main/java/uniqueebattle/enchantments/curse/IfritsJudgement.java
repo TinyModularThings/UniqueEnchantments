@@ -1,4 +1,4 @@
-package uniqueebattle.enchantments;
+package uniqueebattle.enchantments.curse;
 
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.inventory.EquipmentSlotType;

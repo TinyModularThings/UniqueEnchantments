@@ -1,4 +1,4 @@
-package uniqueebattle.enchantments;
+package uniqueebattle.enchantments.complex;
 
 import java.util.function.ToIntFunction;
 

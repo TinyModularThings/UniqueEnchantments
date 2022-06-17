@@ -17,8 +17,8 @@ import uniquebase.api.events.ItemDurabilityChangeEvent;
 public class StackMixin
 {
 	@Inject(method = "hurtAndBreak", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void afterHurt(int level, LivingEntity living, Consumer<LivingEntity> callback, CallbackInfo info)
+	public void afterHurt(int damage, LivingEntity living, Consumer<LivingEntity> callback, CallbackInfo info)
 	{
-		MinecraftForge.EVENT_BUS.post(new ItemDurabilityChangeEvent((ItemStack)(Object)this, living));
+		MinecraftForge.EVENT_BUS.post(new ItemDurabilityChangeEvent((ItemStack)(Object)this, damage, living));
 	}
 }

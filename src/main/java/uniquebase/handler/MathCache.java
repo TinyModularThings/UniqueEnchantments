@@ -15,6 +15,8 @@ public final class MathCache
 	public static final MathCache LOG_MUL_MAX = new MathCache(CACHESIZE, MathCache::logMulMaxLevel);
 	public static final MathCache LOG101 = new MathCache(CACHESIZE, MathCache::log101);
 	public static final MathCache LOG10 = new MathCache(CACHESIZE, Math::log10);
+	public static final MathCache SQRT_SPECIAL = new MathCache(CACHESIZE, MathCache::sqrtSpecial);
+	public static final MathCache SQRT_EXTRA_SPECIAL = new MathCache(CACHESIZE, MathCache::sqrtExtraSpecial);
 	
 	final double[] cache;
 	final IntToDoubleFunction generator;
@@ -49,4 +51,6 @@ public final class MathCache
 	private static double logMaxLevel(int level) { return Math.log(2.8 * level); }
 	private static double logAddLevel(int level) { return Math.log(2.8 + level); }
 	private static double log101(int level) { return Math.log(level+1.1D); }
+	private static double sqrtSpecial(int level) { return (-0.5D + Math.sqrt(0.25D + level))*0.01D;}
+	private static double sqrtExtraSpecial(int level) { return Math.sqrt(-0.5D + Math.sqrt(0.25D + level));}
 }
