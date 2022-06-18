@@ -1,21 +1,20 @@
-package uniqueebattle.enchantments.upgrades;
+package uniqueeutils.enchantments.upgrades;
 
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.item.ItemStack;
 import uniquebase.api.EnchantedUpgrade;
-import uniqueebattle.UEBattle;
+import uniqueeutils.UEUtils;
 
-public class AresUpgrade extends EnchantedUpgrade
+public class FaminesUpgrade extends EnchantedUpgrade
 {
-	public AresUpgrade()
+	public FaminesUpgrade()
 	{
-		super("uniquebattle", "ares_fragment", () -> UEBattle.ARES_FRAGMENT);
+		super("uniqueutil", "famines_odium", () -> UEUtils.FAMINES_ODIUM);
 	}
-
+	
 	@Override
 	public boolean isValid(ItemStack stack)
 	{
 		return EnchantmentType.WEAPON.canEnchant(stack.getItem());
 	}
-	
 }

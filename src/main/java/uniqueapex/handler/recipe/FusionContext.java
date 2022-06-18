@@ -145,7 +145,6 @@ public final class FusionContext extends Inventory
 		Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(stack);
 		Enchantment ench = getLargestEnchantment();
 		int level = getAchievedLevel(bookCount);
-		System.out.println(level+", "+bookCount+", "+getLargestLevel());
 		if(level >= map.getOrDefault(ench, 0))
 		{
 			map.put(ench, level);

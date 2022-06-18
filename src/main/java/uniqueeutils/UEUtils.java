@@ -11,6 +11,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.api.BaseUEMod;
+import uniquebase.api.EnchantedUpgrade;
 import uniquebase.api.IKeyBind;
 import uniquebase.handler.BaseHandler;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing;
@@ -32,6 +33,9 @@ import uniqueeutils.enchantments.unique.PoseidonsSoul;
 import uniqueeutils.enchantments.unique.Reinforced;
 import uniqueeutils.enchantments.unique.Resonance;
 import uniqueeutils.enchantments.unique.SagesSoul;
+import uniqueeutils.enchantments.upgrades.FaminesUpgrade;
+import uniqueeutils.enchantments.upgrades.RocketUpgrade;
+import uniqueeutils.enchantments.upgrades.ThickUpgrade;
 import uniqueeutils.handler.UtilsHandler;
 import uniqueeutils.misc.HighlightPacket;
 import uniqueeutils.potion.SaturationEffect;
@@ -64,6 +68,10 @@ public class UEUtils extends BaseUEMod
 	public static final SoundEvent RESONANCE_SOUND = new SoundEvent(new ResourceLocation("uniqueutil", "resonance_found"));
 	public static final SoundEvent ALCHEMIST_BLESSING_SOUND = new SoundEvent(new ResourceLocation("uniqueutil", "alchemist_blessing_transmutate"));
 	
+	public static final EnchantedUpgrade ROCKET_UPGRADE = new RocketUpgrade();
+	public static final EnchantedUpgrade THICK_UPGRADE = new ThickUpgrade();
+	public static final EnchantedUpgrade FAMINES_UPGRADE = new FaminesUpgrade();
+	
 	public static IKeyBind BOOST_KEY = IKeyBind.empty();
 	
 	public UEUtils()
@@ -89,6 +97,14 @@ public class UEUtils extends BaseUEMod
 	public void registerPotion(RegistryEvent.Register<Effect> event)
 	{
 		event.getRegistry().register(SATURATION);
+	}
+	
+	@Override
+	protected void loadUpgrades()
+	{
+		registerUpgrade(ROCKET_UPGRADE);
+		registerUpgrade(THICK_UPGRADE);
+		registerUpgrade(FAMINES_UPGRADE);
 	}
 	
 	@Override

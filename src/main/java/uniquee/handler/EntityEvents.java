@@ -47,6 +47,7 @@ import net.minecraft.item.TieredItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.EffectType;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
@@ -83,6 +84,7 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
+import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
@@ -99,6 +101,7 @@ import uniquebase.utils.StackUtils;
 import uniquebase.utils.events.EndermenLookEvent;
 import uniquebase.utils.events.PiglinWearableCheckEvent;
 import uniquebase.utils.mixin.common.InteractionManagerMixin;
+import uniquebase.utils.mixin.common.entity.PotionMixin;
 import uniquebase.utils.mixin.common.item.MapDataMixin;
 import uniquee.UE;
 import uniquee.enchantments.complex.EnderMending;
@@ -171,6 +174,20 @@ public class EntityEvents
 		{
 			event.setCost(Integer.MAX_VALUE);
 			event.setCanceled(true);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onPotionApplied(PotionEvent.PotionAddedEvent event)
+	{
+		EffectInstance instance = event.getPotionEffect();
+		if(instance.getEffect().getCategory() == EffectType.HARMFUL)
+		{
+			int points = UE.PESTILENCE_UPGRADE.getCombinedPoints(event.getEntityLiving());
+			if(points > 0)
+			{
+				((PotionMixin)instance).setPotionDuration((int)(instance.getDuration() * (1F - (1F/MathCache.LOG10.getFloat(10+points)))));
+			}
 		}
 	}
 	
@@ -298,6 +315,11 @@ public class EntityEvents
 				if(level.getIntValue() > 0)
 				{
 					player.causeFoodExhaustion(0.01F * level.getIntValue());
+				}
+				int points = UE.PHOENIX_UPGRADE.getCombinedPoints(player);
+				if(points > 0)
+				{
+					player.heal((float)(Math.sqrt(points))*0.01F);
 				}
 			}
 			CompoundNBT data = event.player.getPersistentData();

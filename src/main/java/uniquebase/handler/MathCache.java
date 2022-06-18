@@ -53,4 +53,9 @@ public final class MathCache
 	private static double log101(int level) { return Math.log(level+1.1D); }
 	private static double sqrtSpecial(int level) { return (-0.5D + Math.sqrt(0.25D + level))*0.01D;}
 	private static double sqrtExtraSpecial(int level) { return Math.sqrt(-0.5D + Math.sqrt(0.25D + level));}
+	
+	public static double dynamicLog(int input, int level)
+	{
+		return LOG10.get(input) / LOG10.get(level);
+	}
 }

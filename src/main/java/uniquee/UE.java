@@ -71,6 +71,8 @@ import uniquee.enchantments.unique.WarriorsGrace;
 import uniquee.enchantments.upgrades.AmelioratedUpgrade;
 import uniquee.enchantments.upgrades.DeathsUpgrade;
 import uniquee.enchantments.upgrades.GrimoiresUpgrade;
+import uniquee.enchantments.upgrades.PestilenceUpgrade;
+import uniquee.enchantments.upgrades.PhoenixUpgrade;
 import uniquee.handler.EntityEvents;
 import uniquee.handler.LootModifier;
 import uniquee.handler.potion.EternalFlamePotion;
@@ -136,6 +138,8 @@ public class UE extends BaseUEMod
 	public static final EnchantedUpgrade AMELIORATED_UPGRADE = new AmelioratedUpgrade();
 	public static final EnchantedUpgrade DEATHS_UPGRADE = new DeathsUpgrade();
 	public static final EnchantedUpgrade GRIMOIRES_UPGRADE = new GrimoiresUpgrade();
+	public static final EnchantedUpgrade PESTILENCE_UPGRADE = new PestilenceUpgrade();
+	public static final EnchantedUpgrade PHOENIX_UPGRADE = new PhoenixUpgrade();
 	
 	public UE()
 	{
@@ -170,6 +174,8 @@ public class UE extends BaseUEMod
 		registerUpgrade(AMELIORATED_UPGRADE);
 		registerUpgrade(DEATHS_UPGRADE);
 		registerUpgrade(GRIMOIRES_UPGRADE);
+		registerUpgrade(PESTILENCE_UPGRADE);
+		registerUpgrade(PHOENIX_UPGRADE);
 	}
     
 	@Override

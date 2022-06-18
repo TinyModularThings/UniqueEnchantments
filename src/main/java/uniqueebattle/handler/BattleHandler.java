@@ -257,6 +257,11 @@ public class BattleHandler
 			double num = (1 + (event.getEntityLiving().level.isNight() ? boost : 0));
 			event.setDuration((int) Math.max(10,event.getDuration() / num));
 		}
+		level = UEBattle.LUNATIC_UPGRADE.getCombinedPoints(entity);
+		if(level > 0)
+		{
+			event.setDuration(Math.max(1, event.getDuration() - MathCache.LOG10.getInt(level+1)));
+		}
 	}
 	
 	protected void dropPlayerHand(Entity target, int level)
@@ -315,6 +320,11 @@ public class BattleHandler
 			if(entry.getIntValue() > 0)
 			{
 				event.setLootingLevel(event.getLootingLevel() + MathCache.LOG10.getInt(1+StackUtils.getInt(base.getItemBySlot(entry.getKey()), ArtemisSoul.PERSISTEN_SOUL_COUNT, 0)*entry.getIntValue()));
+			}
+			int level = UEBattle.IFRITS_UPGRADE.getCombinedPoints(base);
+			if(level > 0)
+			{
+				event.setLootingLevel(event.getLootingLevel() + (int)(MathCache.dynamicLog(level+1, 4)));
 			}
 		}
 	}
@@ -568,6 +578,8 @@ public class BattleHandler
 				gain = MiscUtil.isTranscendent(entity, stack, UEBattle.ARTEMIS_SOUL) ? (int) (gain * ArtemisSoul.TRANSCENDED_REAP_MULTIPLIER.getFloat()) : gain;
 				StackUtils.setInt(stack, key, Math.min(StackUtils.getInt(stack, key, 0)+gain, max));
 			}
+			int points = UEBattle.WARS_UPGRADE.getPoints(source.getMainHandItem());
+			if(points > 0) source.heal(MathCache.SQRT_EXTRA_SPECIAL.getFloat(points));
 		}
 	}
 	
