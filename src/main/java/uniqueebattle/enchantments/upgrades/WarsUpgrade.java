@@ -5,11 +5,11 @@ import net.minecraft.item.ItemStack;
 import uniquebase.api.EnchantedUpgrade;
 import uniqueebattle.UEBattle;
 
-public class AresUpgrade extends EnchantedUpgrade
+public class WarsUpgrade extends EnchantedUpgrade
 {
-	public AresUpgrade()
+	public WarsUpgrade()
 	{
-		super("uniquebattle", "ares_fragment", () -> UEBattle.ARES_FRAGMENT);
+		super("uniquebattle", "wars_odium", () -> UEBattle.WARS_ODIUM);
 	}
 
 	@Override

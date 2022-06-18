@@ -1,6 +1,7 @@
 package uniqueeutils.handler;
 
 import java.util.List;
+import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
@@ -45,7 +46,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.EffectType;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.BeaconTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -118,6 +121,7 @@ import uniqueeutils.enchantments.unique.PoseidonsSoul;
 import uniqueeutils.enchantments.unique.Reinforced;
 import uniqueeutils.enchantments.unique.Resonance;
 import uniqueeutils.enchantments.unique.SagesSoul;
+import uniqueeutils.enchantments.upgrades.RocketUpgrade;
 import uniqueeutils.misc.RenderEntry;
 
 public class UtilsHandler
@@ -763,8 +767,12 @@ public class UtilsHandler
 		level = ench.getInt(UEUtils.REINFORCED);
 		if(level > 0)
 		{
-			//event.setNewSpeed((float)(event.getNewSpeed() * Math.pow((base+((1D-base)*0.01D)*level), Math.sqrt(level))));
 			event.setNewSpeed((float)(event.getNewSpeed() / (1+Reinforced.BASE_REDUCTION.get(level)/100)));
+		}
+		level = UEUtils.THICK_UPGRADE.getPoints(held);
+		if(level > 0)
+		{
+			event.setNewSpeed(event.getNewSpeed() + MathCache.SQRT_EXTRA_SPECIAL.getFloat(level));
 		}
 	}
 	
@@ -856,6 +864,20 @@ public class UtilsHandler
 	@SubscribeEvent
 	public void onEntityAttack(LivingAttackEvent event)
 	{
+		Entity entity = event.getSource().getEntity();
+		if(entity instanceof LivingEntity)
+		{
+			int points = UEUtils.FAMINES_UPGRADE.getPoints(((LivingEntity)entity).getMainHandItem());
+			if(points > 0)
+			{
+				Random random = ((LivingEntity)entity).getRandom(); 
+				if(random.nextDouble() <= MathCache.SQRT_SPECIAL.get(points))
+				{
+					Effect effect = getRandomNegativeEffect(random);
+					if(effect != null) event.getEntityLiving().addEffect(new EffectInstance(effect, MathCache.SQRT_EXTRA_SPECIAL.getInt(points)*10));
+				}
+			}
+		}
 		if(event.getAmount() > 0F)
 		{
 			for(PlayerEntity player : getPlayers(event.getEntity()))
@@ -904,6 +926,11 @@ public class UtilsHandler
 			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SagesSoul.ATTACK_MOD.getId(slot), "Sage Attack Boost", Math.pow(-0.5+Math.sqrt(0.25+SagesSoul.ATTACK_SPEED.get(2*levels)), power)/SagesSoul.ATTACK_SPEED.get(), Operation.MULTIPLY_TOTAL));
 			mods.put(Attributes.ARMOR, new AttributeModifier(SagesSoul.ARMOR_MOD.getId(slot), "Sages Armor Boost", Math.pow((-0.5+SagesSoul.ARMOR_SCALE.get(Math.sqrt(0.25+8*(levels*Math.sqrt(level))))), power)/SagesSoul.ARMOR_DIVIDOR.get(), Operation.ADDITION));
 			mods.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(SagesSoul.TOUGHNESS_MOD.getId(slot), "Sages Toughness Boost", Math.pow((-0.5+SagesSoul.TOUGHNESS_SCALE.get(Math.sqrt(0.25+1*(levels*Math.sqrt(level))))), power)/SagesSoul.TOUGHNESS_DIVIDOR.get(), Operation.ADDITION));
+		}
+		level = UEUtils.ROCKET_UPGRADE.getCombinedPoints(living);
+		if(level > 0)
+		{
+			mods.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(RocketUpgrade.SPEED_MOD, "Rocket Upgrade", Math.sqrt(level)*0.01D, Operation.MULTIPLY_TOTAL));
 		}
 		return mods;
 	}
@@ -964,5 +991,18 @@ public class UtilsHandler
             }
         }
         return false;
+    }
+    
+    private Effect getRandomNegativeEffect(Random rand)
+    {
+    	List<Effect> effects = new ObjectArrayList<>();
+    	for(Effect effect : ForgeRegistries.POTIONS)
+    	{
+    		if(effect.getCategory() == EffectType.HARMFUL)
+    		{
+    			effects.add(effect);
+    		}
+    	}
+    	return effects.isEmpty() ? null : effects.get(rand.nextInt(effects.size()));
     }
 }

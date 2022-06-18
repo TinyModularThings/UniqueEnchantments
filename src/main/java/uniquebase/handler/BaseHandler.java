@@ -1,5 +1,6 @@
 package uniquebase.handler;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
@@ -7,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -16,18 +18,24 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Tuple;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
@@ -36,10 +44,12 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.Event.Result;
 import uniquebase.UEBase;
 import uniquebase.api.ColorConfig;
 import uniquebase.gui.EnchantmentGui;
@@ -65,28 +75,56 @@ public class BaseHandler
 	}
 	
 	@SubscribeEvent
+	public void onBucketAction(FillBucketEvent event)
+	{
+		ItemStack stack = event.getEmptyBucket();
+		if(stack.getItem() != Items.BUCKET || MiscUtil.getEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) <= 0) return;
+		RayTraceResult ray = event.getTarget();
+		if(ray.getType() == Type.MISS || ray.getType() != Type.BLOCK) return;
+		World world = event.getWorld();
+		PlayerEntity player = event.getPlayer();
+		BlockRayTraceResult raytrace = (BlockRayTraceResult)ray;
+		BlockPos blockpos = raytrace.getBlockPos();
+		Direction direction = raytrace.getDirection();
+		BlockPos blockpos1 = blockpos.relative(direction);
+		if (world.mayInteract(player, blockpos) && player.mayUseItemAt(blockpos1, direction, stack))
+		{
+			BlockState state = world.getBlockState(blockpos);
+			if(state.getBlock() instanceof IBucketPickupHandler)
+			{
+				((IBucketPickupHandler)state.getBlock()).takeLiquid(world, blockpos, state);
+				ItemStack copy = stack.copy();
+				copy.setCount(1);
+				event.setFilledBucket(copy);
+				event.setResult(Result.ALLOW);
+			}
+		}
+	}
+	
+	@SubscribeEvent
 	public void onProjectileImpact(ProjectileImpactEvent event) {
 		if(event.getEntity() instanceof AbstractArrowEntity) {
 			ItemStack stack = StackUtils.getArrowStack((AbstractArrowEntity)event.getEntity());
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
 			AbstractArrowEntity ent = (AbstractArrowEntity)event.getEntity();
 			Vector3d temp = event.getRayTraceResult().getLocation();
-			List<LivingEntity> list = event.getEntity().getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(new BlockPos(temp.x, temp.y, temp.z)));
 			int level = enchantments.getInt(Enchantments.POWER_ARROWS);
 			if(level > 0) {
 				ent.setBaseDamage(ent.getBaseDamage() + 0.5 * level + 0.5);
 			}
-			level = enchantments.getInt(Enchantments.FLAMING_ARROWS);
-			if(level > 0) {
+			int flame = enchantments.getInt(Enchantments.FLAMING_ARROWS);
+			int punch = enchantments.getInt(Enchantments.PUNCH_ARROWS);
+			List<LivingEntity> list = flame > 0 || punch > 0 ? event.getEntity().level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(new BlockPos(temp.x, temp.y, temp.z))) : Collections.emptyList();
+			if(flame > 0) {
+				int time = 100*flame;
 				for(LivingEntity entry : list) {
-					entry.setSecondsOnFire(100*level);
+					entry.setSecondsOnFire(time);
 		        }
 			}
-			level = enchantments.getInt(Enchantments.PUNCH_ARROWS);
-			if(level > 0) {
+			if(punch > 0) {
+				Vector3d vec = ent.position().subtract(event.getRayTraceResult().getLocation());
 				for(LivingEntity entry : list) {
-					Vector3d vec = ent.position().subtract(event.getRayTraceResult().getLocation()) ;
-					entry.knockback(level, vec.x(), vec.z());
+					entry.knockback(punch, vec.x(), vec.z());
 				}
 			}
 		}

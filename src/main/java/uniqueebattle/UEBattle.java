@@ -29,6 +29,9 @@ import uniqueebattle.enchantments.simple.IronBird;
 import uniqueebattle.enchantments.simple.Snare;
 import uniqueebattle.enchantments.simple.StreakersWill;
 import uniqueebattle.enchantments.upgrades.AresUpgrade;
+import uniqueebattle.enchantments.upgrades.IfritsUpgrade;
+import uniqueebattle.enchantments.upgrades.LunaticUpgrade;
+import uniqueebattle.enchantments.upgrades.WarsUpgrade;
 import uniqueebattle.handler.BattleHandler;
 import uniqueebattle.handler.potion.Bleed;
 import uniqueebattle.handler.potion.Lockdown;
@@ -66,6 +69,9 @@ public class UEBattle extends BaseUEMod
 	public static final SoundEvent WARS_ODIUM_REVIVE_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "wars_odium_revive"));
 	
 	public static final EnchantedUpgrade ARES_UPGRADE = new AresUpgrade();
+	public static final EnchantedUpgrade IFRITS_UPGRADE = new IfritsUpgrade();
+	public static final EnchantedUpgrade LUNATIC_UPGRADE = new LunaticUpgrade();
+	public static final EnchantedUpgrade WARS_UPGRADE = new WarsUpgrade();
 	
 	public UEBattle()
 	{
@@ -90,6 +96,9 @@ public class UEBattle extends BaseUEMod
 	protected void loadUpgrades()
 	{
 		registerUpgrade(ARES_UPGRADE);
+		registerUpgrade(IFRITS_UPGRADE);
+		registerUpgrade(LUNATIC_UPGRADE);
+		registerUpgrade(WARS_UPGRADE);
 	}
 	
 	@Override
