@@ -1,0 +1,25 @@
+{
+	"name": "Blessed Blade",
+	"icon": "uniquebase:textures/icons/blessed_blade.png",
+	"category": "uniqueapex:uniqueapexcategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Blessed Blade",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueapex:blessed_blade',lvl:2}]}",
+			"text": "$(li)Max Level = 100 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very_Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Increases attack damage and deals additional damage",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Blessed-Blade",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Recipe",
+			"text": "Please use mods like 'Just Enough Items(JEI)' to see the recipes as they can vary from pack to pack. $(br)Simply press 'usage' on a beacon"
+		}
+	]
+}

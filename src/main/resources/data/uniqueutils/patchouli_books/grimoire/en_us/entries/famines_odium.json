@@ -1,0 +1,20 @@
+{
+	"name": "Famine's Odium",
+	"icon": "uniquebase:textures/icons/famines_odium.png",
+	"category": "uniquebase:uniquecurses",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Famine's Odium",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:famines_odium',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Nom Nom... occasionally eats food in your inventory and hurts you if there is none",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Famine%27s-Odium",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

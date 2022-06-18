@@ -1,0 +1,20 @@
+{
+	"name": "Iron Bird",
+	"icon": "uniquebase:textures/icons/iron_bird.png",
+	"category": "uniquebattle:uniquebattlecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Iron Bird",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquebattle:iron_bird',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "You're more protected. $(br)Extra protection on ground",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Iron-Bird",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

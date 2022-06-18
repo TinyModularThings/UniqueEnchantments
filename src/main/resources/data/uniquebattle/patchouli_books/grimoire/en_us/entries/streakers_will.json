@@ -1,0 +1,20 @@
+{
+	"name": "Streaker's Will",
+	"icon": "uniquebase:textures/icons/streakers_will.png",
+	"category": "uniquebattle:uniquebattlecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Streaker's Will",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquebattle:streakers_will',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Has a chance to hurt the targets armor",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Streaker%27s-Will",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

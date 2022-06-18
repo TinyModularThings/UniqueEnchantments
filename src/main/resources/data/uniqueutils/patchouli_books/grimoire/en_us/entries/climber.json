@@ -1,0 +1,25 @@
+{
+	"name": "Climber",
+	"icon": "uniquebase:textures/icons/climber.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Climber",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:climber',lvl:3}]}",
+			"text": "$(li)Max Level = 3 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Allows you to climb in direct of looking on climbable blocks",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Climber",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 100 $(br2)Shit-righclick a climbable block to fast travel to the most upper block. $(br)Please stand still meanwhile"
+		}
+	]
+}

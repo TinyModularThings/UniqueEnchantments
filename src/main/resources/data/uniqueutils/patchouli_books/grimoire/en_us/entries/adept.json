@@ -1,0 +1,20 @@
+{
+	"name": "Adept",
+	"icon": "uniquebase:textures/icons/adept.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Adept",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:adept',lvl:5}]}",
+			"text": "$(li)Max Level = 5 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Reduces your mining speed penalty in water and in-air",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Adept",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

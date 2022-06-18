@@ -5,6 +5,7 @@
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
+			"title": "Ender Eyes",
 			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:ender_eyes',lvl:1}]}",
 			"text": "$(li)Max Level = 1 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
 		},

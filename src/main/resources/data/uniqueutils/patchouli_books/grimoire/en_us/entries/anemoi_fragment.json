@@ -1,0 +1,20 @@
+{
+	"name": "Aenmoi Fragment",
+	"icon": "uniquebase:textures/icons/anemoi_fragment.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Anemoi Fragment",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:anemoi_fragment',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Store burnable items in the tool. $(br)Pressing the configured key grants you an upwards boost",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Anemoi-Fragment",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

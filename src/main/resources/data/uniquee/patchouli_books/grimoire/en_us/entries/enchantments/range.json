@@ -5,6 +5,7 @@
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
+			"title": "Range",
 			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:range',lvl:4}]}",
 			"text": "$(li)Max Level = 4 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
 		},

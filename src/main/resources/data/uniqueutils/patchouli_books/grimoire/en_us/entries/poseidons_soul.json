@@ -1,0 +1,20 @@
+{
+	"name": "Poseidon's Soul",
+	"icon": "uniquebase:textures/icons/poseidons_soul.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Poseidon's Soul",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:poseidons_soul',lvl:3}]}",
+			"text": "$(li)Max Level = 3 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Throwing a trident against an aquatic resource duplicates it in exchange for experience",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Poseidon%27s-Soul",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

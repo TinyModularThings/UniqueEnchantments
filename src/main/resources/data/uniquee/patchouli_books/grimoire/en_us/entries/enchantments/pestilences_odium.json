@@ -5,6 +5,7 @@
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
+			"title": "Pestilence's Odium",
 			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:pestilences_odium',lvl:2}]}",
 			"text": "$(li)Max Level = 2 $(li)Treasure = True $(li)Tradeable = true $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
 		},

@@ -1,0 +1,25 @@
+{
+	"name": "Golem Soul",
+	"icon": "uniquebase:textures/icons/golem_soul.png",
+	"category": "uniquebattle:uniquebattlecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Golem Soul",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquebattle:golem_soul',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Common $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Gain knockback resistance by sacrificing speed",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Golem-Soul",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 200 $(br2)Falling more than 4 blocks, slows all surrounding entities"
+		}
+	]
+}

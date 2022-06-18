@@ -5,6 +5,7 @@
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
+			"title": "Perpetual Strike",
 			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:perpetual_strike',lvl:2}]}",
 			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
 		},

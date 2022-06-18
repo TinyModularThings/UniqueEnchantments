@@ -135,44 +135,44 @@ public class ColorConfig
 		acceptor.addColor(Enchantments.THORNS, "#1b8a43", null, null, null);
 		acceptor.addColor(Enchantments.UNBREAKING, "#b64b6e", null, null, null);
 
-		acceptor.addColor(new ResourceLocation("uniquee:all"), "#e4ca3a", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:arthropods"), "#e4ca3a", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:berserk"), "#b64b6e", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:ameliorated_sharpness"), "#e4ca3a", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:ameliorated_bane_of_arthropods"), "#e4ca3a", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:ameliorated_smite"), "#e4ca3a", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:berserker"), "#b64b6e", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:bone_crusher"), "#a6b5ba", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:ender_eyes"), "#8d38d4", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:focus_impact"), "#373f52", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:ranged"), "#899aa0", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:focused_impact"), "#373f52", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:range"), "#899aa0", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:sages_blessing"), "#20b63a", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:swift"), "#373f52", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:treasurers_eyes"), "#e4b83a", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:undead"), "#e4ca3a", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:vitae"), "#c1cfd4", null, null, null);
 
 		acceptor.addColor(new ResourceLocation("uniquee:ender_mending"), "#b54ee9", null, null, null); //TODO
 		acceptor.addColor(new ResourceLocation("uniquee:climate_tranquility"), "#e4ee3a", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:momentum"), "#75e580", null, null, null); //TODO
-		acceptor.addColor(new ResourceLocation("uniquee:perpetualstrike"), "#899aa0", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:perpetual_strike"), "#899aa0", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:smart_ass"), "#373f52", null, null, null); //TODO
-		acceptor.addColor(new ResourceLocation("uniquee:spartanweapon"), "#899aa0", null, null, null); //TODO
-		acceptor.addColor(new ResourceLocation("uniquee:swiftblade"), "#e4ca3a", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:spartan_weapon"), "#899aa0", null, null, null); //TODO
+		acceptor.addColor(new ResourceLocation("uniquee:swift_blade"), "#e4ca3a", null, null, null);
 		
-		acceptor.addColor(new ResourceLocation("uniquee:alchemistsgrace"), "#e4ca3a", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:aresblessing"), "#20b63a", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:cloudwalker"), "#c1cfd4", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:alchemists_grace"), "#e4ca3a", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:ares_blessing"), "#20b63a", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:cloud_walker"), "#c1cfd4", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:ecological"), "#50cf66", null, null, null); //TODO
 		acceptor.addColor(new ResourceLocation("uniquee:ender_librarian"), "#b54ee9", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:endermarksmen"), "#b54ee9", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:ender_marksmen"), "#b54ee9", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:endest_reap"), "#b54ee9", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:fastfood"), "#793303", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:fast_food"), "#793303", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:icarus_aegis"), "#899aa0", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:ifrits_grace"), "#e4ca3a", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:midas_blessing"), "#20b63a", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:naturesgrace"), "#e4ca3a", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:natures_grace"), "#e4ca3a", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquee:phoenixs_blessing"), "#20b63a", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquee:warriorsgrace"), "#e4ca3a", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquee:warriors_grace"), "#e4ca3a", null, null, null);
 		
 		acceptor.addColor(new ResourceLocation("uniquebattle:ares_grace"), "#e4ca3a", null, null, null);
-		acceptor.addColor(new ResourceLocation("uniquebattle:celestial_blessing"), "#20b63a", null, null, null);
+		acceptor.addColor(new ResourceLocation("uniquebattle:hecates_blessing"), "#20b63a", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquebattle:fury"), "#880604", null, null, null); //TODO
 		acceptor.addColor(new ResourceLocation("uniquebattle:golem_soul"), "#899aa0", null, null, null);
 		acceptor.addColor(new ResourceLocation("uniquebattle:iron_bird"), "#76888f", null, null, null);
@@ -211,7 +211,7 @@ public class ColorConfig
 		acceptor.addColor(new ResourceLocation("uniquee:grimoire"), "#FF0000", null, "#C22237FF", "#EA0087FF");
 		acceptor.addColor(new ResourceLocation("uniquee:pestilences_odium"), "#FF0000", null, "#C22237FF", "#EA0087FF");
 		acceptor.addColor(new ResourceLocation("uniqueutil:phanes_regret"), "#FF0000", null, "#C22237FF", "#EA0087FF");
-		acceptor.addColor(new ResourceLocation("uniqueutil:rocketman"), "#FF0000", null, "#C22237FF", "#EA0087FF");
+		acceptor.addColor(new ResourceLocation("uniqueutil:rocket_man"), "#FF0000", null, "#C22237FF", "#EA0087FF");
 		acceptor.addColor(new ResourceLocation("uniqueutil:famines_odium"), "#FF0000", null, "#C22237FF", "#EA0087FF");
 		acceptor.addColor(new ResourceLocation("uniquebattle:ifrits_judgement"), "#FF0000", null, "#C22237FF", "#EA0087FF");
 		acceptor.addColor(new ResourceLocation("uniquebattle:lunatic_despair"), "#FF0000", null, "#C22237FF", "#EA0087FF");

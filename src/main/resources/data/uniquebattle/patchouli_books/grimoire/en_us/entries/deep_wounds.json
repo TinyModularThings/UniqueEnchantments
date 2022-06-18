@@ -1,0 +1,20 @@
+{
+	"name": "Deep Wounds",
+	"icon": "uniquebase:textures/icons/deep_wounds.png",
+	"category": "uniquebattle:uniquebattlecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Deep Wounds",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquebattle:deep_wounds',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Bare-chested entities start bleeding on hit. $(br)Bleeding entities receive additional damage",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Deep-Wounds",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

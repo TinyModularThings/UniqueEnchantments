@@ -1,0 +1,25 @@
+{
+	"name": "Artemis Soul",
+	"icon": "uniquebase:textures/icons/artemis_soul.png",
+	"category": "uniquebattle:uniquebattlecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Artemis Soul",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquebattle:artemis_soul',lvl:7}]}",
+			"text": "$(li)Max Level = 7 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Store ender-related stuff in the tool. $(br)Killing entities will save their souls in the tool. $(br)More souls bring higher yields. $(br)Tool has to occasionally feast",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Artemis-Soul",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 500 $(br2)Gain more souls each harvest"
+		}
+	]
+}

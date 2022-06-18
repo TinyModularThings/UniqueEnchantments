@@ -1,0 +1,20 @@
+{
+	"name": "Thick Pick",
+	"icon": "uniquebase:textures/icons/thick_pick.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Thick Pick",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:thick_pick',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Improves mining speed against harder blocks",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Thick-Pick",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

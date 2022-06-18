@@ -1,0 +1,20 @@
+{
+	"name": "Phanes Regret",
+	"icon": "uniquebase:textures/icons/phanes_regret.png",
+	"category": "uniquebase:uniquecurses",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Phanes Regret",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:phanes_regret',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Healing causes you to take damage. $(br)Taking damage causes you to heal",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Phanes-Regret",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

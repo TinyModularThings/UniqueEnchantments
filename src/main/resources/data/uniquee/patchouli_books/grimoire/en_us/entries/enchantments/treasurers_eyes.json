@@ -5,6 +5,7 @@
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
+			"title": "Treasurer's Eyes",
 			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:treasurers_eyes',lvl:4}]}",
 			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
 		},

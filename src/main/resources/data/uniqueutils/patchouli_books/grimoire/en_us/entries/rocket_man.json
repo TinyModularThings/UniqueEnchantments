@@ -1,0 +1,20 @@
+{
+	"name": "Rocket Man",
+	"icon": "uniquebase:textures/icons/rocket_man.png",
+	"category": "uniquebase:uniquecurses",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Rocket Man",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:rocket_man',lvl:3}]}",
+			"text": "$(li)Max Level = 3 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Allows you to force elytra mode. $(br)Increases rocket duration",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Rocket-Man",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

@@ -1,0 +1,25 @@
+{
+	"name": "Second Life",
+	"icon": "uniquebase:textures/icons/second_life.png",
+	"category": "uniqueapex:uniqueapexcategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Second Life",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueapex:second_life',lvl:2}]}",
+			"text": "$(li)Max Level = 100 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very_Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Item that are about to break will restore their durability",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Second-Life",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Recipe",
+			"text": "Please use mods like 'Just Enough Items(JEI)' to see the recipes as they can vary from pack to pack. $(br)Simply press 'usage' on a beacon"
+		}
+	]
+}

@@ -1,0 +1,20 @@
+{
+	"name": "Pegasus Soul",
+	"icon": "uniquebase:textures/icons/pegasus_soul.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Pegasus Soul",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:pegasus_soul',lvl:5}]}",
+			"text": "$(li)Max Level = 5 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Pressing the configured key allows your horse to defy gravity. $(br)Slightly increases movement speed",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Pegasus-Soul",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

@@ -1,0 +1,20 @@
+{
+	"name": "Mounting Aegis",
+	"icon": "uniquebase:textures/icons/mounting_aegis.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Mounting Aegis",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:mounting_aegis',lvl:1}]}",
+			"text": "$(li)Max Level = 1 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "You can now also shield your ridden entity",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Mounting-Aegis",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

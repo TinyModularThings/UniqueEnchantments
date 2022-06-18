@@ -1,0 +1,20 @@
+{
+	"name": "Demeter's Blessing",
+	"icon": "uniquebase:textures/icons/demeters_blessing.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Demeter's Blessing",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:demeters_blessing',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Harvests and replants crops. $(br)Gains durability from tilling, but loses durability from harvesting",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Demeter's-Blessing",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}
