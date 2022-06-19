@@ -32,8 +32,8 @@ repositories {
 }
 
 dependencies {
+	compile "curse.maven:jei-238222:3043174"
 	compile "curse.maven:firstaid-276837:2790027"
-	compile "curse.maven:jei-238222:3040523"
 	compile "curse.maven:enchantment-descriptions-250419:2689502"
 }
 

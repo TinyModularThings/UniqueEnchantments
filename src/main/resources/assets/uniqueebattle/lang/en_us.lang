@@ -18,7 +18,7 @@ enchantment.uniqueebattle.artemis_soul.desc=Shift-rightclick an Anvil  with ende
 enchantment.uniqueebattle.deep_wounds=Deep Wounds
 enchantment.uniqueebattle.deep_wounds.desc=Hitting an entity without Chestplace, will cause it to bleed. Bleeding enemy take damage over time and increased damage.
 enchantment.uniqueebattle.ifrits_blessing=Ifrit's Blessing
-enchantment.uniqueebattle.ifrits_blessing.desc=Hitting a burning Entity will deal additional Damage. Bonus is doubled if you're burning as well
+enchantment.uniqueebattle.ifrits_blessing.desc=Hitting a burning Entity will deal additional Damage. Bonus is exponential if you're burning as well
 enchantment.uniqueebattle.granis_soul=Grani's Soul
 enchantment.uniqueebattle.granis_soul.desc=Press the specified Key to start dashing. Entities around the start and end location start bleeding
 
@@ -29,6 +29,6 @@ enchantment.uniqueebattle.lunatic_despair.desc=Receive a Damage Boost but also d
 enchantment.uniqueebattle.wars_odium=War's Odium
 enchantment.uniqueebattle.wars_odium.desc=Killing a Mob, has a Chance to respawn the Mob
 
-tooltip.uniqueebattle.stored.ender.name=Stored Ender Energy
+tooltip.uniqueebattle.stored.ender.name=Stored Ender Energy %s
 tooltip.uniqueebattle.stored.ender.souls.common.name=Basic Souls stored %s
 tooltip.uniqueebattle.stored.ender.souls.higher.name=Higher Souls stored %s

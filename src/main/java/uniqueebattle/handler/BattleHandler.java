@@ -15,6 +15,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -45,7 +46,6 @@ import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -241,7 +241,8 @@ public class BattleHandler
 					{
 						if(!other.world.isRemote)
 						{
-							other.entityDropItem(other.getHeldItemMainhand(), 0F);
+							EntityItem entity = other.entityDropItem(other.getHeldItemMainhand(), 0F);
+							if(entity != null) entity.setPickupDelay(30);
 						}
 						other.setHeldItem(EnumHand.MAIN_HAND, ItemStack.EMPTY);
 					}
@@ -268,6 +269,7 @@ public class BattleHandler
 	@SubscribeEvent
 	public void onXPDrop(LivingExperienceDropEvent event)
 	{
+		if(event.getAttackingPlayer() == null) return;
 		Object2IntMap.Entry<EntityEquipmentSlot> entry = MiscUtil.getEnchantedItem(UniqueEnchantmentsBattle.ARTEMIS_SOUL, event.getAttackingPlayer());
 		if(entry.getIntValue() > 0)
 		{
@@ -461,8 +463,6 @@ public class BattleHandler
 				int playerLevel = MiscUtil.getPlayerLevel(source, 70);
 				int max = (int)Math.max(Math.sqrt(playerLevel*ArtemisSoul.CAP_SCALE.get())*ArtemisSoul.CAP_FACTOR.get(), ArtemisSoul.CAP_BASE.get());
 				int gain = MathCache.LOG10.getInt((int)(10+(entity.world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, stack)+1)+1)*level*ArtemisSoul.REAP_SCALE.get()*playerLevel));
-				int preLog = (int)(10+(entity.world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, stack)+1)+1)*level*ArtemisSoul.REAP_SCALE.get()*playerLevel);
-				FMLLog.log.info("Gain: "+gain+", PreLog: "+preLog+", Looting: "+(entity.world.rand.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.LOOTING, stack)+1)+1)+", Level: "+level+", PlayerLevel: "+playerLevel);
 				StackUtils.setInt(stack, key, Math.min(StackUtils.getInt(stack, key, 0)+gain, max));
 			}
 		}
