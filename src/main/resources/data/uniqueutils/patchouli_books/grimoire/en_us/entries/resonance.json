@@ -1,0 +1,20 @@
+{
+	"name": "Resonance",
+	"icon": "uniquebase:textures/icons/resonance.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Resonance",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:resonance',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Shift-rightclick to search for nearby ores. $(br)If it resonates a sound will be played",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Resonance",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

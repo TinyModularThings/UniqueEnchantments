@@ -1,0 +1,20 @@
+{
+	"name": "Ifrit's Judgement",
+	"icon": "uniquebase:textures/icons/ifrits_judgement.png",
+	"category": "uniquebase:uniquecurses",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Ifrit's Judgement",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquebattle:ifrits_judgement',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Hitting a target less than 4 times grants you a reward, next time you open a chest. $(br)Requiring more hits will cause you turn burn",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Ifrit%27s-Judgement",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

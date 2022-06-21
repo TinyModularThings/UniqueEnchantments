@@ -1,6 +1,9 @@
 {
-	"name": "Hekate's Grimoire",
+	"name": "Hecate's Grimoire",
 	"landing_text": "Welcome oh dear Sage",
 	"version": 295,
+	"crafting_texture":"uniquebase:textures/book/crafting.png",
+	"book_texture": "uniquebase:textures/book/book_page.png",
+	"model": "uniquebase:book",
 	"show_toasts": false
 }

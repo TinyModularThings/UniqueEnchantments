@@ -1,0 +1,20 @@
+{
+	"name": "Ifrit's Blessing",
+	"icon": "uniquebase:textures/icons/ifrits_blessing.png",
+	"category": "uniquebattle:uniquebattlecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Ifrit's Blessing",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquebattle:ifrits_blessing',lvl:5}]}",
+			"text": "$(li)Max Level = 5 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Increases your damage dealt against a burning target. $(br)When you burn as well, bonus is increased exponentially",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Ifrit's-Blessing",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

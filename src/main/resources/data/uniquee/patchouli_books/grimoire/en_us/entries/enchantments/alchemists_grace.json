@@ -5,6 +5,7 @@
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
+			"title": "Alchemist's Grace",
 			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:alchemists_grace',lvl:4}]}",
 			"text": "$(li)Max Level = 5 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
 		},

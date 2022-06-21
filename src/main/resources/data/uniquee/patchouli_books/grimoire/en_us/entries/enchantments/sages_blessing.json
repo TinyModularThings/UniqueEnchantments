@@ -5,6 +5,7 @@
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
+			"title": "Sage's Blessing",
 			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:sages_blessing',lvl:5}]}",
 			"text": "$(li)Max Level = 5 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Common $()$(br)Values can be different from pack to pack"
 		},

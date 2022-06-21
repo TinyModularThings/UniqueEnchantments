@@ -1,0 +1,20 @@
+{
+	"name": "Essence of Slime",
+	"icon": "uniquebase:textures/icons/essence_of_slime.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Essence of Slime",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:essence_of_slime',lvl:5}]}",
+			"text": "$(li)Max Level = 5 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Squishy, splat splat, bounce on falling. $(br)Costs durability of boots",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Essence-of-Slime",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

@@ -1,0 +1,20 @@
+{
+	"name": "Demeter's Soul",
+	"icon": "uniquebase:textures/icons/demeters_soul.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Demeter's Soul",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:demeters_soul',lvl:1}]}",
+			"text": "$(li)Max Level = 1 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Shift-rightlcik to mark a crop. $(br)Marked crops are being harvested automatically and are stored in the Ender Chest",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Demeter%27s-Soul",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

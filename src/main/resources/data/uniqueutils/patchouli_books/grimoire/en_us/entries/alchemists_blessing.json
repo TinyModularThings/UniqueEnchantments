@@ -1,0 +1,20 @@
+{
+	"name": "Alchemist's Blessing",
+	"icon": "uniquebase:textures/icons/alchemists_blessing.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Alchemist's Blessing",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:alchemists_blessing',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Store redstone stuff in the tool. $(br)Consumes some to transmutates items. $(br)Requires a Beam of Light",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Alchemist's-Blessing",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

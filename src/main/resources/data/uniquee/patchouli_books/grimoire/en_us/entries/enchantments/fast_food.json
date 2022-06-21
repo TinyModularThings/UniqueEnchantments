@@ -5,6 +5,7 @@
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
+			"title": "Fast Food",
 			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:fast_food',lvl:2}]}",
 			"text": "$(li)Max Level = 2 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
 		},

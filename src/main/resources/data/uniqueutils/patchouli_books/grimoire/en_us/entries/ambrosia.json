@@ -1,0 +1,20 @@
+{
+	"name": "Ambrosia",
+	"icon": "uniquebase:textures/icons/ambrosia.png",
+	"category": "uniqueutils:uniqueutilscategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Ambrosia",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:ambrosia',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Food and Potions will turn into the best thing you have ever tasted and nourishes you",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Ambrosia",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

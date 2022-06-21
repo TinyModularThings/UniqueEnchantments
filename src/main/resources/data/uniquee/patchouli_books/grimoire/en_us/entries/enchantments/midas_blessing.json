@@ -5,6 +5,7 @@
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
+			"title": "Midas Blessing",
 			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:midas_blessing',lvl:3}]}",
 			"text": "$(li)Max Level = 3 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
 		},

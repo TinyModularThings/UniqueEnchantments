@@ -5,6 +5,7 @@
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
+			"title": "Cloud Walker",
 			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:cloud_walker',lvl:4}]}",
 			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
 		},

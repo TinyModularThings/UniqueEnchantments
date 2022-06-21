@@ -5,6 +5,7 @@
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
+			"title": "Swift",
 			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:swift',lvl:2}]}",
 			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
 		},

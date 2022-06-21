@@ -1,0 +1,20 @@
+{
+	"name": "Lunatic Despair",
+	"icon": "uniquebase:textures/icons/lunatic_despair.png",
+	"category": "uniquebattle:uniquebattlecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Lunatic Despair",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquebattle:lunatic_despair',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Deal more damage, but hurt yourself doing so",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Lunatic-Despair",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

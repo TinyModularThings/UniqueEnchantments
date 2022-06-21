@@ -1,0 +1,25 @@
+{
+	"name": "Ares Fragment",
+	"icon": "uniquebase:textures/icons/ares_fragment.png",
+	"category": "uniquebattle:uniquebattlecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Ares Fragment",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquebattle:ares_fragment',lvl:4}]}",
+			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Flips a weighted coin multiple times. Increases or decreases damage depending on result. $(br)Consumes durability",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Ares-Fragment",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Required Level = 200 $(br2)Vanilla crits deal more damage"
+		}
+	]
+}

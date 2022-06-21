@@ -48,6 +48,10 @@ import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+<<<<<<< HEAD
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+=======
+>>>>>>> branch '1.16.5' of https://git.speiger.com/Speiger/UniqueEnchantments.git
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
@@ -136,6 +140,7 @@ public class BaseHandler
 				}
 			}
 		}
+		
 	}
 	
 	@SubscribeEvent

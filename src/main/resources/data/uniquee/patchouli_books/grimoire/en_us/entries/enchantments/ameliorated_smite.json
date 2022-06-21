@@ -5,6 +5,7 @@
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
+			"title": "Ameliorated Smite",
 			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:ameliorated_smite',lvl:5}]}",
 			"text": "$(li)Max Level = 5 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
 		},

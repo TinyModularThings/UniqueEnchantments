@@ -1,0 +1,20 @@
+{
+	"name": "Snare",
+	"icon": "uniquebase:textures/icons/snare.png",
+	"category": "uniquebattle:uniquebattlecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Snare",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquebattle:snare',lvl:3}]}",
+			"text": "$(li)Max Level = 3 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Hitting an entity restrict its movement",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Snare",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

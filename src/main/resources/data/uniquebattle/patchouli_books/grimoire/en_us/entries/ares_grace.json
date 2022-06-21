@@ -1,0 +1,20 @@
+{
+	"name": "Ares Grace",
+	"icon": "uniquebase:textures/icons/ares_grace.png",
+	"category": "uniquebattle:uniquebattlecategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Ares Grace",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquebattle:ares_grace',lvl:3}]}",
+			"text": "$(li)Max Level = 3 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Common $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Deals more damage, the better the enemy is protected",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Ares-Grace",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}

@@ -1,6 +1,6 @@
 {
     "name": "Unique Curses",
     "description": "These are all curses by Unique Enchantments. $(br)Please note that every curse also has a positive use",
-    "icon": "minecraft:writable_book",
-    "sortnum": 10
+    "icon": "uniquebase:textures/icons/wars_odium.png",
+    "sortnum": 100
 }

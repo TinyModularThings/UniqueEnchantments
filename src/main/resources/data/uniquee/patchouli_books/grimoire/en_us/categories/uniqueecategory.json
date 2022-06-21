@@ -1,6 +1,6 @@
 {
     "name": "Unique Enchantments",
     "description": "Enchantments in this Category have all sorts of Types, including Armor, Tools and Weapon Enchantments",
-    "icon": "minecraft:writable_book",
+    "icon": "uniquebase:textures/icons/treasurers_eyes.png",
     "sortnum": 10
 }
