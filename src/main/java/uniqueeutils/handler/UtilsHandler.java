@@ -128,32 +128,33 @@ public class UtilsHandler
 {
 	public static final UtilsHandler INSTANCE = new UtilsHandler();
 	private List<RenderEntry> toRender = new ObjectArrayList<>();
-	static final ThreadLocal<Boolean> PHANES_REGRET_ACTIVE = ThreadLocal.withInitial(() -> false); 
+	static final ThreadLocal<Boolean> PHANES_REGRET_ACTIVE = ThreadLocal.withInitial(() -> false);
 	
 	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)	
+	@OnlyIn(Dist.CLIENT)
 	public void onTick(ClientTickEvent event)
 	{
-		if(event.phase == Phase.START) return;
+		if(event.phase == Phase.START)
+			return;
 		Minecraft mc = Minecraft.getInstance();
-		if(mc.level == null || mc.player == null) 
+		if(mc.level == null || mc.player == null)
 		{
 			toRender.clear();
 			return;
 		}
 		Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("uniquee", "treasurers_eyes"));
-		if(ench == null) 
+		if(ench == null)
 		{
 			toRender.clear();
 			return;
 		}
 		int level = MiscUtil.getEnchantmentLevel(ench, mc.player.getItemBySlot(EquipmentSlotType.HEAD));
-		if(level <= 0) 
+		if(level <= 0)
 		{
 			toRender.clear();
 			return;
 		}
-		for(int i = 0,m=toRender.size();i<m;i++)
+		for(int i = 0, m = toRender.size();i < m;i++)
 		{
 			if(toRender.get(i).update())
 			{
@@ -162,18 +163,21 @@ public class UtilsHandler
 			}
 		}
 	}
-
+	
 	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)	
+	@OnlyIn(Dist.CLIENT)
 	@SuppressWarnings("deprecation")
 	public void onRender(RenderWorldLastEvent event)
 	{
-		if(toRender.isEmpty()) return;
+		if(toRender.isEmpty())
+			return;
 		Minecraft mc = Minecraft.getInstance();
 		Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("uniquee", "treasurers_eyes"));
-		if(ench == null) return;
+		if(ench == null)
+			return;
 		int level = MiscUtil.getEnchantmentLevel(ench, mc.player.getItemBySlot(EquipmentSlotType.HEAD));
-		if(level <= 0) return;
+		if(level <= 0)
+			return;
 		Tessellator tes = Tessellator.getInstance();
 		BufferBuilder buffer = tes.getBuilder();
 		buffer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR);
@@ -182,7 +186,7 @@ public class UtilsHandler
 		Vector3d playerPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
 		matrix.translate(-playerPos.x(), -playerPos.y(), -playerPos.z());
 		Matrix4f transform = matrix.last().pose();
-		for(int i = 0,m=toRender.size();i<m;i++)
+		for(int i = 0, m = toRender.size();i < m;i++)
 		{
 			toRender.get(i).render(buffer, transform);
 		}
@@ -197,16 +201,17 @@ public class UtilsHandler
 		GlStateManager._enableTexture();
 		GlStateManager._enableDepthTest();
 	}
-
+	
 	public void addDrawPosition(BlockPos pos)
 	{
 		toRender.add(new RenderEntry(pos, 0x33BBBBBB, 140));
 	}
-
+	
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)
 	{
-		if(event.world.isClientSide) return;
+		if(event.world.isClientSide)
+			return;
 		Resonance.tick(event.world);
 	}
 	
@@ -227,9 +232,9 @@ public class UtilsHandler
 				int amount = StackUtils.getInt(armor, AnemoiFragment.STORAGE, 0);
 				if(amount > 0)
 				{
-					amount -= (int)(AnemoiFragment.CONSUMPTION.get()/Math.sqrt(AnemoiFragment.CONSUMPTION_SCALE.get(level)));
+					amount -= (int)(AnemoiFragment.CONSUMPTION.get() / Math.sqrt(AnemoiFragment.CONSUMPTION_SCALE.get(level)));
 					StackUtils.setInt(armor, AnemoiFragment.STORAGE, Math.max(0, amount));
-					player.moveRelative(1F, new Vector3d(0F, (float)Math.log10(110+Math.pow(AnemoiFragment.BOOST.get(level*player.experienceLevel), 0.125))-2, 0F));
+					player.moveRelative(1F, new Vector3d(0F, (float)Math.log10(110 + Math.pow(AnemoiFragment.BOOST.get(level * player.experienceLevel), 0.125)) - 2, 0F));
 				}
 			}
 		}
@@ -239,10 +244,10 @@ public class UtilsHandler
 			int level = MiscUtil.getEnchantmentLevel(UEUtils.CLIMBER, armor);
 			if(level >= 0 && player.onClimbable() && !player.isShiftKeyDown() && !player.isSpectator() && !player.isInWater() && !player.isInLava())
 			{
-				int motion = -Math.min(0, (int)(player.getRotationVector().x-25F)/25);
+				int motion = -Math.min(0, (int)(player.getRotationVector().x - 25F) / 25);
 				if(motion >= 1)
 				{
-					float data = (0.9125F-((2 - motion) * 0.1F));
+					float data = (0.9125F - ((2 - motion) * 0.1F));
 					player.setDeltaMovement(player.getDeltaMovement().add(0, data * 0.1, 0));
 				}
 			}
@@ -269,7 +274,7 @@ public class UtilsHandler
 				}
 				if(instance.getModifier(PegasusSoul.SPEED_MOD) == null)
 				{
-					instance.addPermanentModifier(new AttributeModifier(PegasusSoul.SPEED_MOD, "Pegasus Boost", Math.sqrt(PegasusSoul.SPEED.get(level))*0.01D, Operation.MULTIPLY_TOTAL));
+					instance.addPermanentModifier(new AttributeModifier(PegasusSoul.SPEED_MOD, "Pegasus Boost", Math.sqrt(PegasusSoul.SPEED.get(level)) * 0.01D, Operation.MULTIPLY_TOTAL));
 				}
 			}
 			else if(!ridden.level.isClientSide && instance.getModifier(PegasusSoul.SPEED_MOD) != null)
@@ -285,7 +290,8 @@ public class UtilsHandler
 				ridden.setOnGround(true);
 			}
 		}
-		if(event.side.isClient()) return;
+		if(event.side.isClient())
+			return;
 		long time = player.level.getGameTime();
 		if(player.isPassenger() && time % 20 == 0)
 		{
@@ -303,11 +309,11 @@ public class UtilsHandler
 						nbt.putLong(SleipnirsGrace.HORSE_NBT, time);
 						lastTime = time;
 					}
-					Block block = horse.level.getBlockState(new BlockPos(horse.getX(), horse.getY() - 0.20000000298023224D,  horse.getZ())).getBlock();
-					double bonus = Math.min(SleipnirsGrace.CAP.get()+level, SleipnirsGrace.GAIN.get((time - lastTime) * level));
+					Block block = horse.level.getBlockState(new BlockPos(horse.getX(), horse.getY() - 0.20000000298023224D, horse.getZ())).getBlock();
+					double bonus = Math.min(SleipnirsGrace.CAP.get() + level, SleipnirsGrace.GAIN.get((time - lastTime) * level));
 					ModifiableAttributeInstance attri = horse.getAttribute(Attributes.MOVEMENT_SPEED);
 					attri.removeModifier(SleipnirsGrace.SPEED_MOD);
-					attri.addTransientModifier(new AttributeModifier(SleipnirsGrace.SPEED_MOD, "Sleipnirs Grace", Math.log10(10 + ((bonus / SleipnirsGrace.MAX.get()) * (block == Blocks.GRASS_PATH ? SleipnirsGrace.PATH_BONUS.get() : level)))-1D, Operation.MULTIPLY_TOTAL));
+					attri.addTransientModifier(new AttributeModifier(SleipnirsGrace.SPEED_MOD, "Sleipnirs Grace", Math.log10(10 + ((bonus / SleipnirsGrace.MAX.get()) * (block == Blocks.GRASS_PATH ? SleipnirsGrace.PATH_BONUS.get() : level))) - 1D, Operation.MULTIPLY_TOTAL));
 				}
 				else
 				{
@@ -319,15 +325,18 @@ public class UtilsHandler
 				}
 			}
 		}
-		int tickRate = Math.max(1, (int)(Reinforced.BASE_DURATION.get() / MathCache.LOG10.get(1000+player.experienceLevel)-2));
+		int tickRate = Math.max(1, (int)(Reinforced.BASE_DURATION.get() / MathCache.LOG10.get(1000 + player.experienceLevel) - 2));
 		if(time % tickRate == 0)
 		{
 			PlayerInventory inv = player.inventory;
-			// I dislike doing that because its causing enough lag IMO... Efficient but the operation is laggy no matter how much you optimize it
-			for(int i = 0,m=inv.getContainerSize();i<m;i++)
+			// I dislike doing that because its causing enough lag IMO...
+			// Efficient but the operation is laggy no matter how much you
+			// optimize it
+			for(int i = 0, m = inv.getContainerSize();i < m;i++)
 			{
 				ItemStack stack = inv.getItem(i);
-				if(stack.isEmpty()) continue;
+				if(stack.isEmpty())
+					continue;
 				int level = MiscUtil.getEnchantmentLevel(UEUtils.REINFORCED, stack);
 				if(level > 0)
 				{
@@ -335,16 +344,16 @@ public class UtilsHandler
 					if(shield > 0 && stack.getDamageValue() > 0 && (i >= inv.items.size() || i == inv.selected))
 					{
 						int damage = stack.getDamageValue();
-						int left = Math.max(0, shield-damage);
-						stack.setDamageValue(Math.max(0, damage-shield));
+						int left = Math.max(0, shield - damage);
+						stack.setDamageValue(Math.max(0, damage - shield));
 						shield = left;
 						StackUtils.setInt(stack, Reinforced.SHIELD, shield);
 					}
-					int max = (int)Math.sqrt(625+player.experienceLevel*level)*4;
+					int max = (int)Math.sqrt(625 + player.experienceLevel * level) * 4;
 					if(shield < max)
 					{
 						shield = Math.min(max, shield + MathHelper.ceil(Math.sqrt(level)));
-						StackUtils.setInt(stack, Reinforced.SHIELD, shield);						
+						StackUtils.setInt(stack, Reinforced.SHIELD, shield);
 					}
 				}
 			}
@@ -356,7 +365,7 @@ public class UtilsHandler
 			nbt.remove(Climber.CLIMB_START);
 			BlockPos pos = BlockPos.of(nbt.getLong(Climber.CLIMB_POS));
 			nbt.remove(Climber.CLIMB_POS);
-			player.teleportTo(pos.getX()+0.5F, pos.getY(), pos.getZ() + 0.5F);
+			player.teleportTo(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
 		}
 		int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.FAMINES_ODIUM, player);
 		if(level > 0)
@@ -419,7 +428,7 @@ public class UtilsHandler
 				stack.hurtAndBreak(damage, event.getEntityLiving(), MiscUtil.get(EquipmentSlotType.FEET));
 			}
 			LivingEntity entity = event.getEntityLiving();
-			entity.getPersistentData().putDouble("bounce", entity.getDeltaMovement().y()/Math.log10(15.5D+EssenceOfSlime.FALL_DISTANCE_MULTIPLIER.get(entity.getDeltaMovement().y())) * -1D);
+			entity.getPersistentData().putDouble("bounce", entity.getDeltaMovement().y() / Math.log10(15.5D + EssenceOfSlime.FALL_DISTANCE_MULTIPLIER.get(entity.getDeltaMovement().y())) * -1D);
 			event.setCanceled(true);
 		}
 	}
@@ -459,7 +468,8 @@ public class UtilsHandler
 	{
 		if(event.getAmount() >= 1F)
 		{
-			if(PHANES_REGRET_ACTIVE.get()) return;
+			if(PHANES_REGRET_ACTIVE.get())
+				return;
 			PHANES_REGRET_ACTIVE.set(true);
 			int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.PHANES_REGRET, event.getEntityLiving());
 			if(level > 0)
@@ -468,7 +478,7 @@ public class UtilsHandler
 				{
 					MiscUtil.drainExperience((PlayerEntity)event.getEntityLiving(), MathHelper.ceil(event.getAmount()));
 				}
-				event.getEntityLiving().heal(event.getAmount() * (1F-(1F/MathCache.LOG_ADD.getFloat(level))));
+				event.getEntityLiving().heal(event.getAmount() * (1F - (1F / MathCache.LOG_ADD.getFloat(level))));
 			}
 			PHANES_REGRET_ACTIVE.set(false);
 		}
@@ -477,14 +487,15 @@ public class UtilsHandler
 	@SubscribeEvent
 	public void onHeal(LivingHealEvent event)
 	{
-		if(PHANES_REGRET_ACTIVE.get()) return;
+		if(PHANES_REGRET_ACTIVE.get())
+			return;
 		PHANES_REGRET_ACTIVE.set(true);
 		if(event.getAmount() >= 1F)
 		{
 			int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.PHANES_REGRET, event.getEntityLiving());
 			if(level > 0)
 			{
-				event.getEntityLiving().hurt(DamageSource.MAGIC, event.getAmount() * (1F-(1F/MathCache.LOG_ADD.getFloat(level))));
+				event.getEntityLiving().hurt(DamageSource.MAGIC, event.getAmount() * (1F - (1F / MathCache.LOG_ADD.getFloat(level))));
 			}
 		}
 		PHANES_REGRET_ACTIVE.set(false);
@@ -493,30 +504,35 @@ public class UtilsHandler
 	@SubscribeEvent
 	public void onArrowHit(ProjectileImpactEvent.Arrow event)
 	{
-		if(!(event.getArrow() instanceof TridentEntity) || !(event.getArrow().getOwner() instanceof PlayerEntity)) return;
+		if(!(event.getArrow() instanceof TridentEntity) || !(event.getArrow().getOwner() instanceof PlayerEntity))
+			return;
 		RayTraceResult result = event.getRayTraceResult();
-		if(!(result instanceof BlockRayTraceResult)) return;
+		if(!(result instanceof BlockRayTraceResult))
+			return;
 		BlockRayTraceResult ray = (BlockRayTraceResult)result;
 		World world = event.getEntity().getCommandSenderWorld();
 		BlockState state = world.getBlockState(ray.getBlockPos());
 		if(PoseidonsSoul.isValid(state.getBlock()))
 		{
 			ItemStack arrowStack = StackUtils.getArrowStack(event.getArrow());
-			if(arrowStack.getItem() != Items.TRIDENT) return;
+			if(arrowStack.getItem() != Items.TRIDENT)
+				return;
 			Object2IntMap<Enchantment> enchs = MiscUtil.getEnchantments(arrowStack);
 			int level = enchs.getInt(UEUtils.POSEIDONS_SOUL);
-			if(level <= 0) return;
+			if(level <= 0)
+				return;
 			ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
 			stack.enchant(Enchantments.SILK_TOUCH, 1);
-			Block.popResource(world, ray.getBlockPos(), new ItemStack(state.getBlock(), level * (world.random.nextInt(enchs.getInt(Enchantments.BLOCK_FORTUNE)+1)+1)));
-			MiscUtil.drainExperience((PlayerEntity)event.getArrow().getOwner(), (int)Math.log10(10+Math.pow(PoseidonsSoul.BASE_CONSUMTION.get()+level, level)));
+			Block.popResource(world, ray.getBlockPos(), new ItemStack(state.getBlock(), level * (world.random.nextInt(enchs.getInt(Enchantments.BLOCK_FORTUNE) + 1) + 1)));
+			MiscUtil.drainExperience((PlayerEntity)event.getArrow().getOwner(), (int)Math.log10(10 + Math.pow(PoseidonsSoul.BASE_CONSUMTION.get() + level, level)));
 		}
 	}
 	
 	@SubscribeEvent
 	public void onItemClick(RightClickItem event)
 	{
-		if(event.getPlayer() == null || !event.getPlayer().isShiftKeyDown()) return;
+		if(event.getPlayer() == null || !event.getPlayer().isShiftKeyDown())
+			return;
 		PlayerEntity player = event.getPlayer();
 		ItemStack stack = event.getItemStack();
 		int level = MiscUtil.getEnchantmentLevel(UEUtils.RESONANCE, stack);
@@ -528,14 +544,15 @@ public class UtilsHandler
 				if(nbt.getLong(Resonance.COOLDOWN_TAG) > event.getWorld().getGameTime())
 				{
 					int used = nbt.getInt(Resonance.OVERUSED_TAG);
-					player.hurt(DamageSource.MAGIC, 0.5F*used);
-					nbt.putInt(Resonance.OVERUSED_TAG, used+1);
-					if(!player.level.isClientSide) player.displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.resonance.cooldown", (nbt.getLong(Resonance.COOLDOWN_TAG) - event.getWorld().getGameTime()) / 20), true);
+					player.hurt(DamageSource.MAGIC, 0.5F * used);
+					nbt.putInt(Resonance.OVERUSED_TAG, used + 1);
+					if(!player.level.isClientSide)
+						player.displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.resonance.cooldown", (nbt.getLong(Resonance.COOLDOWN_TAG) - event.getWorld().getGameTime()) / 20), true);
 				}
 				else
 				{
-					Resonance.addResonance(event.getWorld(), event.getPos(), (int)(Resonance.RANGE.getSqrt(level*Math.sqrt(player.experienceLevel))));
-					nbt.putLong(Resonance.COOLDOWN_TAG, event.getWorld().getGameTime()+Resonance.COOLDOWN.get());
+					Resonance.addResonance(event.getWorld(), event.getPos(), (int)(Resonance.RANGE.getSqrt(level * Math.sqrt(player.experienceLevel))));
+					nbt.putLong(Resonance.COOLDOWN_TAG, event.getWorld().getGameTime() + Resonance.COOLDOWN.get());
 					nbt.putInt(Resonance.OVERUSED_TAG, 1);
 				}
 			}
@@ -557,7 +574,7 @@ public class UtilsHandler
 				{
 					Mutable pos = new Mutable().set(event.getPos());
 					List<Block> blocks = new ObjectArrayList<>();
-					do 
+					do
 					{
 						pos.move(Direction.UP);
 						state = event.getWorld().getBlockState(pos);
@@ -571,7 +588,7 @@ public class UtilsHandler
 						nbt.putLong(Climber.CLIMB_POS, pos.asLong());
 						nbt.putInt(Climber.CLIMB_DELAY, Climber.getClimbTime(level, blocks));
 						nbt.putLong(Climber.CLIMB_START, event.getWorld().getGameTime());
-						event.getPlayer().displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.climb."+(wasClimbing ? "re" : "")+"start.name"), true);
+						event.getPlayer().displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.climb." + (wasClimbing ? "re" : "") + "start.name"), true);
 						event.setCancellationResult(ActionResultType.SUCCESS);
 					}
 					else
@@ -589,16 +606,17 @@ public class UtilsHandler
 				if(level > 0)
 				{
 					int stored = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
-					int required = MiscUtil.getXPForLvl(stored+10);
+					int required = MiscUtil.getXPForLvl(stored + 10);
 					if(player.totalExperience >= required || player.isCreative())
 					{
 						MiscUtil.drainExperience(player, required);
-						StackUtils.setInt(stack, SagesSoul.STORED_XP, stored+5);
+						StackUtils.setInt(stack, SagesSoul.STORED_XP, stored + 5);
 						event.setCancellationResult(ActionResultType.SUCCESS);
 					}
 					else
 					{
-						if(!player.level.isClientSide) player.displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.missing.xp"), true);
+						if(!player.level.isClientSide)
+							player.displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.missing.xp"), true);
 						event.setCancellationResult(ActionResultType.FAIL);
 					}
 					event.setCanceled(true);
@@ -614,11 +632,13 @@ public class UtilsHandler
 					if(tile instanceof BeaconTileEntity)
 					{
 						BeaconTileEntity beacon = (BeaconTileEntity)tile;
-						if(beacon.save(new CompoundNBT()).getInt("Primary") == -1) return;
+						if(beacon.save(new CompoundNBT()).getInt("Primary") == -1)
+							return;
 						World world = beacon.getLevel();
 						BlockPos pos = beacon.getBlockPos().above();
 						List<ItemEntity> items = world.getEntitiesOfClass(ItemEntity.class, new AxisAlignedBB(beacon.getBlockPos().above()));
-						if(items.isEmpty()) return;
+						if(items.isEmpty())
+							return;
 						int consumed = 0;
 						int xpToSpawn = 0;
 						world.playSound(event.getPlayer(), pos.above(), UEUtils.ALCHEMIST_BLESSING_SOUND, SoundCategory.BLOCKS, 100F, 1F);
@@ -635,20 +655,22 @@ public class UtilsHandler
 								continue;
 							}
 							List<ItemStack> newDrops = new ObjectArrayList<ItemStack>();
-							entry.generateOutput(world.random, level-1, Math.min(world.random.nextInt(Math.max(ench.getInt(Enchantments.BLOCK_FORTUNE), ench.getInt(Enchantments.MOB_LOOTING)) + 1), level), stack.getCount(), newDrops);
+							entry.generateOutput(world.random, level - 1, Math.min(world.random.nextInt(Math.max(ench.getInt(Enchantments.BLOCK_FORTUNE), ench.getInt(Enchantments.MOB_LOOTING)) + 1), level), stack.getCount(), newDrops);
 							for(ItemStack drop : newDrops)
 							{
 								world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, drop));
 							}
 						}
-						if(xpToSpawn > 0) {
-							world.addFreshEntity(new ExperienceOrbEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, MathHelper.ceil(Math.sqrt(AlchemistsBlessing.BASE_XP_USAGE.get(level))+Math.sqrt(AlchemistsBlessing.LVL_XP_USAGE.get(level*world.random.nextDouble()))) * xpToSpawn));
+						if(xpToSpawn > 0)
+						{
+							world.addFreshEntity(new ExperienceOrbEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, MathHelper.ceil(Math.sqrt(AlchemistsBlessing.BASE_XP_USAGE.get(level)) + Math.sqrt(AlchemistsBlessing.LVL_XP_USAGE.get(level * world.random.nextDouble()))) * xpToSpawn));
 							
 						}
-						consumed = MathHelper.ceil(Math.pow((level*consumed*AlchemistsBlessing.CONSUMTION.get()), 0.6505));
+						consumed = MathHelper.ceil(Math.pow((level * consumed * AlchemistsBlessing.CONSUMTION.get()), 0.6505));
 						int stored = StackUtils.getInt(event.getItemStack(), AlchemistsBlessing.STORED_REDSTONE, 0) - consumed;
 						StackUtils.setInt(event.getItemStack(), AlchemistsBlessing.STORED_REDSTONE, Math.max(0, stored));
-						if(stored < 0) event.getItemStack().hurtAndBreak(-stored, event.getPlayer(), MiscUtil.get(event.getHand() == Hand.MAIN_HAND ? EquipmentSlotType.MAINHAND : EquipmentSlotType.OFFHAND));
+						if(stored < 0)
+							event.getItemStack().hurtAndBreak(-stored, event.getPlayer(), MiscUtil.get(event.getHand() == Hand.MAIN_HAND ? EquipmentSlotType.MAINHAND : EquipmentSlotType.OFFHAND));
 						event.setCancellationResult(ActionResultType.SUCCESS);
 						event.setCanceled(true);
 					}
@@ -662,7 +684,7 @@ public class UtilsHandler
 					HarvestEntry entry = new HarvestEntry(event.getWorld().dimension().location(), event.getPos().asLong());
 					ListNBT list = DemetersSoul.getCrops(event.getPlayer());
 					boolean found = false;
-					for(int i = 0,m=list.size();i<m;i++)
+					for(int i = 0, m = list.size();i < m;i++)
 					{
 						if(entry.matches(list.getCompound(i)))
 						{
@@ -682,7 +704,7 @@ public class UtilsHandler
 						}
 						list.add(entry.save());
 					}
-					event.getPlayer().displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.crops."+(found ? "removed" : "added")+".name"), false);
+					event.getPlayer().displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.crops." + (found ? "removed" : "added") + ".name"), false);
 					event.setCancellationResult(ActionResultType.SUCCESS);
 					event.setCanceled(true);
 					return;
@@ -741,7 +763,7 @@ public class UtilsHandler
 			event.setNewSpeed(event.getNewSpeed() * (player.isOnGround() ? 1F : 5F) * (inWater && !EnchantmentHelper.hasAquaAffinity(player) ? 5F : 1F));
 			if(inWater || !player.isOnGround())
 			{
-				event.setNewSpeed((float)(event.getNewSpeed() * -Math.sqrt(1/(1 + level*level * Adept.SPEED_SCALE.get()))+1));	
+				event.setNewSpeed((float)(event.getNewSpeed() * -Math.sqrt(1 / (1 + level * level * Adept.SPEED_SCALE.get())) + 1));
 			}
 		}
 		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(held);
@@ -751,9 +773,9 @@ public class UtilsHandler
 			double power = SagesSoul.getEnchantPower(held, level);
 			int levels = StackUtils.getInt(held, SagesSoul.STORED_XP, 0);
 			float toolSpeed = player.inventory.getDestroySpeed(event.getState());
-			float invToolSpeed = 1F/toolSpeed;
+			float invToolSpeed = 1F / toolSpeed;
 			float speed = event.getNewSpeed();
-			event.setNewSpeed(speed + toolSpeed * (1 + (float)Math.pow(Math.log(7.39+(levels*levels)/(speed*invToolSpeed)), power)*invToolSpeed));
+			event.setNewSpeed(speed + toolSpeed * (1 + (float)Math.pow(Math.log(7.39 + (levels * levels) / (speed * invToolSpeed)), power) * invToolSpeed));
 		}
 		level = ench.getInt(UEUtils.THICK_PICK);
 		if(level > 0 && event.getState().getDestroySpeed(player.level, event.getPos()) >= 20)
@@ -767,7 +789,7 @@ public class UtilsHandler
 		level = ench.getInt(UEUtils.REINFORCED);
 		if(level > 0)
 		{
-			event.setNewSpeed((float)(event.getNewSpeed() / (1+Reinforced.BASE_REDUCTION.get(level)/100)));
+			event.setNewSpeed((float)(event.getNewSpeed() / (1 + Reinforced.BASE_REDUCTION.get(level) / 100)));
 		}
 		level = UEUtils.THICK_UPGRADE.getPoints(held);
 		if(level > 0)
@@ -782,7 +804,7 @@ public class UtilsHandler
 		int level = MiscUtil.getEnchantmentLevel(UEUtils.SAGES_SOUL, event.getItem());
 		if(level > 0)
 		{
-			event.setDuration((int)(event.getDuration() * 1/(Math.log10(Math.pow(1000+SagesSoul.DRAW_SPEED.get(StackUtils.getInt(event.getItem(), SagesSoul.STORED_XP, 0)), SagesSoul.getEnchantPower(event.getItem(), level)))-2)));
+			event.setDuration((int)(event.getDuration() * 1 / (Math.log10(Math.pow(1000 + SagesSoul.DRAW_SPEED.get(StackUtils.getInt(event.getItem(), SagesSoul.STORED_XP, 0)), SagesSoul.getEnchantPower(event.getItem(), level))) - 2)));
 		}
 	}
 	
@@ -801,7 +823,7 @@ public class UtilsHandler
 			int amount = StackUtils.getInt(held, ThickPick.TAG, 0);
 			if(amount > 0)
 			{
-				StackUtils.setInt(held, ThickPick.TAG, amount-1);
+				StackUtils.setInt(held, ThickPick.TAG, amount - 1);
 			}
 		}
 	}
@@ -816,16 +838,16 @@ public class UtilsHandler
 			int level = MiscUtil.getEnchantmentLevel(UEUtils.ROCKET_MAN, armor);
 			if(armor.getItem() instanceof ElytraItem && level > 0)
 			{
-                if(!event.getWorld().isClientSide)
-                {
-                    event.getWorld().addFreshEntity(new FireworkRocketEntity(event.getWorld(), stack, event.getPlayer()));
-                }
-                else
-                {
-                	PlayerEntity player = event.getPlayer();
-                	event.getPlayer().teleportTo(player.getX(), player.getY() + 0.5D, player.getZ());
-                }
-                ((EntityMixin)event.getPlayer()).setFlag(7, true);
+				if(!event.getWorld().isClientSide)
+				{
+					event.getWorld().addFreshEntity(new FireworkRocketEntity(event.getWorld(), stack, event.getPlayer()));
+				}
+				else
+				{
+					PlayerEntity player = event.getPlayer();
+					event.getPlayer().teleportTo(player.getX(), player.getY() + 0.5D, player.getZ());
+				}
+				((EntityMixin)event.getPlayer()).setFlag(7, true);
 			}
 		}
 	}
@@ -857,7 +879,10 @@ public class UtilsHandler
 					}
 				}
 			}
-			catch(Exception e){e.printStackTrace();}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -867,18 +892,19 @@ public class UtilsHandler
 		Entity entity = event.getSource().getEntity();
 		if(entity instanceof LivingEntity)
 		{
-			int points = UEUtils.FAMINES_UPGRADE.getPoints(((LivingEntity)entity).getMainHandItem());
-			if(points > 0)
+			if(!entity.level.isClientSide())
 			{
-				Random random = ((LivingEntity)entity).getRandom(); 
-				if(random.nextDouble() <= MathCache.SQRT_SPECIAL.get(points)*0.01)
+				int points = UEUtils.FAMINES_UPGRADE.getPoints(((LivingEntity)entity).getMainHandItem());
+				if(points > 0)
 				{
-					System.out.println("nani");
-					Effect effect = getRandomNegativeEffect(random);
-					if(effect != null) {
-						System.out.println(effect.getRegistryName());
-						event.getEntityLiving().addEffect(new EffectInstance(effect, MathCache.SQRT_SPECIAL.getInt(points)*10));
-						System.out.println(MathCache.SQRT_SPECIAL.getInt(points)*10);
+					Random random = ((LivingEntity)entity).getRandom();
+					if(random.nextDouble() <= MathCache.SQRT_SPECIAL.get(points) * 0.01)
+					{
+						Effect effect = getRandomNegativeEffect(random);
+						if(effect != null)
+						{
+							event.getEntityLiving().addEffect(new EffectInstance(effect, MathCache.SQRT_SPECIAL.getInt(points) * 10));
+						}
 					}
 				}
 			}
@@ -901,19 +927,19 @@ public class UtilsHandler
 	public void onEquippementSwapped(LivingEquipmentChangeEvent event)
 	{
 		AttributeModifierManager attribute = event.getEntityLiving().getAttributes();
-		Multimap<Attribute, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), event.getEntityLiving(), event.getSlot());
+		Multimap<Attribute, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), event.getEntityLiving(), event.getSlot(), true);
 		if(!mods.isEmpty())
 		{
 			attribute.removeAttributeModifiers(mods);
 		}
-		mods = createModifiersFromStack(event.getTo(),event.getEntityLiving(), event.getSlot());
+		mods = createModifiersFromStack(event.getTo(), event.getEntityLiving(), event.getSlot(), false);
 		if(!mods.isEmpty())
 		{
 			attribute.addTransientAttributeModifiers(mods);
 		}
 	}
-
-	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(ItemStack stack, LivingEntity living, EquipmentSlotType slot)
+	
+	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(ItemStack stack, LivingEntity living, EquipmentSlotType slot, boolean remove)
 	{
 		Multimap<Attribute, AttributeModifier> mods = HashMultimap.create();
 		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(stack);
@@ -921,21 +947,21 @@ public class UtilsHandler
 		if(level > 0)
 		{
 			double base = Reinforced.BASE_REDUCTION.get();
-			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(Reinforced.SPEED_MOD, "Reinforced Boost", Math.pow((base+((1D-base)*0.01D)*level), Math.sqrt(level)), Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(Reinforced.SPEED_MOD, "Reinforced Boost", Math.pow((base + ((1D - base) * 0.01D) * level), Math.sqrt(level)), Operation.MULTIPLY_TOTAL));
 		}
 		level = ench.getInt(UEUtils.SAGES_SOUL);
 		if(level > 0)
 		{
 			int levels = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
 			double power = SagesSoul.getEnchantPower(stack, level);
-			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SagesSoul.ATTACK_MOD.getId(slot), "Sage Attack Boost", Math.pow(-0.5+Math.sqrt(0.25+SagesSoul.ATTACK_SPEED.get(2*levels)), power)/SagesSoul.ATTACK_SPEED.get(), Operation.MULTIPLY_TOTAL));
-			mods.put(Attributes.ARMOR, new AttributeModifier(SagesSoul.ARMOR_MOD.getId(slot), "Sages Armor Boost", Math.pow((-0.5+SagesSoul.ARMOR_SCALE.get(Math.sqrt(0.25+8*(levels*Math.sqrt(level))))), power)/SagesSoul.ARMOR_DIVIDOR.get(), Operation.ADDITION));
-			mods.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(SagesSoul.TOUGHNESS_MOD.getId(slot), "Sages Toughness Boost", Math.pow((-0.5+SagesSoul.TOUGHNESS_SCALE.get(Math.sqrt(0.25+1*(levels*Math.sqrt(level))))), power)/SagesSoul.TOUGHNESS_DIVIDOR.get(), Operation.ADDITION));
+			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SagesSoul.ATTACK_MOD.getId(slot), "Sage Attack Boost", Math.pow(-0.5 + Math.sqrt(0.25 + SagesSoul.ATTACK_SPEED.get(2 * levels)), power) / SagesSoul.ATTACK_SPEED.get(), Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.ARMOR, new AttributeModifier(SagesSoul.ARMOR_MOD.getId(slot), "Sages Armor Boost", Math.pow((-0.5 + SagesSoul.ARMOR_SCALE.get(Math.sqrt(0.25 + 8 * (levels * Math.sqrt(level))))), power) / SagesSoul.ARMOR_DIVIDOR.get(), Operation.ADDITION));
+			mods.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(SagesSoul.TOUGHNESS_MOD.getId(slot), "Sages Toughness Boost", Math.pow((-0.5 + SagesSoul.TOUGHNESS_SCALE.get(Math.sqrt(0.25 + 1 * (levels * Math.sqrt(level))))), power) / SagesSoul.TOUGHNESS_DIVIDOR.get(), Operation.ADDITION));
 		}
 		level = UEUtils.ROCKET_UPGRADE.getCombinedPoints(living);
-		if(level > 0)
+		if(level > 0 || remove)
 		{
-			mods.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(RocketUpgrade.SPEED_MOD, "Rocket Upgrade", MathCache.dynamicLog(1+level, 2)*0.01D, Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(RocketUpgrade.SPEED_MOD, "Rocket Upgrade", MathCache.dynamicLog(1 + level, 2) * 0.01D, Operation.MULTIPLY_TOTAL));
 		}
 		return mods;
 	}
@@ -945,69 +971,71 @@ public class UtilsHandler
 		List<PlayerEntity> players = new ObjectArrayList<>();
 		for(Entity entity : original.getIndirectPassengers())
 		{
-			if(entity instanceof PlayerEntity) players.add((PlayerEntity)entity);
+			if(entity instanceof PlayerEntity)
+				players.add((PlayerEntity)entity);
 		}
 		return players;
 	}
 	
-    public static void damageShield(float damage, PlayerEntity player)
-    {
-        if (damage >= 3.0F && player.getUseItem().getItem().isShield(player.getUseItem(), player))
-        {
-            ItemStack copyBeforeUse = player.getUseItem().copy();
-            int i = 1 + MathHelper.floor(damage);
-            player.getUseItem().hurtAndBreak(i, player, T -> T.broadcastBreakEvent(player.getUsedItemHand()));
-            if (player.getUseItem().isEmpty())
-            {
-                Hand hand = player.getUsedItemHand();
-                net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, copyBeforeUse, hand);
-
-                if (hand == Hand.MAIN_HAND)
-                {
-                    player.setItemSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
-                }
-                else
-                {
-                    player.setItemSlot(EquipmentSlotType.OFFHAND, ItemStack.EMPTY);
-                }
-
-                player.stopUsingItem();
-                player.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + player.level.random.nextFloat() * 0.4F);
-            }
-        }
-    }
-
-    public static boolean canBlockDamageSource(DamageSource damageSourceIn, PlayerEntity player)
-    {
-        if (!damageSourceIn.isBypassArmor() && player.isBlocking())
-        {
-        	if(MiscUtil.getEnchantmentLevel(UEUtils.MOUNTING_AEGIS, player.getUseItem()) <= 0) return false;
-            Vector3d Vector3d = damageSourceIn.getSourcePosition();
-
-            if (Vector3d != null)
-            {
-                Vector3d Vector3d1 = player.getViewVector(1.0F);
-                Vector3d Vector3d2 = Vector3d.vectorTo(new Vector3d(player.getX(), player.getY(), player.getZ())).normalize();
-                Vector3d2 = new Vector3d(Vector3d2.x, 0.0D, Vector3d2.z);
-                if (Vector3d2.dot(Vector3d1) < 0.0D)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
-    private Effect getRandomNegativeEffect(Random rand)
-    {
-    	List<Effect> effects = new ObjectArrayList<>();
-    	for(Effect effect : ForgeRegistries.POTIONS)
-    	{
-    		if(effect.getCategory() == EffectType.HARMFUL)
-    		{
-    			effects.add(effect);
-    		}
-    	}
-    	return effects.isEmpty() ? null : effects.get(rand.nextInt(effects.size()));
-    }
+	public static void damageShield(float damage, PlayerEntity player)
+	{
+		if(damage >= 3.0F && player.getUseItem().getItem().isShield(player.getUseItem(), player))
+		{
+			ItemStack copyBeforeUse = player.getUseItem().copy();
+			int i = 1 + MathHelper.floor(damage);
+			player.getUseItem().hurtAndBreak(i, player, T -> T.broadcastBreakEvent(player.getUsedItemHand()));
+			if(player.getUseItem().isEmpty())
+			{
+				Hand hand = player.getUsedItemHand();
+				net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, copyBeforeUse, hand);
+				
+				if(hand == Hand.MAIN_HAND)
+				{
+					player.setItemSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
+				}
+				else
+				{
+					player.setItemSlot(EquipmentSlotType.OFFHAND, ItemStack.EMPTY);
+				}
+				
+				player.stopUsingItem();
+				player.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + player.level.random.nextFloat() * 0.4F);
+			}
+		}
+	}
+	
+	public static boolean canBlockDamageSource(DamageSource damageSourceIn, PlayerEntity player)
+	{
+		if(!damageSourceIn.isBypassArmor() && player.isBlocking())
+		{
+			if(MiscUtil.getEnchantmentLevel(UEUtils.MOUNTING_AEGIS, player.getUseItem()) <= 0)
+				return false;
+			Vector3d Vector3d = damageSourceIn.getSourcePosition();
+			
+			if(Vector3d != null)
+			{
+				Vector3d Vector3d1 = player.getViewVector(1.0F);
+				Vector3d Vector3d2 = Vector3d.vectorTo(new Vector3d(player.getX(), player.getY(), player.getZ())).normalize();
+				Vector3d2 = new Vector3d(Vector3d2.x, 0.0D, Vector3d2.z);
+				if(Vector3d2.dot(Vector3d1) < 0.0D)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private Effect getRandomNegativeEffect(Random rand)
+	{
+		List<Effect> effects = new ObjectArrayList<>();
+		for(Effect effect : ForgeRegistries.POTIONS)
+		{
+			if(effect.getCategory() == EffectType.HARMFUL)
+			{
+				effects.add(effect);
+			}
+		}
+		return effects.isEmpty() ? null : effects.get(rand.nextInt(effects.size()));
+	}
 }

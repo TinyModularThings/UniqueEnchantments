@@ -19,11 +19,14 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeableArmorItem;
@@ -31,6 +34,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.TieredItem;
+import net.minecraft.item.crafting.FurnaceRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.ByteNBT;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -204,6 +209,7 @@ public class EnchantmentHandler
 		return enchantedItems.computeIfAbsent(ench, this::createItemsForEnchantments);
 	}
 	
+	@OnlyIn(Dist.CLIENT)
 	private List<ItemStack> createItemsForEnchantments(Enchantment ench)
 	{
 		List<ItemStack> validItems = new ObjectArrayList<>();
@@ -241,6 +247,17 @@ public class EnchantmentHandler
 				else if(item instanceof BlockItem)
 				{
 					validBlocks.add(stack);
+				}
+				else if(item.isEdible())
+				{
+					ClientWorld world = Minecraft.getInstance().level;
+					IInventory inv = new Inventory(1);
+					inv.setItem(0, stack.copy());
+					Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, inv, world);
+					if(!recipe.isPresent() || !recipe.get().getResultItem().isEdible())
+					{
+						validItems.add(stack);						
+					}
 				}
 				else
 				{

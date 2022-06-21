@@ -50,7 +50,6 @@ import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent.ItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.Event.Result;
@@ -63,8 +62,6 @@ import uniquebase.gui.EnchantmentGui;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.Triple;
-import uniquee.UE;
-import uniqueeutils.UEUtils;
 
 public class BaseHandler
 {
@@ -164,8 +161,14 @@ public class BaseHandler
 		if(globalAbsorber++ >= 100)
 		{
 			globalAbsorber = 0;
-			activeAbsorbers.removeIf(TrackedAbsorber::process);
+			activeAbsorbers.removeIf(this::process);
 		}
+	}
+	
+	private boolean process(TrackedAbsorber absorber)
+	{
+		if(absorber == null) return true;
+		return absorber.process();
 	}
 	
 	@SubscribeEvent

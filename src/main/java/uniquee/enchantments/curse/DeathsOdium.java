@@ -25,14 +25,13 @@ public class DeathsOdium extends UniqueEnchantment
 			"b84f1f28-af51-41b3-a820-5b0d5943deb2", "7feca783-39ef-474a-829f-27b004847d8f", "ab4e455c-9fd1-4601-8da0-d23ffc212815");
 	
 	public static final IntStat DELAY = new IntStat(200, "collector_time");
-	public static final IntStat MAX_STORAGE = new IntStat(1, "curse_storage_cap");
 	public static final IntStat DAMAGE_FACTOR = new IntStat(30, "damage_factor");
 	public static final DoubleStat BASE_LOSS = new DoubleStat(1, "base_loss");
 	
 	public DeathsOdium()
 	{
 		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 2, false, true, 10, 4, 40), BaseUEMod.ALL_TYPES, EquipmentSlotType.values());
-		addStats(DELAY, MAX_STORAGE, DAMAGE_FACTOR, BASE_LOSS);
+		addStats(DELAY, DAMAGE_FACTOR, BASE_LOSS);
 		setCurse();
 	}
 	

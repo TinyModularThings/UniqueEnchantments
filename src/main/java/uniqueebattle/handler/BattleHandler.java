@@ -72,6 +72,7 @@ import net.minecraftforge.items.wrapper.EmptyHandler;
 import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
+import uniquebase.utils.events.FishingLuckEvent;
 import uniquebase.utils.mixin.common.entity.DragonManagerMixin;
 import uniqueebattle.UEBattle;
 import uniqueebattle.enchantments.complex.AresFragment;
@@ -330,7 +331,17 @@ public class BattleHandler
 			}
 		}
 	}
-
+	
+	@SubscribeEvent
+	public void onFishingLuck(FishingLuckEvent event)
+	{
+		int level = UEBattle.IFRITS_UPGRADE.getPoints(event.getStack());
+		if(level > 0)
+		{
+			event.setLevel(event.getLevel() + (int)(MathCache.dynamicLog(level+1, 4)));
+		}
+	}
+	
 	@SubscribeEvent
 	public void onXPDrop(LivingExperienceDropEvent event)
 	{

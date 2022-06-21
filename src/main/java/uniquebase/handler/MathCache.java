@@ -30,7 +30,7 @@ public final class MathCache
 	
 	public double get(int level)
 	{
-		return level >= cache.length ? generator.applyAsDouble(level) : cache[level];
+		return level < 0 || level >= cache.length ? generator.applyAsDouble(level) : cache[level];
 	}
 	
 	public float getFloat(int level)
