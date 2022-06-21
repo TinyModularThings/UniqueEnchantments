@@ -212,6 +212,12 @@ public final class FusionContext extends Inventory
 		return largestLevel;
 	}
 	
+	public int getEnchantability()
+	{
+		ItemStack stack = mainChest.getStackInSlot(0);
+		return Math.max(1, stack.getItemEnchantability());
+	}
+	
 	public int getAchievedLevel(int books)
 	{
 		return (int)(MathCache.LOG10.get(getLargestLevel()) / MathCache.LOG10.get(books));

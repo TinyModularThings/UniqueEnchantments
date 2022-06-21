@@ -38,6 +38,7 @@ import uniquebase.handler.ClientProxy;
 import uniquebase.handler.EnchantmentHandler;
 import uniquebase.handler.Proxy;
 import uniquebase.networking.PacketHandler;
+import uniquebase.utils.IdStat;
 
 @Mod("uniquebase")
 public class UEBase
@@ -73,6 +74,9 @@ public class UEBase
 	public static BooleanValue XP_OVERRIDE_ANVIL;
 	public static DoubleValue XP_MULTIPLIER_ANVIL;
 	
+	public static BooleanValue DISABLE_JEI;
+	public static final IdStat APPLICABLE_ICON_OVERRIDE = new IdStat("overrideIcons", "override that decides which items are used to decide to show in the tooltip display. If Empty all items are used", ForgeRegistries.ITEMS);
+	
 	public static ForgeConfigSpec CONFIG;	
 	
 	public static final SoundEvent ANVIL_STACK = new SoundEvent(new ResourceLocation("uniquebase", "anvil_stacks"));
@@ -104,6 +108,7 @@ public class UEBase
 		LOG_BROKEN_MODS = builder.define("Log Invalid ItemStacks", true);
 		builder.pop();
 		builder.push("tooltips");
+		APPLICABLE_ICON_OVERRIDE.handleConfig(builder);
 		builder.comment("Allows to control which Keybind Tooltips are displayed, 1 => Description, 2 => Icons, 4 => View, they can be added together if wanted.", "This won't disable functionality just hide the keybinding tooltip itself");
 		TOOLTIPS_FLAGS = builder.defineInRange("Visible Tooltips", 7, 0, 7);
 		builder.comment("Hides curses from items until shift is pressed");
@@ -132,15 +137,16 @@ public class UEBase
 		builder.comment("Toggle for Item Overlay Coloring of Enchanted Books so if the texture is disabled you can turn this optioanlly of too so we don't ruin your texture");
 		ITEM_COLORING_ENABLED = builder.define("Enable Item Coloring", true);
 		builder.pop();
-		
+		builder.push("jei");
+		builder.comment("If the JEI plugin should be disabled");
+		DISABLE_JEI = builder.define("Disable JEI Plugin", false);		
+		builder.pop();
 		CONFIG = builder.build();
 		BaseUEMod.validateConfigFolder();
 		ModLoadingContext.get().registerConfig(Type.COMMON, CONFIG, "ue/UEBase.toml");
 		MinecraftForge.EVENT_BUS.register(BaseHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(EnchantmentHandler.INSTANCE);
-		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-		
-		
+		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();		
 		bus.addListener(this::onLoad);
 		bus.addListener(this::onFileChange);
 		
@@ -165,6 +171,7 @@ public class UEBase
     
 	protected void reloadConfig()
     {
+		APPLICABLE_ICON_OVERRIDE.onConfigChanged();
 		COLOR_SETTINGS.clear();
 		List<? extends String> list = COLOR_CONFIGS.get();
 		for (int i = 0; i < list.size(); i++) {
