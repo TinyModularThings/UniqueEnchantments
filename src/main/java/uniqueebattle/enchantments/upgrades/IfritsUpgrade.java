@@ -11,7 +11,7 @@ public class IfritsUpgrade extends EnchantedUpgrade
 {
 	public IfritsUpgrade()
 	{
-		super("uniquebattle", "ifrits_judgement", () -> UEBattle.IFRITS_JUDGEMENT);
+		super("uniquebattle", "ifrits_judgement", "upgrade.uniquebattle.loot", () -> UEBattle.IFRITS_JUDGEMENT);
 		setEquimentSlots(EnumSet.allOf(EquipmentSlotType.class));
 	}
 	

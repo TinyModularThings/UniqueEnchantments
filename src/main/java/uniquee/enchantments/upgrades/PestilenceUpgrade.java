@@ -12,7 +12,7 @@ public class PestilenceUpgrade extends EnchantedUpgrade
 {
 	public PestilenceUpgrade()
 	{
-		super("uniquee", "pestilence", () -> UE.PESTILENCES_ODIUM);
+		super("uniquee", "pestilence", "upgrade.uniquee.potion_reduction", () -> UE.PESTILENCES_ODIUM);
 		setEquimentSlots(EnumSet.allOf(EquipmentSlotType.class));
 	}
 

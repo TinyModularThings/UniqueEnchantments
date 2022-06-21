@@ -12,7 +12,7 @@ public class GrimoiresUpgrade extends EnchantedUpgrade
 {
 	public GrimoiresUpgrade()
 	{
-		super("uniquee", "grimoire", () -> UE.GRIMOIRE);
+		super("uniquee", "grimoire", "upgrade.uniquee.durability", () -> UE.GRIMOIRE);
 		setEquimentSlots(EnumSet.allOf(EquipmentSlotType.class));
 	}
 

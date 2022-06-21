@@ -46,5 +46,10 @@
 	"enchantment.uniquebattle.wars_odium.icon": "j",
 	"tooltip.uniquebattle.stored.ender.name": "Stored Ender Energy %s",
 	"tooltip.uniquebattle.stored.ender.souls.common.name": "Basic Souls stored %s",
-	"tooltip.uniquebattle.stored.ender.souls.higher.name": "Higher Souls stored %s"
+	"tooltip.uniquebattle.stored.ender.souls.higher.name": "Higher Souls stored %s",
+	
+	"upgrade.uniquebattle.crit": "Crit Damage %s",
+	"upgrade.uniquebattle.loot": "Loot %s",
+	"upgrade.uniquebattle.use_time": "Use Time %s",
+	"upgrade.uniquebattle.lifesteal": "Lifesteal %s"
 }

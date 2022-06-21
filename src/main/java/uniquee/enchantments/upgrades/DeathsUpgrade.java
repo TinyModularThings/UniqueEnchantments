@@ -9,7 +9,7 @@ public class DeathsUpgrade extends EnchantedUpgrade
 {
 	public DeathsUpgrade()
 	{
-		super("uniquee", "deaths", () -> UE.DEATHS_ODIUM);
+		super("uniquee", "deaths", "upgrade.uniquee.percent_damage", () -> UE.DEATHS_ODIUM);
 	}
 
 	@Override

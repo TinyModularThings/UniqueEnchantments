@@ -119,5 +119,11 @@
 	"tooltip.uniquee.stored.gold.name": "Stored Gold: %s",
 	"tooltip.uniquee.stored.lava.name": "Stored Lava: %s",
 	"tooltip.uniquee.stored.reap.name": "Stored Reap: %s",
-	"tooltip.uniquee.stored.repair.name": "Stored Repairs: %s"
+	"tooltip.uniquee.stored.repair.name": "Stored Repairs: %s",
+	
+	"upgrade.uniquee.attack": "Attack Damage %s",
+	"upgrade.uniquee.percent_damage": "Health Damage %s",
+	"upgrade.uniquee.durability": "Save Durabilty %s",
+	"upgrade.uniquee.potion_reduction": "Potion Reduction %s",
+	"upgrade.uniquee.regen": "Regen %s"
 }

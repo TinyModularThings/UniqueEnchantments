@@ -34,5 +34,10 @@
 	
 	"tooltip.uniquebattle.stored.ender.name":"Gespeicherte Ender Energie %s",
 	"tooltip.uniquebattle.stored.ender.souls.common.name":"Normale Seelen gespeichert %s",
-	"tooltip.uniquebattle.stored.ender.souls.higher.name":"Maechtige Seelen gespeichert %s"
+	"tooltip.uniquebattle.stored.ender.souls.higher.name":"Maechtige Seelen gespeichert %s",
+	
+	"upgrade.uniquebattle.crit": "Kritischer Schaden %s",
+	"upgrade.uniquebattle.loot": "Beute %s",
+	"upgrade.uniquebattle.use_time": "Nutzzeit %s",
+	"upgrade.uniquebattle.lifesteal": "Lebensraub %s"
 }

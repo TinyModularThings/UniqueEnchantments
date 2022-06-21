@@ -232,7 +232,7 @@ public final class FusionContext extends Inventory
 			for(Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(stack).entrySet())
 			{
 				if(i != 0) ((Object2IntLinkedOpenHashMap<Enchantment>)instances).addTo(entry.getKey(), 1);
-				((Object2IntLinkedOpenHashMap<Enchantment>)totalLevels).addTo(entry.getKey(), (int)Math.pow(entry.getValue(), 2));
+				((Object2IntLinkedOpenHashMap<Enchantment>)totalLevels).addTo(entry.getKey(), (int)Math.min(Math.pow(2, entry.getValue()-1), 65535));
 			}
 		}
 	}

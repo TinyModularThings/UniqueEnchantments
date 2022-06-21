@@ -9,7 +9,7 @@ public class WarsUpgrade extends EnchantedUpgrade
 {
 	public WarsUpgrade()
 	{
-		super("uniquebattle", "wars_odium", () -> UEBattle.WARS_ODIUM);
+		super("uniquebattle", "wars_odium", "upgrade.uniquebattle.lifesteal", () -> UEBattle.WARS_ODIUM);
 	}
 
 	@Override

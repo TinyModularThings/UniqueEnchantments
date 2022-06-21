@@ -9,7 +9,7 @@ public class FaminesUpgrade extends EnchantedUpgrade
 {
 	public FaminesUpgrade()
 	{
-		super("uniqueutil", "famines_odium", () -> UEUtils.FAMINES_ODIUM);
+		super("uniqueutil", "famines_odium", "upgrade.uniqueutils.give_effect", () -> UEUtils.FAMINES_ODIUM);
 	}
 	
 	@Override

@@ -89,6 +89,12 @@
 	"tooltip.uniquee.stored.lava.name": "Gespeicherte Lava: %s",
 	"tooltip.uniquee.stored.feather.name": "Gespeicherte Federn: %s",
 	"tooltip.uniquee.stored.repair.name": "Gespeicherte Reparaturen: %s",
-	"tooltip.uniquee.stored.reap.name": "Gespeicherte Ernte: %s"
+	"tooltip.uniquee.stored.reap.name": "Gespeicherte Ernte: %s",
+	
+	"upgrade.uniquee.attack": "Angriffsschaden %s",
+	"upgrade.uniquee.percent_damage": "Lebensschaden %s",
+	"upgrade.uniquee.durability": "Haltbarkeitsrettung %s",
+	"upgrade.uniquee.potion_reduction": "Trankzeit reduktion %s",
+	"upgrade.uniquee.regen": "Regeneration %s"
 	
 }

@@ -68,5 +68,9 @@
 	"tooltip.uniqueutil.stored.redstone.name": "Stored Redstone %s",
 	"tooltip.uniqueutil.stored.repair.name": "Stored Gems %s",
 	"tooltip.uniqueutil.stored.shield.name": "%s Stored Durability left",
-	"tooltip.uniqueutil.stored.soul.name": "Item Soul Level %s"
+	"tooltip.uniqueutil.stored.soul.name": "Item Soul Level %s",
+	
+	"upgrade.uniqueutils.speed": "Speed %s",
+	"upgrade.uniqueutils.give_effect": "Give Effect %s",
+	"upgrade.uniqueutils.mining_speed": "Mining Speed %s"
 }

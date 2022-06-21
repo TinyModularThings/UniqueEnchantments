@@ -14,7 +14,7 @@ public class AmelioratedUpgrade extends EnchantedUpgrade
 	
 	public AmelioratedUpgrade()
 	{
-		super("uniquee", "amolirated", () -> UE.ADV_SHARPNESS);
+		super("uniquee", "amolirated", "upgrade.uniquee.attack", () -> UE.ADV_SHARPNESS);
 	}
 	
 	@Override

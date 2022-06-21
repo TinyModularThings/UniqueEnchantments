@@ -12,7 +12,7 @@ public class PhoenixUpgrade extends EnchantedUpgrade
 {
 	public PhoenixUpgrade()
 	{
-		super("uniquee", "phoenix_blessing", () -> UE.PHOENIX_BLESSING);
+		super("uniquee", "phoenix_blessing", "upgrade.uniquee.regen", () -> UE.PHOENIX_BLESSING);
 		setEquimentSlots(EnumSet.allOf(EquipmentSlotType.class));
 	}
 

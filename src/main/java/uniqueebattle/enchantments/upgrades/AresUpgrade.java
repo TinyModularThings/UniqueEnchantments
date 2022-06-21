@@ -9,7 +9,7 @@ public class AresUpgrade extends EnchantedUpgrade
 {
 	public AresUpgrade()
 	{
-		super("uniquebattle", "ares_fragment", () -> UEBattle.ARES_FRAGMENT);
+		super("uniquebattle", "ares_fragment", "upgrade.uniquebattle.crit", () -> UEBattle.ARES_FRAGMENT);
 	}
 
 	@Override

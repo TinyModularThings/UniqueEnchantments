@@ -871,10 +871,15 @@ public class UtilsHandler
 			if(points > 0)
 			{
 				Random random = ((LivingEntity)entity).getRandom(); 
-				if(random.nextDouble() <= MathCache.SQRT_SPECIAL.get(points))
+				if(random.nextDouble() <= MathCache.SQRT_SPECIAL.get(points)*0.01)
 				{
+					System.out.println("nani");
 					Effect effect = getRandomNegativeEffect(random);
-					if(effect != null) event.getEntityLiving().addEffect(new EffectInstance(effect, MathCache.SQRT_EXTRA_SPECIAL.getInt(points)*10));
+					if(effect != null) {
+						System.out.println(effect.getRegistryName());
+						event.getEntityLiving().addEffect(new EffectInstance(effect, MathCache.SQRT_SPECIAL.getInt(points)*10));
+						System.out.println(MathCache.SQRT_SPECIAL.getInt(points)*10);
+					}
 				}
 			}
 		}
@@ -930,7 +935,7 @@ public class UtilsHandler
 		level = UEUtils.ROCKET_UPGRADE.getCombinedPoints(living);
 		if(level > 0)
 		{
-			mods.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(RocketUpgrade.SPEED_MOD, "Rocket Upgrade", Math.sqrt(level)*0.01D, Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(RocketUpgrade.SPEED_MOD, "Rocket Upgrade", MathCache.dynamicLog(1+level, 2)*0.01D, Operation.MULTIPLY_TOTAL));
 		}
 		return mods;
 	}

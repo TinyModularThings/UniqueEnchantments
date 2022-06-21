@@ -12,7 +12,7 @@ public class LunaticUpgrade extends EnchantedUpgrade
 {
 	public LunaticUpgrade()
 	{
-		super("uniquebattle", "lunatic_despair", () -> UEBattle.LUNATIC_DESPAIR);
+		super("uniquebattle", "lunatic_despair", "upgrade.uniquebattle.use_time", () -> UEBattle.LUNATIC_DESPAIR);
 		setEquimentSlots(EnumSet.allOf(EquipmentSlotType.class));
 	}
 	

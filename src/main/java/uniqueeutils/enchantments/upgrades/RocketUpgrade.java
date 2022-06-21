@@ -14,7 +14,7 @@ public class RocketUpgrade extends EnchantedUpgrade
 	public static final UUID SPEED_MOD = UUID.fromString("ff50c176-52d2-4711-8665-e7c782a21616");
 	public RocketUpgrade()
 	{
-		super("uniqueutil", "rocket_man", () -> UEUtils.ROCKET_MAN);
+		super("uniqueutil", "rocket_man", "upgrade.uniqueutils.speed", () -> UEUtils.ROCKET_MAN);
 		setEquimentSlots(EnumSet.allOf(EquipmentSlotType.class));
 	}
 
