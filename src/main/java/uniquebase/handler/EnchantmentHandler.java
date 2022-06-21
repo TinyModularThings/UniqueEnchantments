@@ -56,6 +56,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
+import uniquebase.utils.IdStat;
 
 public class EnchantmentHandler
 {
@@ -211,8 +212,14 @@ public class EnchantmentHandler
 		Collector<Class<?>> classBased = new Collector<>();
 		Collector<ArmorEntry> armor = new Collector<>();
 		Set<Class<?>> clz = new ObjectOpenHashSet<>();
+		IdStat stat = UEBase.APPLICABLE_ICON_OVERRIDE;
+		boolean check = !stat.isEmpty();
 		for(Item item : ForgeRegistries.ITEMS)
 		{
+			if(check && !stat.contains(item.getRegistryName()))
+			{
+				continue;
+			}
 			ItemStack stack = new ItemStack(item);
 			if(ench.canApplyAtEnchantingTable(stack))
 			{

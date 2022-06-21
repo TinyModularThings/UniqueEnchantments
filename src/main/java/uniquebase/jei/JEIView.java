@@ -33,6 +33,7 @@ public class JEIView implements IModPlugin
 	@Override
 	public void registerRecipes(IRecipeRegistration registration)
 	{
+		if(UEBase.DISABLE_JEI.get()) return;
 		List<ItemStack> items = new ObjectArrayList<>();
 		NonNullList<ItemStack> helper = NonNullList.create();
 		for(Item item : ForgeRegistries.ITEMS) {
@@ -57,6 +58,7 @@ public class JEIView implements IModPlugin
 	@Override
 	public void registerCategories(IRecipeCategoryRegistration registry)
 	{
+		if(UEBase.DISABLE_JEI.get()) return;
 		registry.addRecipeCategories(new EnchantmentCategory(registry.getJeiHelpers().getGuiHelper()));
 	}
 
@@ -68,7 +70,7 @@ public class JEIView implements IModPlugin
 
 	@Override
 	public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
-		
+		if(UEBase.DISABLE_JEI.get()) return;
 		NonNullList<ItemStack> list = NonNullList.create();
 		Items.ENCHANTED_BOOK.fillItemCategory(ItemGroup.TAB_SEARCH, list);
 		list.sort(Comparator.comparing(this::getLevel).reversed());

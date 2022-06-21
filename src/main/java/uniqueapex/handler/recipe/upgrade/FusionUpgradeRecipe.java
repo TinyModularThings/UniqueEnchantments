@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniqueapex.UEApex;
 import uniqueapex.handler.recipe.FusionContext;
+import uniquebase.handler.MathCache;
 
 public class FusionUpgradeRecipe implements IRecipe<FusionContext>
 {
@@ -70,8 +71,9 @@ public class FusionUpgradeRecipe implements IRecipe<FusionContext>
 	public int getRequiredXP(FusionContext context)
 	{
 		Enchantment ench = context.getLargestEnchantment();
-		int level = (int)(context.getAchievedLevel(requiredBooks) * Math.sqrt((double)ench.getRarity().getWeight()*(double)ench.getMinCost(1)));
-		return (int)(requiredExperience + Math.pow(level, 2));
+		int levelToAchieve = context.getAchievedLevel(requiredBooks);
+		float lvl = (float)levelToAchieve / (float)ench.getMaxLevel();
+		return requiredExperience + (int)(UEApex.UPGRADE_MULTIPLIERS.getFloat(ench) * (lvl > 1 ? levelToAchieve * levelToAchieve : levelToAchieve) * Math.sqrt(lvl * MathCache.POW3.get(levelToAchieve) / (float)context.getEnchantability())*(11 - Math.min(ench.getRarity().getWeight(), 10)));
 	}
 	
 	public void mergeEnchantments(FusionContext context)

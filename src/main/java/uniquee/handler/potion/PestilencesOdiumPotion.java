@@ -16,17 +16,20 @@ public class PestilencesOdiumPotion extends Effect
 	}
 	
 	@Override
-	public void applyEffectTick(LivingEntity entityLivingBaseIn, int amplifier)
+	public void applyEffectTick(LivingEntity entity, int amplifier)
 	{
-		EffectInstance effect = entityLivingBaseIn.getEffect(this);
-		if(effect == null || entityLivingBaseIn == null)
+		EffectInstance effect = entity.getEffect(this);
+		if(effect == null || entity == null)
 		{
 			return;
 		}
-		if(entityLivingBaseIn.level.getGameTime() % Math.max(1, (PestilencesOdium.DELAY.get() / Math.max(1, amplifier))) == 0)
+		if(entity.level.getGameTime() % Math.max(1, (PestilencesOdium.DELAY.get() / Math.max(1, amplifier))) == 0)
 		{
 			float value = PestilencesOdium.DAMAGE_PER_TICK.getFloat() * amplifier;
-			entityLivingBaseIn.hurt(DamageSource.MAGIC, value);
+			if(entity.getHealth() > value+0.1F)
+			{
+				entity.hurt(DamageSource.MAGIC, value);
+			}
 		}
 	}
 	

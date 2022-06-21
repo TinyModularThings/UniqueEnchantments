@@ -3,23 +3,27 @@ package uniquee.enchantments.simple;
 import com.google.common.base.Predicate;
 
 import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
+import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
+import uniquebase.utils.IdStat;
 import uniquebase.utils.MiscUtil;
 import uniquee.UE;
 
 public class EnderEyes extends UniqueEnchantment
 {
 	public static final DoubleStat TRANSCENDED_CHANCE = new DoubleStat(0.6, "transcended_chance");
+	public static final IdStat AFFECTED_ENTITIES = new IdStat("affected_entities", ForgeRegistries.ENTITIES, EntityType.PLAYER);
 	
 	public EnderEyes()
 	{
 		super(new DefaultData("ender_eyes", Rarity.UNCOMMON, 1, false, false, 10, 2, 5).setTrancendenceLevel(200), EnchantmentType.ARMOR_HEAD, EquipmentSlotType.HEAD);
-		addStats(TRANSCENDED_CHANCE);
+		addStats(TRANSCENDED_CHANCE, AFFECTED_ENTITIES);
 	}
 	
 	@Override

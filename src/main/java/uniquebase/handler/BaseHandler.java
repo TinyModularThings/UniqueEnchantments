@@ -1,5 +1,6 @@
 package uniquebase.handler;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.ToIntFunction;
@@ -8,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -18,6 +20,7 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.inventory.container.Slot;
@@ -41,12 +44,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.ItemPickupEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -66,7 +71,9 @@ public class BaseHandler
 	public static final BaseHandler INSTANCE = new BaseHandler();
 	List<Tuple<Enchantment, String[]>> tooltips = new ObjectArrayList<>();
 	List<Triple<Enchantment, ToIntFunction<ItemStack>, String>> anvilHelpers = new ObjectArrayList<>();
+	List<TrackedAbsorber> activeAbsorbers = new ArrayList<>(); //Using non FastUtil list due to FastUtils removeIf implementation being slower then Javas ArrayList
 	int tooltipCounter = 0;
+	int globalAbsorber = 0;
 	
 	public void registerStorageTooltip(Enchantment ench, String translation, String tag)
 	{
@@ -136,16 +143,6 @@ public class BaseHandler
 	}
 	
 	@SubscribeEvent
-	public void onPickup(ItemPickupEvent event) {
-		ItemEntity itemEnt = event.getOriginalEntity();
-		UE.AMELIORATED_UPGRADE.storePoints(itemEnt.getItem(), 1600000);
-		System.out.println(UE.AMELIORATED_UPGRADE.getPoints(itemEnt.getItem()));
-		
-		UEUtils.FAMINES_UPGRADE.storePoints(itemEnt.getItem(), 160000);
-		System.out.println(UEUtils.FAMINES_UPGRADE.getPoints(itemEnt.getItem()));
-	}
-	
-	@SubscribeEvent
 	public void onEntityDamaged(LivingDamageEvent event) {
 		LivingEntity target = event.getEntityLiving();
 		Entity ent = event.getSource().getEntity();
@@ -156,6 +153,18 @@ public class BaseHandler
 			if(level > 0) {
 				event.setAmount(event.getAmount()+2.5f*level);
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onServerTick(ServerTickEvent event)
+	{
+		if(event.phase == Phase.START) return;
+		if(activeAbsorbers.isEmpty()) return;
+		if(globalAbsorber++ >= 100)
+		{
+			globalAbsorber = 0;
+			activeAbsorbers.removeIf(TrackedAbsorber::process);
 		}
 	}
 	
@@ -229,6 +238,14 @@ public class BaseHandler
 				event.getToolTip().add(new TranslationTextComponent(names[0], StackUtils.getInt(stack, names[1], 0)).withStyle(TextFormatting.GOLD));
 			}
 		}
+		for(EnchantedUpgrade upgrade : EnchantedUpgrade.getAllUpgrades())
+		{
+			int points = upgrade.getPoints(stack);
+			if(points > 0)
+			{
+				event.getToolTip().add(new TranslationTextComponent(upgrade.getName(), points).withStyle(TextFormatting.GOLD));
+			}
+		}
 		Screen screen = Minecraft.getInstance().screen;
 		if(screen instanceof ContainerScreen && !(screen instanceof EnchantmentGui))
 		{
@@ -298,6 +315,32 @@ public class BaseHandler
 						}
 					}
 				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onEntityClick(EntityInteract event)
+	{
+		if(event.getItemStack().getItem() == Items.BELL && event.getTarget() instanceof ItemFrameEntity)
+		{
+			ItemFrameEntity frame = (ItemFrameEntity)event.getTarget();
+			ItemStack stack = frame.getItem();
+			if(stack.isEmpty()) return;
+			World world = event.getWorld();
+			BlockPos pos = frame.getPos().relative(frame.getDirection().getOpposite());
+			if(world.getBlockState(pos).getBlock() == Blocks.ENCHANTING_TABLE)
+			{
+				List<EnchantedUpgrade> upgrades = new ObjectArrayList<>();
+				for(EnchantedUpgrade entry : EnchantedUpgrade.getAllUpgrades())
+				{
+					if(entry.isValid(stack)) upgrades.add(entry);
+				}
+				if(upgrades.isEmpty()) return;
+				activeAbsorbers.add(new TrackedAbsorber(frame, world, pos, upgrades));
+				event.getItemStack().shrink(1);
+				event.setCancellationResult(ActionResultType.SUCCESS);
+				event.setCanceled(true);
 			}
 		}
 	}

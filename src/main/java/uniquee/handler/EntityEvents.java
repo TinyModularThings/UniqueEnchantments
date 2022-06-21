@@ -16,7 +16,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPredicate;
@@ -302,10 +301,14 @@ public class EntityEvents
 				int level = container.getCombinedEnchantment(UE.PESTILENCES_ODIUM);
 				if(level > 0)
 				{
-					List<AgeableEntity> living = player.level.getEntitiesOfClass(AgeableEntity.class, new AxisAlignedBB(player.blockPosition()).inflate(PestilencesOdium.RADIUS.get()));
+					List<LivingEntity> living = player.level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(player.blockPosition()).inflate(PestilencesOdium.RADIUS.get()));
 					for(int i = 0,m=living.size();i<m;i++)
 					{
-						living.get(i).addEffect(new EffectInstance(UE.PESTILENCES_ODIUM_POTION, 200, level));
+						LivingEntity entity = living.get(i);
+						if(entity.getActiveEffects().isEmpty())
+						{
+							entity.addEffect(new EffectInstance(UE.PESTILENCES_ODIUM_POTION, 200, level));
+						}
 					}
 				}
 			}
@@ -632,7 +635,7 @@ public class EntityEvents
 	public void onEntityHeal(LivingHealEvent event)
 	{
 		LivingEntity entity = event.getEntityLiving();
-		if(!MiscUtil.isTranscendent(entity, entity.getItemBySlot(EquipmentSlotType.CHEST), UE.BERSERKER) && entity.getHealth() > (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get()-0.25F))
+		if(MiscUtil.isTranscendent(entity, entity.getItemBySlot(EquipmentSlotType.CHEST), UE.BERSERKER) && entity.getHealth() > (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get()-0.25F))
 		{
 			event.setAmount(0F);
 		}
@@ -734,10 +737,8 @@ public class EntityEvents
 				StackUtils.setInt(held, PerpetualStrike.HIT_COUNT, count+1);
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ENDER_EYES, target.getItemBySlot(EquipmentSlotType.HEAD));
-			if(level > 0 && base.getType() == EntityType.ENDERMAN && !base.level.isClientSide()) {
-				if(rand.nextDouble() < EnderEyes.TRANSCENDED_CHANCE.get()) {
-					base.kill();
-				}
+			if(level > 0 && base.getType() == EntityType.ENDERMAN && EnderEyes.AFFECTED_ENTITIES.contains(base.getType().getRegistryName()) && MiscUtil.isTranscendent(target, target.getItemBySlot(EquipmentSlotType.HEAD), UE.ENDER_EYES) && rand.nextDouble() < EnderEyes.TRANSCENDED_CHANCE.get()) {
+				base.kill();
 			}
 		}
 	}

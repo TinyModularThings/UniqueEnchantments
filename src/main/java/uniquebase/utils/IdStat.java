@@ -100,6 +100,11 @@ public class IdStat implements IStat
 		}
 	}
 	
+	public boolean isEmpty()
+	{
+		return values.isEmpty();
+	}
+	
 	public boolean contains(ResourceLocation location)
 	{
 		return values.contains(location);
