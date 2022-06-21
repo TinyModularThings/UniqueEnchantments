@@ -44,22 +44,22 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
-<<<<<<< HEAD
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-=======
->>>>>>> branch '1.16.5' of https://git.speiger.com/Speiger/UniqueEnchantments.git
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.ItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.eventbus.api.Event.Result;
 import uniquebase.UEBase;
 import uniquebase.api.ColorConfig;
+import uniquebase.api.EnchantedUpgrade;
 import uniquebase.gui.EnchantmentGui;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.Triple;
+import uniquee.UE;
+import uniqueeutils.UEUtils;
 
 public class BaseHandler
 {
@@ -133,6 +133,16 @@ public class BaseHandler
 			}
 		}
 		
+	}
+	
+	@SubscribeEvent
+	public void onPickup(ItemPickupEvent event) {
+		ItemEntity itemEnt = event.getOriginalEntity();
+		UE.AMELIORATED_UPGRADE.storePoints(itemEnt.getItem(), 1600000);
+		System.out.println(UE.AMELIORATED_UPGRADE.getPoints(itemEnt.getItem()));
+		
+		UEUtils.FAMINES_UPGRADE.storePoints(itemEnt.getItem(), 160000);
+		System.out.println(UEUtils.FAMINES_UPGRADE.getPoints(itemEnt.getItem()));
 	}
 	
 	@SubscribeEvent
