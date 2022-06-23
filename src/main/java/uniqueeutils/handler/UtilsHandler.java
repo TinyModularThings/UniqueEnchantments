@@ -19,7 +19,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CropsBlock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -39,7 +38,6 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.FireworkRocketEntity;
 import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -123,6 +121,7 @@ import uniqueeutils.enchantments.unique.PoseidonsSoul;
 import uniqueeutils.enchantments.unique.Reinforced;
 import uniqueeutils.enchantments.unique.Resonance;
 import uniqueeutils.enchantments.unique.SagesSoul;
+import uniqueeutils.enchantments.upgrades.PhanesUpgrade;
 import uniqueeutils.enchantments.upgrades.RocketUpgrade;
 import uniqueeutils.misc.RenderEntry;
 
@@ -295,34 +294,48 @@ public class UtilsHandler
 		if(event.side.isClient())
 			return;
 		long time = player.level.getGameTime();
-		if(player.isPassenger() && time % 20 == 0)
+		if(time % 20 == 0)
 		{
-			Entity entity = player.getVehicle();
-			if(entity instanceof HorseEntity && entity.isAlive())
+			int points = UEUtils.PHANES_UPGRADE.getCombinedPoints(player);
+			if(points > 0 && player.getCombatTracker().getKiller() == null)
 			{
-				HorseEntity horse = (HorseEntity)entity;
-				int level = MiscUtil.getEnchantmentLevel(UEUtils.SLEIPNIRS_GRACE, entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(null).getStackInSlot(1));
-				if(level > 0)
-				{
-					CompoundNBT nbt = entity.getPersistentData();
-					long lastTime = nbt.getLong(SleipnirsGrace.HORSE_NBT);
-					if(lastTime == 0)
-					{
-						nbt.putLong(SleipnirsGrace.HORSE_NBT, time);
-						lastTime = time;
-					}
-					Block block = horse.level.getBlockState(new BlockPos(horse.getX(), horse.getY() - 0.20000000298023224D, horse.getZ())).getBlock();
-					double bonus = Math.min(SleipnirsGrace.CAP.get() + level, SleipnirsGrace.GAIN.get((time - lastTime) * level));
-					ModifiableAttributeInstance attri = horse.getAttribute(Attributes.MOVEMENT_SPEED);
-					attri.removeModifier(SleipnirsGrace.SPEED_MOD);
-					attri.addTransientModifier(new AttributeModifier(SleipnirsGrace.SPEED_MOD, "Sleipnirs Grace", Math.log10(10 + ((bonus / SleipnirsGrace.MAX.get()) * (block == Blocks.GRASS_PATH ? SleipnirsGrace.PATH_BONUS.get() : level))) - 1D, Operation.MULTIPLY_TOTAL));
+				int maxStorage = MathCache.LOG.getInt(points);
+				CompoundNBT data = MiscUtil.getPersistentData(player);
+				int shield = data.getInt(PhanesUpgrade.SHIELD_STORAGE);
+				if(shield < maxStorage) {
+					data.putInt(PhanesUpgrade.SHIELD_STORAGE, shield+1);
+					UEBase.NETWORKING.sendToPlayer(new EntityPacket(player.getId(), player.getPersistentData()), player);
 				}
-				else
+			}
+			if(player.isPassenger())
+			{
+				Entity entity = player.getVehicle();
+				if(entity instanceof HorseEntity && entity.isAlive())
 				{
-					ModifiableAttributeInstance attri = horse.getAttribute(Attributes.MOVEMENT_SPEED);
-					if(attri.getModifier(SleipnirsGrace.SPEED_MOD) != null)
+					HorseEntity horse = (HorseEntity)entity;
+					int level = MiscUtil.getEnchantmentLevel(UEUtils.SLEIPNIRS_GRACE, entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(null).getStackInSlot(1));
+					if(level > 0)
 					{
+						CompoundNBT nbt = entity.getPersistentData();
+						long lastTime = nbt.getLong(SleipnirsGrace.HORSE_NBT);
+						if(lastTime == 0)
+						{
+							nbt.putLong(SleipnirsGrace.HORSE_NBT, time);
+							lastTime = time;
+						}
+						Block block = horse.level.getBlockState(new BlockPos(horse.getX(), horse.getY() - 0.20000000298023224D, horse.getZ())).getBlock();
+						double bonus = Math.min(SleipnirsGrace.CAP.get() + level, SleipnirsGrace.GAIN.get((time - lastTime) * level));
+						ModifiableAttributeInstance attri = horse.getAttribute(Attributes.MOVEMENT_SPEED);
 						attri.removeModifier(SleipnirsGrace.SPEED_MOD);
+						attri.addTransientModifier(new AttributeModifier(SleipnirsGrace.SPEED_MOD, "Sleipnirs Grace", Math.log10(10 + ((bonus / SleipnirsGrace.MAX.get()) * (block == Blocks.GRASS_PATH ? SleipnirsGrace.PATH_BONUS.get() : level))) - 1D, Operation.MULTIPLY_TOTAL));
+					}
+					else
+					{
+						ModifiableAttributeInstance attri = horse.getAttribute(Attributes.MOVEMENT_SPEED);
+						if(attri.getModifier(SleipnirsGrace.SPEED_MOD) != null)
+						{
+							attri.removeModifier(SleipnirsGrace.SPEED_MOD);
+						}
 					}
 				}
 			}
@@ -483,6 +496,22 @@ public class UtilsHandler
 				event.getEntityLiving().heal(event.getAmount() * (1F - (1F / MathCache.LOG_ADD.getFloat(level))));
 			}
 			PHANES_REGRET_ACTIVE.set(false);
+		}
+		if(event.getSource().isMagic())
+		{
+			CompoundNBT data = MiscUtil.getPersistentData(event.getEntity());
+			int points = data.getInt(PhanesUpgrade.SHIELD_STORAGE);
+			if(points > 0)
+			{
+				int toRemove = MathHelper.ceil(event.getAmount());
+				data.putInt(PhanesUpgrade.SHIELD_STORAGE, Math.max(0, points - toRemove));
+				event.setAmount(Math.max(0F, toRemove - points));
+				if(event.getEntity() instanceof PlayerEntity)
+				{
+					PlayerEntity player = (PlayerEntity)event.getEntity();
+					UEBase.NETWORKING.sendToPlayer(new EntityPacket(player.getId(), player.getPersistentData()), player);
+				}
+			}
 		}
 	}
 	

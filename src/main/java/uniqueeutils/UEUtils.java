@@ -34,6 +34,7 @@ import uniqueeutils.enchantments.unique.Reinforced;
 import uniqueeutils.enchantments.unique.Resonance;
 import uniqueeutils.enchantments.unique.SagesSoul;
 import uniqueeutils.enchantments.upgrades.FaminesUpgrade;
+import uniqueeutils.enchantments.upgrades.PhanesUpgrade;
 import uniqueeutils.enchantments.upgrades.RocketUpgrade;
 import uniqueeutils.enchantments.upgrades.ThickUpgrade;
 import uniqueeutils.handler.UtilsHandler;
@@ -71,6 +72,7 @@ public class UEUtils extends BaseUEMod
 	public static final EnchantedUpgrade ROCKET_UPGRADE = new RocketUpgrade();
 	public static final EnchantedUpgrade THICK_UPGRADE = new ThickUpgrade();
 	public static final EnchantedUpgrade FAMINES_UPGRADE = new FaminesUpgrade();
+	public static final EnchantedUpgrade PHANES_UPGRADE = new PhanesUpgrade();
 	
 	public static IKeyBind BOOST_KEY = IKeyBind.empty();
 	
@@ -105,6 +107,7 @@ public class UEUtils extends BaseUEMod
 		registerUpgrade(ROCKET_UPGRADE);
 		registerUpgrade(THICK_UPGRADE);
 		registerUpgrade(FAMINES_UPGRADE);
+		registerUpgrade(PHANES_UPGRADE);
 	}
 	
 	@Override
