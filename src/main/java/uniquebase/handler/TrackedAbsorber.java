@@ -45,7 +45,7 @@ public class TrackedAbsorber
 				Integer level = levels.get(entry.getSource());
 				if(level != null && level > 0)
 				{
-					entry.storePoints(myItem, (int)Math.min(Math.pow(2, level-1), 65535));
+					entry.storePoints(myItem, (int)Math.pow(2, level-1));
 					remove = true;
 				}
 			}

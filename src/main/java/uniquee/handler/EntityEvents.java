@@ -924,7 +924,7 @@ public class EntityEvents
 			{
 				int lowest = Integer.MAX_VALUE;
 				EquipmentSlotType lowestSlot = null;
-				int max = DeathsOdium.MAX_STORAGE.get(maxLevel);
+				int max = maxLevel+10;
 				for(EquipmentSlotType slot : EquipmentSlotType.values())
 				{
 					ItemStack stack = event.getEntityLiving().getItemBySlot(slot);
