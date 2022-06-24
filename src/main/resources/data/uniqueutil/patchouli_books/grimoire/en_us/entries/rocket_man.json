@@ -1,6 +1,6 @@
 {
 	"name": "Rocket Man",
-	"icon": "uniquebase:textures/icons/rocket_man.png",
+	"icon": "uniquebase:textures/icons/rocketman.png",
 	"category": "uniquebase:uniquecurses",
 	"pages": [
 		{

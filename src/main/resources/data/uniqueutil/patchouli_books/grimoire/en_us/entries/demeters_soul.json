@@ -1,7 +1,7 @@
 {
 	"name": "Demeter's Soul",
 	"icon": "uniquebase:textures/icons/demeters_soul.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",

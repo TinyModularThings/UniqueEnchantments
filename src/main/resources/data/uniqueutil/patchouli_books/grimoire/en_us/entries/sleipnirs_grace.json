@@ -1,7 +1,7 @@
 {
 	"name": "Sleipnir's Grace",
 	"icon": "uniquebase:textures/icons/sleipnirs_grace.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",

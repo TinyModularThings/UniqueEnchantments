@@ -1,7 +1,7 @@
 {
 	"name": "Sage's Soul",
 	"icon": "uniquebase:textures/icons/sages_soul.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",

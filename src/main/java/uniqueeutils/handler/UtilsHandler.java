@@ -222,9 +222,9 @@ public class UtilsHandler
 		IngameGui gui = mc.gui;
 		MainWindow window = mc.getWindow();
 		PlayerEntity player = mc.player;
-		float shield = 100;//MiscUtil.getPersistentData(player).getInt(PhanesUpgrade.SHIELD_STORAGE);
-		float max = 100;//UEUtils.PHANES_UPGRADE.getCombinedPoints(player);
-		int hearts = (int)MathHelper.clamp(shield / max * 20F, 0, 20);
+		float shield = MiscUtil.getPersistentData(player).getInt(PhanesUpgrade.SHIELD_STORAGE);
+		float max = UEUtils.PHANES_UPGRADE.getCombinedPoints(player);
+		int hearts = MathHelper.ceil(MathHelper.clamp(shield / max * 20F, 0, 20));
 		if(hearts <= 0 || !UEUtils.RENDER_SHIELD_HUD.get()) return;
         RenderSystem.enableBlend();
         mc.getTextureManager().bind(new ResourceLocation("uniqueutil", "textures/gui/icons.png"));

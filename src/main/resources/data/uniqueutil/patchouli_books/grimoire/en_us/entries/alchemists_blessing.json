@@ -1,7 +1,7 @@
 {
 	"name": "Alchemist's Blessing",
 	"icon": "uniquebase:textures/icons/alchemists_blessing.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",

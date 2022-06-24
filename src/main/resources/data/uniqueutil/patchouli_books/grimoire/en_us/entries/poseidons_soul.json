@@ -1,7 +1,7 @@
 {
 	"name": "Poseidon's Soul",
 	"icon": "uniquebase:textures/icons/poseidons_soul.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",

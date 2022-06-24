@@ -1,7 +1,7 @@
 {
 	"name": "Essence of Slime",
 	"icon": "uniquebase:textures/icons/essence_of_slime.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",

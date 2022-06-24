@@ -1,7 +1,7 @@
 {
 	"name": "Aenmoi Fragment",
 	"icon": "uniquebase:textures/icons/anemoi_fragment.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",

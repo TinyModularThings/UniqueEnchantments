@@ -1,7 +1,7 @@
 {
 	"name": "Resonance",
 	"icon": "uniquebase:textures/icons/resonance.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",

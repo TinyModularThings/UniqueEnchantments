@@ -1,7 +1,7 @@
 {
 	"name": "Demeter's Blessing",
 	"icon": "uniquebase:textures/icons/demeters_blessing.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",

@@ -1,7 +1,7 @@
 {
 	"name": "Pegasus Soul",
 	"icon": "uniquebase:textures/icons/pegasus_soul.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",

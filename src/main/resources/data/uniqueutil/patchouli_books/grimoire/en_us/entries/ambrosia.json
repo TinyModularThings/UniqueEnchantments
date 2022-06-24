@@ -1,7 +1,7 @@
 {
 	"name": "Ambrosia",
 	"icon": "uniquebase:textures/icons/ambrosia.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",

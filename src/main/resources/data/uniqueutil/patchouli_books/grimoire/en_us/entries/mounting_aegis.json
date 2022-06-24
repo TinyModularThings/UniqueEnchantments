@@ -1,7 +1,7 @@
 {
 	"name": "Mounting Aegis",
 	"icon": "uniquebase:textures/icons/mounting_aegis.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",

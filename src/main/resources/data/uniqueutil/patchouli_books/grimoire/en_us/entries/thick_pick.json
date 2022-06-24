@@ -1,7 +1,7 @@
 {
 	"name": "Thick Pick",
 	"icon": "uniquebase:textures/icons/thick_pick.png",
-	"category": "uniqueutils:uniqueutilscategory",
+	"category": "uniqueutil:uniqueutilscategory",
 	"pages": [
 		{
 			"type": "patchouli:spotlight",
