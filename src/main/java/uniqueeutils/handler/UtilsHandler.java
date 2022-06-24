@@ -18,7 +18,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CropsBlock;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.IngameGui;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -49,6 +51,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectType;
+import net.minecraft.potion.Effects;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.BeaconTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -71,6 +74,9 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -201,6 +207,48 @@ public class UtilsHandler
 		tes.end();
 		GlStateManager._enableTexture();
 		GlStateManager._enableDepthTest();
+	}
+	
+	@SubscribeEvent
+	@OnlyIn(Dist.CLIENT)
+	@SuppressWarnings("deprecation")
+	public void onOverlay(RenderGameOverlayEvent.Post event)
+	{
+		if(event.getType() != ElementType.HEALTH)
+		{
+			return;
+		}
+		Minecraft mc = Minecraft.getInstance();
+		IngameGui gui = mc.gui;
+		MainWindow window = mc.getWindow();
+		PlayerEntity player = mc.player;
+		float shield = 100;//MiscUtil.getPersistentData(player).getInt(PhanesUpgrade.SHIELD_STORAGE);
+		float max = 100;//UEUtils.PHANES_UPGRADE.getCombinedPoints(player);
+		int hearts = (int)MathHelper.clamp(shield / max * 20F, 0, 20);
+		if(hearts <= 0 || !UEUtils.RENDER_SHIELD_HUD.get()) return;
+        RenderSystem.enableBlend();
+        mc.getTextureManager().bind(new ResourceLocation("uniqueutil", "textures/gui/icons.png"));
+        MatrixStack mStack = event.getMatrixStack();
+        int left = window.getGuiScaledWidth() / 2 - 91;
+        int top = window.getGuiScaledHeight() - ForgeIngameGui.left_height + 10 + (player.getAbsorptionAmount() > 0 ? 10 : 0);
+        int textureY = 9 * (mc.level.getLevelData().isHardcore() ? 5 : 0);
+        int regen = player.hasEffect(Effects.REGENERATION) ? gui.getGuiTicks() % 25 : -1;
+        int health = MathHelper.ceil(player.getHealth());
+        RenderSystem.color4f(1F, 1F, 1F, 0.7F);
+        for(int i = hearts/2;i>=0;i--)
+        {
+            int row = MathHelper.ceil((float)(i + 1) / 10.0F) - 1;
+            int x = left + i % 10 * 8;
+            int y = top - row * 3;
+            if (health <= 4) y += mc.level.random.nextInt(2);
+            if (i == regen) y -= 2;
+            if (i * 2 + 1 < hearts)
+            	gui.blit(mStack, x, y, 52, textureY, 9, 9); //4
+            else if (i * 2 + 1 == hearts)
+                gui.blit(mStack, x, y, 61, textureY, 9, 9); //5
+        }
+        RenderSystem.color4f(1F, 1F, 1F, 1F);
+        RenderSystem.disableBlend();
 	}
 	
 	public void addDrawPosition(BlockPos pos)

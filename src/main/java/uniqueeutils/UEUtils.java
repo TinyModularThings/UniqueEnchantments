@@ -4,6 +4,8 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.potion.Effect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
+import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -75,6 +77,7 @@ public class UEUtils extends BaseUEMod
 	public static final EnchantedUpgrade PHANES_UPGRADE = new PhanesUpgrade();
 	
 	public static IKeyBind BOOST_KEY = IKeyBind.empty();
+	public static BooleanValue RENDER_SHIELD_HUD;
 	
 	public UEUtils()
 	{
@@ -94,6 +97,13 @@ public class UEUtils extends BaseUEMod
 		BaseHandler.INSTANCE.registerStorageTooltip(REINFORCED, "tooltip.uniqueutil.stored.shield.name", Reinforced.SHIELD);
 		ForgeRegistries.SOUND_EVENTS.register(RESONANCE_SOUND.setRegistryName("resonance_found"));
 		ForgeRegistries.SOUND_EVENTS.register(ALCHEMIST_BLESSING_SOUND.setRegistryName("alchemist_blessing_transmutate"));	
+	}
+	
+	@Override
+	protected void addConfig(Builder builder)
+	{
+		builder.comment("If the shield hearts should be rendered or not if you have a shield");
+		RENDER_SHIELD_HUD = builder.define("render_shield_hud", true);
 	}
 	
 	public void registerPotion(RegistryEvent.Register<Effect> event)
