@@ -1,0 +1,77 @@
+{
+	"name": "Apex Systems",
+	"icon": "uniquebase:textures/icons/aeons_fragment.png",
+	"category": "uniquebase:basis",
+	"pages": [
+		{
+			"type": "patchouli:multiblock",
+			"name": "Beacon",
+			"multiblock": {
+				"pattern": [
+					[
+						"       ",
+						"       ",
+						"       ",
+						"   C   ",
+						"       ",
+						"       ",
+						"       "
+					],
+					[
+						"       ",
+						"       ",
+						"   C   ",
+						"  CBC  ",
+						"   C   ",
+						"       ",
+						"       "
+					],
+					[
+						"       ",
+						"       ",
+						"  GGG  ",
+						"  GGG  ",
+						"  GGG  ",
+						"       ",
+						"       "
+					],
+					[
+						"       ",
+						" GGGGG ",
+						" GGGGG ",
+						" GGGGG ",
+						" GGGGG ",
+						" GGGGG ",
+						"      0"
+					],
+					[
+						"GGGGGGG",
+						"GGGGGGG",
+						"GGGGGGG",
+						"GGGGGGG",
+						"GGGGGGG",
+						"GGGGGGG",
+						"GGGGGGG"
+					]
+				],
+				"mapping": {
+					"G": "#minecraft:beacon_base_blocks",
+					"B": "minecraft:beacon",
+					"C": "minecraft:chest"
+				}
+			}
+		},
+		{
+			"type": "patchouli:spotlight",
+			"title": "Fusion Crafting",
+			"item": "minecraft:end_crystal",
+			"text": "Top Chest $(br)First Slot item you want to enchant $(br)Other slots have to be filled with the 'Bases' enchantments $(br2)Side Chests $(br)Every chest has to contain every item of 'Catalysts'. $(br)Use the highlighted Item on the upper chest"
+		},
+		{
+			"type": "patchouli:spotlight",
+			"title": "Fusion Upgrading",
+			"item": "minecraft:totem_of_undying",
+			"text": "All enchanted items you want to use go into the top chest. $(br)First Slot item you want to enchant. $(br)Only upgrades enchantment that has to highest collective level of input, but only consume the enchantments used to upgrade. $(br)Will consume enchantments even if it doesnt improve. $(br)Use the highlighted Item on the upper chest"
+		}
+	]
+}

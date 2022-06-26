@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:spotlight",
 			"title": "Thick Pick",
-			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:thick_pick',lvl:2}]}",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:thick_pick',lvl:2}]}",
 			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
 		},
 		{

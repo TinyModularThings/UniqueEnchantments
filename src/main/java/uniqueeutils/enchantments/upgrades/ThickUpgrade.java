@@ -9,7 +9,7 @@ public class ThickUpgrade extends EnchantedUpgrade
 {
 	public ThickUpgrade()
 	{
-		super("uniqueutil", "thick_pick", "upgrade.uniqueutils.mining_speed", () -> UEUtils.THICK_PICK);
+		super("uniqueutil", "thick_pick", "upgrade.uniqueutil.mining_speed", () -> UEUtils.THICK_PICK);
 	}
 
 	@Override

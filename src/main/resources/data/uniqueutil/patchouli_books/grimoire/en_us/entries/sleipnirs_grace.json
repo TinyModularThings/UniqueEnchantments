@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:spotlight",
 			"title": "Sleipnir's Grace",
-			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:sleipnirs_grace',lvl:10}]}",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:sleipnirs_grace',lvl:10}]}",
 			"text": "$(li)Max Level = 10 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
 		},
 		{

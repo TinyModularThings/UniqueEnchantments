@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:spotlight",
 			"title": "Ambrosia",
-			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:ambrosia',lvl:4}]}",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:ambrosia',lvl:4}]}",
 			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
 		},
 		{

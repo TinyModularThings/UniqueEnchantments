@@ -196,6 +196,7 @@ public class EntityEvents
 		
 		if(entity.getHealth() < (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get())) return;
 		ItemStack stack = entity.getItemBySlot(EquipmentSlotType.CHEST);
+//		System.out.println(MiscUtil.getEnchantmentLevel(UE.BERSERKER, stack));
 		if(MiscUtil.getEnchantmentLevel(UE.BERSERKER, stack) > 0 && MiscUtil.isTranscendent(entity, stack, UE.BERSERKER))
 		{
 			entity.setHealth(entity.getMaxHealth()*0.5F);
@@ -635,7 +636,7 @@ public class EntityEvents
 	public void onEntityHeal(LivingHealEvent event)
 	{
 		LivingEntity entity = event.getEntityLiving();
-		if(MiscUtil.isTranscendent(entity, entity.getItemBySlot(EquipmentSlotType.CHEST), UE.BERSERKER) && entity.getHealth() > (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get()-0.25F))
+		if(MiscUtil.isTranscendent(entity, entity.getItemBySlot(EquipmentSlotType.CHEST), UE.BERSERKER) && entity.getHealth() > (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get()-0.25F) && MiscUtil.getEnchantmentLevel(UE.BERSERKER, entity.getItemBySlot(EquipmentSlotType.CHEST)) > 0)
 		{
 			event.setAmount(0F);
 		}
@@ -932,10 +933,11 @@ public class EntityEvents
 					{
 						int value = StackUtils.getInt(stack, DeathsOdium.CURSE_COUNTER, 0);
 						int newValue = Math.min(value + 1, max);
+						System.out.println(value + " : " + newValue);
 						if(value == newValue) continue;
 						if(lowest > value)
 						{
-							value = lowest;
+							lowest = value;
 							lowestSlot = slot;
 						}
 					}
@@ -943,7 +945,7 @@ public class EntityEvents
 				if(lowestSlot != null) {
 					ItemStack stack = event.getEntityLiving().getItemBySlot(lowestSlot);
 					StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
-					StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + (event.getEntityLiving().getMaxHealth() * 0.05F));
+					StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(event.getEntityLiving().getMaxHealth()) * 0.3F * rand.nextFloat()));
 				}
 				ModifiableAttributeInstance instance = event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH);
 				AttributeModifier mod = instance.getModifier(DeathsOdium.REMOVE_UUID);
@@ -1145,6 +1147,11 @@ public class EntityEvents
 		{
 			attribute.addTransientAttributeModifiers(mods);
 		}		
+		
+//		for(AttributeModifier k:event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH).getModifiers()) {
+//			System.out.println(k.getOperation().toString() + " : " + k.getAmount() + " : " + k.getName());
+//		}
+		System.out.println(event.getEntityLiving().getMaxHealth());
 	}
 	
 	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(ItemStack stack, LivingEntity living, EquipmentSlotType slot)
@@ -1155,7 +1162,7 @@ public class EntityEvents
 		int level = enchantments.getInt(UE.VITAE);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.VITAE).contains(slot))
 		{
-			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD.getId(slot), "Vitae", Math.sqrt((level*MiscUtil.getPlayerLevel(living, 200))/100), Operation.ADDITION));
+			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD.getId(slot), "Vitae", Math.log(1+ (level*MiscUtil.getPlayerLevel(living, 200))), Operation.ADDITION));
 		}
 		level = enchantments.getInt(UE.SWIFT);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT).contains(slot))

@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:spotlight",
 			"title": "Pegasus Soul",
-			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:pegasus_soul',lvl:5}]}",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:pegasus_soul',lvl:5}]}",
 			"text": "$(li)Max Level = 5 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
 		},
 		{

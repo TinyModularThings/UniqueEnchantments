@@ -11,7 +11,7 @@ public class PhanesUpgrade extends EnchantedUpgrade
 	
 	public PhanesUpgrade()
 	{
-		super("uniqueutil", "phanes_regret", "upgrade.uniqueutils.shield", () -> UEUtils.PHANES_REGRET);
+		super("uniqueutil", "phanes_regret", "upgrade.uniqueutil.shield", () -> UEUtils.PHANES_REGRET);
 	}
 
 	@Override

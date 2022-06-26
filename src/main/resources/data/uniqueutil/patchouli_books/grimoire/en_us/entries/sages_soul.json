@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:spotlight",
 			"title": "Sage's Soul",
-			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:sages_soul',lvl:10}]}",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:sages_soul',lvl:10}]}",
 			"text": "$(li)Max Level = 10 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
 		},
 		{

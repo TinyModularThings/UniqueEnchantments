@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:spotlight",
 			"title": "Climber",
-			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:climber',lvl:3}]}",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:climber',lvl:3}]}",
 			"text": "$(li)Max Level = 3 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
 		},
 		{

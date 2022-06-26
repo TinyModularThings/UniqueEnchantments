@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:spotlight",
 			"title": "Alchemist's Blessing",
-			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:alchemists_blessing',lvl:4}]}",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:alchemists_blessing',lvl:4}]}",
 			"text": "$(li)Max Level = 4 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
 		},
 		{

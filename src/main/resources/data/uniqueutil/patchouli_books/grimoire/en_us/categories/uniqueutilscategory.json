@@ -1,6 +1,6 @@
 {
     "name": "Unique Enchantments Util",
     "description": "Enchantments in this Category have utility-focused Enchantments",
-    "icon": "minecraft:writable_book",
+    "icon": "uniquebase:textures/icons/essence_of_slime.png",
     "sortnum": 12
 }

@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:spotlight",
 			"title": "Famine's Odium",
-			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:famines_odium',lvl:2}]}",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:famines_odium',lvl:2}]}",
 			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
 		},
 		{

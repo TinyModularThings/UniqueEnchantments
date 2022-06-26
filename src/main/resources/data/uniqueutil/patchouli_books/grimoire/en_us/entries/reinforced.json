@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:spotlight",
 			"title": "Reinforced",
-			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:reinforced',lvl:10}]}",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:reinforced',lvl:10}]}",
 			"text": "$(li)Max Level = 10 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
 		},
 		{

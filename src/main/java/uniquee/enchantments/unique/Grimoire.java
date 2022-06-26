@@ -49,7 +49,6 @@ public class Grimoire extends UniqueEnchantment
 		int grimoreCount = compound.contains(GRIMOIRE_STORAGE) ? compound.getList(GRIMOIRE_STORAGE, 10).size() : 0;
 		int enchCount = compound.contains("Enchantments") ? compound.getList("Enchantments", 10).size() : 0;
 		boolean result = false;
-		compound.remove(GRIMOIRE_LEVEL);
 		if(compound.getInt(GRIMOIRE_LEVEL) != nextLevel || grimoreCount != enchCount)
 		{
 			result = true;

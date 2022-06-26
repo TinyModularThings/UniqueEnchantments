@@ -223,14 +223,14 @@ public class UtilsHandler
 		MainWindow window = mc.getWindow();
 		PlayerEntity player = mc.player;
 		float shield = MiscUtil.getPersistentData(player).getInt(PhanesUpgrade.SHIELD_STORAGE);
-		float max = UEUtils.PHANES_UPGRADE.getCombinedPoints(player);
+		float max = MathCache.LOG.getFloat(1+ UEUtils.PHANES_UPGRADE.getCombinedPoints(player));
 		int hearts = MathHelper.ceil(MathHelper.clamp(shield / max * 20F, 0, 20));
 		if(hearts <= 0 || !UEUtils.RENDER_SHIELD_HUD.get()) return;
         RenderSystem.enableBlend();
         mc.getTextureManager().bind(new ResourceLocation("uniqueutil", "textures/gui/icons.png"));
         MatrixStack mStack = event.getMatrixStack();
         int left = window.getGuiScaledWidth() / 2 - 91;
-        int top = window.getGuiScaledHeight() - ForgeIngameGui.left_height + 10 + (player.getAbsorptionAmount() > 0 ? 10 : 0);
+        int top = window.getGuiScaledHeight() - 39;
         int textureY = 9 * (mc.level.getLevelData().isHardcore() ? 5 : 0);
         int regen = player.hasEffect(Effects.REGENERATION) ? gui.getGuiTicks() % 25 : -1;
         int health = MathHelper.ceil(player.getHealth());
