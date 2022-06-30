@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:spotlight",
 			"title": "Demeter's Blessing",
-			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:demeters_blessing',lvl:2}]}",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:demeters_blessing',lvl:2}]}",
 			"text": "$(li)Max Level = 2 $(li)Treasure = False $(li)Tradeable = True $(li)Rarity = Very Rare $()$(br)Values can be different from pack to pack"
 		},
 		{

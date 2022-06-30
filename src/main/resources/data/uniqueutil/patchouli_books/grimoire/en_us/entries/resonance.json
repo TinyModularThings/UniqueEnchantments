@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:spotlight",
 			"title": "Resonance",
-			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:resonance',lvl:4}]}",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:resonance',lvl:4}]}",
 			"text": "$(li)Max Level = 4 $(li)Treasure = False $(li)Tradeable = False $(li)Rarity = Uncommon $()$(br)Values can be different from pack to pack"
 		},
 		{

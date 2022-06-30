@@ -70,7 +70,8 @@
 	"tooltip.uniqueutil.stored.shield.name": "%s Stored Durability left",
 	"tooltip.uniqueutil.stored.soul.name": "Item Soul Level %s",
 	
-	"upgrade.uniqueutils.speed": "Speed %s",
-	"upgrade.uniqueutils.give_effect": "Give Effect %s",
-	"upgrade.uniqueutils.mining_speed": "Mining Speed %s"
+	"upgrade.uniqueutil.speed": "Speed %s",
+	"upgrade.uniqueutil.give_effect": "Give Effect %s",
+	"upgrade.uniqueutil.mining_speed": "Mining Speed %s",
+	"upgrade.uniqueutil.shield": "Magic Shield"
 }

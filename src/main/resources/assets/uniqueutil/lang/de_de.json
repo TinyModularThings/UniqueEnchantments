@@ -55,7 +55,8 @@
 	"tooltip.uniqueutil.resonance.cooldown":"%s bis zur naehsten Resonanz",
 	"tooltip.uniqueutil.missing.xp":"Du hast nicht genug Erfahrung zum transferieren",
 	
-	"upgrade.uniqueutils.speed": "Geschwindigkeit %s",
-	"upgrade.uniqueutils.give_effect": "Effekte geben %s",
-	"upgrade.uniqueutils.mining_speed": "Abbaugeschwindigkeit %s"
+	"upgrade.uniqueutil.speed": "Geschwindigkeit %s",
+	"upgrade.uniqueutil.give_effect": "Effekte geben %s",
+	"upgrade.uniqueutil.mining_speed": "Abbaugeschwindigkeit %s",
+	"upgrade.uniqueutil.shield": "Magischer Schild"
 }

@@ -1,0 +1,34 @@
+{
+	"name": "Modifiers",
+	"icon": "uniquebase:textures/icons/infinity.png",
+	"category": "uniquebase:basis",
+	"pages": [
+		{
+		"type": "patchouli:multiblock",
+			"name": "Beacon",
+			"multiblock": {
+				"pattern": [
+					[
+						"   ",
+						" E ",
+						"  0"
+					]
+				],
+				"mapping": {
+					"E": "minecraft:enchanting_table"
+				}
+			}
+		},
+		{
+			"type": "patchouli:spotlight",
+			"title": "Modifiers",
+			"item": "minecraft:bell",
+			"text": "Some enchantments can also be spent to get modifiers. $(br)Those can be quite beneficial. $(br)You just need the highlighted Item and an enchanting table with an item frame in front of it. $(br)Drop all the enchantments on the enchanting table, put the item to enchant into the item frame, and use the highlighted item on the frame."
+		},
+		{
+			"type": "patchouli:text",
+			"title": "",
+			"text": "Shortly the enchantments will be consumed, it will continue consuming as long as the blocks arent unloaded or the item is taken out from the item frame"
+		}
+	]
+}

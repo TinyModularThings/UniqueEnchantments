@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:spotlight",
 			"title": "Mounting Aegis",
-			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutils:mounting_aegis',lvl:1}]}",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueutil:mounting_aegis',lvl:1}]}",
 			"text": "$(li)Max Level = 1 $(li)Treasure = True $(li)Tradeable = True $(li)Rarity = Rare $()$(br)Values can be different from pack to pack"
 		},
 		{
