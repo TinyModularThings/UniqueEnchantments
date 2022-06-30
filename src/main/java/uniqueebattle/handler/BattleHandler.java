@@ -1,7 +1,5 @@
 package uniqueebattle.handler;
 
-import java.util.Random;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -593,8 +591,6 @@ public class BattleHandler
 			}
 			int points = UEBattle.WARS_UPGRADE.getPoints(source.getMainHandItem());
 			if(points > 0) {
-				Random rand = event.getEntityLiving().level.getRandom();
-				System.out.println(MathCache.LOG10.getFloat(points)*rand.nextFloat());
 				source.heal(MathCache.SQRT_EXTRA_SPECIAL.getFloat(points));
 			}
 		}

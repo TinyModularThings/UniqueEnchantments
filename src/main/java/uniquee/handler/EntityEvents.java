@@ -1171,7 +1171,6 @@ public class EntityEvents
 		if(level > 0 && MiscUtil.getSlotsFor(UE.DEATHS_ODIUM).contains(slot))
 		{
 			int value = StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0);
-			System.out.println((value/100f));
 			if(value > 0 && !MiscUtil.getPersistentData(living).getBoolean(DeathsOdium.CURSE_DISABLED))
 			{
 				mods.put(Attributes.MAX_HEALTH, new AttributeModifier(DeathsOdium.GENERAL_MOD.getId(slot), "Death Odiums Restore", value/100f, Operation.MULTIPLY_TOTAL));
