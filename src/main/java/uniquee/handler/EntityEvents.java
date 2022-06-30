@@ -933,7 +933,6 @@ public class EntityEvents
 					{
 						int value = StackUtils.getInt(stack, DeathsOdium.CURSE_COUNTER, 0);
 						int newValue = Math.min(value + 1, max);
-						System.out.println(value + " : " + newValue);
 						if(value == newValue) continue;
 						if(lowest > value)
 						{
@@ -1147,11 +1146,6 @@ public class EntityEvents
 		{
 			attribute.addTransientAttributeModifiers(mods);
 		}		
-		
-//		for(AttributeModifier k:event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH).getModifiers()) {
-//			System.out.println(k.getOperation().toString() + " : " + k.getAmount() + " : " + k.getName());
-//		}
-		System.out.println(event.getEntityLiving().getMaxHealth());
 	}
 	
 	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(ItemStack stack, LivingEntity living, EquipmentSlotType slot)
