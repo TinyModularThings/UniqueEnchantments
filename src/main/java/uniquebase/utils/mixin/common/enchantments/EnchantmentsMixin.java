@@ -27,15 +27,15 @@ public class EnchantmentsMixin {
 	}
 	
 	@Inject(method ="canEnchant", at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	private void canEnchant(ItemStack stack, CallbackInfoReturnable<Boolean> ci) {
+	private void onExposionCheck(ItemStack stack, CallbackInfoReturnable<Boolean> ci) {
 		Enchantment ench = ((Enchantment)(Object)this);
 		if(ench == Enchantments.ALL_DAMAGE_PROTECTION || ench == Enchantments.PROJECTILE_PROTECTION || ench == Enchantments.FALL_PROTECTION || ench == Enchantments.BLAST_PROTECTION || ench == Enchantments.FIRE_PROTECTION) {
 			ci.setReturnValue(true);
 		}
 	}
 	
-	@Inject(method ="canApplyAtEnchantingTable", at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	private void enchantable(ItemStack stack, CallbackInfoReturnable<Boolean> ci) {
+	@Inject(method ="canApplyAtEnchantingTable", at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION, remap = false)
+	private void isTableCompatible(ItemStack stack, CallbackInfoReturnable<Boolean> ci) {
 		Enchantment ench = ((Enchantment)(Object)this);
 		Item item = stack.getItem();
 		if(ench == Enchantments.IMPALING && (item instanceof SwordItem || item instanceof AxeItem || item instanceof HoeItem)) {

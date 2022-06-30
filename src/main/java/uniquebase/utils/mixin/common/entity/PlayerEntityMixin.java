@@ -12,7 +12,7 @@ import uniquebase.utils.MiscUtil;
 @Mixin(PlayerEntity.class)
 public class PlayerEntityMixin {
 
-	@ModifyVariable(method = "getDigSpeed", at = @At(value = "STORE", ordinal = 1))
+	@ModifyVariable(method = "getDigSpeed", at = @At(value = "STORE", ordinal = 1), remap = false)
     public float overrideEff(float speed) {
 		PlayerEntity ent = ((PlayerEntity)(Object)this);
 		int level = 0;
