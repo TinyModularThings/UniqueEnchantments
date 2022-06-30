@@ -26,9 +26,11 @@
 			"text": "Some enchantments can also be spent to get modifiers. $(br)Those can be quite beneficial. $(br)You just need the highlighted Item and an enchanting table with an item frame in front of it. $(br)Drop all the enchantments on the enchanting table, put the item to enchant into the item frame, and use the highlighted item on the frame."
 		},
 		{
-			"type": "patchouli:text",
-			"title": "",
-			"text": "Shortly the enchantments will be consumed, it will continue consuming as long as the blocks arent unloaded or the item is taken out from the item frame"
+			"type": "patchouli:link",
+			"title": " ",
+			"text": "Shortly the enchantments will be consumed, it will continue consuming as long as the blocks arent unloaded or the item is taken out from the item frame",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Attributes",
+			"link_text": "Github Wiki"
 		}
 	]
 }
