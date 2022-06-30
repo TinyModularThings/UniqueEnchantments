@@ -417,7 +417,7 @@ public class BattleHandler
 				}
 			}
 			int level = MiscUtil.getCombinedEnchantmentLevel(UniqueEnchantmentsBattle.WARS_ODIUM, source);
-			if(level > 0 && !(event.getEntity() instanceof EntityPlayer))
+			if(level > 0 && !(event.getEntity() instanceof EntityPlayer) && !WarsOdium.BLACKLIST.contains(EntityList.getKey(event.getEntity())))
 			{
 				NBTTagCompound nbt = MiscUtil.getPersistentData(source);
 				double chance = WarsOdium.SPAWN_CHANCE.getAsDouble(nbt.getInteger(WarsOdium.HIT_COUNTER)) * MathCache.LOG_ADD_MAX.get(level);
