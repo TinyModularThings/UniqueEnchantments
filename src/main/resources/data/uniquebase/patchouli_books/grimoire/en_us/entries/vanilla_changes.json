@@ -1,0 +1,14 @@
+{
+	"name": "Vanilla Changes",
+	"icon": "uniquebase:textures/icons/ecological.png",
+	"category": "uniquebase:basis",
+	"pages": [
+		{
+			"type": "patchouli:link",
+			"title": "Changes",
+			"text": "Some vanilla enchantments received some adjustments and or buffs, not because they're bad, but rather some QoL stuff",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Vanilla-Changes",
+			"link_text": "Github Wiki"
+		}
+	]
+}

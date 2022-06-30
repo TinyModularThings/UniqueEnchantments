@@ -1,0 +1,13 @@
+{
+	"name": "Apex Lock",
+	"icon": "minecraft:rabbit_foot",
+	"category": "uniquebase:basis",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Fusion Crafting (Un-)Locking",
+			"item": "minecraft:rabbit_foot",
+			"text": "Once you used an item as output for a 'Fusion Crafting', it will be locked for further 'Fusion Crafting'. $(br)However you can slap the item with some rabbit foot in an Anvil and it will be unlocked"
+		}
+	]
+}

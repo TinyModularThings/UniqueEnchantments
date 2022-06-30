@@ -1,0 +1,13 @@
+{
+	"name": "Transcended System",
+	"icon": "uniquebase:textures/icons/golem_soul.png",
+	"category": "uniquebase:basis",
+	"pages": [
+		{
+			"type": "patchouli:text",
+			"title": "Transcended",
+			"text": "Some enchantments will have another page titled 'Transcended', those enchantments have a special effect once the player reaches a certain Experience Level. $(br)You can also toggle the effect if you shift-rightlick an enchanting table with the item"
+		}
+	]
+}
+		

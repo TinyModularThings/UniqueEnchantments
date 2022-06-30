@@ -71,7 +71,7 @@
 			"type": "patchouli:spotlight",
 			"title": "Fusion Upgrading",
 			"item": "minecraft:totem_of_undying",
-			"text": "All enchanted items you want to use go into the top chest. $(br)First Slot item you want to enchant. $(br)Only upgrades enchantment that has to highest collective level of input, but only consume the enchantments used to upgrade. $(br)Will consume enchantments even if it doesnt improve. $(br)Use the highlighted Item on the upper chest"
+			"text": "All enchanted items you want to use go into the top chest. $(br)First Slot item you want to enchant. $(br)Only upgrades enchantment that has highest collective level of input, but only consume the enchantments used to upgrade. $(br)Will consume enchantments even if it doesnt improve. $(br)Use the highlighted Item on the upper chest"
 		}
 	]
 }

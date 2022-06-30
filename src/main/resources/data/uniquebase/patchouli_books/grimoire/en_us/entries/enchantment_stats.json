@@ -7,11 +7,6 @@
 			"type": "patchouli:text",
 			"title": "Obtaining Enchantments",
 			"text": "Looking at any entry of a book, you'll see 'Tradeable' & 'Treasure'. $(br)when 'Treasure' is true, it cannot be obtained by enchanting. $(br)when 'Tradeable' is false, it cannot be obtained by trading with villagers. $(br)Please note tho, since we allow a lot of customization, the value may vary in the pack you're playing in"
-		},
-		{
-			"type": "patchouli:text",
-			"title": "Transcended",
-			"text": "Some enchantments will have another page titled 'Transcended', those enchantments have a special effect once the player reaches a certain Experience Level"
 		}
 	]
 }
