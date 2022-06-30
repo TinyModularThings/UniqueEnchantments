@@ -137,6 +137,7 @@ public class ClientProxy extends Proxy
 		
 		private boolean isKeyDown(KeyBinding binding)
 		{
+			if(binding.isUnbound()) return false;
 			Input input = binding.getKey();
 			long monitor = Minecraft.getInstance().getWindow().getWindow();
 			return input.getType() == Type.MOUSE ? GLFW.glfwGetMouseButton(monitor, input.getValue()) == 1 : InputMappings.isKeyDown(monitor, input.getValue());
