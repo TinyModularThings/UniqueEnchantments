@@ -25,6 +25,7 @@ import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameterSets;
@@ -256,7 +257,7 @@ public class BattleHandler
 		{
 			float boost = MiscUtil.isTranscendent(entity.getEntity(), event.getItem(), UEBattle.CELESTIAL_BLESSING) ? CelestialBlessing.SPEED_BONUS.getAsFloat(level) * CelestialBlessing.SPEED_BONUS.getAsFloat(level) : CelestialBlessing.SPEED_BONUS.getAsFloat(level);
 			double num = (1 + (event.getEntityLiving().level.isNight() ? boost : 0));
-			event.setDuration((int) Math.max(10,event.getDuration() / num));
+			event.setDuration(event.getItem().getItem() instanceof CrossbowItem ? (int)(event.getDuration()/num) : (int) Math.max(10,event.getDuration() / num));
 		}
 		level = UEBattle.LUNATIC_UPGRADE.getCombinedPoints(entity);
 		if(level > 0)
