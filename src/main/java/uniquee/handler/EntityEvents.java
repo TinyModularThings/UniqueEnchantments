@@ -664,7 +664,7 @@ public class EntityEvents
 				ModifiableAttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (float)Math.log10(10D + (1.6 + Math.log(Math.max(0.25D, attr.getValue())) / SwiftBlade.BASE_SPEED.get()) * MathCache.LOG.get(level*level)));
+					event.setAmount(event.getAmount() * (float)Math.log10(10D + (1.6 + Math.log(Math.max(0.25D, attr.getValue())) / SwiftBlade.BASE_SPEED.get()) * MathCache.LOG.get(1 + (level*level))));
 				}
 			}
 			level = enchantments.getInt(UE.FOCUS_IMPACT);

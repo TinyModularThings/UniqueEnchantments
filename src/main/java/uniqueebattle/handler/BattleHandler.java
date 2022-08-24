@@ -314,6 +314,7 @@ public class BattleHandler
 	@SubscribeEvent
 	public void onEntityLoot(LootingLevelEvent event)
 	{
+		if(event.getDamageSource() == null) return;
 		Entity entity = event.getDamageSource().getEntity();
 		if(entity instanceof LivingEntity)
 		{
