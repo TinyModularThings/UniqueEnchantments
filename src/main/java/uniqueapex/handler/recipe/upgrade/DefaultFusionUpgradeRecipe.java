@@ -1,7 +1,7 @@
 package uniqueapex.handler.recipe.upgrade;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import net.minecraft.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class DefaultFusionUpgradeRecipe extends FusionUpgradeRecipe
 {

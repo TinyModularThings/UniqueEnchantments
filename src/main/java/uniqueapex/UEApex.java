@@ -5,17 +5,17 @@ import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 import uniqueapex.enchantments.simple.AbsoluteProtection;
 import uniqueapex.enchantments.simple.BlessedBlade;
 import uniqueapex.enchantments.simple.SecondLife;
@@ -33,11 +33,11 @@ import uniquebase.api.BaseUEMod;
 @Mod("uniqueapex")
 public class UEApex extends BaseUEMod
 {
-	public static final IRecipeType<FusionRecipe> FUSION = new IRecipeType<FusionRecipe>() {
+	public static final RecipeType<FusionRecipe> FUSION = new RecipeType<FusionRecipe>() {
 		@Override
 		public String toString() { return "fusion"; }
 	}; 
-	public static final IRecipeType<FusionUpgradeRecipe> FUSION_UPGRADE = new IRecipeType<FusionUpgradeRecipe>() {
+	public static final RecipeType<FusionUpgradeRecipe> FUSION_UPGRADE = new RecipeType<FusionUpgradeRecipe>() {
 		@Override
 		public String toString() { return "fusion_upgrade"; }
 	};
@@ -63,11 +63,27 @@ public class UEApex extends BaseUEMod
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UEApex.toml");
 		MinecraftForge.EVENT_BUS.register(FusionHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(ApexHandler.INSTANCE);
-		ForgeRegistries.RECIPE_SERIALIZERS.registerAll(FUSION_SERIALIZER.init(), UPGRADE_SERIALIZER.init());
-		Registry.register(Registry.RECIPE_TYPE, new ResourceLocation("uniqueapex", "fusion"), FUSION);
-		Registry.register(Registry.RECIPE_TYPE, new ResourceLocation("uniqueapex", "fusion_upgrade"), FUSION_UPGRADE);
-		ForgeRegistries.SOUND_EVENTS.register(SECOND_LIFE_SOUND.setRegistryName("second_life"));
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerContent);
+
 		UPGRADE_MULTIPLIERS.defaultReturnValue(1F);
+	}
+	
+	public void registerContent(RegisterEvent event)
+	{
+		if(event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_TYPES))
+		{
+			event.getForgeRegistry().register(new ResourceLocation("uniqueapex", "fusion"), FUSION);
+			event.getForgeRegistry().register(new ResourceLocation("uniqueapex", "fusion_upgrade"), FUSION_UPGRADE);
+		}
+		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.RECIPE_SERIALIZERS))
+		{
+			event.getForgeRegistry().register(new ResourceLocation("uniqueapex", "fusion"), FUSION_SERIALIZER);
+			event.getForgeRegistry().register(new ResourceLocation("uniqueapex", "fusion_upgrade"), UPGRADE_SERIALIZER);
+		}
+		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.SOUND_EVENTS))
+		{
+			event.getForgeRegistry().register("second_life", SECOND_LIFE_SOUND);
+		}
 	}
 	
 	@Override

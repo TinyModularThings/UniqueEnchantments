@@ -1,12 +1,12 @@
 package uniqueapex.utils;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 public class AnimationUtils
 {
 	public static float getRotation(int tick) {
-		if(tick >= 200) return MathHelper.lerp(Math.min(Math.max(0F, tick-200F) / 20F, 1F), 16F, 28F);
-		return MathHelper.lerp(Math.min(Math.max(0F, tick-40F) / 40F, 1F), 4F, 16F);
+		if(tick >= 200) return Mth.lerp(Math.min(Math.max(0F, tick-200F) / 20F, 1F), 16F, 28F);
+		return Mth.lerp(Math.min(Math.max(0F, tick-40F) / 40F, 1F), 4F, 16F);
 	}
 	
 	public static float getCloser(int tick) {
@@ -32,6 +32,6 @@ public class AnimationUtils
 	}
 	
 	private static float easeOut(float y1, float y2, float mu) {
-		return MathHelper.lerp(mu >= 1F ? 1F : 1F - (float)Math.pow(2F, -10F * mu), y1, y2);
+		return Mth.lerp(mu >= 1F ? 1F : 1F - (float)Math.pow(2F, -10F * mu), y1, y2);
 	}
 }

@@ -3,8 +3,8 @@ package uniquebase.utils.mixin.common.item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.ItemStack;
 import uniquebase.UEBase;
 
 @Mixin(EnchantedBookItem.class)

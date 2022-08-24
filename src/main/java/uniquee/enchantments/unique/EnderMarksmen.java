@@ -1,8 +1,8 @@
 package uniquee.enchantments.unique;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquee.UE;
@@ -13,7 +13,7 @@ public class EnderMarksmen extends UniqueEnchantment
 	
 	public EnderMarksmen()
 	{
-		super(new DefaultData("ender_marksmen", Rarity.VERY_RARE, 5, true, false, 28, 25, 16), EnchantmentType.BOW, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("ender_marksmen", Rarity.VERY_RARE, 5, true, false, 28, 25, 16), EnchantmentCategory.BOW, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(EXTRA_DURABILITY);
 	}
 			

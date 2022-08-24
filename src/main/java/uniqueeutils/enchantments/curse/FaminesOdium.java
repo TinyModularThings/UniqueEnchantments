@@ -2,10 +2,10 @@ package uniqueeutils.enchantments.curse;
 
 import it.unimi.dsi.fastutil.ints.AbstractInt2FloatMap.BasicEntry;
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Food;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.ItemStack;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -19,24 +19,24 @@ public class FaminesOdium extends UniqueEnchantment
 	
 	public FaminesOdium()
 	{
-		super(new DefaultData("famines_odium", Rarity.VERY_RARE, 2, true, true, 10, 4, 40), BaseUEMod.ALL_TYPES, EquipmentSlotType.values());
+		super(new DefaultData("famines_odium", Rarity.VERY_RARE, 2, true, true, 10, 4, 40), BaseUEMod.ALL_TYPES, EquipmentSlot.values());
 		setCategory("utils");
 		addStats(DELAY, NURISHMENT, DAMAGE);
 		setCurse();	
 	}
 	
-	public static Int2FloatMap.Entry consumeRandomItem(IInventory inventory, float effect)
+	public static Int2FloatMap.Entry consumeRandomItem(Container inventory, float effect)
 	{
 		for(int i = 0,m=inventory.getContainerSize();i<m;i++)
 		{
 			ItemStack stack = inventory.getItem(i);
 			if(stack.getItem().isEdible())
 			{
-				Food food = stack.getItem().getFoodProperties();
+				FoodProperties food = stack.getFoodProperties(null);
 				BasicEntry entry = new BasicEntry(food.getNutrition() / 4, food.getSaturationModifier() * effect);
-				if(stack.getItem().hasContainerItem(stack))
+				if(stack.hasCraftingRemainingItem())
 				{
-					ItemStack container = stack.getItem().getContainerItem(stack);
+					ItemStack container = stack.getCraftingRemainingItem();
 					stack.shrink(1);
 					inventory.setItem(i, container);
 				}

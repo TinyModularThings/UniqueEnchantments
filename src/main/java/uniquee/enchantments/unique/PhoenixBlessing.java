@@ -1,8 +1,8 @@
 package uniquee.enchantments.unique;
 
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
@@ -15,7 +15,7 @@ public class PhoenixBlessing extends UniqueEnchantment
 	
 	public PhoenixBlessing()
 	{
-		super(new DefaultData("phoenixs_blessing", Rarity.RARE, 2, true, true, 26, 2, 2), BaseUEMod.ALL_TYPES, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("phoenixs_blessing", Rarity.RARE, 2, true, true, 26, 2, 2), BaseUEMod.ALL_TYPES, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(RANGE, TRANSCENDED_DURATION);
 		setDisableDefaultItems();
 	}

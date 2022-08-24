@@ -10,17 +10,17 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class EnchantmentContainer
 {
-	private static final EquipmentSlotType[] SLOTS = EquipmentSlotType.values();
+	private static final EquipmentSlot[] SLOTS = EquipmentSlot.values();
 	@SuppressWarnings("unchecked")
-	Object2IntMap<Enchantment>[] enchantments = new Object2IntMap[EquipmentSlotType.values().length];
+	Object2IntMap<Enchantment>[] enchantments = new Object2IntMap[EquipmentSlot.values().length];
 	Object2IntLinkedOpenHashMap<Enchantment> combinedEnchantments = null;
 	int checkedSlots = 0;
 	LivingEntity base;
@@ -31,7 +31,7 @@ public class EnchantmentContainer
 		this.base = base;
 	}
 	
-	public Iterable<Map.Entry<EquipmentSlotType, Object2IntMap<Enchantment>>> getAll()
+	public Iterable<Map.Entry<EquipmentSlot, Object2IntMap<Enchantment>>> getAll()
 	{
 		triggerAll();
 		return iter;
@@ -43,7 +43,7 @@ public class EnchantmentContainer
 		return new SpecialIterable(ench);
 	}
 	
-	public int getEnchantment(Enchantment ench, EquipmentSlotType slot)
+	public int getEnchantment(Enchantment ench, EquipmentSlot slot)
 	{
 		if(enchantments[slot.ordinal()] == null) 
 		{
@@ -53,9 +53,9 @@ public class EnchantmentContainer
 		return enchantments[slot.ordinal()].getInt(ench);
 	}
 	
-	public Object2IntMap.Entry<EquipmentSlotType> getEnchantedItem(Enchantment ench)
+	public Object2IntMap.Entry<EquipmentSlot> getEnchantedItem(Enchantment ench)
 	{
-		EquipmentSlotType[] slots = MiscUtil.getEquipmentSlotsFor(ench);
+		EquipmentSlot[] slots = MiscUtil.getEquipmentSlotsFor(ench);
 		if(slots.length <= 0) return MiscUtil.NO_ENCHANTMENT;
 		for(int i = 0,m=slots.length;i<m;i++)
 		{
@@ -71,7 +71,7 @@ public class EnchantmentContainer
 		{
 			if(checkedSlots != enchantments.length)
 			{
-				for(EquipmentSlotType slot : EquipmentSlotType.values())
+				for(EquipmentSlot slot : EquipmentSlot.values())
 				{
 					if(enchantments[slot.ordinal()] == null)
 					{
@@ -158,18 +158,18 @@ public class EnchantmentContainer
 		}
 	}
 	
-	private class AllIterable implements Iterable<Map.Entry<EquipmentSlotType, Object2IntMap<Enchantment>>>
+	private class AllIterable implements Iterable<Map.Entry<EquipmentSlot, Object2IntMap<Enchantment>>>
 	{
 		@Override
-		public Iterator<Entry<EquipmentSlotType, Object2IntMap<Enchantment>>> iterator()
+		public Iterator<Entry<EquipmentSlot, Object2IntMap<Enchantment>>> iterator()
 		{
 			return new AllIterator();
 		}
 	}
 	
-	private class AllIterator implements Iterator<Map.Entry<EquipmentSlotType, Object2IntMap<Enchantment>>>
+	private class AllIterator implements Iterator<Map.Entry<EquipmentSlot, Object2IntMap<Enchantment>>>
 	{
-		EquipmentSlotType[] slots = EquipmentSlotType.values();
+		EquipmentSlot[] slots = EquipmentSlot.values();
 		int i = 0;
 		@Override
 		public boolean hasNext()
@@ -178,7 +178,7 @@ public class EnchantmentContainer
 		}
 
 		@Override
-		public Entry<EquipmentSlotType, Object2IntMap<Enchantment>> next()
+		public Entry<EquipmentSlot, Object2IntMap<Enchantment>> next()
 		{
 			return new AbstractMap.SimpleEntry<>(slots[i], enchantments[i++]);
 		}

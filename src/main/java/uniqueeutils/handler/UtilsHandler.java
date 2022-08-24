@@ -1,102 +1,89 @@
 package uniqueeutils.handler;
 
 import java.util.List;
-import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CropsBlock;
-import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IngameGui;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.ai.attributes.AttributeModifierManager;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.passive.horse.HorseEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.projectile.FireworkRocketEntity;
-import net.minecraft.entity.projectile.TridentEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ElytraItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.EffectType;
-import net.minecraft.potion.Effects;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.BeaconTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos.Mutable;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Entity.RemovalReason;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ExperienceOrb;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.horse.Horse;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.item.ElytraItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.entity.BeaconBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.TickEvent.WorldTickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
@@ -154,7 +141,7 @@ public class UtilsHandler
 			toRender.clear();
 			return;
 		}
-		int level = MiscUtil.getEnchantmentLevel(ench, mc.player.getItemBySlot(EquipmentSlotType.HEAD));
+		int level = MiscUtil.getEnchantmentLevel(ench, mc.player.getItemBySlot(EquipmentSlot.HEAD));
 		if(level <= 0)
 		{
 			toRender.clear();
@@ -170,85 +157,86 @@ public class UtilsHandler
 		}
 	}
 	
-	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)
-	@SuppressWarnings("deprecation")
-	public void onRender(RenderWorldLastEvent event)
-	{
-		if(toRender.isEmpty())
-			return;
-		Minecraft mc = Minecraft.getInstance();
-		Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("uniquee", "treasurers_eyes"));
-		if(ench == null)
-			return;
-		int level = MiscUtil.getEnchantmentLevel(ench, mc.player.getItemBySlot(EquipmentSlotType.HEAD));
-		if(level <= 0)
-			return;
-		Tessellator tes = Tessellator.getInstance();
-		BufferBuilder buffer = tes.getBuilder();
-		buffer.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR);
-		MatrixStack matrix = event.getMatrixStack();
-		matrix.pushPose();
-		Vector3d playerPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-		matrix.translate(-playerPos.x(), -playerPos.y(), -playerPos.z());
-		Matrix4f transform = matrix.last().pose();
-		for(int i = 0, m = toRender.size();i < m;i++)
-		{
-			toRender.get(i).render(buffer, transform);
-		}
-		matrix.popPose();
-		GlStateManager._disableTexture();
-		GlStateManager._disableDepthTest();
-		GlStateManager._enableAlphaTest();
-		GlStateManager._alphaFunc(516, 0.1F);
-		GlStateManager._enableBlend();
-		RenderSystem.defaultBlendFunc();
-		tes.end();
-		GlStateManager._enableTexture();
-		GlStateManager._enableDepthTest();
-	}
-	
-	@SubscribeEvent
-	@OnlyIn(Dist.CLIENT)
-	@SuppressWarnings("deprecation")
-	public void onOverlay(RenderGameOverlayEvent.Post event)
-	{
-		if(event.getType() != ElementType.HEALTH)
-		{
-			return;
-		}
-		Minecraft mc = Minecraft.getInstance();
-		IngameGui gui = mc.gui;
-		MainWindow window = mc.getWindow();
-		PlayerEntity player = mc.player;
-		float shield = MiscUtil.getPersistentData(player).getInt(PhanesUpgrade.SHIELD_STORAGE);
-		float max = MathCache.LOG.getFloat(1+ UEUtils.PHANES_UPGRADE.getCombinedPoints(player));
-		int hearts = MathHelper.ceil(MathHelper.clamp(shield / max * 20F, 0, 20));
-		if(hearts <= 0 || !UEUtils.RENDER_SHIELD_HUD.get()) return;
-        RenderSystem.enableBlend();
-        mc.getTextureManager().bind(new ResourceLocation("uniqueutil", "textures/gui/icons.png"));
-        MatrixStack mStack = event.getMatrixStack();
-        int left = window.getGuiScaledWidth() / 2 - 91;
-        int top = window.getGuiScaledHeight() - 39;
-        int textureY = 9 * (mc.level.getLevelData().isHardcore() ? 5 : 0);
-        int regen = player.hasEffect(Effects.REGENERATION) ? gui.getGuiTicks() % 25 : -1;
-        int health = MathHelper.ceil(player.getHealth());
-        RenderSystem.color4f(1F, 1F, 1F, 0.7F);
-        for(int i = hearts/2;i>=0;i--)
-        {
-            int row = MathHelper.ceil((float)(i + 1) / 10.0F) - 1;
-            int x = left + i % 10 * 8;
-            int y = top - row * 3;
-            if (health <= 4) y += mc.level.random.nextInt(2);
-            if (i == regen) y -= 2;
-            if (i * 2 + 1 < hearts)
-            	gui.blit(mStack, x, y, 52, textureY, 9, 9); //4
-            else if (i * 2 + 1 == hearts)
-                gui.blit(mStack, x, y, 61, textureY, 9, 9); //5
-        }
-        RenderSystem.color4f(1F, 1F, 1F, 1F);
-        RenderSystem.disableBlend();
-	}
+//	@SubscribeEvent
+//	@OnlyIn(Dist.CLIENT)
+//	@SuppressWarnings("deprecation")
+//	public void onRender(RenderLevelLastEvent event)
+//	{
+//		TODO implement new Render Pipeline...
+//		if(toRender.isEmpty())
+//			return;
+//		Minecraft mc = Minecraft.getInstance();
+//		Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("uniquee", "treasurers_eyes"));
+//		if(ench == null)
+//			return;
+//		int level = MiscUtil.getEnchantmentLevel(ench, mc.player.getItemBySlot(EquipmentSlot.HEAD));
+//		if(level <= 0)
+//			return;
+//		Tesselator tes = Tesselator.getInstance();
+//		BufferBuilder buffer = tes.getBuilder();
+//		buffer.begin(GL11.GL_TRIANGLES, DefaultVertexFormat.POSITION_COLOR);
+//		PoseStack matrix = event.getPoseStack();
+//		matrix.pushPose();
+//		Vec3 playerPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+//		matrix.translate(-playerPos.x(), -playerPos.y(), -playerPos.z());
+//		Matrix4f transform = matrix.last().pose();
+//		for(int i = 0, m = toRender.size();i < m;i++)
+//		{
+//			toRender.get(i).render(buffer, transform);
+//		}
+//		matrix.popPose();
+//		GlStateManager._disableTexture();
+//		GlStateManager._disableDepthTest();
+//		GlStateManager._enableAlphaTest();
+//		GlStateManager._alphaFunc(516, 0.1F);
+//		GlStateManager._enableBlend();
+//		RenderSystem.defaultBlendFunc();
+//		tes.end();
+//		GlStateManager._enableTexture();
+//		GlStateManager._enableDepthTest();
+//	}
+//	
+//	@SubscribeEvent
+//	@OnlyIn(Dist.CLIENT)
+//	@SuppressWarnings("deprecation")
+//	public void onOverlay(RenderGameOverlayEvent.Post event)
+//	{
+//		if(event.getType() != ElementType.HEALTH)
+//		{
+//			return;
+//		}
+//		Minecraft mc = Minecraft.getInstance();
+//		Gui gui = mc.gui;
+//		Window window = mc.getWindow();
+//		Player player = mc.player;
+//		float shield = MiscUtil.getPersistentData(player).getInt(PhanesUpgrade.SHIELD_STORAGE);
+//		float max = MathCache.LOG.getFloat(1+ UEUtils.PHANES_UPGRADE.getCombinedPoints(player));
+//		int hearts = Mth.ceil(Mth.clamp(shield / max * 20F, 0, 20));
+//		if(hearts <= 0 || !UEUtils.RENDER_SHIELD_HUD.get()) return;
+//        RenderSystem.enableBlend();
+//        mc.getTextureManager().bind(new ResourceLocation("uniqueutil", "textures/gui/icons.png"));
+//        PoseStack mStack = event.getMatrixStack();
+//        int left = window.getGuiScaledWidth() / 2 - 91;
+//        int top = window.getGuiScaledHeight() - 39;
+//        int textureY = 9 * (mc.level.getLevelData().isHardcore() ? 5 : 0);
+//        int regen = player.hasEffect(MobEffects.REGENERATION) ? gui.getGuiTicks() % 25 : -1;
+//        int health = Mth.ceil(player.getHealth());
+//        RenderSystem.color4f(1F, 1F, 1F, 0.7F);
+//        for(int i = hearts/2;i>=0;i--)
+//        {
+//            int row = Mth.ceil((float)(i + 1) / 10.0F) - 1;
+//            int x = left + i % 10 * 8;
+//            int y = top - row * 3;
+//            if (health <= 4) y += mc.level.random.nextInt(2);
+//            if (i == regen) y -= 2;
+//            if (i * 2 + 1 < hearts)
+//            	gui.blit(mStack, x, y, 52, textureY, 9, 9); //4
+//            else if (i * 2 + 1 == hearts)
+//                gui.blit(mStack, x, y, 61, textureY, 9, 9); //5
+//        }
+//        RenderSystem.color4f(1F, 1F, 1F, 1F);
+//        RenderSystem.disableBlend();
+//	}
 	
 	public void addDrawPosition(BlockPos pos)
 	{
@@ -256,11 +244,11 @@ public class UtilsHandler
 	}
 	
 	@SubscribeEvent
-	public void onWorldTick(WorldTickEvent event)
+	public void onWorldTick(LevelTickEvent event)
 	{
-		if(event.world.isClientSide)
+		if(event.level.isClientSide)
 			return;
-		Resonance.tick(event.world);
+		Resonance.tick(event.level);
 	}
 	
 	@SubscribeEvent
@@ -270,8 +258,8 @@ public class UtilsHandler
 		{
 			return;
 		}
-		PlayerEntity player = event.player;
-		ItemStack armor = player.getItemBySlot(EquipmentSlotType.CHEST);
+		Player player = event.player;
+		ItemStack armor = player.getItemBySlot(EquipmentSlot.CHEST);
 		if(!armor.isEmpty())
 		{
 			int level = MiscUtil.getEnchantmentLevel(UEUtils.ANEMOIS_FRAGMENT, armor);
@@ -282,11 +270,11 @@ public class UtilsHandler
 				{
 					amount -= (int)(AnemoiFragment.CONSUMPTION.get() / Math.sqrt(AnemoiFragment.CONSUMPTION_SCALE.get(level)));
 					StackUtils.setInt(armor, AnemoiFragment.STORAGE, Math.max(0, amount));
-					player.moveRelative(1F, new Vector3d(0F, (float)Math.log10(110 + Math.pow(AnemoiFragment.BOOST.get(level * player.experienceLevel), 0.125)) - 2, 0F));
+					player.moveRelative(1F, new Vec3(0F, (float)Math.log10(110 + Math.pow(AnemoiFragment.BOOST.get(level * player.experienceLevel), 0.125)) - 2, 0F));
 				}
 			}
 		}
-		armor = player.getItemBySlot(EquipmentSlotType.LEGS);
+		armor = player.getItemBySlot(EquipmentSlot.LEGS);
 		if(!armor.isEmpty())
 		{
 			int level = MiscUtil.getEnchantmentLevel(UEUtils.CLIMBER, armor);
@@ -301,12 +289,12 @@ public class UtilsHandler
 			}
 		}
 		Entity ridden = player.getRootVehicle();
-		if(ridden instanceof HorseEntity)
+		if(ridden instanceof Horse)
 		{
-			CompoundNBT nbt = ridden.getPersistentData();
-			HorseEntity horse = (HorseEntity)ridden;
-			ModifiableAttributeInstance instance = horse.getAttribute(Attributes.MOVEMENT_SPEED);
-			int level = MiscUtil.getEnchantmentLevel(UEUtils.PEGASUS_SOUL, ridden.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(EmptyHandler.INSTANCE).getStackInSlot(1));
+			CompoundTag nbt = ridden.getPersistentData();
+			Horse horse = (Horse)ridden;
+			AttributeInstance instance = horse.getAttribute(Attributes.MOVEMENT_SPEED);
+			int level = MiscUtil.getEnchantmentLevel(UEUtils.PEGASUS_SOUL, ridden.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(EmptyHandler.INSTANCE).getStackInSlot(1));
 			if(level > 0)
 			{
 				boolean active = UEUtils.BOOST_KEY.test(player);
@@ -331,9 +319,9 @@ public class UtilsHandler
 			}
 			if(nbt.getBoolean(PegasusSoul.ENABLED))
 			{
-				Vector3d vec = player.getDeltaMovement();
+				Vec3 vec = player.getDeltaMovement();
 				ridden.setDeltaMovement(vec.x, 0D, vec.z);
-				ridden.causeFallDamage(ridden.fallDistance, 1F);
+				ridden.causeFallDamage(ridden.fallDistance, 1F, DamageSource.FALL);
 				ridden.fallDistance = 0F;
 				ridden.setOnGround(true);
 			}
@@ -347,7 +335,7 @@ public class UtilsHandler
 			if(points > 0 && player.getCombatTracker().getKiller() == null)
 			{
 				int maxStorage = MathCache.LOG.getInt(points);
-				CompoundNBT data = MiscUtil.getPersistentData(player);
+				CompoundTag data = MiscUtil.getPersistentData(player);
 				int shield = data.getInt(PhanesUpgrade.SHIELD_STORAGE);
 				if(shield < maxStorage) {
 					data.putInt(PhanesUpgrade.SHIELD_STORAGE, shield+1);
@@ -357,13 +345,13 @@ public class UtilsHandler
 			if(player.isPassenger())
 			{
 				Entity entity = player.getVehicle();
-				if(entity instanceof HorseEntity && entity.isAlive())
+				if(entity instanceof Horse && entity.isAlive())
 				{
-					HorseEntity horse = (HorseEntity)entity;
-					int level = MiscUtil.getEnchantmentLevel(UEUtils.SLEIPNIRS_GRACE, entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElse(null).getStackInSlot(1));
+					Horse horse = (Horse)entity;
+					int level = MiscUtil.getEnchantmentLevel(UEUtils.SLEIPNIRS_GRACE, entity.getCapability(ForgeCapabilities.ITEM_HANDLER, null).orElse(null).getStackInSlot(1));
 					if(level > 0)
 					{
-						CompoundNBT nbt = entity.getPersistentData();
+						CompoundTag nbt = entity.getPersistentData();
 						long lastTime = nbt.getLong(SleipnirsGrace.HORSE_NBT);
 						if(lastTime == 0)
 						{
@@ -372,13 +360,13 @@ public class UtilsHandler
 						}
 						Block block = horse.level.getBlockState(new BlockPos(horse.getX(), horse.getY() - 0.20000000298023224D, horse.getZ())).getBlock();
 						double bonus = Math.min(SleipnirsGrace.CAP.get() + level, SleipnirsGrace.GAIN.get((time - lastTime) * level));
-						ModifiableAttributeInstance attri = horse.getAttribute(Attributes.MOVEMENT_SPEED);
+						AttributeInstance attri = horse.getAttribute(Attributes.MOVEMENT_SPEED);
 						attri.removeModifier(SleipnirsGrace.SPEED_MOD);
-						attri.addTransientModifier(new AttributeModifier(SleipnirsGrace.SPEED_MOD, "Sleipnirs Grace", Math.log10(10 + ((bonus / SleipnirsGrace.MAX.get()) * (block == Blocks.GRASS_PATH ? SleipnirsGrace.PATH_BONUS.get() : level))) - 1D, Operation.MULTIPLY_TOTAL));
+						attri.addTransientModifier(new AttributeModifier(SleipnirsGrace.SPEED_MOD, "Sleipnirs Grace", Math.log10(10 + ((bonus / SleipnirsGrace.MAX.get()) * (block == Blocks.DIRT_PATH ? SleipnirsGrace.PATH_BONUS.get() : level))) - 1D, Operation.MULTIPLY_TOTAL));
 					}
 					else
 					{
-						ModifiableAttributeInstance attri = horse.getAttribute(Attributes.MOVEMENT_SPEED);
+						AttributeInstance attri = horse.getAttribute(Attributes.MOVEMENT_SPEED);
 						if(attri.getModifier(SleipnirsGrace.SPEED_MOD) != null)
 						{
 							attri.removeModifier(SleipnirsGrace.SPEED_MOD);
@@ -390,7 +378,7 @@ public class UtilsHandler
 		int tickRate = Math.max(1, (int)(Reinforced.BASE_DURATION.get() / MathCache.LOG10.get(1000 + player.experienceLevel) - 2));
 		if(time % tickRate == 0)
 		{
-			PlayerInventory inv = player.inventory;
+			Inventory inv = player.getInventory();
 			// I dislike doing that because its causing enough lag IMO...
 			// Efficient but the operation is laggy no matter how much you
 			// optimize it
@@ -414,13 +402,13 @@ public class UtilsHandler
 					int max = (int)Math.sqrt(625 + player.experienceLevel * level) * 4;
 					if(shield < max)
 					{
-						shield = Math.min(max, shield + MathHelper.ceil(Math.sqrt(level)));
+						shield = Math.min(max, shield + Mth.ceil(Math.sqrt(level)));
 						StackUtils.setInt(stack, Reinforced.SHIELD, shield);
 					}
 				}
 			}
 		}
-		CompoundNBT nbt = player.getPersistentData();
+		CompoundTag nbt = player.getPersistentData();
 		if(nbt.contains(Climber.CLIMB_POS) && time >= nbt.getLong(Climber.CLIMB_START) + nbt.getLong(Climber.CLIMB_DELAY))
 		{
 			nbt.remove(Climber.CLIMB_DELAY);
@@ -435,12 +423,12 @@ public class UtilsHandler
 			int duration = (int)Math.max((FaminesOdium.DELAY.get() / Math.pow(level, 0.125D)), 1);
 			if(time % duration == 0)
 			{
-				Int2FloatMap.Entry entry = FaminesOdium.consumeRandomItem(player.inventory, FaminesOdium.NURISHMENT.getFloat() * level);
+				Int2FloatMap.Entry entry = FaminesOdium.consumeRandomItem(player.getInventory(), FaminesOdium.NURISHMENT.getFloat() * level);
 				if(entry != null)
 				{
 					float value = MathCache.LOG_ADD_MAX.getFloat(level);
-					player.getFoodData().eat(MathHelper.ceil(FaminesOdium.NURISHMENT.get(entry.getIntKey() * value)), entry.getFloatValue() * level * value);
-					player.level.playSound((PlayerEntity)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_BURP, SoundCategory.PLAYERS, 0.5F, player.level.random.nextFloat() * 0.1F + 0.9F);
+					player.getFoodData().eat(Mth.ceil(FaminesOdium.NURISHMENT.get(entry.getIntKey() * value)), entry.getFloatValue() * level * value);
+					player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_BURP, SoundSource.PLAYERS, 0.5F, player.level.random.nextFloat() * 0.1F + 0.9F);
 				}
 				else
 				{
@@ -448,16 +436,16 @@ public class UtilsHandler
 				}
 			}
 		}
-		int delay = Math.max(1, MathHelper.ceil(DemetersSoul.DELAY.get() / Math.log(10 + DemetersSoul.SCALING.get(MiscUtil.getEnchantmentLevel(UEUtils.DEMETERS_SOUL, player.getItemInHand(Hand.MAIN_HAND))))));
+		int delay = Math.max(1, Mth.ceil(DemetersSoul.DELAY.get() / Math.log(10 + DemetersSoul.SCALING.get(MiscUtil.getEnchantmentLevel(UEUtils.DEMETERS_SOUL, player.getItemInHand(InteractionHand.MAIN_HAND))))));
 		if(player.level.getGameTime() % delay == 0)
 		{
 			HarvestEntry entry = DemetersSoul.getNextIndex(player);
 			if(entry != null)
 			{
-				ActionResultType result = entry.harvest(player.level, player);
-				if(result == ActionResultType.FAIL)
+				InteractionResult result = entry.harvest(player.level, player);
+				if(result == InteractionResult.FAIL)
 				{
-					ListNBT list = DemetersSoul.getCrops(player);
+					ListTag list = DemetersSoul.getCrops(player);
 					for(int i = 0, m = list.size();i < m;i++)
 					{
 						if(entry.matches(list.getCompound(i)))
@@ -467,7 +455,7 @@ public class UtilsHandler
 						}
 					}
 				}
-				else if(result == ActionResultType.SUCCESS)
+				else if(result == InteractionResult.SUCCESS)
 				{
 					player.causeFoodExhaustion(0.06F);
 				}
@@ -478,33 +466,33 @@ public class UtilsHandler
 	@SubscribeEvent
 	public void onFall(LivingFallEvent event)
 	{
-		ItemStack stack = event.getEntityLiving().getItemBySlot(EquipmentSlotType.FEET);
+		ItemStack stack = event.getEntity().getItemBySlot(EquipmentSlot.FEET);
 		int level = MiscUtil.getEnchantmentLevel(UEUtils.ESSENCE_OF_SLIME, stack);
 		if(level > 0)
 		{
 			if(event.getDistance() <= 1.3)
 				return;
-			int damage = MathHelper.floor(((event.getDistance() - 2) * EssenceOfSlime.DURABILITY_LOSS.get() / (level + MiscUtil.getEnchantmentLevel(Enchantments.FALL_PROTECTION, stack))));
+			int damage = Mth.floor(((event.getDistance() - 2) * EssenceOfSlime.DURABILITY_LOSS.get() / (level + MiscUtil.getEnchantmentLevel(Enchantments.FALL_PROTECTION, stack))));
 			if(damage > 0)
 			{
-				stack.hurtAndBreak(damage, event.getEntityLiving(), MiscUtil.get(EquipmentSlotType.FEET));
+				stack.hurtAndBreak(damage, event.getEntity(), MiscUtil.get(EquipmentSlot.FEET));
 			}
-			LivingEntity entity = event.getEntityLiving();
+			LivingEntity entity = event.getEntity();
 			entity.getPersistentData().putDouble("bounce", entity.getDeltaMovement().y() / Math.log10(15.5D + EssenceOfSlime.FALL_DISTANCE_MULTIPLIER.get(entity.getDeltaMovement().y())) * -1D);
 			event.setCanceled(true);
 		}
 	}
 	
 	@SubscribeEvent
-	public void onEntityTick(LivingUpdateEvent event)
+	public void onEntityTick(LivingTickEvent event)
 	{
-		if(event.getEntityLiving() instanceof PlayerEntity == event.getEntityLiving().level.isClientSide)
+		if(event.getEntity() instanceof Player == event.getEntity().level.isClientSide)
 		{
-			CompoundNBT data = event.getEntityLiving().getPersistentData();
+			CompoundTag data = event.getEntity().getPersistentData();
 			if(data.contains("bounce"))
 			{
-				Vector3d motion = event.getEntityLiving().getDeltaMovement();
-				event.getEntityLiving().setDeltaMovement(motion.x(), data.getDouble("bounce"), motion.z());
+				Vec3 motion = event.getEntity().getDeltaMovement();
+				event.getEntity().setDeltaMovement(motion.x(), data.getDouble("bounce"), motion.z());
 				data.remove("bounce");
 			}
 		}
@@ -513,14 +501,14 @@ public class UtilsHandler
 	@SubscribeEvent
 	public void onEaten(LivingEntityUseItemEvent.Finish event)
 	{
-		if(event.getEntityLiving() instanceof PlayerEntity)
+		if(event.getEntity() instanceof Player)
 		{
 			int level = MiscUtil.getEnchantmentLevel(UEUtils.AMBROSIA, event.getItem());
 			if(level > 0)
 			{
-				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(MathCache.POW5.get(1 + ((PlayerEntity)event.getEntityLiving()).experienceLevel * level)) * Ambrosia.DURATION_MULTIPLIER.get()));
-				((PlayerEntity)event.getEntityLiving()).getFoodData().eat(2000, 0);
-				event.getEntityLiving().addEffect(new EffectInstance(UEUtils.SATURATION, duration, Math.min(20, level)));
+				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(MathCache.POW5.get(1 + ((Player)event.getEntity()).experienceLevel * level)) * Ambrosia.DURATION_MULTIPLIER.get()));
+				((Player)event.getEntity()).getFoodData().eat(2000, 0);
+				event.getEntity().addEffect(new MobEffectInstance(UEUtils.SATURATION, duration, Math.min(20, level)));
 			}
 		}
 	}
@@ -533,29 +521,29 @@ public class UtilsHandler
 			if(PHANES_REGRET_ACTIVE.get())
 				return;
 			PHANES_REGRET_ACTIVE.set(true);
-			int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.PHANES_REGRET, event.getEntityLiving());
+			int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.PHANES_REGRET, event.getEntity());
 			if(level > 0)
 			{
-				if(event.getEntityLiving() instanceof PlayerEntity)
+				if(event.getEntity() instanceof Player)
 				{
-					MiscUtil.drainExperience((PlayerEntity)event.getEntityLiving(), MathHelper.ceil(event.getAmount()));
+					MiscUtil.drainExperience((Player)event.getEntity(), Mth.ceil(event.getAmount()));
 				}
-				event.getEntityLiving().heal(event.getAmount() * (1F - (1F / MathCache.LOG_ADD.getFloat(level))));
+				event.getEntity().heal(event.getAmount() * (1F - (1F / MathCache.LOG_ADD.getFloat(level))));
 			}
 			PHANES_REGRET_ACTIVE.set(false);
 		}
 		if(event.getSource().isMagic())
 		{
-			CompoundNBT data = MiscUtil.getPersistentData(event.getEntity());
+			CompoundTag data = MiscUtil.getPersistentData(event.getEntity());
 			int points = data.getInt(PhanesUpgrade.SHIELD_STORAGE);
 			if(points > 0)
 			{
-				int toRemove = MathHelper.ceil(event.getAmount());
+				int toRemove = Mth.ceil(event.getAmount());
 				data.putInt(PhanesUpgrade.SHIELD_STORAGE, Math.max(0, points - toRemove));
 				event.setAmount(Math.max(0F, toRemove - points));
-				if(event.getEntity() instanceof PlayerEntity)
+				if(event.getEntity() instanceof Player)
 				{
-					PlayerEntity player = (PlayerEntity)event.getEntity();
+					Player player = (Player)event.getEntity();
 					UEBase.NETWORKING.sendToPlayer(new EntityPacket(player.getId(), player.getPersistentData()), player);
 				}
 			}
@@ -570,29 +558,29 @@ public class UtilsHandler
 		PHANES_REGRET_ACTIVE.set(true);
 		if(event.getAmount() >= 1F)
 		{
-			int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.PHANES_REGRET, event.getEntityLiving());
+			int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.PHANES_REGRET, event.getEntity());
 			if(level > 0)
 			{
-				event.getEntityLiving().hurt(DamageSource.MAGIC, event.getAmount() * (1F - (1F / MathCache.LOG_ADD.getFloat(level))));
+				event.getEntity().hurt(DamageSource.MAGIC, event.getAmount() * (1F - (1F / MathCache.LOG_ADD.getFloat(level))));
 			}
 		}
 		PHANES_REGRET_ACTIVE.set(false);
 	}
 	
 	@SubscribeEvent
-	public void onArrowHit(ProjectileImpactEvent.Arrow event)
+	public void onArrowHit(ProjectileImpactEvent event)
 	{
-		if(!(event.getArrow() instanceof TridentEntity) || !(event.getArrow().getOwner() instanceof PlayerEntity))
+		if(!(event.getEntity() instanceof ThrownTrident arrow) || !(arrow.getOwner() instanceof Player player))
 			return;
-		RayTraceResult result = event.getRayTraceResult();
-		if(!(result instanceof BlockRayTraceResult))
+		HitResult result = event.getRayTraceResult();
+		if(!(result instanceof BlockHitResult))
 			return;
-		BlockRayTraceResult ray = (BlockRayTraceResult)result;
-		World world = event.getEntity().getCommandSenderWorld();
+		BlockHitResult ray = (BlockHitResult)result;
+		Level world = event.getEntity().getCommandSenderWorld();
 		BlockState state = world.getBlockState(ray.getBlockPos());
-		if(PoseidonsSoul.isValid(state.getBlock()))
+		if(PoseidonsSoul.isValid(state))
 		{
-			ItemStack arrowStack = StackUtils.getArrowStack(event.getArrow());
+			ItemStack arrowStack = StackUtils.getArrowStack(arrow);
 			if(arrowStack.getItem() != Items.TRIDENT)
 				return;
 			Object2IntMap<Enchantment> enchs = MiscUtil.getEnchantments(arrowStack);
@@ -602,83 +590,83 @@ public class UtilsHandler
 			ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
 			stack.enchant(Enchantments.SILK_TOUCH, 1);
 			Block.popResource(world, ray.getBlockPos(), new ItemStack(state.getBlock(), level * (world.random.nextInt(enchs.getInt(Enchantments.BLOCK_FORTUNE) + 1) + 1)));
-			MiscUtil.drainExperience((PlayerEntity)event.getArrow().getOwner(), (int)Math.log10(10 + Math.pow(PoseidonsSoul.BASE_CONSUMTION.get() + level, level)));
+			MiscUtil.drainExperience(player, (int)Math.log10(10 + Math.pow(PoseidonsSoul.BASE_CONSUMTION.get() + level, level)));
 		}
 	}
 	
 	@SubscribeEvent
 	public void onItemClick(RightClickItem event)
 	{
-		if(event.getPlayer() == null || !event.getPlayer().isShiftKeyDown())
+		if(event.getEntity() == null || !event.getEntity().isShiftKeyDown())
 			return;
-		PlayerEntity player = event.getPlayer();
+		Player player = event.getEntity();
 		ItemStack stack = event.getItemStack();
 		int level = MiscUtil.getEnchantmentLevel(UEUtils.RESONANCE, stack);
 		if(level > 0)
 		{
-			if(!event.getWorld().isClientSide)
+			if(!event.getLevel().isClientSide)
 			{
-				CompoundNBT nbt = player.getPersistentData();
-				if(nbt.getLong(Resonance.COOLDOWN_TAG) > event.getWorld().getGameTime())
+				CompoundTag nbt = player.getPersistentData();
+				if(nbt.getLong(Resonance.COOLDOWN_TAG) > event.getLevel().getGameTime())
 				{
 					int used = nbt.getInt(Resonance.OVERUSED_TAG);
 					player.hurt(DamageSource.MAGIC, 0.5F * used);
 					nbt.putInt(Resonance.OVERUSED_TAG, used + 1);
 					if(!player.level.isClientSide)
-						player.displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.resonance.cooldown", (nbt.getLong(Resonance.COOLDOWN_TAG) - event.getWorld().getGameTime()) / 20), true);
+						player.displayClientMessage(Component.translatable("tooltip.uniqueutil.resonance.cooldown", (nbt.getLong(Resonance.COOLDOWN_TAG) - event.getLevel().getGameTime()) / 20), true);
 				}
 				else
 				{
-					Resonance.addResonance(event.getWorld(), event.getPos(), (int)(Resonance.RANGE.getSqrt(level * Math.sqrt(player.experienceLevel))));
-					nbt.putLong(Resonance.COOLDOWN_TAG, event.getWorld().getGameTime() + Resonance.COOLDOWN.get());
+					Resonance.addResonance(event.getLevel(), event.getPos(), (int)(Resonance.RANGE.getSqrt(level * Math.sqrt(player.experienceLevel))));
+					nbt.putLong(Resonance.COOLDOWN_TAG, event.getLevel().getGameTime() + Resonance.COOLDOWN.get());
 					nbt.putInt(Resonance.OVERUSED_TAG, 1);
 				}
 			}
 			event.setCanceled(true);
-			event.setCancellationResult(ActionResultType.SUCCESS);
+			event.setCancellationResult(InteractionResult.SUCCESS);
 		}
 	}
 	
 	@SubscribeEvent
 	public void onBlockClick(RightClickBlock event)
 	{
-		if(event.getPlayer().isShiftKeyDown())
+		if(event.getEntity().isShiftKeyDown())
 		{
-			BlockState state = event.getWorld().getBlockState(event.getPos());
-			if(state.getBlock().isLadder(state, event.getWorld(), event.getPos(), event.getEntityLiving()))
+			BlockState state = event.getLevel().getBlockState(event.getPos());
+			if(state.getBlock().isLadder(state, event.getLevel(), event.getPos(), event.getEntity()))
 			{
-				int level = MiscUtil.getEnchantmentLevel(UEUtils.CLIMBER, event.getPlayer().getItemBySlot(EquipmentSlotType.LEGS));
-				if(level > 0 && MiscUtil.isTranscendent(event.getEntity(), event.getPlayer().getItemBySlot(EquipmentSlotType.LEGS), UEUtils.CLIMBER))
+				int level = MiscUtil.getEnchantmentLevel(UEUtils.CLIMBER, event.getEntity().getItemBySlot(EquipmentSlot.LEGS));
+				if(level > 0 && MiscUtil.isTranscendent(event.getEntity(), event.getEntity().getItemBySlot(EquipmentSlot.LEGS), UEUtils.CLIMBER))
 				{
-					Mutable pos = new Mutable().set(event.getPos());
+					MutableBlockPos pos = new MutableBlockPos().set(event.getPos());
 					List<Block> blocks = new ObjectArrayList<>();
 					do
 					{
 						pos.move(Direction.UP);
-						state = event.getWorld().getBlockState(pos);
+						state = event.getLevel().getBlockState(pos);
 						blocks.add(state.getBlock());
 					}
-					while(state.getBlock().isLadder(state, event.getWorld(), pos, event.getEntityLiving()));
-					if(!event.getWorld().getBlockState(pos.above()).isCollisionShapeFullBlock(event.getWorld(), pos.above()) && !event.getWorld().getBlockState(pos.above(2)).isCollisionShapeFullBlock(event.getWorld(), pos.above(2)))
+					while(state.getBlock().isLadder(state, event.getLevel(), pos, event.getEntity()));
+					if(!event.getLevel().getBlockState(pos.above()).isCollisionShapeFullBlock(event.getLevel(), pos.above()) && !event.getLevel().getBlockState(pos.above(2)).isCollisionShapeFullBlock(event.getLevel(), pos.above(2)))
 					{
-						CompoundNBT nbt = event.getPlayer().getPersistentData();
+						CompoundTag nbt = event.getEntity().getPersistentData();
 						boolean wasClimbing = nbt.getLong(Climber.CLIMB_START) != 0;
 						nbt.putLong(Climber.CLIMB_POS, pos.asLong());
 						nbt.putInt(Climber.CLIMB_DELAY, Climber.getClimbTime(level, blocks));
-						nbt.putLong(Climber.CLIMB_START, event.getWorld().getGameTime());
-						event.getPlayer().displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.climb." + (wasClimbing ? "re" : "") + "start.name"), true);
-						event.setCancellationResult(ActionResultType.SUCCESS);
+						nbt.putLong(Climber.CLIMB_START, event.getLevel().getGameTime());
+						event.getEntity().displayClientMessage(Component.translatable("tooltip.uniqueutil.climb." + (wasClimbing ? "re" : "") + "start.name"), true);
+						event.setCancellationResult(InteractionResult.SUCCESS);
 					}
 					else
 					{
-						event.getPlayer().displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.climb.fail.name"), true);
+						event.getEntity().displayClientMessage(Component.translatable("tooltip.uniqueutil.climb.fail.name"), true);
 					}
 				}
 			}
 			else if(state.getBlock() == Blocks.ANVIL)
 			{
 				ItemStack stack = event.getItemStack();
-				PlayerEntity player = event.getPlayer();
+				Player player = event.getEntity();
 				Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(stack);
 				int level = ench.getInt(UEUtils.SAGES_SOUL);
 				if(level > 0)
@@ -689,13 +677,13 @@ public class UtilsHandler
 					{
 						MiscUtil.drainExperience(player, required);
 						StackUtils.setInt(stack, SagesSoul.STORED_XP, stored + 5);
-						event.setCancellationResult(ActionResultType.SUCCESS);
+						event.setCancellationResult(InteractionResult.SUCCESS);
 					}
 					else
 					{
 						if(!player.level.isClientSide)
-							player.displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.missing.xp"), true);
-						event.setCancellationResult(ActionResultType.FAIL);
+							player.displayClientMessage(Component.translatable("tooltip.uniqueutil.missing.xp"), true);
+						event.setCancellationResult(InteractionResult.FAIL);
 					}
 					event.setCanceled(true);
 				}
@@ -704,27 +692,27 @@ public class UtilsHandler
 			{
 				Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(event.getItemStack());
 				int level = ench.getInt(UEUtils.ALCHEMISTS_BLESSING);
-				if(level > 0 && !event.getWorld().isClientSide)
+				if(level > 0 && !event.getLevel().isClientSide)
 				{
-					TileEntity tile = event.getWorld().getBlockEntity(event.getPos());
-					if(tile instanceof BeaconTileEntity)
+					BlockEntity tile = event.getLevel().getBlockEntity(event.getPos());
+					if(tile instanceof BeaconBlockEntity)
 					{
-						BeaconTileEntity beacon = (BeaconTileEntity)tile;
-						if(beacon.save(new CompoundNBT()).getInt("Primary") == -1)
+						BeaconBlockEntity beacon = (BeaconBlockEntity)tile;
+						if(beacon.saveWithoutMetadata().getInt("Primary") == -1)
 							return;
-						World world = beacon.getLevel();
+						Level world = beacon.getLevel();
 						BlockPos pos = beacon.getBlockPos().above();
-						List<ItemEntity> items = world.getEntitiesOfClass(ItemEntity.class, new AxisAlignedBB(beacon.getBlockPos().above()));
+						List<ItemEntity> items = world.getEntitiesOfClass(ItemEntity.class, new AABB(beacon.getBlockPos().above()));
 						if(items.isEmpty())
 							return;
 						int consumed = 0;
 						int xpToSpawn = 0;
-						world.playSound(event.getPlayer(), pos.above(), UEUtils.ALCHEMIST_BLESSING_SOUND, SoundCategory.BLOCKS, 100F, 1F);
+						world.playSound(event.getEntity(), pos.above(), UEUtils.ALCHEMIST_BLESSING_SOUND, SoundSource.BLOCKS, 100F, 1F);
 						for(ItemEntity item : items)
 						{
 							ItemStack stack = item.getItem();
 							consumed += stack.getCount();
-							item.remove();
+							item.remove(RemovalReason.DISCARDED);
 							item.setNeverPickUp();
 							ConversionEntry entry = AlchemistsBlessing.RECIPES.get(stack.getItem());
 							if(entry == null)
@@ -741,15 +729,15 @@ public class UtilsHandler
 						}
 						if(xpToSpawn > 0)
 						{
-							world.addFreshEntity(new ExperienceOrbEntity(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, MathHelper.ceil(Math.sqrt(AlchemistsBlessing.BASE_XP_USAGE.get(level)) + Math.sqrt(AlchemistsBlessing.LVL_XP_USAGE.get(level * world.random.nextDouble()))) * xpToSpawn));
+							world.addFreshEntity(new ExperienceOrb(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, Mth.ceil(Math.sqrt(AlchemistsBlessing.BASE_XP_USAGE.get(level)) + Math.sqrt(AlchemistsBlessing.LVL_XP_USAGE.get(level * world.random.nextDouble()))) * xpToSpawn));
 							
 						}
-						consumed = MathHelper.ceil(Math.pow((level * consumed * AlchemistsBlessing.CONSUMTION.get()), 0.6505));
+						consumed = Mth.ceil(Math.pow((level * consumed * AlchemistsBlessing.CONSUMTION.get()), 0.6505));
 						int stored = StackUtils.getInt(event.getItemStack(), AlchemistsBlessing.STORED_REDSTONE, 0) - consumed;
 						StackUtils.setInt(event.getItemStack(), AlchemistsBlessing.STORED_REDSTONE, Math.max(0, stored));
 						if(stored < 0)
-							event.getItemStack().hurtAndBreak(-stored, event.getPlayer(), MiscUtil.get(event.getHand() == Hand.MAIN_HAND ? EquipmentSlotType.MAINHAND : EquipmentSlotType.OFFHAND));
-						event.setCancellationResult(ActionResultType.SUCCESS);
+							event.getItemStack().hurtAndBreak(-stored, event.getEntity(), MiscUtil.get(event.getHand() == InteractionHand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND));
+						event.setCancellationResult(InteractionResult.SUCCESS);
 						event.setCanceled(true);
 					}
 				}
@@ -757,10 +745,10 @@ public class UtilsHandler
 			else
 			{
 				int level = MiscUtil.getEnchantmentLevel(UEUtils.DEMETERS_SOUL, event.getItemStack());
-				if(level > 0 && CropHarvestRegistry.INSTANCE.isValid(state.getBlock()) && !event.getWorld().isClientSide)
+				if(level > 0 && CropHarvestRegistry.INSTANCE.isValid(state.getBlock()) && !event.getLevel().isClientSide)
 				{
-					HarvestEntry entry = new HarvestEntry(event.getWorld().dimension().location(), event.getPos().asLong());
-					ListNBT list = DemetersSoul.getCrops(event.getPlayer());
+					HarvestEntry entry = new HarvestEntry(event.getLevel().dimension().location(), event.getPos().asLong());
+					ListTag list = DemetersSoul.getCrops(event.getEntity());
 					boolean found = false;
 					for(int i = 0, m = list.size();i < m;i++)
 					{
@@ -775,15 +763,15 @@ public class UtilsHandler
 					{
 						if(list.size() >= DemetersSoul.CAP.get())
 						{
-							event.getPlayer().displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.crops.full.name"), false);
-							event.setCancellationResult(ActionResultType.SUCCESS);
+							event.getEntity().displayClientMessage(Component.translatable("tooltip.uniqueutil.crops.full.name"), false);
+							event.setCancellationResult(InteractionResult.SUCCESS);
 							event.setCanceled(true);
 							return;
 						}
 						list.add(entry.save());
 					}
-					event.getPlayer().displayClientMessage(new TranslationTextComponent("tooltip.uniqueutil.crops." + (found ? "removed" : "added") + ".name"), false);
-					event.setCancellationResult(ActionResultType.SUCCESS);
+					event.getEntity().displayClientMessage(Component.translatable("tooltip.uniqueutil.crops." + (found ? "removed" : "added") + ".name"), false);
+					event.setCancellationResult(InteractionResult.SUCCESS);
 					event.setCanceled(true);
 					return;
 				}
@@ -794,20 +782,20 @@ public class UtilsHandler
 			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(event.getItemStack());
 			if(ench.getInt(UEUtils.DETEMERS_BLESSING) > 0)
 			{
-				BlockState state = event.getWorld().getBlockState(event.getPos());
-				if(state.getBlock() instanceof CropsBlock)
+				BlockState state = event.getLevel().getBlockState(event.getPos());
+				if(state.getBlock() instanceof CropBlock)
 				{
-					CropsBlock crops = (CropsBlock)state.getBlock();
+					CropBlock crops = (CropBlock)state.getBlock();
 					if(crops.isMaxAge(state))
 					{
-						Block.dropResources(state, event.getWorld(), event.getPos(), event.getWorld().getBlockEntity(event.getPos()), event.getPlayer(), event.getItemStack());
-						event.getWorld().setBlockAndUpdate(event.getPos(), crops.getStateForAge(0));
-						event.getItemStack().hurtAndBreak(1, event.getEntityLiving(), T -> T.broadcastBreakEvent(event.getHand()));
+						Block.dropResources(state, event.getLevel(), event.getPos(), event.getLevel().getBlockEntity(event.getPos()), event.getEntity(), event.getItemStack());
+						event.getLevel().setBlockAndUpdate(event.getPos(), crops.getStateForAge(0));
+						event.getItemStack().hurtAndBreak(1, event.getEntity(), T -> T.broadcastBreakEvent(event.getHand()));
 					}
 				}
-				else if(state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS_PATH || state.getBlock() == Blocks.GRASS_BLOCK)
+				else if(state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.DIRT_PATH || state.getBlock() == Blocks.GRASS_BLOCK)
 				{
-					event.getItemStack().hurt(-ench.getInt(UEUtils.DETEMERS_BLESSING), event.getWorld().random, null);
+					event.getItemStack().hurt(-ench.getInt(UEUtils.DETEMERS_BLESSING), event.getLevel().random, null);
 				}
 			}
 		}
@@ -816,9 +804,9 @@ public class UtilsHandler
 	@SubscribeEvent
 	public void onPlayerLeftHorse(EntityMountEvent event)
 	{
-		if(event.getEntityBeingMounted() instanceof HorseEntity)
+		if(event.getEntityBeingMounted() instanceof Horse)
 		{
-			HorseEntity horse = (HorseEntity)event.getEntityBeingMounted();
+			Horse horse = (Horse)event.getEntityBeingMounted();
 			horse.getPersistentData().remove(SleipnirsGrace.HORSE_NBT);
 			horse.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(SleipnirsGrace.SPEED_MOD);
 		}
@@ -827,17 +815,17 @@ public class UtilsHandler
 	@SubscribeEvent
 	public void onBreakSpeed(BreakSpeed event)
 	{
-		if(event.getPlayer() == null)
+		if(event.getEntity() == null)
 		{
 			return;
 		}
-		PlayerEntity player = event.getPlayer();
+		Player player = event.getEntity();
 		ItemStack held = player.getMainHandItem();
 		
-		int level = MiscUtil.getEnchantmentLevel(UEUtils.ADEPT, player.getItemBySlot(EquipmentSlotType.HEAD));
+		int level = MiscUtil.getEnchantmentLevel(UEUtils.ADEPT, player.getItemBySlot(EquipmentSlot.HEAD));
 		if(level > 0)
 		{
-			boolean inWater = player.isEyeInFluid(FluidTags.WATER);
+			boolean inWater = player.isEyeInFluidType(ForgeMod.WATER_TYPE.get());
 			event.setNewSpeed(event.getNewSpeed() * (player.isOnGround() ? 1F : 5F) * (inWater && !EnchantmentHelper.hasAquaAffinity(player) ? 5F : 1F));
 			if(inWater || !player.isOnGround())
 			{
@@ -850,13 +838,13 @@ public class UtilsHandler
 		{
 			double power = SagesSoul.getEnchantPower(held, level);
 			int levels = StackUtils.getInt(held, SagesSoul.STORED_XP, 0);
-			float toolSpeed = player.inventory.getDestroySpeed(event.getState());
+			float toolSpeed = player.getInventory().getDestroySpeed(event.getState());
 			float invToolSpeed = 1F / toolSpeed;
 			float speed = event.getNewSpeed();
 			event.setNewSpeed(speed + toolSpeed * (1 + (float)Math.pow(Math.log(7.39 + (levels * levels) / (speed * invToolSpeed)), power) * invToolSpeed));
 		}
 		level = ench.getInt(UEUtils.THICK_PICK);
-		if(level > 0 && event.getState().getDestroySpeed(player.level, event.getPos()) >= 20)
+		if(level > 0 && event.getState().getDestroySpeed(player.level, event.getPosition().orElse(BlockPos.ZERO)) >= 20)
 		{
 			int amount = StackUtils.getInt(held, ThickPick.TAG, 0);
 			if(amount > 0)
@@ -893,7 +881,7 @@ public class UtilsHandler
 		{
 			return;
 		}
-		PlayerEntity player = event.getPlayer();
+		Player player = event.getPlayer();
 		ItemStack held = player.getMainHandItem();
 		int level = MiscUtil.getEnchantmentLevel(UEUtils.THICK_PICK, held);
 		if(level > 0)
@@ -910,44 +898,43 @@ public class UtilsHandler
 	public void onItemAirClick(RightClickItem event)
 	{
 		ItemStack stack = event.getItemStack();
-		if(stack.getItem() == Items.FIREWORK_ROCKET && event.getPlayer() != null && !event.getPlayer().isFallFlying())
+		if(stack.getItem() == Items.FIREWORK_ROCKET && event.getEntity() != null && !event.getEntity().isFallFlying())
 		{
-			ItemStack armor = event.getPlayer().getItemBySlot(EquipmentSlotType.CHEST);
+			ItemStack armor = event.getEntity().getItemBySlot(EquipmentSlot.CHEST);
 			int level = MiscUtil.getEnchantmentLevel(UEUtils.ROCKET_MAN, armor);
 			if(armor.getItem() instanceof ElytraItem && level > 0)
 			{
-				if(!event.getWorld().isClientSide)
+				if(!event.getLevel().isClientSide)
 				{
-					event.getWorld().addFreshEntity(new FireworkRocketEntity(event.getWorld(), stack, event.getPlayer()));
+					event.getLevel().addFreshEntity(new FireworkRocketEntity(event.getLevel(), stack, event.getEntity()));
 				}
 				else
 				{
-					PlayerEntity player = event.getPlayer();
-					event.getPlayer().teleportTo(player.getX(), player.getY() + 0.5D, player.getZ());
+					Player player = event.getEntity();
+					event.getEntity().teleportTo(player.getX(), player.getY() + 0.5D, player.getZ());
 				}
-				((EntityMixin)event.getPlayer()).setFlag(7, true);
+				((EntityMixin)event.getEntity()).setFlag(7, true);
 			}
 		}
 	}
 	
 	@SubscribeEvent
-	public void onEntitySpawn(EntityJoinWorldEvent event)
+	public void onEntitySpawn(EntityJoinLevelEvent event)
 	{
-		if(event.getEntity() instanceof FireworkRocketEntity)
+		if(event.getEntity() instanceof FireworkRocketEntity rocket)
 		{
-			FireworkRocketEntity rocket = (FireworkRocketEntity)event.getEntity();
 			try
 			{
 				LivingEntity entity = ((FireworkMixin)rocket).getRidingEntity();
 				if(entity != null)
 				{
-					ItemStack stack = entity.getItemBySlot(EquipmentSlotType.CHEST);
+					ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
 					if(stack.getItem() instanceof ElytraItem)
 					{
 						int level = MiscUtil.getEnchantmentLevel(UEUtils.ROCKET_MAN, stack);
 						if(level > 0)
 						{
-							CompoundNBT nbt = new CompoundNBT();
+							CompoundTag nbt = new CompoundTag();
 							rocket.addAdditionalSaveData(nbt);
 							int time = nbt.getInt("LifeTime");
 							time += time * RocketMan.FLIGHT_TIME.getAsDouble(level) * MathCache.LOG_ADD_MAX.get(level);
@@ -968,20 +955,20 @@ public class UtilsHandler
 	public void onEntityAttack(LivingAttackEvent event)
 	{
 		Entity entity = event.getSource().getEntity();
-		if(entity instanceof LivingEntity)
+		if(entity instanceof LivingEntity living)
 		{
 			if(!entity.level.isClientSide())
 			{
-				int points = UEUtils.FAMINES_UPGRADE.getPoints(((LivingEntity)entity).getMainHandItem());
+				int points = UEUtils.FAMINES_UPGRADE.getPoints(living.getMainHandItem());
 				if(points > 0)
 				{
-					Random random = ((LivingEntity)entity).getRandom();
+					RandomSource random = living.getRandom();
 					if(random.nextDouble() <= MathCache.SQRT_SPECIAL.get(points) * 0.01)
 					{
-						Effect effect = getRandomNegativeEffect(random);
+						MobEffect effect = getRandomNegativeEffect(random);
 						if(effect != null)
 						{
-							event.getEntityLiving().addEffect(new EffectInstance(effect, MathCache.SQRT_SPECIAL.getInt(points) * 10));
+							event.getEntity().addEffect(new MobEffectInstance(effect, MathCache.SQRT_SPECIAL.getInt(points) * 10));
 						}
 					}
 				}
@@ -989,7 +976,7 @@ public class UtilsHandler
 		}
 		if(event.getAmount() > 0F)
 		{
-			for(PlayerEntity player : getPlayers(event.getEntity()))
+			for(Player player : getPlayers(event.getEntity()))
 			{
 				if(canBlockDamageSource(event.getSource(), player))
 				{
@@ -1004,20 +991,20 @@ public class UtilsHandler
 	@SubscribeEvent
 	public void onEquippementSwapped(LivingEquipmentChangeEvent event)
 	{
-		AttributeModifierManager attribute = event.getEntityLiving().getAttributes();
-		Multimap<Attribute, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), event.getEntityLiving(), event.getSlot(), true);
+		AttributeMap attribute = event.getEntity().getAttributes();
+		Multimap<Attribute, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), event.getEntity(), event.getSlot(), true);
 		if(!mods.isEmpty())
 		{
 			attribute.removeAttributeModifiers(mods);
 		}
-		mods = createModifiersFromStack(event.getTo(), event.getEntityLiving(), event.getSlot(), false);
+		mods = createModifiersFromStack(event.getTo(), event.getEntity(), event.getSlot(), false);
 		if(!mods.isEmpty())
 		{
 			attribute.addTransientAttributeModifiers(mods);
 		}
 	}
 	
-	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(ItemStack stack, LivingEntity living, EquipmentSlotType slot, boolean remove)
+	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(ItemStack stack, LivingEntity living, EquipmentSlot slot, boolean remove)
 	{
 		Multimap<Attribute, AttributeModifier> mods = HashMultimap.create();
 		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(stack);
@@ -1044,36 +1031,37 @@ public class UtilsHandler
 		return mods;
 	}
 	
-	public List<PlayerEntity> getPlayers(Entity original)
+	public List<Player> getPlayers(Entity original)
 	{
-		List<PlayerEntity> players = new ObjectArrayList<>();
+		List<Player> players = new ObjectArrayList<>();
 		for(Entity entity : original.getIndirectPassengers())
 		{
-			if(entity instanceof PlayerEntity)
-				players.add((PlayerEntity)entity);
+			if(entity instanceof Player)
+				players.add((Player)entity);
 		}
 		return players;
 	}
 	
-	public static void damageShield(float damage, PlayerEntity player)
+	public static void damageShield(float damage, Player player)
 	{
-		if(damage >= 3.0F && player.getUseItem().getItem().isShield(player.getUseItem(), player))
+		//TODO implement shield event instead
+		if(damage >= 3.0F && player.getUseItem().is(Tags.Items.TOOLS_SHIELDS))
 		{
 			ItemStack copyBeforeUse = player.getUseItem().copy();
-			int i = 1 + MathHelper.floor(damage);
+			int i = 1 + Mth.floor(damage);
 			player.getUseItem().hurtAndBreak(i, player, T -> T.broadcastBreakEvent(player.getUsedItemHand()));
 			if(player.getUseItem().isEmpty())
 			{
-				Hand hand = player.getUsedItemHand();
+				InteractionHand hand = player.getUsedItemHand();
 				net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, copyBeforeUse, hand);
 				
-				if(hand == Hand.MAIN_HAND)
+				if(hand == InteractionHand.MAIN_HAND)
 				{
-					player.setItemSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
+					player.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
 				}
 				else
 				{
-					player.setItemSlot(EquipmentSlotType.OFFHAND, ItemStack.EMPTY);
+					player.setItemSlot(EquipmentSlot.OFFHAND, ItemStack.EMPTY);
 				}
 				
 				player.stopUsingItem();
@@ -1082,19 +1070,19 @@ public class UtilsHandler
 		}
 	}
 	
-	public static boolean canBlockDamageSource(DamageSource damageSourceIn, PlayerEntity player)
+	public static boolean canBlockDamageSource(DamageSource damageSourceIn, Player player)
 	{
 		if(!damageSourceIn.isBypassArmor() && player.isBlocking())
 		{
 			if(MiscUtil.getEnchantmentLevel(UEUtils.MOUNTING_AEGIS, player.getUseItem()) <= 0)
 				return false;
-			Vector3d Vector3d = damageSourceIn.getSourcePosition();
+			Vec3 Vector3d = damageSourceIn.getSourcePosition();
 			
 			if(Vector3d != null)
 			{
-				Vector3d Vector3d1 = player.getViewVector(1.0F);
-				Vector3d Vector3d2 = Vector3d.vectorTo(new Vector3d(player.getX(), player.getY(), player.getZ())).normalize();
-				Vector3d2 = new Vector3d(Vector3d2.x, 0.0D, Vector3d2.z);
+				Vec3 Vector3d1 = player.getViewVector(1.0F);
+				Vec3 Vector3d2 = Vector3d.vectorTo(new Vec3(player.getX(), player.getY(), player.getZ())).normalize();
+				Vector3d2 = new Vec3(Vector3d2.x, 0.0D, Vector3d2.z);
 				if(Vector3d2.dot(Vector3d1) < 0.0D)
 				{
 					return true;
@@ -1104,12 +1092,12 @@ public class UtilsHandler
 		return false;
 	}
 	
-	private Effect getRandomNegativeEffect(Random rand)
+	private MobEffect getRandomNegativeEffect(RandomSource rand)
 	{
-		List<Effect> effects = new ObjectArrayList<>();
-		for(Effect effect : ForgeRegistries.POTIONS)
+		List<MobEffect> effects = new ObjectArrayList<>();
+		for(MobEffect effect : ForgeRegistries.MOB_EFFECTS)
 		{
-			if(effect.getCategory() == EffectType.HARMFUL)
+			if(effect.getCategory() == MobEffectCategory.HARMFUL)
 			{
 				effects.add(effect);
 			}

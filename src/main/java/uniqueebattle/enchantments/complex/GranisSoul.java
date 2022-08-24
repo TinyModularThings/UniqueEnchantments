@@ -2,9 +2,9 @@ package uniqueebattle.enchantments.complex;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.item.HorseArmorItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.HorseArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntLevelStats;
@@ -22,7 +22,7 @@ public class GranisSoul extends UniqueEnchantment
 	
 	public GranisSoul()
 	{
-		super(new DefaultData("granis_soul", Rarity.RARE, 5, true, false, 40, 10, 20), EnchantmentType.ARMOR_CHEST);
+		super(new DefaultData("granis_soul", Rarity.RARE, 5, true, false, 40, 10, 20), EnchantmentCategory.ARMOR_CHEST);
 		addStats(BLEED_DURATION, BLEED_RANGE, DASH_DURATION, DASH_SPEED);
 		setDisableDefaultItems();
 		setCategory("battle");

@@ -1,13 +1,13 @@
 package uniqueebattle.enchantments.complex;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
@@ -24,7 +24,7 @@ public class AresFragment extends UniqueEnchantment
 	
 	public AresFragment()
 	{
-		super(new DefaultData("ares_fragment", Rarity.RARE, 4, true, false, 10, 35, 10).setTrancendenceLevel(200), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("ares_fragment", Rarity.RARE, 4, true, false, 10, 35, 10).setTrancendenceLevel(200), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 		setCategory("battle");
 		addStats(ARMOR_PERCENTAGE, BASE_ROLL, BASE_ROLL_MULTIPLIER, DURABILITY_REDUCTION_SCALING, DURABILITY_ANTI_SCALING, DURABILITY_DISTRIBUTION, TRANSCENDED_CRIT_MULTIPLIER);
 	}

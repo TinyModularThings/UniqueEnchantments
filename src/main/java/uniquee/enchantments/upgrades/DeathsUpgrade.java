@@ -1,7 +1,7 @@
 package uniquee.enchantments.upgrades;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.EnchantedUpgrade;
 import uniquee.UE;
 
@@ -15,7 +15,7 @@ public class DeathsUpgrade extends EnchantedUpgrade
 	@Override
 	public boolean isValid(ItemStack stack)
 	{
-		return EnchantmentType.WEAPON.canEnchant(stack.getItem());
+		return EnchantmentCategory.WEAPON.canEnchant(stack.getItem());
 	}
 	
 }

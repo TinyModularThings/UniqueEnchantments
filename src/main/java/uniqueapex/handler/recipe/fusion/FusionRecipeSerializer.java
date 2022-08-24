@@ -9,13 +9,12 @@ import it.unimi.dsi.fastutil.objects.AbstractObject2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import uniqueapex.handler.recipe.fusion.FusionRecipes.AverageFusionRecipe;
 import uniqueapex.handler.recipe.fusion.FusionRecipes.MaxFusionRecipe;
 import uniqueapex.handler.recipe.fusion.FusionRecipes.MinFusionRecipe;
@@ -23,14 +22,8 @@ import uniqueapex.handler.recipe.fusion.FusionRecipes.MulFusionRecipe;
 import uniqueapex.handler.recipe.fusion.FusionRecipes.SumFusionRecipe;
 import uniquebase.UEBase;
 
-public class FusionRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FusionRecipe>
-{
-	public FusionRecipeSerializer init()
-	{
-		setRegistryName("uniqueapex", "fusion");
-		return this;
-	}
-	
+public class FusionRecipeSerializer implements RecipeSerializer<FusionRecipe>
+{	
 	@Override
 	public FusionRecipe fromJson(ResourceLocation id, JsonObject object)
 	{
@@ -77,7 +70,7 @@ public class FusionRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer
 	}
 
 	@Override
-	public FusionRecipe fromNetwork(ResourceLocation id, PacketBuffer buffer)
+	public FusionRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer)
 	{
 		switch(buffer.readVarInt())
 		{
@@ -91,7 +84,7 @@ public class FusionRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer
 	}
 
 	@Override
-	public void toNetwork(PacketBuffer buffer, FusionRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, FusionRecipe recipe)
 	{
 		recipe.writePacket(buffer);
 	}

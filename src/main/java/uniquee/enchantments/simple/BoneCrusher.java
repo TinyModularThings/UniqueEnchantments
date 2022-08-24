@@ -1,11 +1,11 @@
 package uniquee.enchantments.simple;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.entity.monster.AbstractSkeletonEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.EquipmentSlotType.Group;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot.Type;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 
@@ -16,7 +16,7 @@ public class BoneCrusher extends UniqueEnchantment
 	
 	public BoneCrusher()
 	{
-		super(new DefaultData("bone_crusher", Rarity.VERY_RARE, 4, true, true, 2, 8, 20).setTrancendenceLevel(500), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("bone_crusher", Rarity.VERY_RARE, 4, true, true, 2, 8, 20).setTrancendenceLevel(500), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 		addStats(BONUS_DAMAGE, TRANSCENDED_CHANCE);
 	}
 	
@@ -26,11 +26,11 @@ public class BoneCrusher extends UniqueEnchantment
 		return stack.getItem() instanceof AxeItem;
 	}
 	
-	public static boolean isNotArmored(AbstractSkeletonEntity skeleton)
+	public static boolean isNotArmored(AbstractSkeleton skeleton)
 	{
-		for(EquipmentSlotType slot : EquipmentSlotType.values())
+		for(EquipmentSlot slot : EquipmentSlot.values())
 		{
-			if(slot.getType() == Group.ARMOR && slot != EquipmentSlotType.HEAD && !skeleton.getItemBySlot(slot).isEmpty())
+			if(slot.getType() == Type.ARMOR && slot != EquipmentSlot.HEAD && !skeleton.getItemBySlot(slot).isEmpty())
 			{
 				return false;
 			}

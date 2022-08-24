@@ -1,9 +1,9 @@
 package uniqueebattle.enchantments.complex;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
@@ -17,7 +17,7 @@ public class DeepWounds extends UniqueEnchantment
 	
 	public DeepWounds()
 	{
-		super(new DefaultData("deep_wounds", Rarity.RARE, 4, true, false, 28, 4, 20), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("deep_wounds", Rarity.RARE, 4, true, false, 28, 4, 20), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 		addStats(DURATION, BLEED_SCALE, SCALE);
 	}
 	

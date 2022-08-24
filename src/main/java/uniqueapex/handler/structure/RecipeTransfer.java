@@ -3,17 +3,17 @@ package uniqueapex.handler.structure;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.entity.item.EnderCrystalEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 public class RecipeTransfer
 {
 	BlockPos pos;
 	int[] entityIds;
-	List<Vector3d> basePositions;
+	List<Vec3> basePositions;
 	int tick;
 	
 	public RecipeTransfer(BaseTrackedRecipe recipe)
@@ -24,31 +24,31 @@ public class RecipeTransfer
 		tick = recipe.getTick();
 	}
 	
-	public RecipeTransfer(PacketBuffer buffer)
+	public RecipeTransfer(FriendlyByteBuf buffer)
 	{
 		pos = BlockPos.of(buffer.readLong());
 		entityIds = buffer.readVarIntArray();
 		basePositions = new ObjectArrayList<>();
 		for(int i = 0,m=buffer.readVarInt();i<m;i++) {
-			basePositions.add(new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
+			basePositions.add(new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble()));
 		}
 		tick = buffer.readVarInt();
 	}
 	
-	public RecipeAnimator asAnimation(World world) {
-		List<EnderCrystalEntity> newList = new ObjectArrayList<>();
+	public RecipeAnimator asAnimation(Level world) {
+		List<EndCrystal> newList = new ObjectArrayList<>();
 		for(int i = 0;i<entityIds.length;i++) {
-			newList.add((EnderCrystalEntity)world.getEntity(entityIds[i]));
+			newList.add((EndCrystal)world.getEntity(entityIds[i]));
 		}
 		return new RecipeAnimator(pos, newList, basePositions, tick);
 	}
 	
-	public void write(PacketBuffer buffer)
+	public void write(FriendlyByteBuf buffer)
 	{
 		buffer.writeLong(pos.asLong());
 		buffer.writeVarIntArray(entityIds);
 		buffer.writeVarInt(basePositions.size());
-		for(Vector3d entry : basePositions) {
+		for(Vec3 entry : basePositions) {
 			buffer.writeDouble(entry.x());
 			buffer.writeDouble(entry.y());
 			buffer.writeDouble(entry.z());

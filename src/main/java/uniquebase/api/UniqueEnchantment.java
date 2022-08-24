@@ -3,16 +3,18 @@ package uniquebase.api;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.GameData;
 import uniquebase.utils.IStat;
 import uniquebase.utils.IdStat;
 
@@ -27,11 +29,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	List<IStat> stats = new ObjectArrayList<>();
 	String configName;
 	String categoryName = "base";
-
-	protected UniqueEnchantment(DefaultData data, EnchantmentType typeIn, EquipmentSlotType... slots)
+	ResourceLocation id;
+	
+	protected UniqueEnchantment(DefaultData data, EnchantmentCategory typeIn, EquipmentSlot... slots)
 	{
 		super(data.getRarity(), typeIn, slots);
-		setRegistryName(data.getName());
+		id = GameData.checkPrefix(data.getName(), false);
 		configName = data.getName();
 		values = data;
 	}
@@ -52,6 +55,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	{
 		disableDefaultItems = true;
 		return this;
+	}
+	
+	@Override
+	public ResourceLocation getId()
+	{
+		return id;
 	}
 	
 	@Override
@@ -129,7 +138,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	@Override
 	protected boolean checkCompatibility(Enchantment ench)
 	{
-		return super.checkCompatibility(ench) && !values.incompats.contains(ench.getRegistryName());
+		return super.checkCompatibility(ench) && !values.incompats.contains(ForgeRegistries.ENCHANTMENTS.getKey(ench));
 	}
 	
 	@Override
@@ -219,9 +228,9 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		IntValue maxLevel_Config;
 		IntValue hardCap_Config;
 		IntValue trancendence_Config;
-		IdStat incompats = new IdStat("incompats", ForgeRegistries.ENCHANTMENTS);
-		IdStat incompatibleItems = new IdStat("incompatible_items", "Allows to add custom incompatible Items", ForgeRegistries.ITEMS);
-		IdStat compatibleItems = new IdStat("compatible_items", "Allows to add custom compatible Items", ForgeRegistries.ITEMS);
+		IdStat<Enchantment> incompats = new IdStat<>("incompats", ForgeRegistries.ENCHANTMENTS);
+		IdStat<Item> incompatibleItems = new IdStat<>("incompatible_items", "Allows to add custom incompatible Items", ForgeRegistries.ITEMS);
+		IdStat<Item> compatibleItems = new IdStat<>("compatible_items", "Allows to add custom compatible Items", ForgeRegistries.ITEMS);
 		
 		public DefaultData(String name, Rarity rare, int maxLevel, boolean isTreasure, boolean isTradeable, int baseCost, int levelCost, int rangeCost)
 		{
@@ -309,12 +318,12 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 		
 		public boolean isCompatible(ItemStack stack)
 		{
-			return compatibleItems.contains(stack.getItem().getRegistryName());
+			return compatibleItems.contains(stack.getItem());
 		}
 		
 		public boolean isIncompatible(ItemStack stack)
 		{
-			return incompatibleItems.contains(stack.getItem().getRegistryName());
+			return incompatibleItems.contains(stack.getItem());
 		}
 		
 		public String getName()

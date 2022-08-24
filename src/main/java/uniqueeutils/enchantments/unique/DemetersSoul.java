@@ -1,12 +1,12 @@
 package uniqueeutils.enchantments.unique;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -23,7 +23,7 @@ public class DemetersSoul extends UniqueEnchantment
 	
 	public DemetersSoul()
 	{
-		super(new DefaultData("demeters_soul", Rarity.VERY_RARE, 3, true, false, 20, 10, 40), EnchantmentType.BREAKABLE, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("demeters_soul", Rarity.VERY_RARE, 3, true, false, 20, 10, 40), EnchantmentCategory.BREAKABLE, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(DELAY, SCALING, CAP);
 	}
 	
@@ -36,11 +36,11 @@ public class DemetersSoul extends UniqueEnchantment
 		return stack.getItem() instanceof HoeItem;
 	}
 	
-	public static HarvestEntry getNextIndex(PlayerEntity player)
+	public static HarvestEntry getNextIndex(Player player)
 	{
-		CompoundNBT entityData = player.getPersistentData();
-		CompoundNBT persistent = entityData.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
-		ListNBT list = persistent.getList(ID, 10);
+		CompoundTag entityData = player.getPersistentData();
+		CompoundTag persistent = entityData.getCompound(Player.PERSISTED_NBT_TAG);
+		ListTag list = persistent.getList(ID, 10);
 		if(list.isEmpty())
 		{
 			return null;
@@ -50,12 +50,12 @@ public class DemetersSoul extends UniqueEnchantment
 		return new HarvestEntry(list.getCompound(index));
 	}
 	
-	public static ListNBT getCrops(PlayerEntity player)
+	public static ListTag getCrops(Player player)
 	{
-		CompoundNBT entityData = player.getPersistentData();
-		CompoundNBT persistent = entityData.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
-		entityData.put(PlayerEntity.PERSISTED_NBT_TAG, persistent);
-		ListNBT list = persistent.getList(ID, 10);
+		CompoundTag entityData = player.getPersistentData();
+		CompoundTag persistent = entityData.getCompound(Player.PERSISTED_NBT_TAG);
+		entityData.put(Player.PERSISTED_NBT_TAG, persistent);
+		ListTag list = persistent.getList(ID, 10);
 		persistent.put(ID, list);
 		return list;
 	}

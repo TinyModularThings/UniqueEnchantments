@@ -2,9 +2,9 @@ package uniquee.enchantments.simple;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 
@@ -16,13 +16,13 @@ public class Range extends UniqueEnchantment
 	
 	public Range()
 	{
-		super(new DefaultData("range", Rarity.UNCOMMON, 4, false, false, 10, 10, 75), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("range", Rarity.UNCOMMON, 4, false, false, 10, 10, 75), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 		addStats(RANGE, REDUCTION);
 	}
 		
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return EnchantmentType.DIGGER.canEnchant(stack.getItem());
+		return EnchantmentCategory.DIGGER.canEnchant(stack.getItem());
 	}
 }

@@ -1,16 +1,16 @@
 package uniquee.enchantments.simple;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntLevelStats;
@@ -24,7 +24,7 @@ public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 	
 	public AmelioratedBaneOfArthropod()
 	{
-		super(new DefaultData("ameliorated_bane_of_arthropods", Rarity.RARE, 5, true, false, 6, 4, 30).setTrancendenceLevel(200), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("ameliorated_bane_of_arthropods", Rarity.RARE, 5, true, false, 6, 4, 30).setTrancendenceLevel(200), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 		addStats(BONUS_DAMAGE, SLOW_DURATION, TRANSCENDED_DAMAGE_EXPONENT);
 	}
 	
@@ -42,9 +42,9 @@ public class AmelioratedBaneOfArthropod extends UniqueEnchantment
 	}
 	
 	@Override
-	public float getDamageBonus(int level, CreatureAttribute creatureType)
+	public float getDamageBonus(int level, MobType creatureType)
 	{
-    	return creatureType == CreatureAttribute.ARTHROPOD ? BONUS_DAMAGE.getFloat(level) : 0F;
+    	return creatureType == MobType.ARTHROPOD ? BONUS_DAMAGE.getFloat(level) : 0F;
 	}
     
 	@Override
@@ -53,9 +53,9 @@ public class AmelioratedBaneOfArthropod extends UniqueEnchantment
         if (target instanceof LivingEntity)
         {
         	LivingEntity entitylivingbase = (LivingEntity)target;
-            if (entitylivingbase.getMobType() == CreatureAttribute.ARTHROPOD)
+            if (entitylivingbase.getMobType() == MobType.ARTHROPOD)
             {
-                entitylivingbase.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, SLOW_DURATION.get(level), 3));
+                entitylivingbase.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, SLOW_DURATION.get(level), 3));
             }
         }
 	}

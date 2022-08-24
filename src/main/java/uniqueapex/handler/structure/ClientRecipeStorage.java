@@ -4,19 +4,19 @@ import java.util.Iterator;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 public class ClientRecipeStorage
 {
 	public static final ClientRecipeStorage INSTANCE = new ClientRecipeStorage();
 	List<RecipeAnimator> animations = new ObjectArrayList<>();
-	World world = null;
+	Level world = null;
 	
 	public void addAnimation(RecipeAnimator animator) {
 		this.animations.add(animator);
 	}
 	
-	public void onTick(World world)
+	public void onTick(Level world)
 	{
 		if(this.world != world) {
 			this.world = world;

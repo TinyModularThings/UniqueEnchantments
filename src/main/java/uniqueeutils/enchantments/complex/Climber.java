@@ -5,11 +5,11 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -27,7 +27,7 @@ public class Climber extends UniqueEnchantment
 	
 	public Climber()
 	{
-		super(new DefaultData("climber", Rarity.UNCOMMON, 3, true, true, 14, 8, 30), EnchantmentType.ARMOR_LEGS, EquipmentSlotType.LEGS);
+		super(new DefaultData("climber", Rarity.UNCOMMON, 3, true, true, 14, 8, 30), EnchantmentCategory.ARMOR_LEGS, EquipmentSlot.LEGS);
 		setCategory("utils");
 		addStats(DELAY);
 	}

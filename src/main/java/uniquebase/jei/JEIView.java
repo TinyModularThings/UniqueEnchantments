@@ -12,17 +12,18 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.utils.MiscUtil;
@@ -30,6 +31,8 @@ import uniquebase.utils.MiscUtil;
 @JeiPlugin
 public class JEIView implements IModPlugin
 {
+	public static final RecipeType<WrappedEnchantment> REGISTRY = RecipeType.create("uniquebase", "ue_enchantments", WrappedEnchantment.class);
+	
 	@Override
 	public void registerRecipes(IRecipeRegistration registration)
 	{
@@ -37,7 +40,7 @@ public class JEIView implements IModPlugin
 		List<ItemStack> items = new ObjectArrayList<>();
 		NonNullList<ItemStack> helper = NonNullList.create();
 		for(Item item : ForgeRegistries.ITEMS) {
-			item.fillItemCategory(ItemGroup.TAB_SEARCH, helper);
+			item.fillItemCategory(CreativeModeTab.TAB_SEARCH, helper);
 			items.addAll(helper);
 			helper.clear();
 		}
@@ -47,7 +50,7 @@ public class JEIView implements IModPlugin
 		time = System.nanoTime() - time;
 		UEBase.LOGGER.info("JEI Plugin LoadTime: "+(time/1000000)+"ms");
 		enchantments.sort(null);
-		registration.addRecipes(enchantments, new ResourceLocation("uniquebase", "ue_enchantments"));
+		registration.addRecipes(REGISTRY, enchantments);
 	}
 	
 	private boolean isEnabled(Enchantment ench) 
@@ -59,7 +62,7 @@ public class JEIView implements IModPlugin
 	public void registerCategories(IRecipeCategoryRegistration registry)
 	{
 		if(UEBase.DISABLE_JEI.get()) return;
-		registry.addRecipeCategories(new EnchantmentCategory(registry.getJeiHelpers().getGuiHelper()));
+		registry.addRecipeCategories(new EnchantmentCategory(registry.getJeiHelpers().getGuiHelper(), REGISTRY));
 	}
 
 	@Override
@@ -72,14 +75,14 @@ public class JEIView implements IModPlugin
 	public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
 		if(UEBase.DISABLE_JEI.get()) return;
 		NonNullList<ItemStack> list = NonNullList.create();
-		Items.ENCHANTED_BOOK.fillItemCategory(ItemGroup.TAB_SEARCH, list);
+		Items.ENCHANTED_BOOK.fillItemCategory(CreativeModeTab.TAB_SEARCH, list);
 		list.sort(Comparator.comparing(this::getLevel).reversed());
 		Set<Enchantment> ench = new HashSet<>();
 		list.removeIf(T -> {
 			Enchantment en = getFirstEnchantment(T);
 			return en == null || ench.add(en);
 		});
-		jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM, list);
+		jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, list);
 	}
 	
 	public int getLevel(ItemStack item) {

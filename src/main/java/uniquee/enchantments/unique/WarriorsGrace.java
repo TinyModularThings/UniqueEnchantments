@@ -1,10 +1,10 @@
 package uniquee.enchantments.unique;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquee.UE;
@@ -15,7 +15,7 @@ public class WarriorsGrace extends UniqueEnchantment
 
 	public WarriorsGrace()
 	{
-		super(new DefaultData("warriors_grace", Rarity.VERY_RARE, 1, true, false, 22, 2, 5), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("warriors_grace", Rarity.VERY_RARE, 1, true, false, 22, 2, 5), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 		addStats(DURABILITY_GAIN);
 	}
 		

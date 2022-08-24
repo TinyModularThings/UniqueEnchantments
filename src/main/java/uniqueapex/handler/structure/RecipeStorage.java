@@ -13,16 +13,16 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.saveddata.SavedData;
 import uniqueapex.network.SyncRecipePacket;
 import uniquebase.UEBase;
 
-public class RecipeStorage extends WorldSavedData
+public class RecipeStorage extends SavedData
 {
 	List<BaseTrackedRecipe> activeRecipes = new ObjectArrayList<>();
 	Long2ObjectMap<Set<BaseTrackedRecipe>> chunkRecipes = new Long2ObjectOpenHashMap<>();
@@ -30,12 +30,20 @@ public class RecipeStorage extends WorldSavedData
 	
 	public RecipeStorage()
 	{
-		super("fusion_storage");
 	}
 	
-	public static RecipeStorage get(ServerWorld world)
+	public RecipeStorage(CompoundTag tag)
 	{
-		return world.getDataStorage().computeIfAbsent(RecipeStorage::new, "fusion_storage");
+		ListTag list = tag.getList("recipes", 10);
+		for(int i = 0,m=list.size();i<m;i++) {
+			BaseTrackedRecipe recipe = BaseTrackedRecipe.loadRecipe(list.getCompound(i));
+			if(recipe != null) addRecipe(recipe, false);
+		}
+	}
+	
+	public static RecipeStorage get(ServerLevel world)
+	{
+		return world.getDataStorage().computeIfAbsent(RecipeStorage::new, RecipeStorage::new, "fusion_storage");
 	}
 	
 	public boolean isInUse(BlockPos pos)
@@ -93,23 +101,13 @@ public class RecipeStorage extends WorldSavedData
 	}
 	
 	@Override
-	public CompoundNBT save(CompoundNBT nbt)
+	public CompoundTag save(CompoundTag nbt)
 	{
-		ListNBT list = new ListNBT();
+		ListTag list = new ListTag();
 		for(BaseTrackedRecipe recipe : activeRecipes) {
-			list.add(recipe.save(new CompoundNBT()));
+			list.add(recipe.save(new CompoundTag()));
 		}
 		nbt.put("recipes", list);
 		return nbt;
-	}
-	
-	@Override
-	public void load(CompoundNBT nbt)
-	{
-		ListNBT list = nbt.getList("recipes", 10);
-		for(int i = 0,m=list.size();i<m;i++) {
-			BaseTrackedRecipe recipe = BaseTrackedRecipe.loadRecipe(list.getCompound(i));
-			if(recipe != null) addRecipe(recipe, false);
-		}
 	}
 }

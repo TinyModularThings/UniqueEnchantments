@@ -1,16 +1,15 @@
 package uniqueebattle.handler.potion;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectType;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
 
-public class Bleed extends Effect
+public class Bleed extends MobEffect
 {
 	public Bleed()
 	{
-		super(EffectType.HARMFUL, 0xFFFF0000);
-		setRegistryName("uniquebattle", "bleed");
+		super(MobEffectCategory.HARMFUL, 0xFFFF0000);
 	}
 	
 	@Override

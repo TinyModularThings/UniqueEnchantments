@@ -1,7 +1,7 @@
 package uniqueeutils.enchantments.upgrades;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.EnchantedUpgrade;
 import uniqueeutils.UEUtils;
 
@@ -15,6 +15,6 @@ public class ThickUpgrade extends EnchantedUpgrade
 	@Override
 	public boolean isValid(ItemStack stack)
 	{
-		return EnchantmentType.DIGGER.canEnchant(stack.getItem());
+		return EnchantmentCategory.DIGGER.canEnchant(stack.getItem());
 	}	
 }

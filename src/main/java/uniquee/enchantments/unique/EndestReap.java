@@ -5,15 +5,16 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
+import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquee.UE;
@@ -30,7 +31,7 @@ public class EndestReap extends UniqueEnchantment
 	
 	public EndestReap()
 	{
-		super(new DefaultData("endest_reap", Rarity.VERY_RARE, 4, true, false, 30, 10, 30).setTrancendenceLevel(1000), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("endest_reap", Rarity.VERY_RARE, 4, true, false, 30, 10, 30).setTrancendenceLevel(1000), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(BONUS_DAMAGE_LEVEL, REAP_MULTIPLIER, TRANSCENDED_CHACNE);
 	}
 	
@@ -54,7 +55,7 @@ public class EndestReap extends UniqueEnchantment
 	
 	public static int isValid(Entity entity)
 	{
-		return VALID_MOBS.getInt(entity.getType().getRegistryName());
+		return VALID_MOBS.getInt(ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()));
 	}
 	
 	@Override

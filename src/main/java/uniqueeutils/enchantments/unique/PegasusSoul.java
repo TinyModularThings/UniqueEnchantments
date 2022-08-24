@@ -2,9 +2,9 @@ package uniqueeutils.enchantments.unique;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.item.HorseArmorItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.HorseArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 
@@ -17,7 +17,7 @@ public class PegasusSoul extends UniqueEnchantment
 	
 	public PegasusSoul()
 	{
-		super(new DefaultData("pegasus_soul", Rarity.VERY_RARE, 5, true, true, 18, 2, 60), EnchantmentType.ARMOR_CHEST);
+		super(new DefaultData("pegasus_soul", Rarity.VERY_RARE, 5, true, true, 18, 2, 60), EnchantmentCategory.ARMOR_CHEST);
 		setCategory("utils");
 		addStats(SPEED);
 		setDisableDefaultItems();

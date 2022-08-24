@@ -1,7 +1,7 @@
 package uniqueebattle.enchantments.simple;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.IntLevelStats;
 
@@ -11,7 +11,7 @@ public class Snare extends UniqueEnchantment
 	
 	public Snare()
 	{
-		super(new DefaultData("snare", Rarity.UNCOMMON, 3, false, true, 20, 5, 75), EnchantmentType.TRIDENT, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("snare", Rarity.UNCOMMON, 3, false, true, 20, 5, 75), EnchantmentCategory.TRIDENT, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(DURATION);
 		setCategory("battle");
 	}

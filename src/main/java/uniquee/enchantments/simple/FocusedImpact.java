@@ -2,10 +2,10 @@ package uniquee.enchantments.simple;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquee.UE;
@@ -18,7 +18,7 @@ public class FocusedImpact extends UniqueEnchantment
 	
 	public FocusedImpact()
 	{
-		super(new DefaultData("focused_impact", Rarity.RARE, 3, false, true, 2, 8, 17).setTrancendenceLevel(200), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("focused_impact", Rarity.RARE, 3, false, true, 2, 8, 17).setTrancendenceLevel(200), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 		addStats(BASE_SPEED, TRANSCENDED_ATTACK_SPEED_MULTIPLIER);
 	}
 		

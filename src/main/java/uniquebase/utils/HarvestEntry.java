@@ -2,12 +2,12 @@ package uniquebase.utils;
 
 import java.util.Objects;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import uniquebase.api.crops.CropHarvestRegistry;
 
 public class HarvestEntry
@@ -15,7 +15,7 @@ public class HarvestEntry
 	ResourceLocation dim;
 	long position;
 	
-	public HarvestEntry(CompoundNBT nbt)
+	public HarvestEntry(CompoundTag nbt)
 	{
 		this(new ResourceLocation(nbt.getString("dim")), nbt.getLong("pos"));
 	}
@@ -26,27 +26,27 @@ public class HarvestEntry
 		this.position = position;
 	}
 	
-	public boolean matches(CompoundNBT nbt)
+	public boolean matches(CompoundTag nbt)
 	{
 		return dim.toString().equals(nbt.getString("dim")) && position == nbt.getLong("pos");
 	}
 	
-	public CompoundNBT save()
+	public CompoundTag save()
 	{
-		CompoundNBT compound = new CompoundNBT();
+		CompoundTag compound = new CompoundTag();
 		compound.putString("dim", dim.toString());
 		compound.putLong("pos", position);
 		return compound;
 	}
 	
-	public ActionResultType harvest(World world, PlayerEntity player)
+	public InteractionResult harvest(Level world, Player player)
 	{
 		if(!world.dimension().location().equals(dim))
 		{
-			return ActionResultType.PASS;
+			return InteractionResult.PASS;
 		}
 		BlockPos pos = BlockPos.of(position);
-		return world.isLoaded(pos) ? CropHarvestRegistry.INSTANCE.tryHarvest(world.getBlockState(pos), world, pos, player) : ActionResultType.PASS;
+		return world.isLoaded(pos) ? CropHarvestRegistry.INSTANCE.tryHarvest(world.getBlockState(pos), world, pos, player) : InteractionResult.PASS;
 	}
 	
 	@Override

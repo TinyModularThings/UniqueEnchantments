@@ -1,14 +1,13 @@
 package uniquebase.api;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 
 public interface IKeyBind
 {
-	public boolean test(PlayerEntity player);
-	public ITextComponent getName();
-	public ITextComponent getKeyName();
+	public boolean test(Player player);
+	public Component getName();
+	public Component getKeyName();
 	
 	public static IKeyBind empty() {
 		return EmptyKeyBind.INSTANCE;
@@ -19,18 +18,18 @@ public interface IKeyBind
 		static final IKeyBind INSTANCE = new EmptyKeyBind();
 		
 		@Override
-		public boolean test(PlayerEntity player) {
+		public boolean test(Player player) {
 			return false;
 		}
 
 		@Override
-		public ITextComponent getName() {
-			return new StringTextComponent("Unbound Keybinding");
+		public Component getName() {
+			return Component.literal("Unbound Keybinding");
 		}
 
 		@Override
-		public ITextComponent getKeyName() {
-			return new StringTextComponent("Unknown");
+		public Component getKeyName() {
+			return Component.literal("Unknown");
 		}
 	}
 }

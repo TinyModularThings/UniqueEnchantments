@@ -1,12 +1,12 @@
 package uniqueapex.enchantments.simple;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.entity.CreatureAttribute;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.TridentItem;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TridentItem;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniqueapex.enchantments.ApexEnchantment;
 import uniquebase.utils.DoubleStat;
 
@@ -17,7 +17,7 @@ public class BlessedBlade extends ApexEnchantment
 	
 	public BlessedBlade()
 	{
-		super("blessed_blade", EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super("blessed_blade", EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(ATTACK, LEVEL_SCALE);
 		setCategory("apex");
 	}
@@ -29,7 +29,7 @@ public class BlessedBlade extends ApexEnchantment
 	}
 	
     @Override
-	public float getDamageBonus(int level, CreatureAttribute creatureType)
+	public float getDamageBonus(int level, MobType creatureType)
     {
     	return (float)Math.sqrt(ATTACK.getFloat(level));
     }

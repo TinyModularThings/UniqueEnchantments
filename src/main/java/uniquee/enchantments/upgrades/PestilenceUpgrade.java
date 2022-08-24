@@ -2,9 +2,9 @@ package uniquee.enchantments.upgrades;
 
 import java.util.EnumSet;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.EnchantedUpgrade;
 import uniquee.UE;
 
@@ -13,13 +13,13 @@ public class PestilenceUpgrade extends EnchantedUpgrade
 	public PestilenceUpgrade()
 	{
 		super("uniquee", "pestilence", "upgrade.uniquee.potion_reduction", () -> UE.PESTILENCES_ODIUM);
-		setEquimentSlots(EnumSet.allOf(EquipmentSlotType.class));
+		setEquimentSlots(EnumSet.allOf(EquipmentSlot.class));
 	}
 
 	@Override
 	public boolean isValid(ItemStack stack)
 	{
-		return EnchantmentType.WEAPON.canEnchant(stack.getItem()) || EnchantmentType.ARMOR.canEnchant(stack.getItem()) || EnchantmentType.DIGGER.canEnchant(stack.getItem());
+		return EnchantmentCategory.WEAPON.canEnchant(stack.getItem()) || EnchantmentCategory.ARMOR.canEnchant(stack.getItem()) || EnchantmentCategory.DIGGER.canEnchant(stack.getItem());
 	}
 	
 }

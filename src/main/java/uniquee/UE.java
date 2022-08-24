@@ -2,31 +2,29 @@ package uniquee;
 
 import java.lang.reflect.Field;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.potion.Effect;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityRenderersEvent.AddLayers;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.EnchantedUpgrade;
 import uniquebase.api.crops.CropHarvestRegistry;
@@ -126,8 +124,8 @@ public class UE extends BaseUEMod
 	public static Enchantment DEATHS_ODIUM;
 	
 	//Potions
-	public static Effect ETERNAL_FLAME_POTION;
-	public static Effect PESTILENCES_ODIUM_POTION;
+	public static MobEffect ETERNAL_FLAME_POTION;
+	public static MobEffect PESTILENCES_ODIUM_POTION;
 	public static ForgeConfigSpec CONFIG;
 	
 
@@ -148,11 +146,11 @@ public class UE extends BaseUEMod
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		init(bus, "UE.toml");
 		bus.register(this);
+		bus.addListener(this::onClientInit);
+		bus.addListener(this::registerContent);
 		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(this);
-		bus.addGenericListener(Effect.class, this::loadPotion);
-		bus.addGenericListener(GlobalLootModifierSerializer.class, this::loadLoot);
-
+		
 		BaseHandler.INSTANCE.registerStorageTooltip(MIDAS_BLESSING, "tooltip.uniquee.stored.gold.name", MidasBlessing.GOLD_COUNTER);
 		BaseHandler.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniquee.stored.lava.name", IfritsGrace.LAVA_COUNT);
 		BaseHandler.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniquee.stored.feather.name", IcarusAegis.FEATHER_TAG);
@@ -162,10 +160,25 @@ public class UE extends BaseUEMod
 		BaseHandler.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessing.VALIDATOR, MidasBlessing.GOLD_COUNTER);
 		BaseHandler.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGrace.VALIDATOR, IfritsGrace.LAVA_COUNT);
 		BaseHandler.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, IcarusAegis.VALIDATOR, IcarusAegis.FEATHER_TAG);
-		
-		ForgeRegistries.SOUND_EVENTS.register(ENDER_LIBRARIAN_SOUND.setRegistryName("ender_librarian"));
-		ForgeRegistries.SOUND_EVENTS.register(GRIMOIRE_SOUND.setRegistryName("grimoire"));
-		ForgeRegistries.SOUND_EVENTS.register(MOMENTUM_SOUND.setRegistryName("momentum"));
+	}
+	
+	public void registerContent(RegisterEvent event)
+	{
+		if(event.getRegistryKey().equals(ForgeRegistries.Keys.MOB_EFFECTS))
+		{
+	    	event.getForgeRegistry().register("pestilences_odium", PESTILENCES_ODIUM_POTION);
+	    	event.getForgeRegistry().register("eternal_flame", ETERNAL_FLAME_POTION);
+		}
+		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS))
+		{
+	    	event.getForgeRegistry().register("ue_loot", LootModifier.CODEC);
+		}
+		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.SOUND_EVENTS))
+		{
+			event.getForgeRegistry().register("ender_librarian", ENDER_LIBRARIAN_SOUND);
+			event.getForgeRegistry().register("grimoire", GRIMOIRE_SOUND);
+			event.getForgeRegistry().register("momentum", MOMENTUM_SOUND);
+		}
 	}
 	
 	@Override
@@ -246,43 +259,29 @@ public class UE extends BaseUEMod
 		}
 	}
     
-	@SubscribeEvent
     @OnlyIn(Dist.CLIENT)
-    public void onClientInit(FMLClientSetupEvent event)
+    public void onClientInit(AddLayers event)
     {
-		EntityRendererManager manager = Minecraft.getInstance().getEntityRenderDispatcher();
-		for(PlayerRenderer player : manager.getSkinMap().values())
+		for(String skin : event.getSkins())
 		{
-			player.addLayer(new EnchantmentLayer<>(player));
+			LivingEntityRenderer<Player, PlayerModel<Player>> render = event.getSkin(skin);
+			render.addLayer(new EnchantmentLayer<>(render));
 		}
-		addLayer(EntityType.SKELETON, manager);
-		addLayer(EntityType.STRAY, manager);
-		addLayer(EntityType.WITHER_SKELETON, manager);
-		addLayer(EntityType.ARMOR_STAND, manager);
-		addLayer(EntityType.GIANT, manager);
-		addLayer(EntityType.ZOMBIFIED_PIGLIN, manager);
-		addLayer(EntityType.ZOMBIE_VILLAGER, manager);
-		addLayer(EntityType.DROWNED, manager);
-		addLayer(EntityType.ZOMBIE, manager);
-		addLayer(EntityType.HUSK, manager);
-		
+		addLayer(EntityType.SKELETON, event);
+		addLayer(EntityType.STRAY, event);
+		addLayer(EntityType.WITHER_SKELETON, event);
+		addLayer(EntityType.ARMOR_STAND, event);
+		addLayer(EntityType.GIANT, event);
+		addLayer(EntityType.ZOMBIFIED_PIGLIN, event);
+		addLayer(EntityType.ZOMBIE_VILLAGER, event);
+		addLayer(EntityType.DROWNED, event);
+		addLayer(EntityType.ZOMBIE, event);
+		addLayer(EntityType.HUSK, event);
     }
     
-	@SuppressWarnings("unchecked")
 	@OnlyIn(Dist.CLIENT)
-    private <T extends LivingEntity> void addLayer(EntityType<T> entity, EntityRendererManager manager) {
-		LivingRenderer<T, EntityModel<T>> renderer = (LivingRenderer<T, EntityModel<T>>)manager.renderers.get(entity);
+    private <T extends LivingEntity> void addLayer(EntityType<T> entity, AddLayers manager) {
+		LivingEntityRenderer<T, EntityModel<T>> renderer = manager.getRenderer(entity);
     	renderer.addLayer(new EnchantmentLayer<>(renderer));
-    }
-    
-    public void loadLoot(RegistryEvent.Register<GlobalLootModifierSerializer<?>> event)
-    {
-    	event.getRegistry().register(LootModifier.Serializer.INSTANCE);
-    }
-    
-    public void loadPotion(RegistryEvent.Register<Effect> event)
-    {
-    	event.getRegistry().register(PESTILENCES_ODIUM_POTION);
-    	event.getRegistry().register(ETERNAL_FLAME_POTION);
     }
 }

@@ -5,40 +5,40 @@ import java.util.List;
 import it.unimi.dsi.fastutil.longs.Long2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.block.Blocks;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.item.EnderCrystalEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.ByteNBT;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.BeaconTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
+import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
-import net.minecraftforge.event.world.ChunkWatchEvent;
+import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniqueapex.UEApex;
@@ -68,15 +68,15 @@ public class FusionHandler
 		if(event.getFace() == Direction.DOWN) return;
 		Item item = event.getItemStack().getItem();
 		if(item != Items.END_CRYSTAL && item != Items.TOTEM_OF_UNDYING) return;
-		World world = event.getWorld();
+		Level world = event.getLevel();
 		BlockPos pos = event.getPos();
 		if(world.getBlockState(pos).getBlock() != Blocks.CHEST) return;
 		int beaconSize = isValidBeacon(world, pos.below());
 		if(beaconSize == 0) return;
 		FusionContext context = context(world, pos.below());
 		if(context == null) return;
-		if(!(world instanceof ServerWorld)) {
-			event.setCancellationResult(ActionResultType.SUCCESS);
+		if(!(world instanceof ServerLevel)) {
+			event.setCancellationResult(InteractionResult.SUCCESS);
 			event.setCanceled(true);
 			return;
 		}
@@ -85,33 +85,33 @@ public class FusionHandler
 			FusionUpgradeRecipe recipe = getUpgradeRecipe(world, context);
 			if(recipe == null) return;
 			int xp = recipe.getRequiredXP(context);
-			if(MiscUtil.getXP(event.getPlayer()) < xp && !event.getPlayer().isCreative()) {
-				event.getPlayer().displayClientMessage(new StringTextComponent("["+MiscUtil.getLvlForXP(xp)+"] levels Required").withStyle(TextFormatting.RED), true);
+			if(MiscUtil.getXP(event.getEntity()) < xp && !event.getEntity().isCreative()) {
+				event.getEntity().displayClientMessage(Component.literal("["+MiscUtil.getLvlForXP(xp)+"] levels Required").withStyle(ChatFormatting.RED), true);
 				return;
 			}
-			MiscUtil.drainExperience(event.getPlayer(), xp);
-			RecipeStorage storage = RecipeStorage.get((ServerWorld)world);
+			MiscUtil.drainExperience(event.getEntity(), xp);
+			RecipeStorage storage = RecipeStorage.get((ServerLevel)world);
 			if(storage.isInUse(pos)) return;
 			storage.addRecipe(new TrackedUpgradeRecipe(world, pos, recipe, context, beaconSize, getCrystals(world, pos, beaconSize)));
-			if(!event.getPlayer().isCreative())
+			if(!event.getEntity().isCreative())
 			{
 				event.getItemStack().shrink(1);
 			}
-			event.setCancellationResult(ActionResultType.SUCCESS);
+			event.setCancellationResult(InteractionResult.SUCCESS);
 			event.setCanceled(true);
 		}
 		else if(item == Items.END_CRYSTAL)
 		{
 			FusionRecipe recipe = getFusionRecipe(world, context);
 			if(recipe == null) return;
-			RecipeStorage storage = RecipeStorage.get((ServerWorld)world);
+			RecipeStorage storage = RecipeStorage.get((ServerLevel)world);
 			if(storage.isInUse(pos)) return;
 			storage.addRecipe(new TrackedRecipe(world, pos, recipe, context, beaconSize, getCrystals(world, pos, beaconSize)));
-			if(!event.getPlayer().isCreative())
+			if(!event.getEntity().isCreative())
 			{
 				event.getItemStack().shrink(1);
 			}
-			event.setCancellationResult(ActionResultType.SUCCESS);
+			event.setCancellationResult(InteractionResult.SUCCESS);
 			event.setCanceled(true);
 		}
 	}
@@ -123,14 +123,14 @@ public class FusionHandler
 			int level = Math.min(countApexLevels(event.getLeft().getEnchantmentTags()), event.getRight().getMaxStackSize());
 			if(event.getRight().getCount() < level) return;
 			ItemStack copy = event.getLeft().copy();
-			copy.getTag().put("fusioned", ByteNBT.ONE);
+			copy.getTag().put("fusioned", ByteTag.ONE);
 			event.setOutput(copy);
 			event.setCost(level * 4);
 			event.setMaterialCost(level);
 		}
 	}
 	
-	private int countApexLevels(ListNBT list)
+	private int countApexLevels(ListTag list)
 	{
 		int result = 0;
 		for(int i = 0,m=list.size();i<m;i++)
@@ -148,14 +148,14 @@ public class FusionHandler
 	public void onPlayerTick(PlayerTickEvent event)
 	{
 		if(event.phase == Phase.START) return;
-		PlayerEntity player = event.player;
+		Player player = event.player;
 		if(player.level.getGameTime() % 200 == 0)
 		{
-			for(EquipmentSlotType slot : EquipmentSlotType.values())
+			for(EquipmentSlot slot : EquipmentSlot.values())
 			{
 				ItemStack stack = player.getItemBySlot(slot);
 				if(!stack.hasTag()) continue;
-				CompoundNBT data = stack.getTag();
+				CompoundTag data = stack.getTag();
 				if(!data.getBoolean("fusioned")) {
 					clearApex(stack);
 					continue;
@@ -166,7 +166,7 @@ public class FusionHandler
 	
 	private void clearApex(ItemStack stack)
 	{
-		ListNBT list = stack.getEnchantmentTags();
+		ListTag list = stack.getEnchantmentTags();
 		for(int i = 0,m=list.size();i<m;i++)
 		{
 			Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(list.getCompound(i).getString("id")));
@@ -179,17 +179,17 @@ public class FusionHandler
 	}
 	
 	@SubscribeEvent
-	public void onServerTick(WorldTickEvent event)
+	public void onServerTick(LevelTickEvent event)
 	{
-		if(event.phase == Phase.START || !(event.world instanceof ServerWorld)) return;
-		RecipeStorage.get((ServerWorld)event.world).onTick();
+		if(event.phase == Phase.START || !(event.level instanceof ServerLevel server)) return;
+		RecipeStorage.get(server).onTick();
 	}
 	
 	@SubscribeEvent
 	public void onChunkWatch(ChunkWatchEvent.Watch event)
 	{
-		SyncRecipePacket packet = RecipeStorage.get(event.getWorld()).getSyncPacket(event.getPos());
-		if(packet != null) UEBase.NETWORKING.sendToAllChunkWatchers(event.getWorld().getChunk(event.getPos().x, event.getPos().z), packet);
+		SyncRecipePacket packet = RecipeStorage.get(event.getLevel()).getSyncPacket(event.getPos());
+		if(packet != null) UEBase.NETWORKING.sendToAllChunkWatchers(event.getLevel().getChunk(event.getPos().x, event.getPos().z), packet);
 	}
 	
 	@SubscribeEvent
@@ -202,23 +202,24 @@ public class FusionHandler
 	
 	@SubscribeEvent
 	@OnlyIn(Dist.CLIENT)
-	public void renderLastEvent(RenderWorldLastEvent event)
+	public void renderLastEvent(RenderLevelStageEvent event)
 	{
-		ClientRecipeStorage.INSTANCE.render(event.getPartialTicks());
+		if(event.getStage() != Stage.AFTER_WEATHER) return;
+		ClientRecipeStorage.INSTANCE.render(event.getPartialTick());
 	}
 	
-	public FusionUpgradeRecipe getUpgradeRecipe(World world, FusionContext context)
+	public FusionUpgradeRecipe getUpgradeRecipe(Level world, FusionContext context)
 	{
 		Enchantment ench = context.getLargestEnchantment();
 		return world.getRecipeManager().getRecipeFor(UEApex.FUSION_UPGRADE, context, world).orElse(ench == null ? null : new DefaultFusionUpgradeRecipe(ench));
 	}
 	
-	public FusionRecipe getFusionRecipe(World world, FusionContext context)
+	public FusionRecipe getFusionRecipe(Level world, FusionContext context)
 	{
 		return world.getRecipeManager().getRecipeFor(UEApex.FUSION, context, world).orElse(null);
 	}
 	
-	public FusionContext context(World world, BlockPos pos)
+	public FusionContext context(Level world, BlockPos pos)
 	{
 		IItemHandler mainChest = getHandler(world.getBlockEntity(pos.relative(Direction.UP)), Direction.UP);
 		if(mainChest == null) return null;
@@ -226,17 +227,17 @@ public class FusionHandler
 		return originals == null ? null : new FusionContext(mainChest, originals);
 	}
 	
-	public List<EnderCrystalEntity> getCrystals(World world, BlockPos pos, int size)
+	public List<EndCrystal> getCrystals(Level world, BlockPos pos, int size)
 	{
-		List<EnderCrystalEntity> crystals = new ObjectArrayList<>();
-		EnderCrystalEntity entity = new EnderCrystalEntity(world, pos.getX() + 0.5D, pos.getY()+3.5D, pos.getZ() + 0.5D);
+		List<EndCrystal> crystals = new ObjectArrayList<>();
+		EndCrystal entity = new EndCrystal(world, pos.getX() + 0.5D, pos.getY()+3.5D, pos.getZ() + 0.5D);
 		entity.setShowBottom(false);
         world.addFreshEntity(entity);
         crystals.add(entity);
         for(int i = 0;i<4;i++)
         {
         	Direction dir = Direction.from2DDataValue(i);
-    		entity = new EnderCrystalEntity(world, pos.getX() + 0.5D + dir.getStepX() * size, pos.getY()-(size-1), pos.getZ() + 0.5D + dir.getStepZ() * size);
+    		entity = new EndCrystal(world, pos.getX() + 0.5D + dir.getStepX() * size, pos.getY()-(size-1), pos.getZ() + 0.5D + dir.getStepZ() * size);
     		entity.setShowBottom(false);
     		entity.setBeamTarget(pos.above(2));
             world.addFreshEntity(entity);
@@ -245,7 +246,7 @@ public class FusionHandler
 		return crystals;
 	}
 	
-	public IItemHandler[] getInventories(World world, BlockPos pos)
+	public IItemHandler[] getInventories(Level world, BlockPos pos)
 	{
 		IItemHandler[] directions = new IItemHandler[4];
 		for(int i = 0;i<4;i++)
@@ -257,19 +258,18 @@ public class FusionHandler
 		return directions;
 	}
 	
-	private IItemHandler getHandler(TileEntity tile, Direction dir)
+	private IItemHandler getHandler(BlockEntity tile, Direction dir)
 	{
 		if(tile == null || tile.getBlockState().getBlock() != Blocks.CHEST) return null;
-		return tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite()).orElse(null);
+		return tile.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite()).orElse(null);
 	}
 	
-	public int isValidBeacon(World world, BlockPos pos)
+	public int isValidBeacon(Level world, BlockPos pos)
 	{
-		TileEntity tile = world.getBlockEntity(pos);
-		if(tile instanceof BeaconTileEntity)
+		BlockEntity tile = world.getBlockEntity(pos);
+		if(tile instanceof BeaconMixin beacon)
 		{
-			BeaconTileEntity beacon = (BeaconTileEntity)tile;
-			return beacon.getLevels() >= 3 && ((BeaconMixin)beacon).getBeaconSegments().size() > 0 ? beacon.getLevels() : 0;
+			return beacon.getBeaconLevel() >= 3 && ((BeaconMixin)beacon).getBeaconSegments().size() > 0 ? beacon.getBeaconLevel() : 0;
 		}
 		return 0;
 	}

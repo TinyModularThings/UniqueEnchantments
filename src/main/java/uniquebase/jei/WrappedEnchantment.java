@@ -3,18 +3,18 @@ package uniquebase.jei;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantment.Rarity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantment.Rarity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
+import net.minecraftforge.client.gui.widget.ExtendedButton;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.ICustomItemEnchantment;
 
@@ -25,8 +25,8 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 	List<Enchantment> incompats = new ObjectArrayList<>();
 	List<ItemStack> validItems = new ObjectArrayList<>();
 	int pageIndex = 0;
-	ExtendedButton left = new ExtendedButton(1, 68, 10, 10, new StringTextComponent("<"), T -> {});
-	ExtendedButton right = new ExtendedButton(54, 68, 10, 10, new StringTextComponent(">"), T -> {});
+	ExtendedButton left = new ExtendedButton(1, 68, 10, 10, Component.literal("<"), T -> {});
+	ExtendedButton right = new ExtendedButton(54, 68, 10, 10, Component.literal(">"), T -> {});
 	
 	
 	public WrappedEnchantment(Enchantment ench, List<ItemStack> items)
@@ -51,40 +51,41 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 	@Override
 	public String toString()
 	{
-		return "Wrapped Enchantment: "+ench.getRegistryName().toString();
+		return "Wrapped Enchantment: "+ForgeRegistries.ENCHANTMENTS.getKey(ench).toString();
 	}
 	
 	public String getDescription()
 	{
-		String s = I18n.get("enchantment."+ench.getRegistryName().getNamespace()+"."+ench.getRegistryName().getPath()+".desc");
+		ResourceLocation id = ForgeRegistries.ENCHANTMENTS.getKey(ench);
+		String s = I18n.get("enchantment."+id.getNamespace()+"."+id.getPath()+".desc");
 		if(s.startsWith("enchantment.")) return I18n.get("unique.base.jei.no.description");
 		return s;
 	}
 	
-	public TextFormatting getFormatting(Rarity rarity)
+	public ChatFormatting getFormatting(Rarity rarity)
 	{
 		switch(rarity)
 		{
-			case COMMON: return TextFormatting.WHITE;
-			case RARE: return TextFormatting.AQUA;
-			case UNCOMMON: return TextFormatting.YELLOW;
-			case VERY_RARE: return TextFormatting.LIGHT_PURPLE;
-			default: return TextFormatting.OBFUSCATED;
+			case COMMON: return ChatFormatting.WHITE;
+			case RARE: return ChatFormatting.AQUA;
+			case UNCOMMON: return ChatFormatting.YELLOW;
+			case VERY_RARE: return ChatFormatting.LIGHT_PURPLE;
+			default: return ChatFormatting.OBFUSCATED;
 		}
 	}
 	@OnlyIn(Dist.CLIENT)
-	public List<IReorderingProcessor> getIncompats(FontRenderer font)
+	public List<FormattedCharSequence> getIncompats(Font font)
 	{
-		List<IReorderingProcessor> list = new ObjectArrayList<>();
+		List<FormattedCharSequence> list = new ObjectArrayList<>();
 		if(incompats.isEmpty())
 		{
-			list.addAll(font.split(new StringTextComponent("- ").append(new TranslationTextComponent("unique.base.jei.no.incompat")), 122));
+			list.addAll(font.split(Component.literal("- ").append(Component.translatable("unique.base.jei.no.incompat")), 122));
 		}
 		else
 		{
 			for(Enchantment ench : incompats)
 			{
-				list.addAll(font.split(new StringTextComponent("- ").append(new TranslationTextComponent(ench.getDescriptionId())), 122));
+				list.addAll(font.split(Component.literal("- ").append(Component.translatable(ench.getDescriptionId())), 122));
 			}
 		}
 		return list;

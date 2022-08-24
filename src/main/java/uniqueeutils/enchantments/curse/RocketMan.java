@@ -1,9 +1,9 @@
 package uniqueeutils.enchantments.curse;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ElytraItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ElytraItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 
@@ -13,7 +13,7 @@ public class RocketMan extends UniqueEnchantment
 			
 	public RocketMan()
 	{
-		super(new DefaultData("rocket_man", Rarity.VERY_RARE, 3, true, true, 25, 4, 20), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
+		super(new DefaultData("rocket_man", Rarity.VERY_RARE, 3, true, true, 25, 4, 20), EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST);
 		setCategory("utils");
 		addStats(FLIGHT_TIME);
 		setCurse();

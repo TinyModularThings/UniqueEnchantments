@@ -2,11 +2,11 @@ package uniquee.enchantments.complex;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquee.UE;
@@ -19,7 +19,7 @@ public class SwiftBlade extends UniqueEnchantment
 
 	public SwiftBlade()
 	{
-		super(new DefaultData("swift_blade", Rarity.VERY_RARE, 2, false, false, 30, 85, 5).setTrancendenceLevel(200), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("swift_blade", Rarity.VERY_RARE, 2, false, false, 30, 85, 5).setTrancendenceLevel(200), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 		addStats(BASE_SPEED, TRANSCENDED_ATTACK_SPEED_MULTIPLIER);
 	}
 	

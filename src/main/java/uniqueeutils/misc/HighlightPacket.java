@@ -1,8 +1,8 @@
 package uniqueeutils.misc;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import uniquebase.networking.IUEPacket;
 import uniqueeutils.handler.UtilsHandler;
 
@@ -20,19 +20,19 @@ public class HighlightPacket implements IUEPacket
 	}
 	
 	@Override
-	public void write(PacketBuffer buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeLong(pos);
 	}
 	
 	@Override
-	public void read(PacketBuffer buf)
+	public void read(FriendlyByteBuf buf)
 	{
 		pos = buf.readLong();
 	}
 	
 	@Override
-	public void handlePacket(PlayerEntity player)
+	public void handlePacket(Player player)
 	{
 		UtilsHandler.INSTANCE.addDrawPosition(BlockPos.of(pos));
 	}

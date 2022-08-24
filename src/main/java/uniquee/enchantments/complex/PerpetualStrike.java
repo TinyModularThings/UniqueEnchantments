@@ -1,10 +1,10 @@
 package uniquee.enchantments.complex;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
@@ -21,7 +21,7 @@ public class PerpetualStrike extends UniqueEnchantment
 	
 	public PerpetualStrike()
 	{
-		super(new DefaultData("perpetual_strike", Rarity.RARE, 3, false, true, 16, 6, 4).setTrancendenceLevel(200), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("perpetual_strike", Rarity.RARE, 3, false, true, 16, 6, 4).setTrancendenceLevel(200), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 		addStats(PER_HIT, MULTIPLIER, PER_HIT_LEVEL, TRANSCENDED_MERCY);
 	}
 	

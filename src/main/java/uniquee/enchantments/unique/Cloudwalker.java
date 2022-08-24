@@ -1,7 +1,7 @@
 package uniquee.enchantments.unique;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntLevelStats;
@@ -16,7 +16,7 @@ public class Cloudwalker extends UniqueEnchantment
 	
 	public Cloudwalker()
 	{
-		super(new DefaultData("cloud_walker", Rarity.RARE, 4, true, false, 12, 4, 16).setTrancendenceLevel(500), EnchantmentType.ARMOR_FEET, EquipmentSlotType.FEET);
+		super(new DefaultData("cloud_walker", Rarity.RARE, 4, true, false, 12, 4, 16).setTrancendenceLevel(500), EnchantmentCategory.ARMOR_FEET, EquipmentSlot.FEET);
 		addStats(TICKS, TRANSCENDED_EXPONENT);
 	}
 }

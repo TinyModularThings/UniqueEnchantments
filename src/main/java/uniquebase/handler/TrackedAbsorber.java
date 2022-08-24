@@ -3,26 +3,27 @@ package uniquebase.handler;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity.RemovalReason;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
 import uniquebase.api.EnchantedUpgrade;
 
 public class TrackedAbsorber
 {
-	ItemFrameEntity frame;
-	World world;
+	ItemFrame frame;
+	Level world;
 	BlockPos absorbPos;
 	List<EnchantedUpgrade> supportedUpgrade;
 	ItemStack myItem;
 	
-	public TrackedAbsorber(ItemFrameEntity frame, World world, BlockPos absorbPos, List<EnchantedUpgrade> supportedUpgrade)
+	public TrackedAbsorber(ItemFrame frame, Level world, BlockPos absorbPos, List<EnchantedUpgrade> supportedUpgrade)
 	{
 		this.frame = frame;
 		this.world = world;
@@ -35,7 +36,7 @@ public class TrackedAbsorber
 	{
 		if(!world.isLoaded(absorbPos) || !frame.isAlive() || frame.getItem() != myItem) return true;
 		if(world.getBlockState(absorbPos).getBlock() != Blocks.ENCHANTING_TABLE) return true;
-		for(ItemEntity item : world.getEntitiesOfClass(ItemEntity.class, new AxisAlignedBB(absorbPos)))
+		for(ItemEntity item : world.getEntitiesOfClass(ItemEntity.class, new AABB(absorbPos)))
 		{
 			ItemStack stack = item.getItem();
 			Map<Enchantment, Integer> levels = EnchantmentHelper.getEnchantments(stack);
@@ -49,7 +50,7 @@ public class TrackedAbsorber
 					remove = true;
 				}
 			}
-			if(remove) item.remove();
+			if(remove) item.remove(RemovalReason.DISCARDED);
 		}
 		return false;
 	}

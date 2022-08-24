@@ -1,11 +1,11 @@
 package uniqueeutils.enchantments.unique;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.PotionItem;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
@@ -35,7 +35,7 @@ public class SagesSoul extends UniqueEnchantment
 	
 	public SagesSoul()
 	{
-		super(new DefaultData("sages_soul", Rarity.VERY_RARE, 10, true, false, 50, 20, 5), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		super(new DefaultData("sages_soul", Rarity.VERY_RARE, 10, true, false, 50, 20, 5), EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
 		addStats(DIVIDOR, MINING_SPEED, ATTACK_DIVIDOR, ATTACK_SPEED, DRAW_SPEED, ARMOR_SCALE, ARMOR_DIVIDOR, TOUGHNESS_SCALE, TOUGHNESS_DIVIDOR);
 		setCategory("utils");
 	}

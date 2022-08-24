@@ -1,27 +1,28 @@
 package uniquebase.utils;
 
 import java.util.List;
-import java.util.Random;
 import java.util.function.ToIntFunction;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.entity.projectile.ArrowEntity;
-import net.minecraft.entity.projectile.SpectralArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.FloatNBT;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.nbt.LongNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos.Mutable;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.FloatTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.entity.projectile.SpectralArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.utils.mixin.common.entity.ArrowMixin;
 
@@ -29,35 +30,35 @@ public class StackUtils
 {
 	public static int getInt(ItemStack stack, String tagName, int defaultValue)
 	{
-		CompoundNBT nbt = stack.getTag();
+		CompoundTag nbt = stack.getTag();
 		return nbt == null || !nbt.contains(tagName) ? defaultValue : nbt.getInt(tagName);
 	}
 	
 	public static void setInt(ItemStack stack, String tagName, int value)
 	{
-		stack.addTagElement(tagName, IntNBT.valueOf(value));
+		stack.addTagElement(tagName, IntTag.valueOf(value));
 	}
 	
 	public static float getFloat(ItemStack stack, String tagName, float defaultValue)
 	{
-		CompoundNBT nbt = stack.getTag();
+		CompoundTag nbt = stack.getTag();
 		return nbt == null || !nbt.contains(tagName) ? defaultValue : nbt.getFloat(tagName);
 	}
 	
 	public static void setFloat(ItemStack stack, String tagName, float value)
 	{
-		stack.addTagElement(tagName, FloatNBT.valueOf(value));
+		stack.addTagElement(tagName, FloatTag.valueOf(value));
 	}
 	
 	public static long getLong(ItemStack stack, String tagName, long defaultValue)
 	{
-		CompoundNBT nbt = stack.getTag();
+		CompoundTag nbt = stack.getTag();
 		return nbt == null || !nbt.contains(tagName) ? defaultValue : nbt.getLong(tagName);
 	}
 	
 	public static void setLong(ItemStack stack, String tagName, long value)
 	{
-		stack.addTagElement(tagName, LongNBT.valueOf(value));
+		stack.addTagElement(tagName, LongTag.valueOf(value));
 	}
 	
 	public static void growStack(ItemStack source, int size, List<ItemStack> output)
@@ -71,7 +72,7 @@ public class StackUtils
 		}
 	}
 	
-	public static ItemStack getArrowStack(AbstractArrowEntity arrow)
+	public static ItemStack getArrowStack(AbstractArrow arrow)
 	{
 		try
 		{
@@ -79,7 +80,7 @@ public class StackUtils
 			if(stack == null) {
 				if(UEBase.LOG_BROKEN_MODS.get()) {
 					boolean mcCreator = ObjectArrayList.wrap(arrow.getClass().getName().split("\\.")).contains("mcreator");
-					ResourceLocation id = arrow.getType().getRegistryName();
+					ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(arrow.getType());
 					if(mcCreator) UEBase.LOGGER.info("A MCreator mod ["+id.getNamespace()+"] with a broken Custom Projectile has been found. Please make sure to ask them to export the said mod again with the MCreator 2020.1 again, if it has been released already.");
 					else UEBase.LOGGER.info("Entity ["+id.getPath()+"] from the mod ["+id.getNamespace()+"] creates a Null-ItemStack in a custom Projectile. Please report it to the said Mod that they should fix this. For the modder: getItem/getArrowStack/getPickupItem is the function they need to fix.");
 				}
@@ -91,13 +92,13 @@ public class StackUtils
 		{
 			e.printStackTrace();
 		}
-		if(arrow instanceof SpectralArrowEntity)
+		if(arrow instanceof SpectralArrow)
 		{
 			return new ItemStack(Items.SPECTRAL_ARROW);
 		}
-		else if(arrow instanceof ArrowEntity)
+		else if(arrow instanceof Arrow)
 		{
-			CompoundNBT nbt = new CompoundNBT();
+			CompoundTag nbt = new CompoundTag();
 			arrow.saveWithoutId(nbt);
 			if(nbt.contains("CustomPotionEffects"))
 			{
@@ -112,10 +113,10 @@ public class StackUtils
 	
 	public static boolean isOre(BlockState state)
 	{
-		return Tags.Items.ORES.contains(state.getBlock().asItem());
+		return ForgeRegistries.ITEMS.tags().getTag(Tags.Items.ORES).contains(state.getBlock().asItem());
 	}
 	
-	public static int evenDistribute(int xpPoints, Random rand, List<ItemStack> items, ObjIntFunction<ItemStack> consumer)
+	public static int evenDistribute(int xpPoints, RandomSource rand, List<ItemStack> items, ObjIntFunction<ItemStack> consumer)
 	{
 		int left = xpPoints;
 		while(left >= items.size() && items.size() > 0)
@@ -143,10 +144,10 @@ public class StackUtils
 		return xpPoints - left;
 	}
 	
-	public static int consumeItems(PlayerEntity player, ToIntFunction<ItemStack> validator, int limit)
+	public static int consumeItems(Player player, ToIntFunction<ItemStack> validator, int limit)
 	{
 		int found = 0;
-		NonNullList<ItemStack> inv = player.inventory.items;
+		NonNullList<ItemStack> inv = player.getInventory().items;
 		for(int i = 0,m=inv.size();i<m;i++)
 		{
 			ItemStack stack = inv.get(i);
@@ -159,9 +160,9 @@ public class StackUtils
 			if(left >= stack.getCount() * value)
 			{
 				found+=stack.getCount() * value;
-				if(stack.getItem().hasContainerItem(stack))
+				if(stack.hasCraftingRemainingItem())
 				{
-					inv.set(i, stack.getItem().getContainerItem(stack));
+					inv.set(i, stack.getCraftingRemainingItem());
 					continue;
 				}
 				inv.set(i, ItemStack.EMPTY);
@@ -179,9 +180,9 @@ public class StackUtils
 		return found;
 	}
 	
-	public static int hasBlockCount(World world, BlockPos pos, int limit, ToIntFunction<BlockState> validator)
+	public static int hasBlockCount(Level world, BlockPos pos, int limit, ToIntFunction<BlockState> validator)
 	{
-		Mutable newPos = new Mutable();
+		MutableBlockPos newPos = new MutableBlockPos();
 		int found = 0;
 		for(int y = 0;y<=1;y++)
 		{

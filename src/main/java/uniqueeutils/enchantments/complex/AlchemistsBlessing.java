@@ -2,19 +2,19 @@ package uniqueeutils.enchantments.complex;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.ToIntFunction;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.block.Blocks;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -43,7 +43,7 @@ public class AlchemistsBlessing extends UniqueEnchantment
 	
 	public AlchemistsBlessing()
 	{
-		super(new DefaultData("alchemists_blessing", Rarity.VERY_RARE, 4, true, false, 26, 12, 10), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("alchemists_blessing", Rarity.VERY_RARE, 4, true, false, 26, 12, 10), EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(CONSUMTION, BASE_XP_USAGE, LVL_XP_USAGE);
 	}
 	
@@ -104,7 +104,7 @@ public class AlchemistsBlessing extends UniqueEnchantment
 			return input;
 		}
 		
-		public void generateOutput(Random rand, int level, int extra, int multiplier, List<ItemStack> result)
+		public void generateOutput(RandomSource rand, int level, int extra, int multiplier, List<ItemStack> result)
 		{
 			StackUtils.growStack(new ItemStack(output), Math.max(rand.nextInt(amount + 1), 1) * (level + extra) * multiplier, result);
 		}

@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.world.end.DragonFightManager;
+import net.minecraft.world.level.dimension.end.EndDragonFight;
 
-@Mixin(DragonFightManager.class)
+@Mixin(EndDragonFight.class)
 public interface DragonManagerMixin
 {
 	@Accessor("dragonUUID")

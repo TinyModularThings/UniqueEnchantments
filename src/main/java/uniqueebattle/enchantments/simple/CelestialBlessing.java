@@ -2,14 +2,14 @@ package uniqueebattle.enchantments.simple;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 
@@ -21,7 +21,7 @@ public class CelestialBlessing extends UniqueEnchantment
 	
 	public CelestialBlessing()
 	{
-		super(new DefaultData("hecates_blessing", Rarity.UNCOMMON, 3, false, false, 20, 5, 15).setTrancendenceLevel(200), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("hecates_blessing", Rarity.UNCOMMON, 3, false, false, 20, 5, 15).setTrancendenceLevel(200), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(SPEED_BONUS);
 		setCategory("battle");
 	}

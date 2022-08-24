@@ -7,21 +7,22 @@ import java.util.List;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.config.ModConfig.Type;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 public abstract class BaseUEMod
 {
 	private static final ThreadLocal<Boolean> CHECKING = ThreadLocal.withInitial(() -> false);
-	public static final EnchantmentType ALL_TYPES = EnchantmentType.create("ANY", BaseUEMod::canEnchant);
+	public static final EnchantmentCategory ALL_TYPES = EnchantmentCategory.create("ANY", BaseUEMod::canEnchant);
 	static final List<BaseUEMod> ALL_MODS = ObjectLists.synchronize(new ObjectArrayList<>());
 	List<IToggleEnchantment> enchantments = new ObjectArrayList<>();
 	ObjectList<EnchantedUpgrade> upgrades = new ObjectArrayList<>();
@@ -51,7 +52,7 @@ public abstract class BaseUEMod
 	
 	public void init(IEventBus bus, String name)
 	{
-		bus.addGenericListener(Enchantment.class, this::registerEnchantments);
+		bus.addListener(this::registerEnchantments);
 		bus.addListener(this::onLoad);
 		bus.addListener(this::onFileChange);
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -62,6 +63,10 @@ public abstract class BaseUEMod
 		for(int i = 0,m=upgrades.size();i<m;i++)
 		{
 			upgrades.get(i).register();
+		}
+		for(IToggleEnchantment ench : enchantments)
+		{
+			ForgeRegistries.ENCHANTMENTS.register(ench.getId(), (Enchantment)ench);
 		}
 		for(int i = 0,m=enchantments.size();i<m;i++)
 		{
@@ -102,26 +107,32 @@ public abstract class BaseUEMod
     	}
     }
     
-    public void onLoad(ModConfig.Loading configEvent) 
+    public void onLoad(ModConfigEvent.Loading configEvent) 
     {
     	reloadConfig();
     }
 
-    public void onFileChange(ModConfig.Reloading configEvent) 
+    public void onFileChange(ModConfigEvent.Reloading configEvent) 
     {
     	reloadConfig();
     }
     
-	public void registerEnchantments(RegistryEvent.Register<Enchantment> event)
+	public void registerEnchantments(RegisterEvent event)
 	{
-		event.getRegistry().registerAll(enchantments.toArray(new Enchantment[enchantments.size()]));
+//		if(event.getRegistryKey().equals(ForgeRegistries.Keys.ENCHANTMENTS))
+//		{
+//			for(IToggleEnchantment ench : enchantments)
+//			{
+//				event.getForgeRegistry().register(ench.getId(), (Enchantment)ench);
+//			}
+//		}
 	}
 	
 	private static boolean canEnchant(Item item)
 	{
 		if(CHECKING.get()) return false;
 		CHECKING.set(true);
-		for(EnchantmentType type : EnchantmentType.values())
+		for(EnchantmentCategory type : EnchantmentCategory.values())
 		{
 			if(type != ALL_TYPES && type.canEnchant(item))
 			{

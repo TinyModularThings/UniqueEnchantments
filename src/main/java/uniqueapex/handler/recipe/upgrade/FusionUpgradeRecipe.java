@@ -3,21 +3,21 @@ package uniqueapex.handler.recipe.upgrade;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniqueapex.UEApex;
 import uniqueapex.handler.recipe.FusionContext;
 import uniquebase.handler.MathCache;
 
-public class FusionUpgradeRecipe implements IRecipe<FusionContext>
+public class FusionUpgradeRecipe implements Recipe<FusionContext>
 {
 	protected ResourceLocation id;
 	protected Object2IntMap<Ingredient> requestedItems;
@@ -34,7 +34,7 @@ public class FusionUpgradeRecipe implements IRecipe<FusionContext>
 		this.requiredBooks = requiredBooks;
 	}
 	
-	public static FusionUpgradeRecipe load(ResourceLocation location, PacketBuffer buffer)
+	public static FusionUpgradeRecipe load(ResourceLocation location, FriendlyByteBuf buffer)
 	{
 		Object2IntMap<Ingredient> requestedItems = new Object2IntLinkedOpenHashMap<>();
 		for(int i = 0,m=buffer.readVarInt();i<m;i++)
@@ -47,7 +47,7 @@ public class FusionUpgradeRecipe implements IRecipe<FusionContext>
 		return ench == null ? null : new FusionUpgradeRecipe(location, requestedItems, ench, exp, books);
 	}
 	
-	public void writePacket(PacketBuffer buffer)
+	public void writePacket(FriendlyByteBuf buffer)
 	{
 		buffer.writeVarInt(requestedItems.size());
 		for(Object2IntMap.Entry<Ingredient> entry : Object2IntMaps.fastIterable(requestedItems))
@@ -61,7 +61,7 @@ public class FusionUpgradeRecipe implements IRecipe<FusionContext>
 	}
 	
 	@Override
-	public boolean matches(FusionContext context, World world)
+	public boolean matches(FusionContext context, Level world)
 	{
 		if(context.getLargestEnchantment() != enchantment) return false;
 		if(!context.containsItem(requestedItems, true)) return false;
@@ -107,13 +107,13 @@ public class FusionUpgradeRecipe implements IRecipe<FusionContext>
 	}
 
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return UEApex.UPGRADE_SERIALIZER;
 	}
 
 	@Override
-	public IRecipeType<?> getType()
+	public RecipeType<?> getType()
 	{
 		return UEApex.FUSION_UPGRADE;
 	}

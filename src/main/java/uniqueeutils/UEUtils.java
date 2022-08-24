@@ -1,16 +1,16 @@
 package uniqueeutils;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.potion.Effect;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 import uniquebase.UEBase;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.EnchantedUpgrade;
@@ -66,7 +66,7 @@ public class UEUtils extends BaseUEMod
 	public static Enchantment SAGES_SOUL;
 	public static Enchantment PEGASUS_SOUL;
 	
-	public static Effect SATURATION;
+	public static MobEffect SATURATION;
 	
 	public static final SoundEvent RESONANCE_SOUND = new SoundEvent(new ResourceLocation("uniqueutil", "resonance_found"));
 	public static final SoundEvent ALCHEMIST_BLESSING_SOUND = new SoundEvent(new ResourceLocation("uniqueutil", "alchemist_blessing_transmutate"));
@@ -84,7 +84,7 @@ public class UEUtils extends BaseUEMod
 		UEBase.NETWORKING.registerInternalPacket(this, HighlightPacket.class, HighlightPacket::new, 21);
 		BOOST_KEY = UEBase.PROXY.registerKey("Pegasus Soul Key", 341);
 		SATURATION = new SaturationEffect();
-		FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Effect.class, this::registerPotion);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerContent);
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UEUtils.toml");
 		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);
 		BaseHandler.INSTANCE.registerAnvilHelper(THICK_PICK, ThickPick.VALIDATOR, ThickPick.TAG);
@@ -94,9 +94,7 @@ public class UEUtils extends BaseUEMod
 		BaseHandler.INSTANCE.registerStorageTooltip(ANEMOIS_FRAGMENT, "tooltip.uniqueutil.stored.fuel.name", AnemoiFragment.STORAGE);
 		BaseHandler.INSTANCE.registerStorageTooltip(ALCHEMISTS_BLESSING, "tooltip.uniqueutil.stored.redstone.name", AlchemistsBlessing.STORED_REDSTONE);
 		BaseHandler.INSTANCE.registerStorageTooltip(SAGES_SOUL, "tooltip.uniqueutil.stored.soul.name", SagesSoul.STORED_XP);
-		BaseHandler.INSTANCE.registerStorageTooltip(REINFORCED, "tooltip.uniqueutil.stored.shield.name", Reinforced.SHIELD);
-		ForgeRegistries.SOUND_EVENTS.register(RESONANCE_SOUND.setRegistryName("resonance_found"));
-		ForgeRegistries.SOUND_EVENTS.register(ALCHEMIST_BLESSING_SOUND.setRegistryName("alchemist_blessing_transmutate"));	
+		BaseHandler.INSTANCE.registerStorageTooltip(REINFORCED, "tooltip.uniqueutil.stored.shield.name", Reinforced.SHIELD);	
 	}
 	
 	@Override
@@ -106,9 +104,17 @@ public class UEUtils extends BaseUEMod
 		RENDER_SHIELD_HUD = builder.define("render_shield_hud", true);
 	}
 	
-	public void registerPotion(RegistryEvent.Register<Effect> event)
+	public void registerContent(RegisterEvent event)
 	{
-		event.getRegistry().register(SATURATION);
+		if(event.getRegistryKey().equals(ForgeRegistries.Keys.MOB_EFFECTS))
+		{
+	    	event.getForgeRegistry().register("saturation", SATURATION);
+		}
+		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.SOUND_EVENTS))
+		{
+			event.getForgeRegistry().register("resonance_found", RESONANCE_SOUND);
+			event.getForgeRegistry().register("alchemist_blessing_transmutate", ALCHEMIST_BLESSING_SOUND);
+		}
 	}
 	
 	@Override

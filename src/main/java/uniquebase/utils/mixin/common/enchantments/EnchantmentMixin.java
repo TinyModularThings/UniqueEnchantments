@@ -3,13 +3,13 @@ package uniquebase.utils.mixin.common.enchantments;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 @Mixin(Enchantment.class)
 public interface EnchantmentMixin
 {
 	@Accessor("slots")
-	EquipmentSlotType[] getSlots();
+	EquipmentSlot[] getSlots();
 	
 }

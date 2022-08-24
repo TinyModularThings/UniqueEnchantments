@@ -11,27 +11,28 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.ByteNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 
-public final class FusionContext extends Inventory
+public final class FusionContext extends SimpleContainer
 {
-	public static final ByteNBT TWO = ByteNBT.valueOf((byte)2);
+	public static final ByteTag TWO = ByteTag.valueOf((byte)2);
 	IItemHandler[] originals;
-	IInventory[] copies;
+	Container[] copies;
 	IItemHandler mainChest;
 	boolean init = false;
 	Enchantment largestEnchantment;
@@ -47,12 +48,12 @@ public final class FusionContext extends Inventory
 		copies = copy(originals);
 	}
 	
-	private IInventory[] copy(IItemHandler[] input)
+	private Container[] copy(IItemHandler[] input)
 	{
-		IInventory[] result = new IInventory[input.length];
+		Container[] result = new Container[input.length];
 		for(int i = 0;i<input.length;i++)
 		{
-			IInventory inventory = new Inventory(input[i].getSlots()) {
+			Container inventory = new SimpleContainer(input[i].getSlots()) {
 				@Override
 				public int getMaxStackSize() { return Integer.MAX_VALUE; }
 			};
@@ -65,12 +66,12 @@ public final class FusionContext extends Inventory
 		return result;
 	}
 	
-	public IItemHandler[] createWrapper(IInventory[] input)
+	public IItemHandler[] createWrapper(Container[] input)
 	{
 		IItemHandler[] result = new IItemHandler[input.length];
 		for(int i = 0;i<input.length;i++)
 		{
-			IInventory inventory = new Inventory(input[i].getContainerSize()) {
+			Container inventory = new SimpleContainer(input[i].getContainerSize()) {
 				@Override
 				public int getMaxStackSize() { return Integer.MAX_VALUE; }
 			};
@@ -86,7 +87,7 @@ public final class FusionContext extends Inventory
 	public void applyEnchantment(Enchantment ench, int level, boolean lock, int max)
 	{
 		ItemStack stack = mainChest.getStackInSlot(0);
-		ListNBT list = stack.getEnchantmentTags();
+		ListTag list = stack.getEnchantmentTags();
 		while(list.size() > max && !list.isEmpty()) {
 			list.remove(list.size()-1);
 		}
@@ -126,7 +127,7 @@ public final class FusionContext extends Inventory
 		{
 			Object2IntMap.Entry<Enchantment> entry = enchantments.get(i);
 			if(map.getInt(entry.getKey()) < entry.getIntValue()) {
-				UEBase.LOGGER.info("Recipe Fail 3: "+entry.getKey().getRegistryName()+", "+map.getInt(entry.getKey())+", "+entry.getIntValue());
+				UEBase.LOGGER.info("Recipe Fail 3: "+ForgeRegistries.ENCHANTMENTS.getKey(entry.getKey())+", "+map.getInt(entry.getKey())+", "+entry.getIntValue());
 				return false;
 			}
 		}
@@ -150,7 +151,7 @@ public final class FusionContext extends Inventory
 			map.put(ench, level);
 		}
 		EnchantmentHelper.setEnchantments(map, stack);
-		String enchantment = getLargestEnchantment().getRegistryName().toString();
+		String enchantment = ForgeRegistries.ENCHANTMENTS.getKey(getLargestEnchantment()).toString();
 		for(int i = 1,m=mainChest.getSlots();i<m;i++)
 		{
 			removeEnchantments(mainChest, i, enchantment);
@@ -160,7 +161,7 @@ public final class FusionContext extends Inventory
 	protected void removeEnchantments(IItemHandler handler, int slot, String enchantment)
 	{
 		ItemStack stack = handler.getStackInSlot(slot);
-		ListNBT list = stack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(stack) : stack.getEnchantmentTags();
+		ListTag list = stack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(stack) : stack.getEnchantmentTags();
 		for(int i = 0,m=list.size();i<m;i++)
 		{
 			if(list.getCompound(i).getString("id").equals(enchantment))
@@ -215,7 +216,7 @@ public final class FusionContext extends Inventory
 	public int getEnchantability()
 	{
 		ItemStack stack = mainChest.getStackInSlot(0);
-		return Math.max(1, stack.getItemEnchantability());
+		return Math.max(1, stack.getEnchantmentValue());
 	}
 	
 	public int getAchievedLevel(int books)

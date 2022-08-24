@@ -2,8 +2,8 @@
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import uniquebase.UEBase;
 
 public class KeyPacket implements IUEPacket
@@ -20,7 +20,7 @@ public class KeyPacket implements IUEPacket
 	}
 
 	@Override
-	public void write(PacketBuffer buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeVarInt(keyState.size());
 		for(Object2BooleanMap.Entry<String> entry : keyState.object2BooleanEntrySet())
@@ -31,7 +31,7 @@ public class KeyPacket implements IUEPacket
 	}
 
 	@Override
-	public void read(PacketBuffer buf)
+	public void read(FriendlyByteBuf buf)
 	{
 		int size = buf.readVarInt();
 		for(int i = 0;i<size;i++)
@@ -41,7 +41,7 @@ public class KeyPacket implements IUEPacket
 	}
 
 	@Override
-	public void handlePacket(PlayerEntity player)
+	public void handlePacket(Player player)
 	{
 		UEBase.PROXY.updateData(player, keyState);
 	}

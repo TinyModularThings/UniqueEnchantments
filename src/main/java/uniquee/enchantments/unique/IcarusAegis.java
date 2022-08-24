@@ -2,11 +2,11 @@ package uniquee.enchantments.unique;
 
 import java.util.function.ToIntFunction;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ElytraItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ElytraItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 
@@ -25,7 +25,7 @@ public class IcarusAegis extends UniqueEnchantment
 	
 	public IcarusAegis()
 	{
-		super(new DefaultData("icarus_aegis", Rarity.VERY_RARE, 3, true, false, 16, 4, 10), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
+		super(new DefaultData("icarus_aegis", Rarity.VERY_RARE, 3, true, false, 16, 4, 10), EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST);
 		addStats(BASE_CONSUMPTION);
 		setDisableDefaultItems();
 	}

@@ -10,11 +10,12 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.utils.MiscUtil;
 
 public abstract class EnchantedUpgrade
@@ -26,7 +27,7 @@ public abstract class EnchantedUpgrade
 	String name;
 	Enchantment ench;
 	Supplier<Enchantment> enchSupplier;
-	EnumSet<EquipmentSlotType> validSlots = EnumSet.of(EquipmentSlotType.MAINHAND);
+	EnumSet<EquipmentSlot> validSlots = EnumSet.of(EquipmentSlot.MAINHAND);
 	
 	public EnchantedUpgrade(String mod, String path, String name, Supplier<Enchantment> enchSupplier)
 	{
@@ -46,7 +47,7 @@ public abstract class EnchantedUpgrade
 		return ObjectLists.unmodifiable(ALL_EFFECTS);
 	}
 	
-	protected void setEquimentSlots(EnumSet<EquipmentSlotType> validSlots)
+	protected void setEquimentSlots(EnumSet<EquipmentSlot> validSlots)
 	{
 		this.validSlots = validSlots;
 	}
@@ -55,7 +56,7 @@ public abstract class EnchantedUpgrade
 	{
 		Enchantment ench = getSource();
 		if(ench == null) throw new IllegalStateException();
-		if(BY_ENCHANTMENT.put(ench, this) != null) throw new IllegalStateException("Enchantment"+ench.getRegistryName()+" already has a buff. Tag Name["+tag+"]");
+		if(BY_ENCHANTMENT.put(ench, this) != null) throw new IllegalStateException("Enchantment"+ForgeRegistries.ENCHANTMENTS.getKey(ench)+" already has a buff. Tag Name["+tag+"]");
 	}
 	
 	public String getName()
@@ -71,7 +72,7 @@ public abstract class EnchantedUpgrade
 	
 	public abstract boolean isValid(ItemStack stack);
 	
-	public boolean isValidSlot(EquipmentSlotType slot)
+	public boolean isValidSlot(EquipmentSlot slot)
 	{
 		return validSlots.contains(slot);
 	}

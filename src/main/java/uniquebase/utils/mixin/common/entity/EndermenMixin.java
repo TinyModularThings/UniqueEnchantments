@@ -5,16 +5,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.entity.monster.EndermanEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
 import uniquebase.utils.events.EndermenLookEvent;
 
-@Mixin(EndermanEntity.class)
+@Mixin(EnderMan.class)
 public class EndermenMixin
 {
 	@Inject(method = "isLookingAtMe", at = @At("HEAD"), cancellable = true)
-	private void isLookingAtMe(PlayerEntity player, CallbackInfoReturnable<Boolean> value) 
+	private void isLookingAtMe(Player player, CallbackInfoReturnable<Boolean> value) 
 	{
 		if(MinecraftForge.EVENT_BUS.post(new EndermenLookEvent(player)))
 		{

@@ -3,20 +3,20 @@ package uniquebase.networking;
 import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkEvent.Context;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.PacketDistributor.TargetPoint;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent.Context;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor.TargetPoint;
+import net.minecraftforge.network.simple.SimpleChannel;
 import uniquebase.api.BaseUEMod;
 
 public class PacketHandler
@@ -42,7 +42,7 @@ public class PacketHandler
 		channel.registerMessage(index, packet, this::writePacket, (K) -> readPacket(K, creator), this::handlePacket);
 	}
 	
-	protected void writePacket(IUEPacket packet, PacketBuffer buffer)
+	protected void writePacket(IUEPacket packet, FriendlyByteBuf buffer)
 	{
 		try
 		{
@@ -54,7 +54,7 @@ public class PacketHandler
 		}
 	}
 	
-	protected <T extends IUEPacket> T readPacket(PacketBuffer buffer, Supplier<T> values)
+	protected <T extends IUEPacket> T readPacket(FriendlyByteBuf buffer, Supplier<T> values)
 	{
 		try
 		{
@@ -74,26 +74,26 @@ public class PacketHandler
 		Context context = provider.get();
 		try
 		{
-			PlayerEntity player = getPlayer(context);
+			Player player = getPlayer(context);
 			context.enqueueWork(() -> {
 				packet.handlePacket(player);
-				context.setPacketHandled(true);
 			});
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
+		context.setPacketHandled(true);
 	}
 	
-	private PlayerEntity getPlayer(Context context)
+	private Player getPlayer(Context context)
 	{
-		PlayerEntity player = context.getSender();
+		Player player = context.getSender();
 		return player == null ? getClientPlayer() : player;
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	private PlayerEntity getClientPlayer()
+	private Player getClientPlayer()
 	{
 		return Minecraft.getInstance().player;
 	}
@@ -103,13 +103,13 @@ public class PacketHandler
 		channel.send(PacketDistributor.SERVER.noArg(), packet);
 	}
 	
-	public void sendToPlayer(IUEPacket packet, PlayerEntity player)
+	public void sendToPlayer(IUEPacket packet, Player player)
 	{
-		if(!(player instanceof ServerPlayerEntity))
+		if(!(player instanceof ServerPlayer))
 		{
 			throw new RuntimeException("Sending a Packet to a Player from client is not allowed");
 		}
-		channel.send(PacketDistributor.PLAYER.with(() -> ((ServerPlayerEntity)player)), packet);
+		channel.send(PacketDistributor.PLAYER.with(() -> ((ServerPlayer)player)), packet);
 	}
 	
 	public void sendToAllPlayers(IUEPacket packet)
@@ -117,7 +117,7 @@ public class PacketHandler
 		channel.send(PacketDistributor.ALL.noArg(), packet);
 	}
 	
-	public void sendToAllChunkWatchers(Chunk chunk, IUEPacket packet)
+	public void sendToAllChunkWatchers(LevelChunk chunk, IUEPacket packet)
 	{
 		channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk), packet);
 	}

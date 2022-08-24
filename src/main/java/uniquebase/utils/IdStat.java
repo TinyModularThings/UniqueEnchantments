@@ -5,54 +5,55 @@ import java.util.Set;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public class IdStat implements IStat
+public class IdStat<T> implements IStat
 {
 	final String id;
-	final IForgeRegistry<?> registry;
+	final IForgeRegistry<T> registry;
 	Set<ResourceLocation> values = new ObjectOpenHashSet<>();
 	List<String> defaultValues = new ObjectArrayList<>();
 	ConfigValue<List<? extends String>> config;
 	final String comment;
 	
-	public IdStat(String config, IForgeRegistry<?> registry)
+	public IdStat(String config, IForgeRegistry<T> registry)
 	{
 		this(config, null, registry, new ResourceLocation[0]);
 	}
 	
-	public IdStat(String config, String comment, IForgeRegistry<?> registry)
+	public IdStat(String config, String comment, IForgeRegistry<T> registry)
 	{
 		this(config, comment, registry, new ResourceLocation[0]);
 	}
 	
-	public IdStat(String config, IForgeRegistry<?> registry, IForgeRegistryEntry<?>... defaultValues)
+	@SafeVarargs
+	public IdStat(String config, IForgeRegistry<T> registry, T... defaultValues)
 	{
 		this(config, null, registry, defaultValues);
 	}
 	
-	public IdStat(String config, String comment, IForgeRegistry<?> registry, IForgeRegistryEntry<?>... defaultValues)
+	@SafeVarargs
+	public IdStat(String config, String comment, IForgeRegistry<T> registry, T... defaultValues)
 	{
 		this.id = config;
 		this.comment = comment;
 		this.registry = registry;
-		for(IForgeRegistryEntry<?> entry : defaultValues)
+		for(T entry : defaultValues)
 		{
-			values.add(entry.getRegistryName());
-			this.defaultValues.add(entry.getRegistryName().toString());
+			values.add(registry.getKey(entry));
+			this.defaultValues.add(registry.getKey(entry).toString());
 		}
 	}
 	
-	public IdStat(String config, IForgeRegistry<?> registry, ResourceLocation... defaultValues)
+	public IdStat(String config, IForgeRegistry<T> registry, ResourceLocation... defaultValues)
 	{
 		this(config, null, registry, defaultValues);
 	}
 	
-	public IdStat(String config, String comment, IForgeRegistry<?> registry, ResourceLocation... defaultValues)
+	public IdStat(String config, String comment, IForgeRegistry<T> registry, ResourceLocation... defaultValues)
 	{
 		this.id = config;
 		this.comment = comment;
@@ -64,12 +65,14 @@ public class IdStat implements IStat
 		}
 	}
 	
-	public void addDefault(IForgeRegistryEntry<?>... defaultValues)
+	
+	@SuppressWarnings("unchecked")
+	public void addDefault(T... defaultValues)
 	{
-		for(IForgeRegistryEntry<?> entry : defaultValues)
+		for(T entry : defaultValues)
 		{
-			values.add(entry.getRegistryName());
-			this.defaultValues.add(entry.getRegistryName().toString());
+			values.add(registry.getKey(entry));
+			this.defaultValues.add(registry.getKey(entry).toString());
 		}
 	}
 	
@@ -103,6 +106,11 @@ public class IdStat implements IStat
 	public boolean isEmpty()
 	{
 		return values.isEmpty();
+	}
+	
+	public boolean contains(T entry)
+	{
+		return values.contains(registry.getKey(entry));
 	}
 	
 	public boolean contains(ResourceLocation location)

@@ -12,22 +12,22 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniqueapex.UEApex;
 import uniqueapex.handler.recipe.FusionContext;
 
-public abstract class FusionRecipe implements IRecipe<FusionContext>
+public abstract class FusionRecipe implements Recipe<FusionContext>
 {
 	protected ResourceLocation id;
 	protected Object2IntMap<Ingredient> requestedItems;
@@ -47,7 +47,7 @@ public abstract class FusionRecipe implements IRecipe<FusionContext>
 	}
 	
 	@Override
-	public boolean matches(FusionContext recipe, World world)
+	public boolean matches(FusionContext recipe, Level world)
 	{
 		return recipe.isValid(requestedItems, output, enchantments);
 	}
@@ -104,18 +104,18 @@ public abstract class FusionRecipe implements IRecipe<FusionContext>
 	}
 	
 	@Override
-	public IRecipeSerializer<FusionRecipe> getSerializer()
+	public RecipeSerializer<FusionRecipe> getSerializer()
 	{
 		return UEApex.FUSION_SERIALIZER;
 	}
 	
 	@Override
-	public IRecipeType<FusionRecipe> getType()
+	public RecipeType<FusionRecipe> getType()
 	{
 		return UEApex.FUSION;
 	}
 	
-	public void writePacket(PacketBuffer buffer)
+	public void writePacket(FriendlyByteBuf buffer)
 	{
 		buffer.writeVarInt(requestedItems.size());
 		for(Object2IntMap.Entry<Ingredient> entry : Object2IntMaps.fastIterable(requestedItems))
@@ -134,7 +134,7 @@ public abstract class FusionRecipe implements IRecipe<FusionContext>
 		buffer.writeRegistryIdUnsafe(ForgeRegistries.ENCHANTMENTS, output);	
 	}
 	
-	public static FusionRecipe loadRecipe(PacketBuffer buffer, ResourceLocation id, IFusionRecipeBuilder builder)
+	public static FusionRecipe loadRecipe(FriendlyByteBuf buffer, ResourceLocation id, IFusionRecipeBuilder builder)
 	{
 		Object2IntMap<Ingredient> requestedItems = new Object2IntLinkedOpenHashMap<>();
 		List<Object2IntMap.Entry<Enchantment>> enchantments = new ObjectArrayList<>();

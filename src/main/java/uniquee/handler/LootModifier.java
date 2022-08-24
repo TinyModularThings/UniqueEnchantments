@@ -2,27 +2,24 @@ package uniquee.handler;
 
 import java.util.List;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquee.UE;
@@ -31,18 +28,26 @@ import uniquee.enchantments.unique.MidasBlessing;
 
 public class LootModifier implements IGlobalLootModifier
 {
+	public static final Codec<LootModifier> CODEC = Codec.unit(LootModifier::new);
+	
 	@Override
-	public List<ItemStack> apply(List<ItemStack> generatedLoot, LootContext context)
+	public Codec<? extends IGlobalLootModifier> codec()
 	{
-		if(context.hasParam(LootParameters.TOOL) && context.hasParam(LootParameters.BLOCK_STATE))
+		return CODEC;
+	}
+	
+	@Override
+	public ObjectArrayList<ItemStack> apply(ObjectArrayList<ItemStack> generatedLoot, LootContext context)
+	{
+		if(context.hasParam(LootContextParams.TOOL) && context.hasParam(LootContextParams.BLOCK_STATE))
 		{
 			ItemStack stack = ItemStack.EMPTY;
-			if(context.hasParam(LootParameters.THIS_ENTITY))
+			if(context.hasParam(LootContextParams.THIS_ENTITY))
 			{
-				Entity entity = context.getParamOrNull(LootParameters.THIS_ENTITY);
+				Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
 				if(entity instanceof LivingEntity) stack = ((LivingEntity)entity).getMainHandItem();
 			}
-			BlockState state = context.getParamOrNull(LootParameters.BLOCK_STATE);
+			BlockState state = context.getParamOrNull(LootContextParams.BLOCK_STATE);
 			Object2IntMap<Enchantment> enchs = MiscUtil.getEnchantments(stack);
 			int midas = enchs.getInt(UE.MIDAS_BLESSING);
 			if(midas > 0)
@@ -76,9 +81,9 @@ public class LootModifier implements IGlobalLootModifier
 					{
 						ItemStack toBurn = stacks.get(i).copy();
 						toBurn.setCount(1);
-						IInventory inventory = new Inventory(toBurn);
+						Container inventory = new SimpleContainer(toBurn);
 						ItemStack result = ItemStack.EMPTY;
-						for(IRecipe<IInventory> recipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(IRecipeType.SMELTING))
+						for(Recipe<Container> recipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getAllRecipesFor(RecipeType.SMELTING))
 						{
 							if(recipe.matches(inventory, null)) result = recipe.assemble(inventory);
 						}
@@ -89,34 +94,12 @@ public class LootModifier implements IGlobalLootModifier
 					}
 					if(smelted > 0)
 					{
-						stored -= MathHelper.ceil((smelted * (ore ? 5 : 1) * IfritsGrace.BASE_CONSUMTION.get() * extra) / level);
+						stored -= Mth.ceil((smelted * (ore ? 5 : 1) * IfritsGrace.BASE_CONSUMTION.get() * extra) / level);
 						StackUtils.setInt(stack, IfritsGrace.LAVA_COUNT, Math.max(0, stored));
 					}
 				}
 			}
 		}
 		return generatedLoot;
-	}
-	
-	public static class Serializer extends GlobalLootModifierSerializer<LootModifier>
-	{
-		public static final Serializer INSTANCE = new Serializer();
-		
-		public Serializer()
-		{
-			setRegistryName("ue_loot");
-		}
-		
-		@Override
-		public LootModifier read(ResourceLocation location, JsonObject object, ILootCondition[] ailootcondition)
-		{
-			return new LootModifier();
-		}
-
-		@Override
-		public JsonObject write(LootModifier instance)
-		{
-			return new JsonObject();
-		}
 	}
 }

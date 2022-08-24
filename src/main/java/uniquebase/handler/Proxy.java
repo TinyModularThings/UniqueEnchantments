@@ -6,14 +6,19 @@ import java.util.UUID;
 import it.unimi.dsi.fastutil.objects.Object2BooleanLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.eventbus.api.IEventBus;
 import uniquebase.api.IKeyBind;
 
 public class Proxy
 {
 	Map<UUID, PlayerKeys> keyMap = new Object2ObjectOpenHashMap<>();
+	
+	public void preInit(IEventBus bus)
+	{
+		
+	}
 	
 	public void init()
 	{
@@ -25,7 +30,7 @@ public class Proxy
 		
 	}
 	
-	public void updateData(PlayerEntity player, Object2BooleanMap<String> pressed)
+	public void updateData(Player player, Object2BooleanMap<String> pressed)
 	{
 		keyMap.computeIfAbsent(player.getUUID(), T -> new PlayerKeys()).update(pressed);
 	}
@@ -47,22 +52,22 @@ public class Proxy
 		}
 		
 		@Override
-		public boolean test(PlayerEntity t)
+		public boolean test(Player t)
 		{
 			PlayerKeys keys = keyMap.get(t.getUUID());
 			return keys != null && keys.isPressed(key);
 		}
 		
 		@Override
-		public ITextComponent getKeyName()
+		public Component getKeyName()
 		{
-			return new StringTextComponent("Names only Exist in the Client Side");
+			return Component.literal("Names only Exist in the Client Side");
 		}
 		
 		@Override
-		public ITextComponent getName()
+		public Component getName()
 		{
-			return new StringTextComponent(key);
+			return Component.literal(key);
 		}
 	}
 	

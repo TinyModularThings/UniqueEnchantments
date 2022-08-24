@@ -1,13 +1,13 @@
 package uniqueebattle.enchantments.curse;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 import uniquebase.utils.IntLevelStats;
@@ -28,7 +28,7 @@ public class IfritsJudgement extends UniqueEnchantment
 	
 	public IfritsJudgement()
 	{
-		super(new DefaultData("ifrits_judgement", Rarity.RARE, 2, false, false, 10, 4, 40), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("ifrits_judgement", Rarity.RARE, 2, false, false, 10, 4, 40), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		setCategory("battle");
 		setCurse();
 		addStats(FIRE_DAMAGE, LAVA_DAMAGE, DURATION, LAVA_HITS, FIRE_HITS);
@@ -37,6 +37,6 @@ public class IfritsJudgement extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof AxeItem || stack.getItem() instanceof ToolItem || stack.getItem() instanceof BowItem || stack.getItem() instanceof HoeItem;
+		return stack.getItem() instanceof AxeItem || stack.getItem() instanceof DiggerItem || stack.getItem() instanceof BowItem || stack.getItem() instanceof HoeItem;
 	}
 }

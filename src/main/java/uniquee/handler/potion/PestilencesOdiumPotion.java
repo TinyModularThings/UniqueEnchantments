@@ -1,24 +1,23 @@
 package uniquee.handler.potion;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.EffectType;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
 import uniquee.enchantments.curse.PestilencesOdium;
 
-public class PestilencesOdiumPotion extends Effect
+public class PestilencesOdiumPotion extends MobEffect
 {
 	public PestilencesOdiumPotion()
 	{
-		super(EffectType.HARMFUL, 3484199);
-		setRegistryName("uniquee", "pestilences_odium");
+		super(MobEffectCategory.HARMFUL, 3484199);
 	}
 	
 	@Override
 	public void applyEffectTick(LivingEntity entity, int amplifier)
 	{
-		EffectInstance effect = entity.getEffect(this);
+		MobEffectInstance effect = entity.getEffect(this);
 		if(effect == null || entity == null)
 		{
 			return;

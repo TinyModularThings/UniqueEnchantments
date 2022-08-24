@@ -1,13 +1,14 @@
 package uniqueebattle;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.potion.Effect;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 import uniquebase.UEBase;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.EnchantedUpgrade;
@@ -58,9 +59,9 @@ public class UEBattle extends BaseUEMod
 	public static Enchantment SNARE;
 
 	
-	public static Effect TOUGHEND;
-	public static Effect BLEED;
-	public static Effect LOCK_DOWN;
+	public static MobEffect TOUGHEND;
+	public static MobEffect BLEED;
+	public static MobEffect LOCK_DOWN;
 	public static IKeyBind GRANIS_SOUL_DASH = IKeyBind.empty();
 	
 	public static final SoundEvent CELESTIAL_BLESSING_START_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "celestial_blessing_start"));
@@ -79,17 +80,31 @@ public class UEBattle extends BaseUEMod
 		TOUGHEND = new Toughend();
 		BLEED = new Bleed();
 		LOCK_DOWN = new Lockdown();
-		ForgeRegistries.POTIONS.registerAll(TOUGHEND, BLEED, LOCK_DOWN);
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UEBattle.toml");
 		MinecraftForge.EVENT_BUS.register(BattleHandler.INSTANCE);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerContent);
 		BaseHandler.INSTANCE.registerStorageTooltip(ARTEMIS_SOUL, "tooltip.uniquebattle.stored.ender.name", ArtemisSoul.ENDER_STORAGE);
 		BaseHandler.INSTANCE.registerStorageTooltip(ARTEMIS_SOUL, "tooltip.uniquebattle.stored.ender.souls.common.name", ArtemisSoul.TEMPORARY_SOUL_COUNT);
 		BaseHandler.INSTANCE.registerStorageTooltip(ARTEMIS_SOUL, "tooltip.uniquebattle.stored.ender.souls.higher.name", ArtemisSoul.PERSISTEN_SOUL_COUNT);
 		BaseHandler.INSTANCE.registerAnvilHelper(ARTEMIS_SOUL, ArtemisSoul.VALID_ITEMS, ArtemisSoul.ENDER_STORAGE);
-		ForgeRegistries.SOUND_EVENTS.register(CELESTIAL_BLESSING_START_SOUND.setRegistryName("celestial_blessing_start"));
-		ForgeRegistries.SOUND_EVENTS.register(CELESTIAL_BLESSING_END_SOUND.setRegistryName("celestial_blessing_end"));
-		ForgeRegistries.SOUND_EVENTS.register(FURY_DROP_SOUND.setRegistryName("fury_drop"));
-		ForgeRegistries.SOUND_EVENTS.register(WARS_ODIUM_REVIVE_SOUND.setRegistryName("wars_odium_revive"));
+
+	}
+	
+	public void registerContent(RegisterEvent event)
+	{
+		if(event.getRegistryKey().equals(ForgeRegistries.Keys.MOB_EFFECTS))
+		{
+	    	event.getForgeRegistry().register("toughend", TOUGHEND);
+	    	event.getForgeRegistry().register("bleed", BLEED);
+	    	event.getForgeRegistry().register("snare", LOCK_DOWN);
+		}
+		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.SOUND_EVENTS))
+		{
+			event.getForgeRegistry().register("celestial_blessing_start", CELESTIAL_BLESSING_START_SOUND);
+			event.getForgeRegistry().register("celestial_blessing_end", CELESTIAL_BLESSING_END_SOUND);
+			event.getForgeRegistry().register("fury_drop", FURY_DROP_SOUND);
+			event.getForgeRegistry().register("wars_odium_revive", WARS_ODIUM_REVIVE_SOUND);
+		}
 	}
 	
 	@Override

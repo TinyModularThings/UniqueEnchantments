@@ -3,9 +3,9 @@ package uniquebase.api;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.utils.MiscUtil;
@@ -89,9 +89,10 @@ public class ColorConfig
 	
 	public static void setupDefaultColors(IColorConfigBuilder acceptor) 
 	{
-		for(Enchantment ench:ForgeRegistries.ENCHANTMENTS) {
-			if(!(ench.getRegistryName().getNamespace().equals("minecraft")) || !(ench.getRegistryName().getNamespace().equals("uniquee")) || !(ench.getRegistryName().getNamespace().equals("uniquebattle")) || !(ench.getRegistryName().getNamespace().equals("uniqueutil"))) {
-				acceptor.addColor(ench.getRegistryName(), MiscUtil.toHex(MiscUtil.getColorFromText(ench.getRegistryName().getPath())), null, null, null);
+		for(Enchantment ench : ForgeRegistries.ENCHANTMENTS) {
+			ResourceLocation id = ForgeRegistries.ENCHANTMENTS.getKey(ench);
+			if(!(id.getNamespace().equals("minecraft")) || !(id.getNamespace().equals("uniquee")) || !(id.getNamespace().equals("uniquebattle")) || !(id.getNamespace().equals("uniqueutil"))) {
+				acceptor.addColor(id, MiscUtil.toHex(MiscUtil.getColorFromText(id.getPath())), null, null, null);
 			}
 		}
 		
@@ -228,7 +229,7 @@ public class ColorConfig
 	{
 		public void addColor(ResourceLocation location, String textColor, String background, String startColor, String endColor);
 		public default void addColor(Enchantment ench, String textColor, String background, String startColor, String endColor) {
-			addColor(ench.getRegistryName(), textColor, background, startColor, endColor);
+			addColor(ForgeRegistries.ENCHANTMENTS.getKey(ench), textColor, background, startColor, endColor);
 		}
 	}
 }

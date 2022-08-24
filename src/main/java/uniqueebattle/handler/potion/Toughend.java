@@ -1,13 +1,12 @@
 package uniqueebattle.handler.potion;
 
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectType;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 
-public class Toughend extends Effect
+public class Toughend extends MobEffect
 {
 	public Toughend()
 	{
-		super(EffectType.BENEFICIAL, 0xFF99453A);
-		setRegistryName("uniquebattle", "toughend");
+		super(MobEffectCategory.BENEFICIAL, 0xFF99453A);
 	}
 }

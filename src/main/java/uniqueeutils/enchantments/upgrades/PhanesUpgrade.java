@@ -1,7 +1,7 @@
 package uniqueeutils.enchantments.upgrades;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.EnchantedUpgrade;
 import uniqueeutils.UEUtils;
 
@@ -17,7 +17,7 @@ public class PhanesUpgrade extends EnchantedUpgrade
 	@Override
 	public boolean isValid(ItemStack stack)
 	{
-		return EnchantmentType.ARMOR.canEnchant(stack.getItem()) || EnchantmentType.DIGGER.canEnchant(stack.getItem()) || EnchantmentType.WEAPON.canEnchant(stack.getItem());
+		return EnchantmentCategory.ARMOR.canEnchant(stack.getItem()) || EnchantmentCategory.DIGGER.canEnchant(stack.getItem()) || EnchantmentCategory.WEAPON.canEnchant(stack.getItem());
 	}
 	
 }

@@ -2,9 +2,9 @@ package uniquee.enchantments.upgrades;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.EnchantedUpgrade;
 import uniquee.UE;
 
@@ -20,6 +20,6 @@ public class AmelioratedUpgrade extends EnchantedUpgrade
 	@Override
 	public boolean isValid(ItemStack stack)
 	{
-		return EnchantmentType.WEAPON.canEnchant(stack.getItem()) || stack.getItem() instanceof HoeItem;
+		return EnchantmentCategory.WEAPON.canEnchant(stack.getItem()) || stack.getItem() instanceof HoeItem;
 	}
 }

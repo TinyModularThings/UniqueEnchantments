@@ -1,10 +1,10 @@
 package uniqueebattle.enchantments.simple;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 import uniquebase.utils.DoubleStat;
@@ -16,7 +16,7 @@ public class StreakersWill extends UniqueEnchantment
 	
 	public StreakersWill()
 	{
-		super(new DefaultData("streakers_will", Rarity.UNCOMMON, 4, false, false, 12, 4, 15), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("streakers_will", Rarity.UNCOMMON, 4, false, false, 12, 4, 15), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(LOSS_PER_LEVEL, CHANCE);
 	}
 	

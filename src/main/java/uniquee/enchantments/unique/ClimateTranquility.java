@@ -1,23 +1,23 @@
 package uniquee.enchantments.unique;
 
-import java.util.Set;
 import java.util.UUID;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.ai.attributes.AttributeModifierManager;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.registry.Registry;
-import net.minecraftforge.common.BiomeDictionary;
+import net.minecraft.core.Holder;
+import net.minecraft.tags.BiomeTags;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraftforge.common.Tags;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 import uniquebase.utils.EnchantmentContainer;
@@ -36,22 +36,22 @@ public class ClimateTranquility extends UniqueEnchantment
 	
 	public ClimateTranquility()
 	{
-		super(new DefaultData("climate_tranquility", Rarity.RARE, 3, true, true, 20, 7, 30), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("climate_tranquility", Rarity.RARE, 3, true, true, 20, 7, 30), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(SPEED_BONUS, SLOW_TIME, ATTACK_BONUS, BURN_TIME);
 	}
 	
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof AxeItem || EnchantmentType.BOW.canEnchant(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
+		return stack.getItem() instanceof AxeItem || EnchantmentCategory.BOW.canEnchant(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
 	}
 	
-	public static void onClimate(PlayerEntity player, EnchantmentContainer container)
+	public static void onClimate(Player player, EnchantmentContainer container)
 	{
-		Object2IntMap.Entry<EquipmentSlotType> slot = container.getEnchantedItem(UE.CLIMATE_TRANQUILITY);
-		AttributeModifierManager map = player.getAttributes();
-		ModifiableAttributeInstance speed = map.getInstance(Attributes.ATTACK_SPEED);
-		ModifiableAttributeInstance damage = map.getInstance(Attributes.ATTACK_DAMAGE);
+		Object2IntMap.Entry<EquipmentSlot> slot = container.getEnchantedItem(UE.CLIMATE_TRANQUILITY);
+		AttributeMap map = player.getAttributes();
+		AttributeInstance speed = map.getInstance(Attributes.ATTACK_SPEED);
+		AttributeInstance damage = map.getInstance(Attributes.ATTACK_DAMAGE);
 		if(slot.getIntValue() <= 0)
 		{
 			speed.removeModifier(SPEED_UUID);
@@ -59,9 +59,9 @@ public class ClimateTranquility extends UniqueEnchantment
 			return;
 		}
 		int level = slot.getIntValue();
-		Set<BiomeDictionary.Type> effects = BiomeDictionary.getTypes(RegistryKey.create(Registry.BIOME_REGISTRY, player.level.getBiome(player.blockPosition()).getRegistryName()));
-		boolean hasHot = effects.contains(BiomeDictionary.Type.HOT) || effects.contains(BiomeDictionary.Type.NETHER);
-		boolean hasCold = effects.contains(BiomeDictionary.Type.COLD);
+		Holder<Biome> effects = player.level.getBiome(player.blockPosition());
+		boolean hasHot = effects.containsTag(Tags.Biomes.IS_HOT) || effects.containsTag(BiomeTags.IS_NETHER);
+		boolean hasCold = effects.containsTag(Tags.Biomes.IS_COLD);
 		if(hasHot && !hasCold)
 		{
 			AttributeModifier speedMod = new AttributeModifier(SPEED_UUID, "Climate Boost", SPEED_BONUS.getAsDouble(level), Operation.MULTIPLY_TOTAL);

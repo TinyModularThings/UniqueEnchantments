@@ -2,11 +2,11 @@ package uniquee.enchantments.unique;
 
 import java.util.List;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.ICustomItemEnchantment;
 import uniquebase.api.UniqueEnchantment;
 
@@ -14,14 +14,14 @@ public class EnderLibrarian extends UniqueEnchantment implements ICustomItemEnch
 {
 	public EnderLibrarian()
 	{
-		super(new DefaultData("ender_librarian", Rarity.VERY_RARE, 1, true, true, 24, 3, 10), EnchantmentType.FISHING_ROD, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("ender_librarian", Rarity.VERY_RARE, 1, true, true, 24, 3, 10), EnchantmentCategory.FISHING_ROD, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		setDisableDefaultItems();
 	}
 	
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof FilledMapItem;
+		return stack.getItem() instanceof MapItem;
 	}
 
 	@Override

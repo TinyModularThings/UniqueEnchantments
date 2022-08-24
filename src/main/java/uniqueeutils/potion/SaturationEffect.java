@@ -1,29 +1,28 @@
 package uniqueeutils.potion;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectType;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.FoodStats;
-import net.minecraft.util.Util;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.Util;
+import net.minecraft.core.Registry;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodData;
 
-public class SaturationEffect extends Effect
+public class SaturationEffect extends MobEffect
 {
 	private String name;
 	
 	public SaturationEffect()
 	{
-		super(EffectType.BENEFICIAL, 16262179);
-		setRegistryName("saturation");
+		super(MobEffectCategory.BENEFICIAL, 16262179);
 	}
 	
 	@Override
 	@SuppressWarnings("deprecation")
 	protected String getOrCreateDescriptionId()
 	{
-		if(this.name == null) this.name = Util.makeDescriptionId("effect", Registry.MOB_EFFECT.getKey(Effects.SATURATION));
+		if(this.name == null) this.name = Util.makeDescriptionId("effect", Registry.MOB_EFFECT.getKey(MobEffects.SATURATION));
 		return this.name;
 	}
 	
@@ -36,9 +35,9 @@ public class SaturationEffect extends Effect
 	@Override
 	public void applyEffectTick(LivingEntity entity, int amplifier)
 	{
-		if(entity instanceof PlayerEntity && entity.level.getGameTime() % 4 == 0)
+		if(entity instanceof Player && entity.level.getGameTime() % 4 == 0)
 		{
-			FoodStats stat = ((PlayerEntity)entity).getFoodData();
+			FoodData stat = ((Player)entity).getFoodData();
 			int last = stat.getFoodLevel();
 			stat.eat(1, amplifier);
 			stat.setFoodLevel(last);

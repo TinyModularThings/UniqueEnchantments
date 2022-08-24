@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.util.CombatRules;
+import net.minecraft.world.damagesource.CombatRules;
 
 @Mixin(CombatRules.class)
 public class CombatRulesMixin {

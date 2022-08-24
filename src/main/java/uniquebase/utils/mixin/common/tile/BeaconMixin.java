@@ -5,12 +5,15 @@ import java.util.List;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.tileentity.BeaconTileEntity;
-import net.minecraft.tileentity.BeaconTileEntity.BeamSegment;
+import net.minecraft.world.level.block.entity.BeaconBlockEntity;
+import net.minecraft.world.level.block.entity.BeaconBlockEntity.BeaconBeamSection;
 
-@Mixin(BeaconTileEntity.class)
+@Mixin(BeaconBlockEntity.class)
 public interface BeaconMixin
 {
 	@Accessor("beamSections")
-	public List<BeamSegment> getBeaconSegments();
+	public List<BeaconBeamSection> getBeaconSegments();
+	
+	@Accessor("levels")
+	public int getBeaconLevel();
 }

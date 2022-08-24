@@ -2,11 +2,11 @@ package uniquee.enchantments.unique;
 
 import java.util.function.ToIntFunction;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.DoublePlantBlock;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.level.block.DoublePlantBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 import uniquebase.utils.IntStat;
@@ -19,16 +19,16 @@ public class NaturesGrace extends UniqueEnchantment
 	public static final ToIntFunction<BlockState> FLOWERS = new ToIntFunction<BlockState>() {
 		@Override
 		public int applyAsInt(BlockState value) {
-			if(BlockTags.SMALL_FLOWERS.contains(value.getBlock())) return 3;
-			if(BlockTags.LEAVES.contains(value.getBlock()) || value.getBlock() instanceof DoublePlantBlock) return 1;
-			if(BlockTags.LOGS.contains(value.getBlock())) return 2;
+			if(value.is(BlockTags.SMALL_FLOWERS)) return 3;
+			if(value.is(BlockTags.LEAVES) || value.getBlock() instanceof DoublePlantBlock) return 1;
+			if(value.is(BlockTags.LOGS)) return 2;
 			return 0;
 		}
 	};
 	
 	public NaturesGrace()
 	{
-		super(new DefaultData("natures_grace", Rarity.RARE, 2, true, false, 10, 16, 10), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
+		super(new DefaultData("natures_grace", Rarity.RARE, 2, true, false, 10, 16, 10), EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST);
 		addStats(HEALING, DELAY);
 	}
 	

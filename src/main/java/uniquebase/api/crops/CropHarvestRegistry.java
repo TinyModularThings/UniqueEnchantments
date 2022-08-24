@@ -4,15 +4,15 @@ import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CropsBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class CropHarvestRegistry
@@ -24,9 +24,9 @@ public class CropHarvestRegistry
 	{
 		for(Block block : ForgeRegistries.BLOCKS)
 		{
-			if(block instanceof CropsBlock)
+			if(block instanceof CropBlock)
 			{
-				register(block, new CropsHarvester((CropsBlock)block));
+				register(block, new CropsHarvester((CropBlock)block));
 			}
 		}
 	}
@@ -41,19 +41,19 @@ public class CropHarvestRegistry
 		return harvesters.containsKey(block);
 	}
 	
-	public ActionResultType tryHarvest(BlockState state, World world, BlockPos pos, PlayerEntity player)
+	public InteractionResult tryHarvest(BlockState state, Level world, BlockPos pos, Player player)
 	{
 		ICropHarvest harvest = harvesters.get(state.getBlock());
 		if(harvest != null)
 		{
-			ActionResult<ItemStack> result = harvest.harvest(state, world, pos);
-			if(result.getResult() == ActionResultType.FAIL)
+			InteractionResultHolder<ItemStack> result = harvest.harvest(state, world, pos);
+			if(result.getResult() == InteractionResult.FAIL)
 			{
-				return ActionResultType.FAIL;
+				return InteractionResult.FAIL;
 			}
-			if(result.getResult() == ActionResultType.PASS)
+			if(result.getResult() == InteractionResult.PASS)
 			{
-				return ActionResultType.PASS;
+				return InteractionResult.PASS;
 			}
 			ItemStack stack = result.getObject().copy();
 			if(!stack.isEmpty())
@@ -61,9 +61,9 @@ public class CropHarvestRegistry
 				stack.setCount(1);
 			}
 			player.getEnderChestInventory().addItem(stack);
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
-		return ActionResultType.FAIL;
+		return InteractionResult.FAIL;
 	}
 	
 }

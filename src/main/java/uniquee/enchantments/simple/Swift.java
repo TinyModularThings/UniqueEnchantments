@@ -2,8 +2,8 @@ package uniquee.enchantments.simple;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 
@@ -14,7 +14,7 @@ public class Swift extends UniqueEnchantment
 	
 	public Swift()
 	{
-		super(new DefaultData("swift", Rarity.UNCOMMON, 2, false, false, 14, 12, 10), EnchantmentType.ARMOR_LEGS, EquipmentSlotType.LEGS);
+		super(new DefaultData("swift", Rarity.UNCOMMON, 2, false, false, 14, 12, 10), EnchantmentCategory.ARMOR_LEGS, EquipmentSlot.LEGS);
 		addStats(SPEED_BONUS);
 	}
 }

@@ -1,10 +1,10 @@
 
 package uniquee.enchantments.complex;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquee.UE;
@@ -15,7 +15,7 @@ public class SpartanWeapon extends UniqueEnchantment
 
 	public SpartanWeapon()
 	{
-		super(new DefaultData("spartan_weapon", Rarity.UNCOMMON, 5, true, false, 25, 3, 50), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("spartan_weapon", Rarity.UNCOMMON, 5, true, false, 25, 3, 50), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(EXTRA_DAMAGE);
 	}
 	

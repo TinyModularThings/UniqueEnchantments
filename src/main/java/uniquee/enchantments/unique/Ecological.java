@@ -2,16 +2,16 @@ package uniquee.enchantments.unique;
 
 import java.util.function.ToIntFunction;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
@@ -19,12 +19,12 @@ import uniquee.UE;
 
 public class Ecological extends UniqueEnchantment
 {
-	public static final INamedTag<Block> ECOLOGICAL = BlockTags.createOptional(new ResourceLocation("uniquee", "ecological"));
+	public static final TagKey<Block> ECOLOGICAL = BlockTags.create(new ResourceLocation("uniquee", "ecological"));
 	public static ToIntFunction<BlockState> STATES = new ToIntFunction<BlockState>() {
 		@Override
 		public int applyAsInt(BlockState t)
 		{
-			return BlockTags.LOGS.contains(t.getBlock()) || BlockTags.LEAVES.contains(t.getBlock()) || ECOLOGICAL.contains(t.getBlock()) ? 1 : 0;
+			return t.is(BlockTags.LOGS) || t.is(BlockTags.LEAVES) || t.is(ECOLOGICAL) ? 1 : 0;
 		}
 	};
 	public static final IntStat SPEED = new IntStat(330, "baseDuration");
@@ -32,7 +32,7 @@ public class Ecological extends UniqueEnchantment
 	
 	public Ecological()
 	{
-		super(new DefaultData("ecological", Rarity.RARE, 3, false, true, 20, 8, 10), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		super(new DefaultData("ecological", Rarity.RARE, 3, false, true, 20, 8, 10), EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
 		addStats(SPEED, SPEED_SCALE);
 	}
 	

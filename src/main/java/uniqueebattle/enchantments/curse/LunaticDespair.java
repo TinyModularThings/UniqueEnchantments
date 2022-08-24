@@ -1,8 +1,8 @@
 package uniqueebattle.enchantments.curse;
 
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -13,7 +13,7 @@ public class LunaticDespair extends UniqueEnchantment
 	
 	public LunaticDespair()
 	{
-		super(new DefaultData("lunatic_despair", Rarity.VERY_RARE, 2, true, false, 10, 4, 40), BaseUEMod.ALL_TYPES, EquipmentSlotType.values());
+		super(new DefaultData("lunatic_despair", Rarity.VERY_RARE, 2, true, false, 10, 4, 40), BaseUEMod.ALL_TYPES, EquipmentSlot.values());
 		addStats(BONUS_DAMAGE);
 		setCategory("battle");
 		setCurse();

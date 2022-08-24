@@ -3,16 +3,16 @@ package uniquee.enchantments.unique;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.PickaxeItem;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
@@ -23,23 +23,23 @@ public class MidasBlessing extends UniqueEnchantment
 		@Override
 		public int applyAsInt(ItemStack value)
 		{
-			return Tags.Items.INGOTS_GOLD.contains(value.getItem()) ? 1 : 0;
+			return value.is(Tags.Items.INGOTS_GOLD) ? 1 : 0;
 		}
 	};
 	public static final Predicate<BlockState> IS_GEM = new Predicate<BlockState>(){
 		@Override
 		public boolean test(BlockState t)
 		{
-			return MIDIAS.contains(t.getBlock()) || Tags.Blocks.ORES_LAPIS.contains(t.getBlock()) || Tags.Blocks.ORES_DIAMOND.contains(t.getBlock()) || Tags.Blocks.ORES_EMERALD.contains(t.getBlock()) || Tags.Blocks.ORES_QUARTZ.contains(t.getBlock());
+			return t.is(MIDIAS) || t.is(Tags.Blocks.ORES_LAPIS) || t.is(Tags.Blocks.ORES_DIAMOND) || t.is(Tags.Blocks.ORES_EMERALD) || t.is(Tags.Blocks.ORES_QUARTZ);
 		}
 	};
-	public static INamedTag<Block> MIDIAS = BlockTags.createOptional(new ResourceLocation("uniquee", "midias_blessing"));
+	public static TagKey<Block> MIDIAS = BlockTags.create(new ResourceLocation("uniquee", "midias_blessing"));
 	public static String GOLD_COUNTER = "gold_storage";
 	public static final DoubleLevelStats GOLD_COST = new DoubleLevelStats("gold_cost", 1D, 1D);
 	
 	public MidasBlessing()
 	{
-		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 3, true, false, 14, 6, 75), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 3, true, false, 14, 6, 75), EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND);
 		addStats(GOLD_COST);
 	}
 	

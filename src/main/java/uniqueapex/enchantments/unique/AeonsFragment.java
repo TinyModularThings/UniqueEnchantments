@@ -1,6 +1,6 @@
 package uniqueapex.enchantments.unique;
 
-import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniqueapex.enchantments.ApexEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
@@ -12,7 +12,7 @@ public class AeonsFragment extends ApexEnchantment
 	
 	public AeonsFragment()
 	{
-		super("aeons_fragment", EnchantmentType.TRIDENT);
+		super("aeons_fragment", EnchantmentCategory.TRIDENT);
 		addStats(INTERVAL, TICK_SCALE);
 		setCategory("apex");
 	}

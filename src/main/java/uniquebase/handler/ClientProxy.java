@@ -2,36 +2,41 @@ package uniquebase.handler;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.lwjgl.glfw.GLFW;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.InputConstants.Key;
+import com.mojang.blaze3d.platform.InputConstants.Type;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
-import net.minecraft.client.util.InputMappings.Input;
-import net.minecraft.client.util.InputMappings.Type;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.Options;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.api.IKeyBind;
+import uniquebase.gui.TooltipIcon;
 import uniquebase.networking.KeyPacket;
 import uniquebase.utils.MiscUtil;
 
@@ -43,13 +48,29 @@ public class ClientProxy extends Proxy
 	public int counter = 0;
 	
 	@Override
+	public void preInit(IEventBus bus)
+	{
+		bus.addListener(this::registerColor);
+		bus.addListener(this::registerComponent);
+	}
+	
+	@Override
 	public void init()
 	{
-		ItemModelsProperties.register(Items.ENCHANTED_BOOK, new ResourceLocation("ue", "enchantment_attributes"), (I, W, L) -> {
+		ItemProperties.register(Items.ENCHANTED_BOOK, new ResourceLocation("ue", "enchantment_attributes"), (I, W, L, E) -> {
 			Enchantment ench = getEnchantment(I);
 			return ench == null ? 0F : (ench.isTradeable() ? 1F : 0F) + (ench.isCurse() ? 2F : 0F) + (ench.isTreasureOnly() ? 4F : 0F);
 		});
-		Minecraft.getInstance().getItemColors().register((I, T) -> {
+	}
+	
+	private void registerComponent(RegisterClientTooltipComponentFactoriesEvent event)
+	{
+		event.register(TooltipIcon.class, T -> T);
+	}
+	
+	private void registerColor(RegisterColorHandlersEvent.Item event)
+	{
+		event.register((I, T) -> {
 			if(!UEBase.ITEM_COLORING_ENABLED.get()) return -1;
 			if(T == 0) return UEBase.getEnchantmentColor(getEnchantment(I)).getTextColor();
 			if(T == 1)
@@ -63,7 +84,7 @@ public class ClientProxy extends Proxy
 	
 	private Enchantment getEnchantment(ItemStack stack)
 	{
-		ListNBT list = stack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(stack) : stack.getEnchantmentTags();
+		ListTag list = stack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(stack) : stack.getEnchantmentTags();
 		if(list.isEmpty()) return null;
 		int index = (counter / 40) % list.size();
 		int tries = 0;
@@ -100,13 +121,14 @@ public class ClientProxy extends Proxy
 	public class ClientPlayerKey implements IKeyBind
 	{
 		String name;
-		KeyBinding binding;
+		KeyMapping binding;
 		
 		public ClientPlayerKey(String name, int key)
 		{
 			this.name = name;
-			binding = new KeyBinding(name, key, "UE Keys");
-			ClientRegistry.registerKeyBinding(binding);
+			binding = new KeyMapping(name, key, "UE Keys");
+			Options options = Minecraft.getInstance().options;
+	        options.keyMappings = ArrayUtils.add(options.keyMappings, binding);
 		}
 		
 		public void appendState(Object2BooleanMap<String> map)
@@ -120,12 +142,12 @@ public class ClientProxy extends Proxy
 		}
 		
 		@Override
-		public boolean test(PlayerEntity t)
+		public boolean test(Player t)
 		{
 			return getState();
 		}
 		
-		public boolean isKeyPressed(KeyBinding binding)
+		public boolean isKeyPressed(KeyMapping binding)
 		{
 			IKeyConflictContext context = binding.getKeyConflictContext();
 			binding.setKeyConflictContext(KeyConflictContext.UNIVERSAL);
@@ -134,24 +156,24 @@ public class ClientProxy extends Proxy
 			return result;
 		}
 		
-		private boolean isKeyDown(KeyBinding binding)
+		private boolean isKeyDown(KeyMapping binding)
 		{
 			if(binding.isUnbound()) return false;
-			Input input = binding.getKey();
+			Key input = binding.getKey();
 			long monitor = Minecraft.getInstance().getWindow().getWindow();
-			return input.getType() == Type.MOUSE ? GLFW.glfwGetMouseButton(monitor, input.getValue()) == 1 : InputMappings.isKeyDown(monitor, input.getValue());
+			return input.getType() == Type.MOUSE ? GLFW.glfwGetMouseButton(monitor, input.getValue()) == 1 : InputConstants.isKeyDown(monitor, input.getValue());
 		}
 		
 		@Override
-		public ITextComponent getKeyName()
+		public Component getKeyName()
 		{
 			return binding.getTranslatedKeyMessage();
 		}
 		
 		@Override
-		public ITextComponent getName()
+		public Component getName()
 		{
-			return new StringTextComponent(name);
+			return Component.literal(name);
 		}
 	}
 }

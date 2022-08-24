@@ -12,40 +12,39 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CommandBlockBlock;
-import net.minecraft.block.JigsawBlock;
-import net.minecraft.block.StructureBlock;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantment.Rarity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.EnchantedBookItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.LanguageMap;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.locale.Language;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantment.Rarity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CommandBlock;
+import net.minecraft.world.level.block.JigsawBlock;
+import net.minecraft.world.level.block.StructureBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.api.ColorConfig;
@@ -54,7 +53,7 @@ import uniquebase.utils.mixin.common.enchantments.EnchantmentMixin;
 
 public class MiscUtil
 {
-	static final Object2IntMap.Entry<EquipmentSlotType> NO_ENCHANTMENT = new AbstractObject2IntMap.BasicEntry<>(null, 0);
+	static final Object2IntMap.Entry<EquipmentSlot> NO_ENCHANTMENT = new AbstractObject2IntMap.BasicEntry<>(null, 0);
 	static final Consumer<LivingEntity>[] SLOT_BASE = createSlots();
 	static final String UPGRADE_TAG = "ue_upgrades";
 	static final String TRANCENDENCE_BLOCK = "block_trancedence";
@@ -62,15 +61,15 @@ public class MiscUtil
 	@SuppressWarnings("unchecked")
 	static Consumer<LivingEntity>[] createSlots()
 	{
-		Consumer<LivingEntity>[] slots = new Consumer[EquipmentSlotType.values().length];
-		for(EquipmentSlotType slot : EquipmentSlotType.values())
+		Consumer<LivingEntity>[] slots = new Consumer[EquipmentSlot.values().length];
+		for(EquipmentSlot slot : EquipmentSlot.values())
 		{
 			slots[slot.getIndex()] = (entity) -> entity.broadcastBreakEvent(slot);
 		}
 		return slots;
 	}
 		
-	public static Consumer<LivingEntity> get(EquipmentSlotType slot)
+	public static Consumer<LivingEntity> get(EquipmentSlot slot)
 	{
 		return slot == null ? SLOT_BASE[0] : SLOT_BASE[slot.getIndex()];
 	}
@@ -87,7 +86,7 @@ public class MiscUtil
 	
 	public static int getPlayerLevel(Entity entity, int defaultValue)
 	{
-		return entity instanceof PlayerEntity ? ((PlayerEntity)entity).experienceLevel : defaultValue;
+		return entity instanceof Player ? ((Player)entity).experienceLevel : defaultValue;
 	}
 	
 	public static int getTrancendenceLevel(Enchantment enchantment)
@@ -128,7 +127,7 @@ public class MiscUtil
 
 	public static double getAttribute(LivingEntity entity, Attribute attribute, double defaultValue)
 	{
-		ModifiableAttributeInstance instance = entity.getAttribute(attribute);
+		AttributeInstance instance = entity.getAttribute(attribute);
 		return instance == null ? defaultValue : instance.getValue();
 	}
 
@@ -139,14 +138,14 @@ public class MiscUtil
 
 	public static double getBaseAttribute(LivingEntity entity, Attribute attribute, double defaultValue)
 	{
-		ModifiableAttributeInstance instance = entity.getAttribute(attribute);
+		AttributeInstance instance = entity.getAttribute(attribute);
 		return instance == null ? defaultValue : instance.getBaseValue();
 	}
 	
-	public static CompoundNBT getPersistentData(Entity entity)
+	public static CompoundTag getPersistentData(Entity entity)
 	{
-		CompoundNBT data = entity.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG);
-		if(data.isEmpty()) entity.getPersistentData().put(PlayerEntity.PERSISTED_NBT_TAG, data);
+		CompoundTag data = entity.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG);
+		if(data.isEmpty()) entity.getPersistentData().put(Player.PERSISTED_NBT_TAG, data);
 		return data;
 	}
 	
@@ -158,14 +157,14 @@ public class MiscUtil
 	public static void storePoints(ItemStack stack, String id, int points)
 	{
 		if(stack.isEmpty()) return;
-		CompoundNBT data = stack.getOrCreateTagElement(UPGRADE_TAG);
+		CompoundTag data = stack.getOrCreateTagElement(UPGRADE_TAG);
 		data.putInt(id, data.getInt(id)+points);
 	}
 	
 	public static int getCombinedPoints(LivingEntity living, String id)
 	{
 		int total = 0;
-		for(EquipmentSlotType slot : EquipmentSlotType.values()) {
+		for(EquipmentSlot slot : EquipmentSlot.values()) {
 			total += getStoredPoints(living.getItemBySlot(slot), id);
 		}
 		return total;
@@ -175,12 +174,12 @@ public class MiscUtil
 	{
 		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return 0;
 		if(stack.isEmpty()) return 0;
-		ListNBT list = stack.getEnchantmentTags();
+		ListTag list = stack.getEnchantmentTags();
 		if(list.isEmpty()) return 0;
-		String id = ench.getRegistryName().toString();
+		String id = ForgeRegistries.ENCHANTMENTS.getKey(ench).toString();
 		for(int i = 0, m = list.size();i < m;i++)
 		{
-			CompoundNBT tag = list.getCompound(i);
+			CompoundTag tag = list.getCompound(i);
 			if(tag.getString("id").equalsIgnoreCase(id))
 			{
 				// Only grabbing Level if it is needed. Not wasting CPU Time on
@@ -195,12 +194,12 @@ public class MiscUtil
 	{
 		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return;
 		if(stack.isEmpty()) return;
-		ListNBT list = stack.getEnchantmentTags();
+		ListTag list = stack.getEnchantmentTags();
 		if(list.isEmpty()) return;
-		String id = ench.getRegistryName().toString();
+		String id = ForgeRegistries.ENCHANTMENTS.getKey(ench).toString();
 		for(int i = 0, m = list.size();i < m;i++)
 		{
-			CompoundNBT tag = list.getCompound(i);
+			CompoundTag tag = list.getCompound(i);
 			if(tag.getString("id").equalsIgnoreCase(id))
 			{
 				if(newLevel <= 0) list.remove(i);
@@ -213,7 +212,7 @@ public class MiscUtil
 	public static int getCombinedEnchantmentLevel(Enchantment ench, LivingEntity base)
 	{
 		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return 0;
-		EquipmentSlotType[] slots = getEquipmentSlotsFor(ench);
+		EquipmentSlot[] slots = getEquipmentSlotsFor(ench);
 		if(slots.length <= 0) return 0;
 		int totalLevel = 0;
 		for(int i = 0;i < slots.length;i++)
@@ -226,7 +225,7 @@ public class MiscUtil
 	public static Object2IntMap<Enchantment> getEnchantments(ItemStack stack)
 	{
 		if(stack.isEmpty()) return Object2IntMaps.emptyMap();
-		ListNBT list = stack.getEnchantmentTags();
+		ListTag list = stack.getEnchantmentTags();
 		// Micro Optimization. If the EnchantmentMap is empty then returning a
 		// EmptyMap is faster then creating a new map. More Performance in
 		// checks.
@@ -234,7 +233,7 @@ public class MiscUtil
 		Object2IntMap<Enchantment> map = new Object2IntOpenHashMap<Enchantment>();
 		for(int i = 0, m = list.size();i < m;i++)
 		{
-			CompoundNBT tag = list.getCompound(i);
+			CompoundTag tag = list.getCompound(i);
 			Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(tag.getString("id")));
 			if(enchantment != null)
 			{
@@ -249,14 +248,14 @@ public class MiscUtil
 	
 	public static Object2IntMap.Entry<Enchantment> getFirstEnchantment(ItemStack stack)
 	{
-		ListNBT list = stack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(stack) : stack.getEnchantmentTags();
+		ListTag list = stack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(stack) : stack.getEnchantmentTags();
 		// Micro Optimization. If the EnchantmentMap is empty then returning a
 		// EmptyMap is faster then creating a new map. More Performance in
 		// checks.
 		if(list.isEmpty()) return null;
 		for(int i = 0, m = list.size();i < m;i++)
 		{
-			CompoundNBT tag = list.getCompound(i);
+			CompoundTag tag = list.getCompound(i);
 			Enchantment enchantment = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(tag.getString("id")));
 			if(enchantment != null)
 			{
@@ -269,23 +268,23 @@ public class MiscUtil
 		return null;
 	}
 	
-	public static EquipmentSlotType[] getEquipmentSlotsFor(Enchantment ench)
+	public static EquipmentSlot[] getEquipmentSlotsFor(Enchantment ench)
 	{
-		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return new EquipmentSlotType[0];
+		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return new EquipmentSlot[0];
 		return ((EnchantmentMixin)ench).getSlots();
 	}
 	
-	public static Set<EquipmentSlotType> getSlotsFor(Enchantment ench)
+	public static Set<EquipmentSlot> getSlotsFor(Enchantment ench)
 	{
 		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return Collections.emptySet();
-		EquipmentSlotType[] slots = getEquipmentSlotsFor(ench);
-		return slots.length <= 0 ? Collections.emptySet() : new ObjectOpenHashSet<EquipmentSlotType>(slots);
+		EquipmentSlot[] slots = getEquipmentSlotsFor(ench);
+		return slots.length <= 0 ? Collections.emptySet() : new ObjectOpenHashSet<EquipmentSlot>(slots);
 	}
 	
-	public static Object2IntMap.Entry<EquipmentSlotType> getEnchantedItem(Enchantment enchantment, LivingEntity base)
+	public static Object2IntMap.Entry<EquipmentSlot> getEnchantedItem(Enchantment enchantment, LivingEntity base)
 	{
 		if(enchantment instanceof IToggleEnchantment && !((IToggleEnchantment)enchantment).isEnabled()) return NO_ENCHANTMENT;
-		EquipmentSlotType[] slots = getEquipmentSlotsFor(enchantment);
+		EquipmentSlot[] slots = getEquipmentSlotsFor(enchantment);
 		if(slots.length <= 0)
 		{
 			return NO_ENCHANTMENT;
@@ -303,15 +302,15 @@ public class MiscUtil
 	
 	public static boolean harvestBlock(BreakEvent event, BlockState state, BlockPos pos)
 	{
-		if(!(event.getPlayer() instanceof ServerPlayerEntity))
+		if(!(event.getPlayer() instanceof ServerPlayer))
 		{
 			return false;
 		}
-		ServerPlayerEntity player = (ServerPlayerEntity)event.getPlayer();
-		World world = (World)event.getWorld();
-		TileEntity tileentity = world.getBlockEntity(pos);
+		ServerPlayer player = (ServerPlayer)event.getPlayer();
+		Level world = (Level)event.getLevel();
+		BlockEntity tileentity = world.getBlockEntity(pos);
 		Block block = state.getBlock();
-		if((block instanceof CommandBlockBlock || block instanceof StructureBlock || block instanceof JigsawBlock) && !player.canUseGameMasterBlocks())
+		if((block instanceof CommandBlock || block instanceof StructureBlock || block instanceof JigsawBlock) && !player.canUseGameMasterBlocks())
 		{
 			world.sendBlockUpdated(pos, state, state, 3);
 			return false;
@@ -340,7 +339,7 @@ public class MiscUtil
 				itemstack.mineBlock(world, state, pos, player);
 				if(itemstack.isEmpty() && !copy.isEmpty())
 				{
-					net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, copy, Hand.MAIN_HAND);
+					net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, copy, InteractionHand.MAIN_HAND);
 				}
 				boolean flag = removeBlock(world, pos, player, flag1);
 				if(flag && flag1)
@@ -350,7 +349,7 @@ public class MiscUtil
 				}
 				if(flag && exp > 0)
 				{
-					state.getBlock().popExperience((ServerWorld)world, pos, exp);
+					state.getBlock().popExperience((ServerLevel)world, pos, exp);
 				}
 				
 				return true;
@@ -358,10 +357,10 @@ public class MiscUtil
 		}
 	}
 	
-	private static boolean removeBlock(World world, BlockPos pos, ServerPlayerEntity player, boolean canHarvest)
+	private static boolean removeBlock(Level world, BlockPos pos, ServerPlayer player, boolean canHarvest)
 	{
 		BlockState state = world.getBlockState(pos);
-		boolean removed = state.removedByPlayer(world, pos, player, canHarvest, world.getFluidState(pos));
+		boolean removed = state.onDestroyedByPlayer(world, pos, player, canHarvest, world.getFluidState(pos));
 		if(removed)
 		{
 			state.getBlock().destroy(world, pos, state);
@@ -369,7 +368,7 @@ public class MiscUtil
 		return removed;
 	}
 	
-	public static int drainExperience(PlayerEntity player, int points)
+	public static int drainExperience(Player player, int points)
 	{
 		if(player.isCreative())
 		{
@@ -385,7 +384,7 @@ public class MiscUtil
 		return change;
 	}
 	
-	public static int getXP(PlayerEntity player)
+	public static int getXP(Player player)
 	{
 		return getXPForLvl(player.experienceLevel) + (DoubleMath.roundToInt(player.experienceProgress * player.getXpNeededForNextLevel(), RoundingMode.HALF_UP));
 	}
@@ -419,7 +418,7 @@ public class MiscUtil
 	
 	public static Style toColor(int color)
     {
-        return Style.EMPTY.withColor(Color.fromRgb(color & 0xFFFFFF));
+        return Style.EMPTY.withColor(TextColor.fromRgb(color & 0xFFFFFF));
     }
 	
 	public static String toHex(int color)
@@ -438,15 +437,15 @@ public class MiscUtil
 		return Integer.decode(color.substring(0, offset)) | Integer.decode("#"+color.substring(offset, offset+2)) << 24;
 	}
 	
-	public static TextFormatting getFormatting(Rarity rarity)
+	public static ChatFormatting getFormatting(Rarity rarity)
 	{
 		switch(rarity)
 		{
-			case COMMON: return TextFormatting.WHITE;
-			case RARE: return TextFormatting.AQUA;
-			case UNCOMMON: return TextFormatting.YELLOW;
-			case VERY_RARE: return TextFormatting.LIGHT_PURPLE;
-			default: return TextFormatting.OBFUSCATED;
+			case COMMON: return ChatFormatting.WHITE;
+			case RARE: return ChatFormatting.AQUA;
+			case UNCOMMON: return ChatFormatting.YELLOW;
+			case VERY_RARE: return ChatFormatting.LIGHT_PURPLE;
+			default: return ChatFormatting.OBFUSCATED;
 		}
 	}
 	
@@ -468,16 +467,16 @@ public class MiscUtil
 		return builder.substring(0, builder.length() - 1);
 	}
 	
-	public static IFormattableTextComponent createEnchantmentName(Enchantment ench, int level, boolean allowCurse) {
-		IFormattableTextComponent textComponent = new TranslationTextComponent(ench.getDescriptionId()).setStyle(getEnchantmentColor(ench, allowCurse));
+	public static MutableComponent createEnchantmentName(Enchantment ench, int level, boolean allowCurse) {
+		MutableComponent textComponent = Component.translatable(ench.getDescriptionId()).setStyle(getEnchantmentColor(ench, allowCurse));
 		if(ench.getMaxLevel() != 1) {
-			textComponent.append(" ").append(new TranslationTextComponent("enchantment.level." + level));
+			textComponent.append(" ").append(Component.translatable("enchantment.level." + level));
 		}
-		IFormattableTextComponent result = new StringTextComponent("");
-		LanguageMap map = LanguageMap.getInstance();
+		MutableComponent result = Component.literal("");
+		Language map = Language.getInstance();
 		String s = ench.getDescriptionId()+".icon";
 		if(map.has(s)) {
-			result.append(new TranslationTextComponent(s).withStyle(Style.EMPTY.withFont(new ResourceLocation("uniquebase:icons"))));
+			result.append(Component.translatable(s).withStyle(Style.EMPTY.withFont(new ResourceLocation("uniquebase:icons"))));
 			result.append(" ");
 		}
 		result.append(textComponent);

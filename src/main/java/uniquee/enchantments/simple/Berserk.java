@@ -1,7 +1,7 @@
 package uniquee.enchantments.simple;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquee.UE;
@@ -14,7 +14,7 @@ public class Berserk extends UniqueEnchantment
 	
 	public Berserk()
 	{
-		super(new DefaultData("berserker", Rarity.RARE, 2, false, true, 10, 8, 22).setTrancendenceLevel(200), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
+		super(new DefaultData("berserker", Rarity.RARE, 2, false, true, 10, 8, 22).setTrancendenceLevel(200), EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST);
 		addStats(MIN_HEALTH, PERCENTUAL_DAMAGE, TRANSCENDED_HEALTH);
 	}
 	

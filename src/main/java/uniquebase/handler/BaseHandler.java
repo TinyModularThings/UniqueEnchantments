@@ -7,45 +7,44 @@ import java.util.function.ToIntFunction;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.block.AnvilBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.IBucketPickupHandler;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Tuple;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AnvilBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
@@ -87,20 +86,20 @@ public class BaseHandler
 	{
 		ItemStack stack = event.getEmptyBucket();
 		if(stack.getItem() != Items.BUCKET || MiscUtil.getEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) <= 0) return;
-		RayTraceResult ray = event.getTarget();
+		HitResult ray = event.getTarget();
 		if(ray.getType() == Type.MISS || ray.getType() != Type.BLOCK) return;
-		World world = event.getWorld();
-		PlayerEntity player = event.getPlayer();
-		BlockRayTraceResult raytrace = (BlockRayTraceResult)ray;
+		Level world = event.getLevel();
+		Player player = event.getEntity();
+		BlockHitResult raytrace = (BlockHitResult)ray;
 		BlockPos blockpos = raytrace.getBlockPos();
 		Direction direction = raytrace.getDirection();
 		BlockPos blockpos1 = blockpos.relative(direction);
 		if (world.mayInteract(player, blockpos) && player.mayUseItemAt(blockpos1, direction, stack))
 		{
 			BlockState state = world.getBlockState(blockpos);
-			if(state.getBlock() instanceof IBucketPickupHandler)
+			if(state.getBlock() instanceof BucketPickup bucket)
 			{
-				((IBucketPickupHandler)state.getBlock()).takeLiquid(world, blockpos, state);
+				bucket.pickupBlock(world, blockpos, state);
 				ItemStack copy = stack.copy();
 				copy.setCount(1);
 				event.setFilledBucket(copy);
@@ -111,18 +110,18 @@ public class BaseHandler
 	
 	@SubscribeEvent
 	public void onProjectileImpact(ProjectileImpactEvent event) {
-		if(event.getEntity() instanceof AbstractArrowEntity) {
-			ItemStack stack = StackUtils.getArrowStack((AbstractArrowEntity)event.getEntity());
+		if(event.getEntity() instanceof AbstractArrow) {
+			ItemStack stack = StackUtils.getArrowStack((AbstractArrow)event.getEntity());
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
-			AbstractArrowEntity ent = (AbstractArrowEntity)event.getEntity();
-			Vector3d temp = event.getRayTraceResult().getLocation();
+			AbstractArrow ent = (AbstractArrow)event.getEntity();
+			Vec3 temp = event.getRayTraceResult().getLocation();
 			int level = enchantments.getInt(Enchantments.POWER_ARROWS);
 			if(level > 0) {
 				ent.setBaseDamage(ent.getBaseDamage() + 0.5 * level + 0.5);
 			}
 			int flame = enchantments.getInt(Enchantments.FLAMING_ARROWS);
 			int punch = enchantments.getInt(Enchantments.PUNCH_ARROWS);
-			List<LivingEntity> list = flame > 0 || punch > 0 ? event.getEntity().level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(new BlockPos(temp.x, temp.y, temp.z))) : Collections.emptyList();
+			List<LivingEntity> list = flame > 0 || punch > 0 ? event.getEntity().level.getEntitiesOfClass(LivingEntity.class, new AABB(new BlockPos(temp.x, temp.y, temp.z))) : Collections.emptyList();
 			if(flame > 0) {
 				int time = 100*flame;
 				for(LivingEntity entry : list) {
@@ -130,7 +129,7 @@ public class BaseHandler
 		        }
 			}
 			if(punch > 0) {
-				Vector3d vec = ent.position().subtract(event.getRayTraceResult().getLocation());
+				Vec3 vec = ent.position().subtract(event.getRayTraceResult().getLocation());
 				for(LivingEntity entry : list) {
 					entry.knockback(punch, vec.x(), vec.z());
 				}
@@ -141,7 +140,7 @@ public class BaseHandler
 	
 	@SubscribeEvent
 	public void onEntityDamaged(LivingDamageEvent event) {
-		LivingEntity target = event.getEntityLiving();
+		LivingEntity target = event.getEntity();
 		Entity ent = event.getSource().getEntity();
 		
 		if(target.isInWaterRainOrBubble() && ent instanceof LivingEntity ) {
@@ -179,9 +178,9 @@ public class BaseHandler
 		Minecraft mc = Minecraft.getInstance();
 		if(mc.level == null || mc.player == null) return;
 		UEBase.PROXY.update();
-		if(UEBase.ENCHANTMENT_GUI.test(mc.player) && mc.screen instanceof ContainerScreen && !(mc.screen instanceof EnchantmentGui))
+		if(UEBase.ENCHANTMENT_GUI.test(mc.player) && mc.screen instanceof AbstractContainerScreen && !(mc.screen instanceof EnchantmentGui))
 		{
-			Slot slot = ((ContainerScreen<?>)mc.screen).getSlotUnderMouse();
+			Slot slot = ((AbstractContainerScreen<?>)mc.screen).getSlotUnderMouse();
 			if(slot != null && slot.hasItem() && EnchantmentHelper.getEnchantments(slot.getItem()).size() > 0)
 			{
 				tooltipCounter++;
@@ -203,7 +202,7 @@ public class BaseHandler
 	@OnlyIn(Dist.CLIENT)
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onToolTipRenderEvent(RenderTooltipEvent.Color event) {
-		ItemStack stack = event.getStack();
+		ItemStack stack = event.getItemStack();
 		if(stack.isEmpty()) return;
 
 		if(stack.isEnchanted() || stack.getItem() == Items.ENCHANTED_BOOK) {
@@ -227,10 +226,10 @@ public class BaseHandler
 		boolean hasEnchantments = (stack.getItem() == Items.ENCHANTED_BOOK || UEBase.SHOW_NON_BOOKS.get()) && EnchantmentHelper.getEnchantments(stack).size() > 0;
 		if((flags & 1) != 0 && hasEnchantments && UEBase.SHOW_DESCRIPTION.get() && !Screen.hasShiftDown())
 		{
-			event.getToolTip().add(new TranslationTextComponent("unique.base.desc").withStyle(TextFormatting.DARK_GRAY));
+			event.getToolTip().add(Component.translatable("unique.base.desc").withStyle(ChatFormatting.DARK_GRAY));
 		}
-		if((flags & 2) != 0 && hasEnchantments && UEBase.ICONS.get() && !UEBase.ENCHANTMENT_ICONS.test(event.getPlayer())) {
-			event.getToolTip().add(new TranslationTextComponent("unique.base.icon", UEBase.ENCHANTMENT_ICONS.getKeyName().copy().withStyle(TextFormatting.LIGHT_PURPLE)).withStyle(TextFormatting.DARK_GRAY));
+		if((flags & 2) != 0 && hasEnchantments && UEBase.ICONS.get() && !UEBase.ENCHANTMENT_ICONS.test(event.getEntity())) {
+			event.getToolTip().add(Component.translatable("unique.base.icon", UEBase.ENCHANTMENT_ICONS.getKeyName().copy().withStyle(ChatFormatting.LIGHT_PURPLE)).withStyle(ChatFormatting.DARK_GRAY));
 		}
 		for(int i = 0,m=tooltips.size();i<m;i++)
 		{
@@ -238,7 +237,7 @@ public class BaseHandler
 			if(enchantments.getInt(entry.getA()) > 0)
 			{
 				String[] names = entry.getB();
-				event.getToolTip().add(new TranslationTextComponent(names[0], StackUtils.getInt(stack, names[1], 0)).withStyle(TextFormatting.GOLD));
+				event.getToolTip().add(Component.translatable(names[0], StackUtils.getInt(stack, names[1], 0)).withStyle(ChatFormatting.GOLD));
 			}
 		}
 		for(EnchantedUpgrade upgrade : EnchantedUpgrade.getAllUpgrades())
@@ -246,13 +245,13 @@ public class BaseHandler
 			int points = upgrade.getPoints(stack);
 			if(points > 0)
 			{
-				event.getToolTip().add(new TranslationTextComponent(upgrade.getName(), points).withStyle(TextFormatting.GOLD));
+				event.getToolTip().add(Component.translatable(upgrade.getName(), points).withStyle(ChatFormatting.GOLD));
 			}
 		}
 		Screen screen = Minecraft.getInstance().screen;
-		if(screen instanceof ContainerScreen && !(screen instanceof EnchantmentGui))
+		if(screen instanceof AbstractContainerScreen && !(screen instanceof EnchantmentGui))
 		{
-			Slot slot = ((ContainerScreen<?>)screen).getSlotUnderMouse();
+			Slot slot = ((AbstractContainerScreen<?>)screen).getSlotUnderMouse();
 			if(slot != null && slot.hasItem() && EnchantmentHelper.getEnchantments(stack).size() > 0)
 			{
 				if(tooltipCounter > 0)
@@ -264,23 +263,23 @@ public class BaseHandler
 					{
 						builder.append("|");
 					}
-					builder.append(TextFormatting.DARK_GRAY);
+					builder.append(ChatFormatting.DARK_GRAY);
 					for(;i<40;i++)
 					{
 						builder.append("|");
 					}
-					event.getToolTip().add(new StringTextComponent(builder.toString()));
+					event.getToolTip().add(Component.literal(builder.toString()));
 				}
 				else if((flags & 4) != 0)
 				{
-					event.getToolTip().add(new TranslationTextComponent("unique.base.jei.press_gui", UEBase.ENCHANTMENT_GUI.getKeyName().copy().withStyle(TextFormatting.LIGHT_PURPLE)).withStyle(TextFormatting.GRAY));
+					event.getToolTip().add(Component.translatable("unique.base.jei.press_gui", UEBase.ENCHANTMENT_GUI.getKeyName().copy().withStyle(ChatFormatting.LIGHT_PURPLE)).withStyle(ChatFormatting.GRAY));
 				}
 			}
 		}
 	}
 	
 	@SubscribeEvent
-	public void onEntitySpawn(EntityJoinWorldEvent event) {
+	public void onEntitySpawn(EntityJoinLevelEvent event) {
 		Entity entity = event.getEntity();
 		if(entity instanceof ItemEntity && ((ItemEntity) entity).getItem().isEnchanted())
 		{
@@ -297,9 +296,9 @@ public class BaseHandler
 	@SubscribeEvent
 	public void onBlockClick(RightClickBlock event)
 	{
-		if(event.getPlayer().isShiftKeyDown())
+		if(event.getEntity().isShiftKeyDown())
 		{
-			BlockState state = event.getWorld().getBlockState(event.getPos());
+			BlockState state = event.getLevel().getBlockState(event.getPos());
 			if(state.getBlock() instanceof AnvilBlock)
 			{
 				ItemStack stack = event.getItemStack();
@@ -309,11 +308,11 @@ public class BaseHandler
 					Triple<Enchantment, ToIntFunction<ItemStack>, String> entry = anvilHelpers.get(i);
 					if(enchantments.getInt(entry.getKey()) > 0)
 					{
-						int found = StackUtils.consumeItems(event.getPlayer(), entry.getValue(), Integer.MAX_VALUE);
+						int found = StackUtils.consumeItems(event.getEntity(), entry.getValue(), Integer.MAX_VALUE);
 						if(found > 0)
 						{
 							StackUtils.setInt(stack, entry.getExtra(), found + StackUtils.getInt(stack, entry.getExtra(), 0));
-							event.setCancellationResult(ActionResultType.SUCCESS);
+							event.setCancellationResult(InteractionResult.SUCCESS);
 							event.setCanceled(true);
 						}
 					}
@@ -325,12 +324,12 @@ public class BaseHandler
 	@SubscribeEvent
 	public void onEntityClick(EntityInteract event)
 	{
-		if(event.getItemStack().getItem() == Items.BELL && event.getTarget() instanceof ItemFrameEntity)
+		if(event.getItemStack().getItem() == Items.BELL && event.getTarget() instanceof ItemFrame)
 		{
-			ItemFrameEntity frame = (ItemFrameEntity)event.getTarget();
+			ItemFrame frame = (ItemFrame)event.getTarget();
 			ItemStack stack = frame.getItem();
 			if(stack.isEmpty()) return;
-			World world = event.getWorld();
+			Level world = event.getLevel();
 			BlockPos pos = frame.getPos().relative(frame.getDirection().getOpposite());
 			if(world.getBlockState(pos).getBlock() == Blocks.ENCHANTING_TABLE)
 			{
@@ -342,7 +341,7 @@ public class BaseHandler
 				if(upgrades.isEmpty()) return;
 				activeAbsorbers.add(new TrackedAbsorber(frame, world, pos, upgrades));
 				event.getItemStack().shrink(1);
-				event.setCancellationResult(ActionResultType.SUCCESS);
+				event.setCancellationResult(InteractionResult.SUCCESS);
 				event.setCanceled(true);
 			}
 		}

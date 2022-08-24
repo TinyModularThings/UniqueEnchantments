@@ -1,22 +1,22 @@
 package uniqueapex.enchantments;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.IApexEnchantment;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.MiscUtil;
 
 public class ApexEnchantment extends UniqueEnchantment implements IApexEnchantment
 {
-	protected ApexEnchantment(String name, EnchantmentType typeIn, EquipmentSlotType... slots)
+	protected ApexEnchantment(String name, EnchantmentCategory typeIn, EquipmentSlot... slots)
 	{
 		super(new DefaultData(name, Rarity.VERY_RARE, 100, false, false, 0, 0, 0), typeIn, slots);
 		setCurse();
 	}
 	
 	@Override
-	public ITextComponent getFullname(int level) {
+	public Component getFullname(int level) {
 		return MiscUtil.createEnchantmentName(this, level, false);
 	}
 	

@@ -6,24 +6,25 @@ import java.util.function.Function;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EnderCrystalEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Entity.RemovalReason;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import uniqueapex.handler.FusionHandler;
 import uniqueapex.handler.recipe.FusionContext;
 import uniqueapex.handler.recipe.fusion.FusionRecipe;
@@ -32,27 +33,27 @@ import uniqueapex.utils.AnimationUtils;
 public abstract class BaseTrackedRecipe
 {
 	static final Map<Class<?>, ResourceLocation> SAVERS = new Object2ObjectOpenHashMap<>();
-	static final Map<ResourceLocation, Function<CompoundNBT, BaseTrackedRecipe>> LOADERS = Util.make(new Object2ObjectOpenHashMap<>(), T -> {
+	static final Map<ResourceLocation, Function<CompoundTag, BaseTrackedRecipe>> LOADERS = Util.make(new Object2ObjectOpenHashMap<>(), T -> {
 		T.put(new ResourceLocation("ue_apex", "fusion"), TrackedRecipe::loadRecipe);
 		SAVERS.put(TrackedRecipe.class, new ResourceLocation("ue_apex", "fusion"));
 		T.put(new ResourceLocation("ue_apex", "upgrade"), TrackedUpgradeRecipe::loadRecipe);
 		SAVERS.put(TrackedUpgradeRecipe.class, new ResourceLocation("ue_apex", "upgrade"));
 	});
 	
-	World world;
+	Level world;
 	BlockPos pos;
 	FusionContext context;
 	int beaconSize;
 	int tick;
-	List<EnderCrystalEntity> endCrystals;
-	List<Vector3d> basePositions;
+	List<EndCrystal> endCrystals;
+	List<Vec3> basePositions;
 	float rotation;
 	
 	protected BaseTrackedRecipe() {
 		
 	}
 	
-	public BaseTrackedRecipe(World world, BlockPos pos, FusionContext context, int beaconSize, List<EnderCrystalEntity> endCrystals)
+	public BaseTrackedRecipe(Level world, BlockPos pos, FusionContext context, int beaconSize, List<EndCrystal> endCrystals)
 	{
 		this.world = world;
 		this.pos = pos;
@@ -66,7 +67,7 @@ public abstract class BaseTrackedRecipe
 		}
 	}
 	
-	protected void set(World world, BlockPos pos, FusionContext context, int beaconSize, int currentTick, List<EnderCrystalEntity> endCrystals, List<Vector3d> basePositions)
+	protected void set(Level world, BlockPos pos, FusionContext context, int beaconSize, int currentTick, List<EndCrystal> endCrystals, List<Vec3> basePositions)
 	{
 		this.world = world;
 		this.pos = pos;
@@ -79,9 +80,9 @@ public abstract class BaseTrackedRecipe
 		}
 	}
 	
-	public static BaseTrackedRecipe loadRecipe(CompoundNBT data)
+	public static BaseTrackedRecipe loadRecipe(CompoundTag data)
 	{
-		Function<CompoundNBT, BaseTrackedRecipe> loader = LOADERS.get(ResourceLocation.tryParse(data.getString("id")));
+		Function<CompoundTag, BaseTrackedRecipe> loader = LOADERS.get(ResourceLocation.tryParse(data.getString("id")));
 		return loader == null ? null : loader.apply(data);
 	}
 	
@@ -96,16 +97,16 @@ public abstract class BaseTrackedRecipe
 		for(int i = 0;i<4;i++)
 		{
 			Direction dir = Direction.from2DDataValue(i).getOpposite();
-			EnderCrystalEntity entity = endCrystals.get(i+1);
-			Vector3d base = basePositions.get(i).add(dir.getStepX() * closer, yOffset, dir.getStepZ() * closer).subtract(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
-			Vector3d nextPos = base.yRot(rotation).add(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
-			entity.setPosAndOldPos(nextPos.x(), nextPos.y(), nextPos.z());
+			EndCrystal entity = endCrystals.get(i+1);
+			Vec3 base = basePositions.get(i).add(dir.getStepX() * closer, yOffset, dir.getStepZ() * closer).subtract(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
+			Vec3 nextPos = base.yRot(rotation).add(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D);
+			entity.absMoveTo(nextPos.x(), nextPos.y(), nextPos.z());
 		}
-		EnderCrystalEntity entity = endCrystals.get(0);
-		entity.setPosAndOldPos(entity.getX(), pos.getY() + 3.5D + masterY, entity.getZ());
+		EndCrystal entity = endCrystals.get(0);
+		entity.absMoveTo(entity.getX(), pos.getY() + 3.5D + masterY, entity.getZ());
 	}
 	
-	public Chunk getChunk()
+	public LevelChunk getChunk()
 	{
 		return world.getChunkAt(getPos());
 	}
@@ -120,7 +121,7 @@ public abstract class BaseTrackedRecipe
 		return pos;
 	}
 	
-	public List<Vector3d> getBasePosition()
+	public List<Vec3> getBasePosition()
 	{
 		return basePositions;
 	}
@@ -139,32 +140,32 @@ public abstract class BaseTrackedRecipe
 		finishRecipe(context, world);
 	}
 		
-	protected abstract void finishRecipe(FusionContext context, World world);
+	protected abstract void finishRecipe(FusionContext context, Level world);
 	
 	public void remove()
 	{
-		for(EnderCrystalEntity entity : endCrystals)
+		for(EndCrystal entity : endCrystals)
 		{
-			entity.remove();
+			entity.remove(RemovalReason.DISCARDED);
 		}
 	}
 	
-	public CompoundNBT save(CompoundNBT data)
+	public CompoundTag save(CompoundTag data)
 	{
 		data.putString("world", world.dimension().location().toString());
 		data.putLong("pos", pos.asLong());
 		data.putInt("tick", tick);
 		data.putInt("size", beaconSize);
-		ListNBT list = new ListNBT();
-		for(EnderCrystalEntity crystal : endCrystals)
+		ListTag list = new ListTag();
+		for(EndCrystal crystal : endCrystals)
 		{
-			list.add(NBTUtil.createUUID(crystal.getUUID()));
+			list.add(NbtUtils.createUUID(crystal.getUUID()));
 		}
 		data.put("crystals", list);
-		list = new ListNBT();
-		for(Vector3d pos : basePositions)
+		list = new ListTag();
+		for(Vec3 pos : basePositions)
 		{
-			CompoundNBT nbt = new CompoundNBT();
+			CompoundTag nbt = new CompoundTag();
 			nbt.putDouble("x", pos.x());
 			nbt.putDouble("y", pos.y());
 			nbt.putDouble("z", pos.z());
@@ -175,34 +176,34 @@ public abstract class BaseTrackedRecipe
 		return data;
 	}
 	
-	public BaseTrackedRecipe load(CompoundNBT data)
+	public BaseTrackedRecipe load(CompoundTag data)
 	{
 		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-		ServerWorld world = server.getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, ResourceLocation.tryParse(data.getString("world"))));
+		ServerLevel world = server.getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, ResourceLocation.tryParse(data.getString("world"))));
 		BlockPos pos = BlockPos.of(data.getLong("long"));
 		int tick = data.getInt("tick");
 		int size = data.getInt("size");
 		FusionRecipe recipe = (FusionRecipe)server.getRecipeManager().byKey(ResourceLocation.tryParse(data.getString("recipe"))).orElse(null);
-		List<EnderCrystalEntity> endCrystal = new ObjectArrayList<>();
-		for(INBT nbt : data.getList("crystals", 11))
+		List<EndCrystal> endCrystal = new ObjectArrayList<>();
+		for(Tag nbt : data.getList("crystals", 11))
 		{
-			Entity entity = world.getEntity(NBTUtil.loadUUID(nbt));
-			if(entity instanceof EnderCrystalEntity)
+			Entity entity = world.getEntity(NbtUtils.loadUUID(nbt));
+			if(entity instanceof EndCrystal)
 			{
-				endCrystal.add((EnderCrystalEntity)entity);
+				endCrystal.add((EndCrystal)entity);
 			}
 		}
-		List<Vector3d> basePositions = new ObjectArrayList<>();
-		for(INBT entry : data.getList("base", 10))
+		List<Vec3> basePositions = new ObjectArrayList<>();
+		for(Tag entry : data.getList("base", 10))
 		{
-			CompoundNBT nbt = (CompoundNBT)entry;
-			basePositions.add(new Vector3d(nbt.getDouble("x"), nbt.getDouble("y"), nbt.getDouble("z")));
+			CompoundTag nbt = (CompoundTag)entry;
+			basePositions.add(new Vec3(nbt.getDouble("x"), nbt.getDouble("y"), nbt.getDouble("z")));
 		}
 		if(endCrystal.size() != 5 || recipe == null)
 		{
-			for(EnderCrystalEntity crystal : endCrystal)
+			for(EndCrystal crystal : endCrystal)
 			{
-				crystal.remove();
+				crystal.remove(RemovalReason.DISCARDED);
 			}
 			return null;
 		}
@@ -219,12 +220,12 @@ public abstract class BaseTrackedRecipe
 		return entities;
 	}
 	
-	public List<EnderCrystalEntity> getEntitites(World world)
+	public List<EndCrystal> getEntitites(Level world)
 	{
-		List<EnderCrystalEntity> newList = new ObjectArrayList<>();
-		for(EnderCrystalEntity entity : endCrystals)
+		List<EndCrystal> newList = new ObjectArrayList<>();
+		for(EndCrystal entity : endCrystals)
 		{
-			newList.add((EnderCrystalEntity)world.getEntity(entity.getId()));
+			newList.add((EndCrystal)world.getEntity(entity.getId()));
 		}
 		return newList;
 	}

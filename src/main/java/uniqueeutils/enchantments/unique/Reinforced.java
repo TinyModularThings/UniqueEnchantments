@@ -2,8 +2,8 @@ package uniqueeutils.enchantments.unique;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
@@ -19,7 +19,7 @@ public class Reinforced extends UniqueEnchantment
 	
 	public Reinforced()
 	{
-		super(new DefaultData("reinforced", Rarity.RARE, 10, true, false, 10, 6, 75), EnchantmentType.BREAKABLE, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("reinforced", Rarity.RARE, 10, true, false, 10, 6, 75), EnchantmentCategory.BREAKABLE, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(FLAT_REPAIR, MUL_REPAIR, BASE_DURATION, BASE_REDUCTION);
 		setCategory("utils");
 	}

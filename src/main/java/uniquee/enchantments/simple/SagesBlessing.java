@@ -1,8 +1,8 @@
 package uniquee.enchantments.simple;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquee.UE;
@@ -14,7 +14,7 @@ public class SagesBlessing extends UniqueEnchantment
 	
 	public SagesBlessing()
 	{
-		super(new DefaultData("sages_blessing", Rarity.COMMON, 5, false, false, 5, 5, 20).setTrancendenceLevel(500), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		super(new DefaultData("sages_blessing", Rarity.COMMON, 5, false, false, 5, 5, 20).setTrancendenceLevel(500), EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
 		addStats(XP_BOOST, TRANSCENDED_BOOST);
 	}
 	

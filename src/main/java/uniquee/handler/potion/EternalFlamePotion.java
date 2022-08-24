@@ -1,15 +1,13 @@
 package uniquee.handler.potion;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectType;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
 
-public class EternalFlamePotion extends Effect {
+public class EternalFlamePotion extends MobEffect {
 
 	public EternalFlamePotion() {
-
-		super(EffectType.BENEFICIAL, 13212940);
-		setRegistryName("uniquee", "eternal_flame");
+		super(MobEffectCategory.BENEFICIAL, 13212940);
 	}
 	
 	@Override

@@ -1,7 +1,7 @@
 package uniquee.enchantments.simple;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
@@ -17,7 +17,7 @@ public class Vitae extends UniqueEnchantment
 	
 	public Vitae()
 	{
-		super(new DefaultData("vitae", Rarity.RARE, 5, false, false, 5, 5, 5), EnchantmentType.ARMOR, EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET);
+		super(new DefaultData("vitae", Rarity.RARE, 5, false, false, 5, 5, 5), EnchantmentCategory.ARMOR, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET);
 		addStats(BASE_BOOST, SCALE_BOOST);
 	}
 	

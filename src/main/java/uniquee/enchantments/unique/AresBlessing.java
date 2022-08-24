@@ -1,7 +1,7 @@
 package uniquee.enchantments.unique;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 
@@ -11,7 +11,7 @@ public class AresBlessing extends UniqueEnchantment
 	
 	public AresBlessing()
 	{
-		super(new DefaultData("ares_blessing", Rarity.VERY_RARE, 3, true, false, 28, 2, 45), EnchantmentType.ARMOR_CHEST, new EquipmentSlotType[]{EquipmentSlotType.CHEST});
+		super(new DefaultData("ares_blessing", Rarity.VERY_RARE, 3, true, false, 28, 2, 45), EnchantmentCategory.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.CHEST});
 		addStats(BASE_DAMAGE);
 	}
 }

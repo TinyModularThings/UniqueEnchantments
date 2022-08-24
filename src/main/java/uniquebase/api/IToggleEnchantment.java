@@ -1,9 +1,12 @@
 package uniquebase.api;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public interface IToggleEnchantment
 {
+	public ResourceLocation getId();
+	
 	public String getConfigName();
 	
 	public void loadFromConfig(ForgeConfigSpec.Builder entry);

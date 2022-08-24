@@ -5,23 +5,16 @@ import com.google.gson.JsonObject;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 import uniquebase.UEBase;
 
-public class FusionUpgradeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FusionUpgradeRecipe>
+public class FusionUpgradeSerializer implements RecipeSerializer<FusionUpgradeRecipe>
 {
-	public FusionUpgradeSerializer init()
-	{
-		setRegistryName("uniqueapex", "fusion_upgrade");
-		return this;
-	}
-	
 	@Override
 	public FusionUpgradeRecipe fromJson(ResourceLocation id, JsonObject object)
 	{
@@ -49,13 +42,13 @@ public class FusionUpgradeSerializer extends ForgeRegistryEntry<IRecipeSerialize
 	}
 
 	@Override
-	public FusionUpgradeRecipe fromNetwork(ResourceLocation id, PacketBuffer buffer)
+	public FusionUpgradeRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buffer)
 	{
 		return FusionUpgradeRecipe.load(id, buffer);
 	}
 
 	@Override
-	public void toNetwork(PacketBuffer buffer, FusionUpgradeRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, FusionUpgradeRecipe recipe)
 	{
 		recipe.writePacket(buffer);
 	}

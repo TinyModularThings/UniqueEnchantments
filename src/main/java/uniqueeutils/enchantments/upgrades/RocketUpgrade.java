@@ -3,9 +3,9 @@ package uniqueeutils.enchantments.upgrades;
 import java.util.EnumSet;
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.EnchantedUpgrade;
 import uniqueeutils.UEUtils;
 
@@ -15,12 +15,12 @@ public class RocketUpgrade extends EnchantedUpgrade
 	public RocketUpgrade()
 	{
 		super("uniqueutil", "rocket_man", "upgrade.uniqueutil.speed", () -> UEUtils.ROCKET_MAN);
-		setEquimentSlots(EnumSet.allOf(EquipmentSlotType.class));
+		setEquimentSlots(EnumSet.allOf(EquipmentSlot.class));
 	}
 
 	@Override
 	public boolean isValid(ItemStack stack)
 	{
-		return EnchantmentType.ARMOR.canEnchant(stack.getItem());
+		return EnchantmentCategory.ARMOR.canEnchant(stack.getItem());
 	}
 }

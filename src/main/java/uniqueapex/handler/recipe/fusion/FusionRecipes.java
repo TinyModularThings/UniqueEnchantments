@@ -5,10 +5,10 @@ import java.util.List;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.Enchantment;
 
 public class FusionRecipes
 {
@@ -28,7 +28,7 @@ public class FusionRecipes
 		}
 
 		@Override
-		public void writePacket(PacketBuffer buffer)
+		public void writePacket(FriendlyByteBuf buffer)
 		{
 			buffer.writeVarInt(0);
 			super.writePacket(buffer);
@@ -51,7 +51,7 @@ public class FusionRecipes
 		}
 		
 		@Override
-		public void writePacket(PacketBuffer buffer)
+		public void writePacket(FriendlyByteBuf buffer)
 		{
 			buffer.writeVarInt(1);
 			super.writePacket(buffer);
@@ -74,7 +74,7 @@ public class FusionRecipes
 		}
 		
 		@Override
-		public void writePacket(PacketBuffer buffer)
+		public void writePacket(FriendlyByteBuf buffer)
 		{
 			buffer.writeVarInt(2);
 			super.writePacket(buffer);
@@ -97,7 +97,7 @@ public class FusionRecipes
 		}
 		
 		@Override
-		public void writePacket(PacketBuffer buffer)
+		public void writePacket(FriendlyByteBuf buffer)
 		{
 			buffer.writeVarInt(3);
 			super.writePacket(buffer);
@@ -120,7 +120,7 @@ public class FusionRecipes
 		}
 		
 		@Override
-		public void writePacket(PacketBuffer buffer)
+		public void writePacket(FriendlyByteBuf buffer)
 		{
 			buffer.writeVarInt(4);
 			super.writePacket(buffer);

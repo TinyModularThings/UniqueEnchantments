@@ -6,16 +6,16 @@ import java.util.Set;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.DiggerItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -32,14 +32,14 @@ public class AlchemistsGrace extends UniqueEnchantment
 	
 	public AlchemistsGrace()
 	{
-		super(new DefaultData("alchemists_grace", Rarity.VERY_RARE, 4, true, false, 18, 6, 40).setTrancendenceLevel(200).setHardCap(33), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("alchemists_grace", Rarity.VERY_RARE, 4, true, false, 18, 6, 40).setTrancendenceLevel(200).setHardCap(33), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(TRANSCENDED_MULTIPLIER);
 	}
 	
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof ToolItem || EnchantmentType.BOW.canEnchant(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
+		return stack.getItem() instanceof DiggerItem || EnchantmentCategory.BOW.canEnchant(stack.getItem()) || stack.getItem() instanceof CrossbowItem;
 	}
 		
 	@Override
@@ -53,11 +53,11 @@ public class AlchemistsGrace extends UniqueEnchantment
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity base = (LivingEntity)entity;
-			Object2IntMap.Entry<EquipmentSlotType> slot = MiscUtil.getEnchantedItem(UE.ALCHEMISTS_GRACE, base);
+			Object2IntMap.Entry<EquipmentSlot> slot = MiscUtil.getEnchantedItem(UE.ALCHEMISTS_GRACE, base);
 			if(slot.getIntValue() > 0)
 			{
 				int level = slot.getIntValue();
-				Set<Effect> potions = new ObjectOpenHashSet<Effect>();
+				Set<MobEffect> potions = new ObjectOpenHashSet<MobEffect>();
 				for(int i = level;i>=0;i--)
 				{
 					if(EFFECTS.size() <= i)
@@ -68,7 +68,7 @@ public class AlchemistsGrace extends UniqueEnchantment
 					{
 						if(plan.isValid(mining)) 
 						{
-							EffectInstance effect = plan.createEffect(level, hitScalar);
+							MobEffectInstance effect = plan.createEffect(level, hitScalar);
 							if(potions.add(effect.getEffect())) base.addEffect(effect);
 						}
 					}
@@ -95,7 +95,7 @@ public class AlchemistsGrace extends UniqueEnchantment
 			String[] split = list.get(i).split(";");
 			if(split.length == 7)
 			{
-				Effect p = ForgeRegistries.POTIONS.getValue(new ResourceLocation(split[0]));
+				MobEffect p = ForgeRegistries.MOB_EFFECTS.getValue(new ResourceLocation(split[0]));
 				if(p != null)
 				{
 					try
@@ -112,7 +112,7 @@ public class AlchemistsGrace extends UniqueEnchantment
 	
 	public static class PotionPlan
 	{
-		Effect potion;
+		MobEffect potion;
 		int baseEnchantment;
 		int basePotionLevel;
 		double PotionLevelIncrease;
@@ -120,7 +120,7 @@ public class AlchemistsGrace extends UniqueEnchantment
 		boolean fighting;
 		boolean mining;
 		
-		public PotionPlan(Effect potion, String[] data)
+		public PotionPlan(MobEffect potion, String[] data)
 		{
 			this.potion = potion;
 			baseEnchantment = Integer.parseInt(data[1]);
@@ -131,10 +131,10 @@ public class AlchemistsGrace extends UniqueEnchantment
 			mining = Boolean.parseBoolean(data[6]);
 		}
 		
-		public EffectInstance createEffect(int baseLevel, float hitScalar)
+		public MobEffectInstance createEffect(int baseLevel, float hitScalar)
 		{
 			int diff = Math.max(0, baseLevel - baseEnchantment);
-			return new EffectInstance(potion, (int)(baseDuration * Math.log((hitScalar+0.5F)*baseLevel)), basePotionLevel + (int)(PotionLevelIncrease * diff));
+			return new MobEffectInstance(potion, (int)(baseDuration * Math.log((hitScalar+0.5F)*baseLevel)), basePotionLevel + (int)(PotionLevelIncrease * diff));
 		}
 		
 		public boolean isValid(boolean mining)

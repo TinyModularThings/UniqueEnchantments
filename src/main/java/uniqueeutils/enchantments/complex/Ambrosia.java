@@ -1,11 +1,11 @@
 package uniqueeutils.enchantments.complex;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.LingeringPotionItem;
-import net.minecraft.item.PotionItem;
-import net.minecraft.item.SplashPotionItem;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.LingeringPotionItem;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.SplashPotionItem;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.IntStat;
 
@@ -16,7 +16,7 @@ public class Ambrosia extends UniqueEnchantment
 	
 	public Ambrosia()
 	{
-		super(new DefaultData("ambrosia", Rarity.RARE, 4, true, true, 8, 12, 10), EnchantmentType.BREAKABLE, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("ambrosia", Rarity.RARE, 4, true, true, 8, 12, 10), EnchantmentCategory.BREAKABLE, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		setCategory("utils");
 	}
 	

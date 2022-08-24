@@ -8,40 +8,40 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.RepairContainer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AnvilMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import uniquebase.UEBase;
 import uniquebase.handler.EnchantmentHandler;
 import uniquebase.utils.MiscUtil;
 
-@Mixin(RepairContainer.class)
+@Mixin(AnvilMenu.class)
 public class AnvilMixin
 {
-	@Redirect(method = "Lnet/minecraft/inventory/container/RepairContainer;onTake", 
-	at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;giveExperienceLevels(I)V"))
-	public void drainXP(PlayerEntity player, int levels)
+	@Redirect(method = "onTake", 
+	at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;giveExperienceLevels(I)V"))
+	public void drainXP(Player player, int levels)
 	{
-		if(UEBase.XP_OVERRIDE_ANVIL.get()) MiscUtil.drainExperience(player, MathHelper.ceil(MiscUtil.getXPForLvl(-levels) * UEBase.XP_MULTIPLIER_ANVIL.get()));
+		if(UEBase.XP_OVERRIDE_ANVIL.get()) MiscUtil.drainExperience(player, Mth.ceil(MiscUtil.getXPForLvl(-levels) * UEBase.XP_MULTIPLIER_ANVIL.get()));
 		else player.giveExperienceLevels(levels);
 	}
 	
 	ItemStack currentAnvilItem = ItemStack.EMPTY;
 	
-	@ModifyArg(method = "createResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;setEnchantments(Ljava/util/Map;Lnet/minecraft/item/ItemStack;)V"))
+	@ModifyArg(method = "createResult", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;setEnchantments(Ljava/util/Map;Lnet/minecraft/world/item/ItemStack;)V"))
 	public ItemStack modifyItemsToEnchant(ItemStack stack) {
 		currentAnvilItem = stack;
 		return stack;
 	}
 	
 	@Inject(method = "createResult", 
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;setEnchantments(Ljava/util/Map;Lnet/minecraft/item/ItemStack;)V", shift = Shift.AFTER))
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;setEnchantments(Ljava/util/Map;Lnet/minecraft/world/item/ItemStack;)V", shift = Shift.AFTER))
 	public void limitEnchantments(CallbackInfo info) {
-		CompoundNBT nbt = currentAnvilItem.getTag();
-		if(nbt == null) nbt = new CompoundNBT();
+		CompoundTag nbt = currentAnvilItem.getTag();
+		if(nbt == null) nbt = new CompoundTag();
 		EnchantmentHandler.INSTANCE.limitEnchantments(nbt.getList(currentAnvilItem.getItem() == Items.ENCHANTED_BOOK ? "StoredEnchantments" : "Enchantments", 10), currentAnvilItem);
 	}
 }

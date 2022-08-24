@@ -1,6 +1,6 @@
 package uniqueeutils.enchantments.curse;
 
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -11,7 +11,7 @@ public class PhanesRegret extends UniqueEnchantment
 	
 	public PhanesRegret()
 	{
-		super(new DefaultData("phanes_regret", Rarity.RARE, 2, true, true, 40, 2, 75), BaseUEMod.ALL_TYPES, EquipmentSlotType.values());
+		super(new DefaultData("phanes_regret", Rarity.RARE, 2, true, true, 40, 2, 75), BaseUEMod.ALL_TYPES, EquipmentSlot.values());
 		setCategory("utils");
 		addStats(CHANCE);
 		setCurse();

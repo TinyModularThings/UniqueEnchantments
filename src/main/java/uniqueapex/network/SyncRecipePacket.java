@@ -3,8 +3,8 @@ package uniqueapex.network;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import uniqueapex.handler.structure.ClientRecipeStorage;
 import uniqueapex.handler.structure.RecipeTransfer;
 import uniquebase.networking.IUEPacket;
@@ -24,7 +24,7 @@ public class SyncRecipePacket implements IUEPacket
 	}
 
 	@Override
-	public void write(PacketBuffer buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeVarInt(recipes.size());
 		for(RecipeTransfer transfer : recipes) {
@@ -33,7 +33,7 @@ public class SyncRecipePacket implements IUEPacket
 	}
 	
 	@Override
-	public void read(PacketBuffer buf)
+	public void read(FriendlyByteBuf buf)
 	{
 		for(int i = 0,m=buf.readVarInt();i<m;i++) {
 			recipes.add(new RecipeTransfer(buf));
@@ -41,7 +41,7 @@ public class SyncRecipePacket implements IUEPacket
 	}
 	
 	@Override
-	public void handlePacket(PlayerEntity player)
+	public void handlePacket(Player player)
 	{
 		for(RecipeTransfer transfer : recipes)
 		{

@@ -2,10 +2,10 @@ package uniqueebattle.enchantments.simple;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ElytraItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ElytraItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 import uniquebase.utils.DoubleStat;
@@ -20,7 +20,7 @@ public class IronBird extends UniqueEnchantment
 	
 	public IronBird()
 	{
-		super(new DefaultData("iron_bird", Rarity.VERY_RARE, 4, false, false, 10, 5, 75), EnchantmentType.ARMOR_CHEST, EquipmentSlotType.CHEST);
+		super(new DefaultData("iron_bird", Rarity.VERY_RARE, 4, false, false, 10, 5, 75), EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST);
 		addStats(ARMOR, TOUGHNESS);
 		setDisableDefaultItems();
 	}

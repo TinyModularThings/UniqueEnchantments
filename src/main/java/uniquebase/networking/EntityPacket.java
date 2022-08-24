@@ -1,41 +1,41 @@
 package uniquebase.networking;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 
 public class EntityPacket implements IUEPacket
 {
 	int entityId;
-	CompoundNBT data = new CompoundNBT();
+	CompoundTag data = new CompoundTag();
 	
 	public EntityPacket()
 	{
 	}
 	
-	public EntityPacket(int entityId, CompoundNBT data)
+	public EntityPacket(int entityId, CompoundTag data)
 	{
 		this.entityId = entityId;
 		this.data = data;
 	}
 
 	@Override
-	public void write(PacketBuffer buf)
+	public void write(FriendlyByteBuf buf)
 	{
 		buf.writeInt(entityId);
 		buf.writeNbt(data);
 	}
 	
 	@Override
-	public void read(PacketBuffer buf)
+	public void read(FriendlyByteBuf buf)
 	{
 		entityId = buf.readInt();
 		data = buf.readNbt(); 
 	}
 	
 	@Override
-	public void handlePacket(PlayerEntity player)
+	public void handlePacket(Player player)
 	{
 		Entity entity = player.level.getEntity(entityId);
 		if(entity == null) return;

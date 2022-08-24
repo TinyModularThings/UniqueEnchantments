@@ -1,7 +1,7 @@
 package uniqueapex.enchantments.simple;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniqueapex.enchantments.ApexEnchantment;
 import uniquebase.utils.DoubleStat;
 
@@ -11,7 +11,7 @@ public class AbsoluteProtection extends ApexEnchantment
 	
 	public AbsoluteProtection()
 	{
-		super("absolute_protection", EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		super("absolute_protection", EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
 		setCategory("apex");
 		addStats(SCALE);
 	}

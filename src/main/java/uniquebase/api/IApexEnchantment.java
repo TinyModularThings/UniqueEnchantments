@@ -1,7 +1,7 @@
 package uniquebase.api;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ByteNBT;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.world.item.ItemStack;
 
 public interface IApexEnchantment
 {
@@ -14,6 +14,6 @@ public interface IApexEnchantment
 	
 	public static void setApex(ItemStack stack)
 	{
-		stack.addTagElement(APEX_ID, ByteNBT.ONE);
+		stack.addTagElement(APEX_ID, ByteTag.ONE);
 	}
 }

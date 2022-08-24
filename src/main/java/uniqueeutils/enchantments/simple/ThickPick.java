@@ -6,12 +6,12 @@ import java.util.function.ToIntFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -34,7 +34,7 @@ public class ThickPick extends UniqueEnchantment
 	
 	public ThickPick()
 	{
-		super(new DefaultData("thick_pick", Rarity.RARE, 2, false, true, 26, 4, 75), EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND);
+		super(new DefaultData("thick_pick", Rarity.RARE, 2, false, true, 26, 4, 75), EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		setCategory("utils");
 	}
 	
@@ -42,7 +42,7 @@ public class ThickPick extends UniqueEnchantment
 	public void loadData(ForgeConfigSpec.Builder config)
 	{
 		MINING_SPEED.handleConfig(config);
-		ITEMS_CONFIG = config.defineList("items", ObjectArrayList.wrap(new String[]{Items.DIAMOND.getRegistryName().toString()+";"+5}), T->true);
+		ITEMS_CONFIG = config.defineList("items", ObjectArrayList.wrap(new String[]{ForgeRegistries.ITEMS.getKey(Items.DIAMOND).toString()+";"+5}), T->true);
 	}
 	
 	@Override
@@ -50,7 +50,7 @@ public class ThickPick extends UniqueEnchantment
 	{
 		super.onConfigChanged();
 		ITEMS.clear();
-		//ITEMS.put(Items.AMETHYST_SHARD, 12);
+		ITEMS.put(Items.AMETHYST_SHARD, 12);
 		ITEMS.put(Items.DIAMOND, 6);
 		ITEMS.put(Items.EMERALD, 3);
 		ITEMS.put(Items.QUARTZ, 1);

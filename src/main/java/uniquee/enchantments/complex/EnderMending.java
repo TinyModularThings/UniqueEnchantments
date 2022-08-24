@@ -5,14 +5,14 @@ import java.util.Map.Entry;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -29,11 +29,11 @@ public class EnderMending extends UniqueEnchantment
 	public static final DoubleStat THRESHOLD = new DoubleStat(1D, "threshold");
 	public static final IntStat LIMIT = new IntStat(250, "storage_limit");
 	public static final DoubleStat LIMIT_MULTIPLIER = new DoubleStat(1.72, "storage_limit_multiplier");
-	public static final IdStat VALID_ENCHANTMENTS = new IdStat("repaireable_enchantments", ForgeRegistries.ENCHANTMENTS);
+	public static final IdStat<Enchantment> VALID_ENCHANTMENTS = new IdStat<>("repaireable_enchantments", ForgeRegistries.ENCHANTMENTS);
 	
 	public EnderMending()
 	{
-		super(new DefaultData("ender_mending", Rarity.VERY_RARE, 3, true, false, 20, 10, 5), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		super(new DefaultData("ender_mending", Rarity.VERY_RARE, 3, true, false, 20, 10, 5), EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
 		addStats(THRESHOLD, LIMIT, LIMIT_MULTIPLIER, VALID_ENCHANTMENTS);
 	}
 	
@@ -52,20 +52,20 @@ public class EnderMending extends UniqueEnchantment
 	@Override
 	protected boolean canNotApplyToItems(ItemStack stack)
 	{
-		return EnchantmentType.ARMOR.canEnchant(stack.getItem());
+		return EnchantmentCategory.ARMOR.canEnchant(stack.getItem());
 	}
 	
-	public static void shareXP(PlayerEntity player, EnchantmentContainer container)
+	public static void shareXP(Player player, EnchantmentContainer container)
 	{
-		EquipmentSlotType hasSlot = null;
+		EquipmentSlot hasSlot = null;
 		int stored = 0;
-		for(Entry<EquipmentSlotType, Object2IntMap<Enchantment>> entry : container.getAll())
+		for(Entry<EquipmentSlot, Object2IntMap<Enchantment>> entry : container.getAll())
 		{
 			int level = entry.getValue().getInt(UE.ENDER_MENDING);
 			if(level > 0)
 			{
 				double xpProvided = 1D/(1D+(THRESHOLD.get(level)/100D));
-				int required = (int)(MathHelper.ceil(EnderMending.LIMIT.get() * Math.pow(EnderMending.LIMIT_MULTIPLIER.get(), Math.sqrt(level))) * xpProvided);
+				int required = (int)(Mth.ceil(EnderMending.LIMIT.get() * Math.pow(EnderMending.LIMIT_MULTIPLIER.get(), Math.sqrt(level))) * xpProvided);
 				int found = StackUtils.getInt(player.getItemBySlot(entry.getKey()), EnderMending.ENDER_TAG, 0);
 				if(found >= required)
 				{
@@ -77,14 +77,14 @@ public class EnderMending extends UniqueEnchantment
 		}
 		if(hasSlot == null) return;
 		List<ItemStack> found = new ObjectArrayList<>();
-		for(int i = 0,m=player.inventory.getContainerSize();i<m;i++)
+		for(int i = 0,m=player.getInventory().getContainerSize();i<m;i++)
 		{
-			ItemStack stack = player.inventory.getItem(i);
+			ItemStack stack = player.getInventory().getItem(i);
 			if(stack.isEmpty() || !stack.isDamaged()) continue;
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
 			for(Enchantment ench : enchantments.keySet())
 			{
-				if(!VALID_ENCHANTMENTS.contains(ench.getRegistryName())) continue;
+				if(!VALID_ENCHANTMENTS.contains(ench)) continue;
 				found.add(stack);
 				break;
 			}

@@ -10,9 +10,10 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
@@ -24,8 +25,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.config.ModConfig.Type;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -75,7 +76,7 @@ public class UEBase
 	public static DoubleValue XP_MULTIPLIER_ANVIL;
 	
 	public static BooleanValue DISABLE_JEI;
-	public static final IdStat APPLICABLE_ICON_OVERRIDE = new IdStat("overrideIcons", "override that decides which items are used to decide to show in the tooltip display. If Empty all items are used", ForgeRegistries.ITEMS);
+	public static final IdStat<Item> APPLICABLE_ICON_OVERRIDE = new IdStat<>("overrideIcons", "override that decides which items are used to decide to show in the tooltip display. If Empty all items are used", ForgeRegistries.ITEMS);
 	
 	public static ForgeConfigSpec CONFIG;	
 	
@@ -146,7 +147,8 @@ public class UEBase
 		ModLoadingContext.get().registerConfig(Type.COMMON, CONFIG, "ue/UEBase.toml");
 		MinecraftForge.EVENT_BUS.register(BaseHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(EnchantmentHandler.INSTANCE);
-		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();		
+		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		PROXY.preInit(bus);
 		bus.addListener(this::onLoad);
 		bus.addListener(this::onFileChange);
 		
@@ -155,7 +157,7 @@ public class UEBase
 		COLOR_SETTINGS.defaultReturnValue(new ColorConfig());
 		ENCHANTMENT_LIMITS.defaultReturnValue(Integer.MAX_VALUE);
 		
-		ForgeRegistries.SOUND_EVENTS.register(ANVIL_STACK.setRegistryName("anvil_stacks"));
+		ForgeRegistries.SOUND_EVENTS.register("anvil_stacks", ANVIL_STACK);
 	}
 	
     @SubscribeEvent
@@ -166,7 +168,7 @@ public class UEBase
 	}
     
     public static ColorConfig getEnchantmentColor(Enchantment ench) {
-    	return COLOR_SETTINGS.get(ench == null ? null : ench.getRegistryName());
+    	return COLOR_SETTINGS.get(ench == null ? null : ForgeRegistries.ENCHANTMENTS.getKey(ench));
     }
     
 	protected void reloadConfig()
@@ -197,12 +199,12 @@ public class UEBase
 		}
     }
     
-    public void onLoad(ModConfig.Loading configEvent) 
+    public void onLoad(ModConfigEvent.Loading configEvent) 
     {
     	reloadConfig();
     }
 
-    public void onFileChange(ModConfig.Reloading configEvent) 
+    public void onFileChange(ModConfigEvent.Reloading configEvent) 
     {
     	reloadConfig();
     }

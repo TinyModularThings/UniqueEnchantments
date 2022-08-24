@@ -2,9 +2,9 @@ package uniqueeutils.enchantments.complex;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.item.HorseArmorItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.HorseArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 
@@ -19,7 +19,7 @@ public class SleipnirsGrace extends UniqueEnchantment
 	
 	public SleipnirsGrace()
 	{
-		super(new DefaultData("sleipnirs_grace", Rarity.RARE, 10, true, true, 20, 14, 75), EnchantmentType.ARMOR_CHEST);
+		super(new DefaultData("sleipnirs_grace", Rarity.RARE, 10, true, true, 20, 14, 75), EnchantmentCategory.ARMOR_CHEST);
 		setCategory("utils");
 		addStats(CAP, GAIN, MAX, PATH_BONUS);
 	}

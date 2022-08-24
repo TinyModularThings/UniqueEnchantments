@@ -2,10 +2,10 @@ package uniqueebattle.enchantments.simple;
 
 import java.util.UUID;
 
-import net.minecraft.enchantment.EnchantmentType;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
 import uniquebase.utils.DoubleStat;
@@ -18,7 +18,7 @@ public class Fury extends UniqueEnchantment
 	
 	public Fury()
 	{
-		super(new DefaultData("fury", Rarity.RARE, 3, true, false, 20, 4, 50), EnchantmentType.WEAPON, EquipmentSlotType.MAINHAND);
+		super(new DefaultData("fury", Rarity.RARE, 3, true, false, 20, 4, 50), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 		addStats(ATTACK_SPEED_SCALE, DROP_CHANCE);
 		setDisableDefaultItems();
 	}

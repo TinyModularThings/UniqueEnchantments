@@ -1,8 +1,9 @@
 package uniqueeutils.misc;
 
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Matrix4f;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.math.Matrix4f;
+
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

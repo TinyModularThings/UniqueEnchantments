@@ -2,9 +2,9 @@ package uniquee.enchantments.curse;
 
 import java.util.UUID;
 
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -30,7 +30,7 @@ public class DeathsOdium extends UniqueEnchantment
 	
 	public DeathsOdium()
 	{
-		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 2, false, true, 10, 4, 40), BaseUEMod.ALL_TYPES, EquipmentSlotType.values());
+		super(new DefaultData("deaths_odium", Rarity.UNCOMMON, 2, false, true, 10, 4, 40), BaseUEMod.ALL_TYPES, EquipmentSlot.values());
 		addStats(DELAY, DAMAGE_FACTOR, BASE_LOSS);
 		setCurse();
 	}

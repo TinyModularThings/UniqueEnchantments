@@ -36,7 +36,7 @@ public class AutomatedIconGen
 				list.add(file);
 				file.fillMap(map);
 			}
-			JsonArray icons = new JsonParser().parse(reader).getAsJsonObject().getAsJsonArray("icons");
+			JsonArray icons = JsonParser.parseReader(reader).getAsJsonObject().getAsJsonArray("icons");
 			for(int i = 0,m=icons.size();i<m;i++) {
 				String s = icons.get(i).getAsString();
 				if(s.isEmpty()) continue;
@@ -103,7 +103,7 @@ public class AutomatedIconGen
 		
 		public static LangFile map(Path path) {
 			try(BufferedReader reader = Files.newBufferedReader(path)) {
-				return new LangFile(path, new JsonParser().parse(reader).getAsJsonObject());
+				return new LangFile(path, JsonParser.parseReader(reader).getAsJsonObject());
 			}
 			catch(Exception e) {
 				e.printStackTrace();
