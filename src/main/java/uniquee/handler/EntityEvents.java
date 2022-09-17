@@ -702,7 +702,7 @@ public class EntityEvents
 			level = MiscUtil.getEnchantmentLevel(UE.BERSERKER, base.getItemBySlot(EquipmentSlotType.CHEST));
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() * (float)(1D + (Math.pow(1-(Berserk.MIN_HEALTH.getMax(base.getHealth(), 1D)/base.getMaxHealth()), 1/level) * Berserk.PERCENTUAL_DAMAGE.get())));
+				event.setAmount(event.getAmount() * (float)(1D + (Math.pow(1-(Berserk.MIN_HEALTH.getMax(base.getHealth(), 1D)/base.getMaxHealth()), 1D/level) * Berserk.PERCENTUAL_DAMAGE.get())));
 			}
 			level = enchantments.getInt(UE.PERPETUAL_STRIKE);
 			if(level > 0)
@@ -774,7 +774,7 @@ public class EntityEvents
 				event.setAmount(event.getAmount() + (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + (float)Math.sqrt(EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE)))));
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ADV_SHARPNESS, stack);
-			if(level > 0)
+			if(level > 0 && MiscUtil.isTranscendent(base, stack, UE.ADV_SHARPNESS))
 			{
 				if(stack.getItem() instanceof TieredItem)
 				{
@@ -786,12 +786,12 @@ public class EntityEvents
 				}
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ADV_SMITE, stack);
-			if(level > 0)
+			if(level > 0 && MiscUtil.isTranscendent(base, stack, UE.ADV_SMITE))
 			{
 				event.setAmount(event.getAmount() + (float)(Math.pow(target.getHealth(), AmelioratedSmite.TRANSCENDED_DAMAGE_EXPONENT.get())));
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ADV_BANE_OF_ARTHROPODS, stack);
-			if(level > 0)
+			if(level > 0 && MiscUtil.isTranscendent(base, stack, UE.ADV_BANE_OF_ARTHROPODS))
 			{
 				event.setAmount(event.getAmount() + (float)(Math.pow(target.getHealth(), AmelioratedBaneOfArthropod.TRANSCENDED_DAMAGE_EXPONENT.get())));
 			}
@@ -863,6 +863,7 @@ public class EntityEvents
 				compound.putFloat(DeathsOdium.CURSE_DAMAGE, compound.getFloat(DeathsOdium.CURSE_DAMAGE)+event.getAmount());
 			}
 		}
+		System.out.println(event.getAmount());
 	}
 	
 	@SubscribeEvent
@@ -941,10 +942,14 @@ public class EntityEvents
 						}
 					}
 				}
+				
 				if(lowestSlot != null) {
 					ItemStack stack = event.getEntityLiving().getItemBySlot(lowestSlot);
 					StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
+					System.out.println(StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 10F));
 					StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(event.getEntityLiving().getMaxHealth()) * 0.3F * rand.nextFloat()));
+					System.out.println(StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 10F));
+//					System.out.println(((float)Math.sqrt(event.getEntityLiving().getMaxHealth()) * 0.3F * rand.nextFloat()));
 				}
 				if(nbt.getBoolean(DeathsOdium.CURSE_RESET))
 				{
