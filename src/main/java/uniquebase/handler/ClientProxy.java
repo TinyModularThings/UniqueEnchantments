@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
@@ -37,7 +38,7 @@ import uniquebase.utils.MiscUtil;
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends Proxy
 {
-	Map<String, ClientPlayerKey> keys = new Object2ObjectLinkedOpenHashMap<>();
+	Map<String, ClientPlayerKey> keys = Object2ObjectMaps.synchronize(new Object2ObjectLinkedOpenHashMap<>());
 	Object2BooleanMap<String> lastKeyState = Object2BooleanMaps.emptyMap();
 	public int counter = 0;
 	
@@ -80,11 +81,9 @@ public class ClientProxy extends Proxy
 	public void update()
 	{
 		counter++;
+		if(Minecraft.getInstance().level == null) return;
 		Object2BooleanMap<String> keyState = new Object2BooleanOpenHashMap<>();
-		for(ClientPlayerKey key : keys.values())
-		{
-			key.appendState(keyState);
-		}
+		keys.forEach((K, V) -> V.appendState(keyState));
 		if(!lastKeyState.equals(keyState))
 		{
 			lastKeyState = keyState.isEmpty() ? Object2BooleanMaps.emptyMap() : keyState;

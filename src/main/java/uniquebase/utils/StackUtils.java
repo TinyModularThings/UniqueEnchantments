@@ -41,7 +41,7 @@ public class StackUtils
 	public static float getFloat(ItemStack stack, String tagName, float defaultValue)
 	{
 		CompoundNBT nbt = stack.getTag();
-		return nbt == null || !nbt.contains(tagName) ? defaultValue : nbt.getInt(tagName);
+		return nbt == null || !nbt.contains(tagName) ? defaultValue : nbt.getFloat(tagName);
 	}
 	
 	public static void setFloat(ItemStack stack, String tagName, float value)
