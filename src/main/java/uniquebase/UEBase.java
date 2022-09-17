@@ -17,6 +17,7 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.common.ForgeConfigSpec.DoubleValue;
+import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -39,6 +40,7 @@ import uniquebase.handler.EnchantmentHandler;
 import uniquebase.handler.Proxy;
 import uniquebase.networking.PacketHandler;
 import uniquebase.utils.IdStat;
+import uniquebase.utils.VisibilityMode;
 
 @Mod("uniquebase")
 public class UEBase
@@ -65,6 +67,8 @@ public class UEBase
 	
 	public static BooleanValue ICONS;
 	public static BooleanValue ICONS_VISIBLE;
+	public static EnumValue<VisibilityMode> ICON_MODE;
+	public static IntValue LIMIT_AMOUNT;
 	public static IntValue ICON_ROWS;
 	public static IntValue ICON_ROW_ELEMENTS;
 	public static IntValue ICON_CYCLE_TIME;
@@ -121,6 +125,10 @@ public class UEBase
 		ICONS = builder.define("Enchantment Icons", true);
 		builder.comment("If Icons should be displayed. Can be toggled ingame with a key");
 		ICONS_VISIBLE = builder.define("Enchantment Icons Visible", false);
+		builder.comment("Decide how agressive the icon filter is", "Limited => tries to limit the amount of icons visible drastically", "Normal => is a reduced amount but everything important is still shown", "Everything => is for the crazy people out there and shows everything");
+		ICON_MODE = builder.defineEnum("Enchantment Icon Mode", VisibilityMode.NORMAL);
+		builder.comment("Icon Limit defines how many icons of each extra category are shown at once");
+		LIMIT_AMOUNT = builder.defineInRange("Icon Limit", 4, 0, 25);
 		builder.comment("How many Icon Rows should exists");
 		ICON_ROWS = builder.defineInRange("Enchantment Icon Rows", 3, 1, 100);
 		builder.comment("How many Icons per Row should be Shown");
@@ -171,6 +179,7 @@ public class UEBase
     
 	protected void reloadConfig()
     {
+		EnchantmentHandler.INSTANCE.cleanCache();
 		APPLICABLE_ICON_OVERRIDE.onConfigChanged();
 		COLOR_SETTINGS.clear();
 		List<? extends String> list = COLOR_CONFIGS.get();

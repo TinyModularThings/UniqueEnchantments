@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " # ",
+        "#W#",
+        " # "
+    ],
+    "key": {
+        "#": {
+            "item": "minecraft:lapis_lazuli"
+        },
+        "W": {
+            "item": "minecraft:writable_book"
+        }
+    },
+    "result": {
+        "item": "patchouli:guide_book",
+        "nbt": {"patchouli:book": "uniquebase:grimoire"},
+        "count": 1
+    }
+}

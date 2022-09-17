@@ -1025,7 +1025,7 @@ public class UtilsHandler
 		if(level > 0)
 		{
 			double base = Reinforced.BASE_REDUCTION.get();
-			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(Reinforced.SPEED_MOD, "Reinforced Boost", Math.pow((base + ((1D - base) * 0.01D) * level), Math.sqrt(level)), Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(Reinforced.SPEED_MOD, "Reinforced Boost", Math.pow(1D - base, level)-1, Operation.MULTIPLY_TOTAL));
 		}
 		level = ench.getInt(UEUtils.SAGES_SOUL);
 		if(level > 0)

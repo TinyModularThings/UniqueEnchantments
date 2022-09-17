@@ -732,7 +732,7 @@ public class EntityEvents
 				{
 					count = 0;
 				}
-				double damage = target.getHealth() * (Math.pow(count+1, 0.25)/(100*base.getAttributeValue(Attributes.ATTACK_SPEED)));
+				double damage = target.getHealth() * (Math.pow(count+1, 0.25)/(100*MiscUtil.getAttackSpeed(base, 1D)));
 				double multiplier = Math.log10(10+damage*count);
 				event.setAmount((float)((event.getAmount()+damage)*multiplier));
 				StackUtils.setInt(held, PerpetualStrike.HIT_COUNT, count+1);
@@ -946,14 +946,6 @@ public class EntityEvents
 					StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
 					StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(event.getEntityLiving().getMaxHealth()) * 0.3F * rand.nextFloat()));
 				}
-				ModifiableAttributeInstance instance = event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH);
-				AttributeModifier mod = instance.getModifier(DeathsOdium.REMOVE_UUID);
-				float toRemove = 0F;
-				if(mod != null)
-				{
-					toRemove += mod.getAmount();
-					instance.removeModifier(mod);
-				}
 				if(nbt.getBoolean(DeathsOdium.CURSE_RESET))
 				{
 					nbt.remove(DeathsOdium.CURSE_RESET);
@@ -969,7 +961,7 @@ public class EntityEvents
 					}
 					return;
 				}
-				nbt.putFloat(DeathsOdium.CURSE_STORAGE, (toRemove+1F));
+				nbt.putInt(DeathsOdium.CURSE_STORAGE, (nbt.getInt(DeathsOdium.CURSE_STORAGE)+1));
 			}
 		}
 	}
@@ -980,7 +972,6 @@ public class EntityEvents
 		float f = MiscUtil.getPersistentData(event.getPlayer()).getFloat(DeathsOdium.CURSE_STORAGE);
 		if(f != 0F)
 		{
-			System.out.println(f);
 			event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH).addTransientModifier(new AttributeModifier(DeathsOdium.REMOVE_UUID, "odiums_curse", Math.pow(0.95,f)-1, Operation.MULTIPLY_TOTAL));
 		}
 	}
@@ -1172,7 +1163,7 @@ public class EntityEvents
 		level = enchantments.getInt(UE.DEATHS_ODIUM);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.DEATHS_ODIUM).contains(slot))
 		{
-			int value = StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0);
+			float value = StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0);
 			if(value > 0 && !MiscUtil.getPersistentData(living).getBoolean(DeathsOdium.CURSE_DISABLED))
 			{
 				mods.put(Attributes.MAX_HEALTH, new AttributeModifier(DeathsOdium.GENERAL_MOD.getId(slot), "Death Odiums Restore", value/100f, Operation.MULTIPLY_TOTAL));

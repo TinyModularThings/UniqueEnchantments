@@ -33,6 +33,7 @@ import net.minecraft.item.DyeableArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.SwordItem;
 import net.minecraft.item.TieredItem;
 import net.minecraft.item.crafting.FurnaceRecipe;
 import net.minecraft.item.crafting.IRecipeType;
@@ -62,6 +63,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.utils.IdStat;
+import uniquebase.utils.VisibilityMode;
 
 public class EnchantmentHandler
 {
@@ -209,17 +211,26 @@ public class EnchantmentHandler
 		return enchantedItems.computeIfAbsent(ench, this::createItemsForEnchantments);
 	}
 	
+	public void cleanCache()
+	{
+		enchantedItems.clear();
+	}
+	
 	@OnlyIn(Dist.CLIENT)
 	private List<ItemStack> createItemsForEnchantments(Enchantment ench)
 	{
 		List<ItemStack> validItems = new ObjectArrayList<>();
 		List<ItemStack> validBlocks = new ObjectArrayList<>();
+		List<ItemStack> foods = new ObjectArrayList<>();
+		List<ItemStack> extra = new ObjectArrayList<>();
 		Collector<Set<ToolType>> tools = new Collector<>();
 		Collector<Class<?>> classBased = new Collector<>();
 		Collector<ArmorEntry> armor = new Collector<>();
 		Set<Class<?>> clz = new ObjectOpenHashSet<>();
 		IdStat stat = UEBase.APPLICABLE_ICON_OVERRIDE;
 		boolean check = !stat.isEmpty();
+		VisibilityMode mode = UEBase.ICON_MODE.get();
+		int limit = mode == VisibilityMode.LIMITED ? UEBase.LIMIT_AMOUNT.get() : Integer.MAX_VALUE;
 		for(Item item : ForgeRegistries.ITEMS)
 		{
 			if(check && !stat.contains(item.getRegistryName()))
@@ -229,6 +240,11 @@ public class EnchantmentHandler
 			ItemStack stack = new ItemStack(item);
 			if(ench.canApplyAtEnchantingTable(stack))
 			{
+				if(mode == VisibilityMode.EVERYTHING)
+				{
+					validItems.add(stack);
+					continue;
+				}
 				Set<ToolType> type = stack.getToolTypes();
 				if(!type.isEmpty())
 				{
@@ -236,11 +252,16 @@ public class EnchantmentHandler
 				}
 				else if(item instanceof TieredItem)
 				{
+					if(item instanceof SwordItem && mode == VisibilityMode.LIMITED && item.getClass() != SwordItem.class)
+					{
+						continue;
+					}
 					classBased.add(stack, item.getClass(), ((TieredItem)item).getTier().getLevel());
 				}
 				else if(item instanceof ArmorItem)
 				{
 					boolean vanilla = item.getClass() == ArmorItem.class || item.getClass() == DyeableArmorItem.class;
+					if(mode == VisibilityMode.LIMITED && !vanilla) continue;
 					EquipmentSlotType slot = MobEntity.getEquipmentSlotForItem(stack);
 					armor.add(stack, new ArmorEntry(slot, vanilla ? ArmorItem.class : item.getClass()), ((ArmorItem)item).getMaterial().getDurabilityForSlot(slot));
 				}
@@ -256,13 +277,13 @@ public class EnchantmentHandler
 					Optional<FurnaceRecipe> recipe = world.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, inv, world);
 					if(!recipe.isPresent() || !recipe.get().getResultItem().isEdible())
 					{
-						validItems.add(stack);						
+						foods.add(stack);						
 					}
 				}
 				else
 				{
 					if(item.getRegistryName().getNamespace().equalsIgnoreCase("minecraft") || clz.add(item.getClass())) {
-						validItems.add(stack);
+						extra.add(stack);
 					}
 				}
 			}
@@ -270,6 +291,14 @@ public class EnchantmentHandler
 		classBased.collect(validItems);
 		armor.collect(validItems);
 		tools.collect(validItems);
+		if(!foods.isEmpty())
+		{
+			validItems.addAll(foods.subList(0, Math.min(foods.size(), limit)));
+		}
+		if(!extra.isEmpty())
+		{
+			validItems.addAll(extra.subList(0, Math.min(extra.size(), limit)));
+		}
 		if(validBlocks.size() < 10)
 		{
 			validItems.addAll(validBlocks);
