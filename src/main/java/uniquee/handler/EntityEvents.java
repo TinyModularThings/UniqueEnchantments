@@ -1,6 +1,7 @@
 package uniquee.handler;
 
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -10,10 +11,14 @@ import com.google.common.collect.Multimap;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.data.LootTableProvider;
+import net.minecraft.data.loot.EntityLootTables;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.CreatureAttribute;
@@ -38,11 +43,15 @@ import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity.PickupStatus;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.FilledMapItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ShieldItem;
 import net.minecraft.item.TieredItem;
+import net.minecraft.loot.LootTableManager;
+import net.minecraft.loot.functions.SetLootTable;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.potion.EffectInstance;
@@ -50,6 +59,7 @@ import net.minecraft.potion.EffectType;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
+import net.minecraft.util.Hand;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -65,6 +75,7 @@ import net.minecraft.world.storage.MapBanner;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.data.ForgeLootTableProvider;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -672,7 +683,7 @@ public class EntityEvents
 				ModifiableAttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (float)Math.log10(10D + (1.6 + Math.log(Math.max(0.25D, attr.getValue())) / SwiftBlade.BASE_SPEED.get()) * MathCache.LOG.get(1 + (level*level))));
+					event.setAmount(event.getAmount() * (float)Math.log(1.719d + Math.pow((level+0.1)/2, Math.sqrt(attr.getValue()/1.2))));
 				}
 			}
 			level = enchantments.getInt(UE.FOCUS_IMPACT);
@@ -681,7 +692,9 @@ public class EntityEvents
 				ModifiableAttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (1F + (float)Math.log10(Math.pow(FocusedImpact.BASE_SPEED.get() / attr.getValue(), 2D)*MathCache.LOG.get(6+level))));
+
+					double val = Math.max(attr.getValue(), 0.01);
+					event.setAmount(event.getAmount() * (float)Math.log(1.719d + Math.pow((level+1.1)/2, Math.sqrt(1.2/val))));
 				}
 			}
 			level = MiscUtil.getEnchantedItem(UE.CLIMATE_TRANQUILITY, base).getIntValue();
@@ -754,6 +767,7 @@ public class EntityEvents
 				base.kill();
 			}
 		}
+		System.out.println(event.getAmount());
 	}
 	
 	@SubscribeEvent
@@ -903,6 +917,7 @@ public class EntityEvents
 	public void onEntityKilled(LivingDeathEvent event)
 	{
 		Entity entity = event.getSource().getEntity();
+		LivingEntity deadEntity = event.getEntityLiving();
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity base = (LivingEntity)entity;
@@ -929,6 +944,19 @@ public class EntityEvents
 						nbt.putInt(EndestReap.REAP_STORAGE, Math.min(nbt.getInt(EndestReap.REAP_STORAGE)+amount, MiscUtil.isTranscendent(base, base.getMainHandItem(), UE.ENDEST_REAP) ? Integer.MAX_VALUE : ((PlayerEntity)base).experienceLevel));
 						StackUtils.setInt(base.getMainHandItem(), EndestReap.REAP_STORAGE, nbt.getInt(EndestReap.REAP_STORAGE));
 					}
+				}
+			}
+			if(!(deadEntity instanceof PlayerEntity) && rand.nextFloat() < 0.025f) {
+				
+				Object2IntMap<Enchantment> list = new Object2IntOpenHashMap<>();
+				for (ItemStack stack : deadEntity.getAllSlots()) {
+					for( Entry<Enchantment, Integer> k:MiscUtil.getEnchantments(stack).entrySet()) {
+						list.putIfAbsent(k.getKey(), k.getValue());
+					}
+				}
+				
+				if(list.size() >= 10) {
+					MiscUtil.spawnDrops(deadEntity, UE.GRIMOIRE, rand.nextInt(2));
 				}
 			}
 		}
@@ -1185,14 +1213,18 @@ public class EntityEvents
 				mods.put(Attributes.MAX_HEALTH, new AttributeModifier(DeathsOdium.GENERAL_MOD.getId(slot), "Death Odiums Restore", value/100f, Operation.MULTIPLY_TOTAL));
 			}
 		}
+		
+		//does not properly get removed if player looses EXP while still holding it
 		level = enchantments.getInt(UE.FOCUS_IMPACT);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.FOCUS_IMPACT).contains(slot) && MiscUtil.isTranscendent(living, stack, UE.FOCUS_IMPACT))
 		{
+			System.out.println("slowhello");
 			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(FocusedImpact.IMPACT_MOD, "Focus Impact", FocusedImpact.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UE.SWIFT_BLADE);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT_BLADE).contains(slot) && MiscUtil.isTranscendent(living, stack, UE.SWIFT_BLADE))
 		{
+			System.out.println("hello");
 			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SwiftBlade.SWIFT_MOD, "Swift Blade", SwiftBlade.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
 		}
 		level = UE.AMELIORATED_UPGRADE.isValid(stack) ? UE.AMELIORATED_UPGRADE.getPoints(stack) : 0;

@@ -18,12 +18,14 @@ import net.minecraft.block.CommandBlockBlock;
 import net.minecraft.block.JigsawBlock;
 import net.minecraft.block.StructureBlock;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.Enchantment.Rarity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -51,6 +53,7 @@ import uniquebase.UEBase;
 import uniquebase.api.ColorConfig;
 import uniquebase.api.IToggleEnchantment;
 import uniquebase.utils.mixin.common.enchantments.EnchantmentMixin;
+import uniquee.UE;
 
 public class MiscUtil
 {
@@ -492,6 +495,13 @@ public class MiscUtil
 	public static Style getEnchantmentColor(Enchantment ench, boolean allowCurseColor) {
 		ColorConfig config = UEBase.getEnchantmentColor(ench);
 		return MiscUtil.toColor(config.getTextColor() == -1 ? (ench.isCurse() && allowCurseColor ? 0xFF5555 : 0xAAAAAAAA) : config.getTextColor());
+	}
+	
+	public static void spawnDrops(LivingEntity deadEntity, Enchantment enchantment, int level) {
+		ItemStack stack = new ItemStack(Items.ENCHANTED_BOOK);
+		EnchantedBookItem.addEnchantment(stack, new EnchantmentData(enchantment, level));
+		ItemEntity itemEntity = deadEntity.spawnAtLocation(stack, 0F);
+		if(itemEntity != null) itemEntity.setPickUpDelay(30);
 	}
 	
 }
