@@ -17,6 +17,7 @@
 		"common.entity.EntityMixin",
 		"common.entity.EntityMixinP",
 		"common.entity.FireworkMixin",
+		"common.entity.LivingEntityMixin",
 		"common.entity.PiglinMixin",
 		"common.entity.PlayerEntityMixin",
 		"common.entity.PotionMixin",

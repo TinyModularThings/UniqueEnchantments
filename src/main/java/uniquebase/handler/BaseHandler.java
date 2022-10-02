@@ -8,6 +8,7 @@ import java.util.function.ToIntFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.AnvilBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.IBucketPickupHandler;
@@ -319,6 +320,13 @@ public class BaseHandler
 					}
 				}
 			}
+			if(state.getBlockState().getEnchantPowerBonus(event.getWorld(), event.getPos()) > 0) {
+				ItemStack stack = event.getItemStack();
+				if(stack.isEnchanted()) {
+					System.out.println("yeet");
+					MiscUtil.toggleTrancendence(stack);
+				}
+			}
 		}
 	}
 	
@@ -332,7 +340,8 @@ public class BaseHandler
 			if(stack.isEmpty()) return;
 			World world = event.getWorld();
 			BlockPos pos = frame.getPos().relative(frame.getDirection().getOpposite());
-			if(world.getBlockState(pos).getBlock() == Blocks.ENCHANTING_TABLE)
+			System.out.println(event.getWorld().getBlockState(pos));
+			if(world.getBlockState(pos).getBlock() == Blocks.CONDUIT)
 			{
 				List<EnchantedUpgrade> upgrades = new ObjectArrayList<>();
 				for(EnchantedUpgrade entry : EnchantedUpgrade.getAllUpgrades())

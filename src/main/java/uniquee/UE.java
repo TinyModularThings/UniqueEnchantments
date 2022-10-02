@@ -77,6 +77,7 @@ import uniquee.handler.EntityEvents;
 import uniquee.handler.LootModifier;
 import uniquee.handler.potion.EternalFlamePotion;
 import uniquee.handler.potion.PestilencesOdiumPotion;
+import uniquee.handler.potion.Thrombosis;
 
 @Mod("uniquee")
 public class UE extends BaseUEMod
@@ -126,6 +127,7 @@ public class UE extends BaseUEMod
 	public static Enchantment DEATHS_ODIUM;
 	
 	//Potions
+	public static Effect THROMBOSIS;
 	public static Effect ETERNAL_FLAME_POTION;
 	public static Effect PESTILENCES_ODIUM_POTION;
 	public static ForgeConfigSpec CONFIG;
@@ -143,6 +145,7 @@ public class UE extends BaseUEMod
 	
 	public UE()
 	{
+		THROMBOSIS = new Thrombosis();
 		ETERNAL_FLAME_POTION = new EternalFlamePotion();
 		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -282,6 +285,7 @@ public class UE extends BaseUEMod
     
     public void loadPotion(RegistryEvent.Register<Effect> event)
     {
+    	event.getRegistry().register(THROMBOSIS);
     	event.getRegistry().register(PESTILENCES_ODIUM_POTION);
     	event.getRegistry().register(ETERNAL_FLAME_POTION);
     }

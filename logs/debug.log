@@ -1,0 +1,6 @@
+[17Sep2022 12:54:49.474] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args []
+[17Sep2022 12:54:49.480] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 8.0.9+86+master.3cf110c starting: java version 1.8.0_292 by ojdkbuild
+[17Sep2022 12:54:49.509] [main/DEBUG] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Found launch services [minecraft,fmldevdata,fmldevclient,fmldevserver,fmluserdevserver,testharness,fmluserdevdata,fmlclient,fmluserdevclient,fmlserver]
+[17Sep2022 12:54:49.545] [main/DEBUG] [cpw.mods.modlauncher.NameMappingServiceHandler/MODLAUNCHER]: Found naming services : [srgtomcp]
+[17Sep2022 12:54:49.598] [main/DEBUG] [cpw.mods.modlauncher.LaunchPluginHandler/MODLAUNCHER]: Found launch plugins: [mixin,eventbus,object_holder_definalize,runtime_enum_extender,accesstransformer,capability_inject_definalize,runtimedistcleaner]
+[17Sep2022 12:54:49.621] [main/DEBUG] [cpw.mods.modlauncher.TransformationServicesHandler/MODLAUNCHER]: Discovering transformation services

@@ -136,6 +136,7 @@ import uniquee.enchantments.unique.NaturesGrace;
 import uniquee.enchantments.unique.PhoenixBlessing;
 import uniquee.enchantments.unique.WarriorsGrace;
 import uniquee.enchantments.upgrades.AmelioratedUpgrade;
+import uniquee.handler.potion.Thrombosis;
 
 public class EntityEvents
 {
@@ -196,7 +197,6 @@ public class EntityEvents
 		
 		if(entity.getHealth() < (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get())) return;
 		ItemStack stack = entity.getItemBySlot(EquipmentSlotType.CHEST);
-//		System.out.println(MiscUtil.getEnchantmentLevel(UE.BERSERKER, stack));
 		if(MiscUtil.getEnchantmentLevel(UE.BERSERKER, stack) > 0 && MiscUtil.isTranscendent(entity, stack, UE.BERSERKER))
 		{
 			entity.setHealth(entity.getMaxHealth()*0.5F);
@@ -636,6 +636,14 @@ public class EntityEvents
 	public void onEntityHeal(LivingHealEvent event)
 	{
 		LivingEntity entity = event.getEntityLiving();
+		if(entity.hasEffect(UE.THROMBOSIS)) {
+			EffectInstance eff = entity.getEffect(UE.THROMBOSIS);
+			double a = ((Thrombosis)eff.getEffect()).getChance() * (eff.getAmplifier()+1);
+			if(a >= 1.0 || rand.nextDouble() < a) {
+				event.setAmount(0);
+			}
+		}
+		
 		if(MiscUtil.isTranscendent(entity, entity.getItemBySlot(EquipmentSlotType.CHEST), UE.BERSERKER) && entity.getHealth() > (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get()-0.25F) && MiscUtil.getEnchantmentLevel(UE.BERSERKER, entity.getItemBySlot(EquipmentSlotType.CHEST)) > 0)
 		{
 			event.setAmount(0F);
@@ -732,10 +740,14 @@ public class EntityEvents
 				{
 					count = 0;
 				}
-				double damage = target.getHealth() * (Math.pow(count+1, 0.25)/(100*MiscUtil.getAttackSpeed(base, 1D)));
-				double multiplier = Math.log10(10+damage*count);
-				event.setAmount((float)((event.getAmount()+damage)*multiplier));
 				StackUtils.setInt(held, PerpetualStrike.HIT_COUNT, count+1);
+				if(rand.nextInt(100) <= count) {
+					target.addEffect(new EffectInstance(UE.THROMBOSIS, 100*level, level-1));
+				}
+				double damage = target.getHealth() * (Math.pow((count * PerpetualStrike.PER_HIT.get() * PerpetualStrike.PER_HIT_LEVEL.get())+1, 0.25)/(100*MiscUtil.getAttackSpeed(base, 1D)));
+				double multiplier = PerpetualStrike.SCALING_STATE.get() ? 1 + Math.pow(count * PerpetualStrike.MULTIPLIER.get(), 2)/20 : Math.log10(10+damage*count*PerpetualStrike.MULTIPLIER.get());
+				event.setAmount((float)((event.getAmount()+damage)*multiplier));
+				StackUtils.setInt(held, PerpetualStrike.HIT_ID, target.getId());
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ENDER_EYES, target.getItemBySlot(EquipmentSlotType.HEAD));
 			if(level > 0 && base.getType() == EntityType.ENDERMAN && EnderEyes.AFFECTED_ENTITIES.contains(base.getType().getRegistryName()) && MiscUtil.isTranscendent(target, target.getItemBySlot(EquipmentSlotType.HEAD), UE.ENDER_EYES) && rand.nextDouble() < EnderEyes.TRANSCENDED_CHANCE.get()) {
@@ -771,6 +783,9 @@ public class EntityEvents
 			level = MiscUtil.getEnchantmentLevel(UE.ENDEST_REAP, stack);
 			if(level > 0)
 			{
+				if(rand.nextDouble() > Math.pow(0.9d, level)) {
+					target.addEffect(new EffectInstance(UE.THROMBOSIS, 100*level, level-1));
+				}
 				event.setAmount(event.getAmount() + (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + (float)Math.sqrt(EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getCompound(PlayerEntity.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE)))));
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ADV_SHARPNESS, stack);
@@ -863,7 +878,6 @@ public class EntityEvents
 				compound.putFloat(DeathsOdium.CURSE_DAMAGE, compound.getFloat(DeathsOdium.CURSE_DAMAGE)+event.getAmount());
 			}
 		}
-		System.out.println(event.getAmount());
 	}
 	
 	@SubscribeEvent
@@ -946,10 +960,7 @@ public class EntityEvents
 				if(lowestSlot != null) {
 					ItemStack stack = event.getEntityLiving().getItemBySlot(lowestSlot);
 					StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
-					System.out.println(StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 10F));
 					StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(event.getEntityLiving().getMaxHealth()) * 0.3F * rand.nextFloat()));
-					System.out.println(StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 10F));
-//					System.out.println(((float)Math.sqrt(event.getEntityLiving().getMaxHealth()) * 0.3F * rand.nextFloat()));
 				}
 				if(nbt.getBoolean(DeathsOdium.CURSE_RESET))
 				{

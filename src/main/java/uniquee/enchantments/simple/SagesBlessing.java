@@ -14,7 +14,7 @@ public class SagesBlessing extends UniqueEnchantment
 	
 	public SagesBlessing()
 	{
-		super(new DefaultData("sages_blessing", Rarity.COMMON, 5, false, false, 5, 5, 20).setTrancendenceLevel(500), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
+		super(new DefaultData("sages_blessing", Rarity.UNCOMMON, 5, false, false, 15, 5, 20).setTrancendenceLevel(500), EnchantmentType.BREAKABLE, EquipmentSlotType.values());
 		addStats(XP_BOOST, TRANSCENDED_BOOST);
 	}
 	
