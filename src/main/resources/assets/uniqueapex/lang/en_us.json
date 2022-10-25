@@ -14,5 +14,7 @@
 	"unique.apex.bases": "Bases",
 	"unique.apex.catalyst": "Catalyst",
 	"unique.apex.desc": "Catalysts go into side chests.\nEnchantments go into the top.\nOutput is the first slot in the top chest",
-	"unique.apex.jei.name": "Enchantment Fusion"
+	"unique.apex.jei.name": "Enchantment Fusion",
+	"unique.apex.first_pos": "First Position: [x=%s, y=%s, z=%s]",
+	"unique.apex.mine": "Started Mining from: [x=%s, y=%s, z=%s] to: [x=%s, y=%s, z=%s]"
 }

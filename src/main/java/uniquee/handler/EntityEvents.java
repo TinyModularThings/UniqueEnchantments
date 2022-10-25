@@ -767,7 +767,6 @@ public class EntityEvents
 				base.kill();
 			}
 		}
-		System.out.println(event.getAmount());
 	}
 	
 	@SubscribeEvent

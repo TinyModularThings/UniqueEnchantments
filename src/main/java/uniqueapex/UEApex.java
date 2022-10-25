@@ -18,8 +18,10 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniqueapex.enchantments.simple.AbsoluteProtection;
 import uniqueapex.enchantments.simple.BlessedBlade;
+import uniqueapex.enchantments.simple.Pickaxe404;
 import uniqueapex.enchantments.simple.SecondLife;
 import uniqueapex.enchantments.unique.AeonsFragment;
+import uniqueapex.enchantments.unique.GaiasFragment;
 import uniqueapex.handler.ApexHandler;
 import uniqueapex.handler.FusionHandler;
 import uniqueapex.handler.recipe.fusion.FusionRecipe;
@@ -48,9 +50,11 @@ public class UEApex extends BaseUEMod
 	public static Enchantment ABSOLUTE_PROTECTION;
 	public static Enchantment BLESSED_BLADE;
 	public static Enchantment SECOND_LIFE;
+	public static Enchantment PICKAXE_404;
 	
 	//Unique
 	public static Enchantment AEONS_FRAGMENT;
+	public static Enchantment GAIAS_FRAGMENT;
 	
 	public static final Object2FloatMap<Enchantment> UPGRADE_MULTIPLIERS = new Object2FloatOpenHashMap<>();
 	public static ConfigValue<List<? extends String>> ENCHANTMENT_UPGRADE_CONFIGS;
@@ -112,6 +116,8 @@ public class UEApex extends BaseUEMod
 		ABSOLUTE_PROTECTION = register(new AbsoluteProtection());
 		BLESSED_BLADE = register(new BlessedBlade());
 		SECOND_LIFE = register(new SecondLife());
+		PICKAXE_404 = register(new Pickaxe404());
 		AEONS_FRAGMENT = register(new AeonsFragment());
+		GAIAS_FRAGMENT = register(new GaiasFragment());
 	}
 }
