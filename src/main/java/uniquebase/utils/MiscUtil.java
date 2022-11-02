@@ -18,8 +18,8 @@ import net.minecraft.block.CommandBlockBlock;
 import net.minecraft.block.JigsawBlock;
 import net.minecraft.block.StructureBlock;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.Enchantment.Rarity;
+import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
@@ -53,7 +53,6 @@ import uniquebase.UEBase;
 import uniquebase.api.ColorConfig;
 import uniquebase.api.IToggleEnchantment;
 import uniquebase.utils.mixin.common.enchantments.EnchantmentMixin;
-import uniquee.UE;
 
 public class MiscUtil
 {

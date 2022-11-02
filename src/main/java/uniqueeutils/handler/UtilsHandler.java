@@ -37,6 +37,7 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.monster.SlimeEntity;
 import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -86,6 +87,7 @@ import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -472,6 +474,18 @@ public class UtilsHandler
 					player.causeFoodExhaustion(0.06F);
 				}
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onDeath(LivingDeathEvent event)
+	{
+		LivingEntity deadEntity = event.getEntityLiving();
+		boolean slime = deadEntity instanceof SlimeEntity && deadEntity.getRandom().nextInt(100) < 1;
+		boolean horse = deadEntity instanceof HorseEntity && deadEntity.getRandom().nextInt(100) < 3;
+		if((slime || horse) && event.getSource() == DamageSource.FALL) {
+			if(slime) MiscUtil.spawnDrops(deadEntity, UEUtils.ESSENCE_OF_SLIME, 1);
+			else MiscUtil.spawnDrops(deadEntity, UEUtils.PEGASUS_SOUL, 1);
 		}
 	}
 	
