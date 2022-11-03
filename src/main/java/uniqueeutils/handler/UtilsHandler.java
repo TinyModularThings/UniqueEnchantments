@@ -93,6 +93,7 @@ import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
+import net.minecraftforge.event.entity.player.AnvilRepairEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
@@ -591,6 +592,16 @@ public class UtilsHandler
 			}
 		}
 		PHANES_REGRET_ACTIVE.set(false);
+	}
+	
+	@SubscribeEvent
+	public void onRepair(AnvilRepairEvent event)
+	{
+		if(event.getPlayer() == null) return;
+		if(event.getItemInput().getDamageValue() > event.getItemResult().getDamageValue() && event.getPlayer().getRandom().nextInt(100) < 2)
+		{
+			MiscUtil.spawnDrops(event.getPlayer(), UEUtils.REINFORCED, MathHelper.nextInt(event.getPlayer().getRandom(), 3, 5));
+		}
 	}
 	
 	@SubscribeEvent

@@ -32,6 +32,7 @@ import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.AbstractSkeletonEntity;
 import net.minecraft.entity.monster.EndermanEntity;
+import net.minecraft.entity.monster.ShulkerEntity;
 import net.minecraft.entity.monster.WitchEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -1046,7 +1047,42 @@ public class EntityEvents
 			}
 			if(valid) MiscUtil.spawnDrops(deadEntity, UE.ALCHEMISTS_GRACE, MathHelper.nextInt(rand, 4, 10));
 		}
+		if(!(deadEntity instanceof PlayerEntity) && rand.nextInt(100) < 1)
+		{
+			if(deadEntity.hasEffect(Effects.ABSORPTION))
+			{
+				MiscUtil.spawnDrops(deadEntity, UE.PHOENIX_BLESSING, 1);
+			}
+			if(entity instanceof PlayerEntity)
+			{
+				float damageDealt = 0F;
+				float maxHealth = ((PlayerEntity)entity).getMaxHealth();
+				List<CombatEntry> entries = ((CombatTrackerMixin)((PlayerEntity)entity).getCombatTracker()).getCombatEntries();
+				for(int i = 0,m=entries.size();i<m;i++)
+				{
+					CombatEntry entry = entries.get(i);
+					if(entry.isCombatRelated() && entry.getSource().getEntity() == deadEntity)
+					{
+						damageDealt += entry.getDamage();
+						if(damageDealt / maxHealth >= 0.75)
+						{
+							MiscUtil.spawnDrops(deadEntity, UE.ARES_BLESSING, 1);
+							break;
+						}
+					}
+				}
+				if(deadEntity.hasEffect(Effects.LEVITATION) || ((PlayerEntity)entity).hasEffect(Effects.LEVITATION))
+				{
+					MiscUtil.spawnDrops(deadEntity, UE.CLOUD_WALKER, MathHelper.nextInt(rand, 1, 2));
+				}
+			}
+		}
+		if(deadEntity instanceof ShulkerEntity && entity instanceof ShulkerEntity && rand.nextInt(100) < 3)
+		{
+			MiscUtil.spawnDrops(deadEntity, UE.ENDEST_REAP, MathHelper.nextInt(rand, 2, 4));
+		}
 	}
+	
 	
 	@SubscribeEvent
 	public void onRespawn(PlayerEvent.Clone event)
