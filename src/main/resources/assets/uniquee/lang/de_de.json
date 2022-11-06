@@ -83,6 +83,7 @@
 	"//Potion": true,
 	"potion.uniquee.uniquepestilences_odium": "Abscheu der Pestilenz",
 	"potion.uniquee.eternal_flame": "Ewige Flamme",
+	"potion.uniquee.thrombosis": "Thrombose",
 	
 	"//Tooltips": true,
 	"tooltip.uniquee.stored.gold.name": "Gespeichertes Gold: %s",

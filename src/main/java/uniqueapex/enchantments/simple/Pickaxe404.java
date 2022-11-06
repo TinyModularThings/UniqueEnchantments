@@ -10,7 +10,7 @@ public class Pickaxe404 extends ApexEnchantment
 {
 	public Pickaxe404()
 	{
-		super("pickaxe", EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
+		super("pickaxe404", EnchantmentType.DIGGER, EquipmentSlotType.MAINHAND);
 		setCategory("apex");
 	}
 	
