@@ -24,7 +24,7 @@
         { "type": "minecraft:projectile_protection", "level": 1 } 
     ],
 	"lock": true,
-	"max": 3,
+	"max": 5,
     "output": "uniqueapex:absolute_protection",
     "output_mode": "min" 
 }

@@ -777,6 +777,7 @@ public class EntityEvents
 			{
 				event.setAmount((float)(event.getAmount()*Math.pow(ComboStar.DAMAGE_LOSS.get(), level)));
 			}
+			System.out.println(event.getAmount());
 		}
 	}
 	

@@ -130,9 +130,9 @@ public class UEBase
 		builder.comment("Icon Limit defines how many icons of each extra category are shown at once");
 		LIMIT_AMOUNT = builder.defineInRange("Icon Limit", 4, 0, 25);
 		builder.comment("How many Icon Rows should exists");
-		ICON_ROWS = builder.defineInRange("Enchantment Icon Rows", 3, 1, 100);
+		ICON_ROWS = builder.defineInRange("Enchantment Icon Rows", 2, 1, 100);
 		builder.comment("How many Icons per Row should be Shown");
-		ICON_ROW_ELEMENTS = builder.defineInRange("Enchantment Icon Row Elements", 18, 1, 100);
+		ICON_ROW_ELEMENTS = builder.defineInRange("Enchantment Icon Row Elements", 9, 1, 100);
 		builder.comment("How Long it should take to cycle Icons if there is to many, in Ticks");
 		ICON_CYCLE_TIME = builder.defineInRange("Cycle Time", 40, 5, 10000);
 		builder.pop();

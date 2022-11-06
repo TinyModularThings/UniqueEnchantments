@@ -28,7 +28,7 @@
         { "type": "minecraft:smite", "level": 1 }
     ],
 	"lock": true,
-	"max": 3,
+	"max": 4,
     "output": "uniqueapex:blessed_blade",
     "output_mode": "average" 
 }
