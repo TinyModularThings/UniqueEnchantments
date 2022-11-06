@@ -8,15 +8,18 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.LootTables;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -94,6 +97,10 @@ public class LootModifier implements IGlobalLootModifier
 					}
 				}
 			}
+		}
+		if(LootTables.PIGLIN_BARTERING.equals(context.getQueriedLootTableId()) && context.getRandom().nextInt(200) < 1)
+		{
+			generatedLoot.add(EnchantedBookItem.createForEnchantment(new EnchantmentData(UE.MIDAS_BLESSING, MathHelper.nextInt(context.getRandom(), 2, 3))));
 		}
 		return generatedLoot;
 	}
