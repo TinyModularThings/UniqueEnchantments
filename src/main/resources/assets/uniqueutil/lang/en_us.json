@@ -4,7 +4,7 @@
 	"enchantment.uniqueutil.adept.icon": "l",
 	"enchantment.uniqueutil.alchemists_blessing": "Alchemist's Blessing",
 	"enchantment.uniqueutil.alchemists_blessing.desc": "Shift-rightclicking an Anvil will consume all of your Redstone in your Inventory. Requires a Beam of Light, transmutates Items on thus Beam. This Action consumes Redstone",
-	"enchantment.uniqueutil.alchemists_blessing.icon": "\u0070",
+	"enchantment.uniqueutil.alchemists_blessing.icon": "p",
 	"enchantment.uniqueutil.ambrosia": "Ambrosia",
 	"enchantment.uniqueutil.ambrosia.desc": "Food and Potions will turn into the best thing you've ever tasted",
 	"enchantment.uniqueutil.ambrosia.icon": "\u0002",
@@ -69,9 +69,8 @@
 	"tooltip.uniqueutil.stored.repair.name": "Stored Gems %s",
 	"tooltip.uniqueutil.stored.shield.name": "%s Stored Durability left",
 	"tooltip.uniqueutil.stored.soul.name": "Item Soul Level %s",
-	
-	"upgrade.uniqueutil.speed": "Speed %s",
 	"upgrade.uniqueutil.give_effect": "Give Effect %s",
 	"upgrade.uniqueutil.mining_speed": "Mining Speed %s",
-	"upgrade.uniqueutil.shield": "Magic Shield"
+	"upgrade.uniqueutil.shield": "Magic Shield",
+	"upgrade.uniqueutil.speed": "Speed %s"
 }

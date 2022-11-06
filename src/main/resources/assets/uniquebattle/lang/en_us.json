@@ -8,9 +8,6 @@
 	"enchantment.uniquebattle.artemis_soul": "Artemis Soul",
 	"enchantment.uniquebattle.artemis_soul.desc": "Shift-rightclick an Anvil  with ender-related Items to store them. Killing an Entity saves the Soul in the Tool. Souls increase the overall yields. However your Tool needs to feast with Ender or Souls",
 	"enchantment.uniquebattle.artemis_soul.icon": "\u000b",
-	"enchantment.uniquebattle.hecates_blessing": "Hecates Blessing",
-	"enchantment.uniquebattle.hecates_blessing.desc": "At Night increases Attack Speed/Drawspeed",
-	"enchantment.uniquebattle.hecates_blessing.icon": "\u0011",
 	"enchantment.uniquebattle.deep_wounds": "Deep Wounds",
 	"enchantment.uniquebattle.deep_wounds.desc": "Hitting an entity without Chestplace, will cause it to bleed. Bleeding enemy take damage over time and increased damage",
 	"enchantment.uniquebattle.deep_wounds.icon": "\u0019",
@@ -23,6 +20,9 @@
 	"enchantment.uniquebattle.granis_soul": "Grani's Soul",
 	"enchantment.uniquebattle.granis_soul.desc": "Press the specified Key to start dashing. Entities around the start and end location start bleeding",
 	"enchantment.uniquebattle.granis_soul.icon": "0",
+	"enchantment.uniquebattle.hecates_blessing": "Hecates Blessing",
+	"enchantment.uniquebattle.hecates_blessing.desc": "At Night increases Attack Speed/Drawspeed",
+	"enchantment.uniquebattle.hecates_blessing.icon": "\u0011",
 	"enchantment.uniquebattle.ifrits_blessing": "Ifrit's Blessing'",
 	"enchantment.uniquebattle.ifrits_blessing.desc": "Hitting a burning Entity will deal additional Damage. Bonus is exponential if you're burning as well",
 	"enchantment.uniquebattle.ifrits_blessing.icon": "3",
@@ -47,9 +47,8 @@
 	"tooltip.uniquebattle.stored.ender.name": "Stored Ender Energy %s",
 	"tooltip.uniquebattle.stored.ender.souls.common.name": "Basic Souls stored %s",
 	"tooltip.uniquebattle.stored.ender.souls.higher.name": "Higher Souls stored %s",
-	
 	"upgrade.uniquebattle.crit": "Crit Damage %s",
+	"upgrade.uniquebattle.lifesteal": "Lifesteal %s",
 	"upgrade.uniquebattle.loot": "Loot %s",
-	"upgrade.uniquebattle.use_time": "Use Time %s",
-	"upgrade.uniquebattle.lifesteal": "Lifesteal %s"
+	"upgrade.uniquebattle.use_time": "Use Time %s"
 }
