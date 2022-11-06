@@ -12,6 +12,7 @@
 		"common.enchantments.ThornsEnchantmentMixin",
 		"common.enchantments.UnbreakingEnchantmentMixin",
 		"common.entity.ArrowMixin",
+		"common.entity.CombatTrackerMixin",
 		"common.entity.DragonManagerMixin",
 		"common.entity.EndermenMixin",
 		"common.entity.EntityMixin",

@@ -1,7 +1,6 @@
 package uniquee.handler;
 
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -11,14 +10,11 @@ import com.google.common.collect.Multimap;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.data.LootTableProvider;
-import net.minecraft.data.loot.EntityLootTables;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.CreatureAttribute;
@@ -36,6 +32,8 @@ import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.AbstractSkeletonEntity;
 import net.minecraft.entity.monster.EndermanEntity;
+import net.minecraft.entity.monster.ShulkerEntity;
+import net.minecraft.entity.monster.WitchEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -43,23 +41,19 @@ import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity.PickupStatus;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.ShieldItem;
 import net.minecraft.item.TieredItem;
-import net.minecraft.loot.LootTableManager;
-import net.minecraft.loot.functions.SetLootTable;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectType;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.CombatEntry;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.FoodStats;
-import net.minecraft.util.Hand;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -75,7 +69,6 @@ import net.minecraft.world.storage.MapBanner;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.data.ForgeLootTableProvider;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -95,6 +88,7 @@ import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.living.PotionEvent;
+import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
@@ -111,6 +105,7 @@ import uniquebase.utils.StackUtils;
 import uniquebase.utils.events.EndermenLookEvent;
 import uniquebase.utils.events.PiglinWearableCheckEvent;
 import uniquebase.utils.mixin.common.InteractionManagerMixin;
+import uniquebase.utils.mixin.common.entity.CombatTrackerMixin;
 import uniquebase.utils.mixin.common.entity.PotionMixin;
 import uniquebase.utils.mixin.common.item.MapDataMixin;
 import uniquee.UE;
@@ -120,6 +115,7 @@ import uniquee.enchantments.complex.PerpetualStrike;
 import uniquee.enchantments.complex.SmartAss;
 import uniquee.enchantments.complex.SpartanWeapon;
 import uniquee.enchantments.complex.SwiftBlade;
+import uniquee.enchantments.curse.ComboStar;
 import uniquee.enchantments.curse.DeathsOdium;
 import uniquee.enchantments.curse.PestilencesOdium;
 import uniquee.enchantments.simple.AmelioratedBaneOfArthropod;
@@ -644,6 +640,17 @@ public class EntityEvents
 	}
 	
 	@SubscribeEvent
+	public void onItemUseTick(LivingEntityUseItemEvent.Tick event)
+	{
+		if(event.getDuration() <= 10) return;
+		if(MiscUtil.getEnchantedItem(UE.COMBO_STAR, event.getEntityLiving()).getIntValue() > 0)
+		{
+			int counter = MiscUtil.getPersistentData(event.getEntityLiving()).getInt(ComboStar.COMBO_NAME);
+			event.setDuration(Math.max(10, (int)(event.getDuration() / MathCache.LOG10.get((int)ComboStar.COUNTER_MULTIPLIER.get(10+counter)))));
+		}
+	}
+	
+	@SubscribeEvent
 	public void onEntityHeal(LivingHealEvent event)
 	{
 		LivingEntity entity = event.getEntityLiving();
@@ -672,7 +679,6 @@ public class EntityEvents
 	{
 		LivingEntity target = event.getEntityLiving();
 		Entity entity = event.getSource().getEntity();
-		
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity base = (LivingEntity)entity;
@@ -766,8 +772,12 @@ public class EntityEvents
 			if(level > 0 && base.getType() == EntityType.ENDERMAN && EnderEyes.AFFECTED_ENTITIES.contains(base.getType().getRegistryName()) && MiscUtil.isTranscendent(target, target.getItemBySlot(EquipmentSlotType.HEAD), UE.ENDER_EYES) && rand.nextDouble() < EnderEyes.TRANSCENDED_CHANCE.get()) {
 				base.kill();
 			}
+			level = MiscUtil.getCombinedEnchantmentLevel(UE.COMBO_STAR, base);
+			if(level > 0)
+			{
+				event.setAmount((float)(event.getAmount()*Math.pow(ComboStar.DAMAGE_LOSS.get(), level)));
+			}
 		}
-		System.out.println(event.getAmount());
 	}
 	
 	@SubscribeEvent
@@ -895,6 +905,24 @@ public class EntityEvents
 	}
 	
 	@SubscribeEvent
+	public void onCrit(CriticalHitEvent event)
+	{
+		if(event.getPlayer() == null) return;
+		int level = MiscUtil.getCombinedEnchantmentLevel(UE.COMBO_STAR, event.getPlayer());
+		if(level > 0)
+		{
+			CompoundNBT nbt = MiscUtil.getPersistentData(event.getPlayer());
+			if(event.isVanillaCritical()) nbt.putInt(ComboStar.COMBO_NAME, nbt.getInt(ComboStar.COMBO_NAME)+1);
+			else nbt.remove(ComboStar.COMBO_NAME);
+			int combo = nbt.getInt(ComboStar.COMBO_NAME);
+			
+			double damage = Math.pow(ComboStar.DAMAGE_LOSS.get(), level);
+			double crit = Math.pow(ComboStar.CRIT_DAMAGE.get(1D/damage), 1+ComboStar.COUNTER_MULTIPLIER.get(0.1*combo));
+			event.setDamageModifier((float)(event.getDamageModifier() * crit));
+		}
+	}
+	
+	@SubscribeEvent
 	public void onLivingFall(LivingFallEvent event)
 	{
 		ItemStack stack = event.getEntityLiving().getItemBySlot(EquipmentSlotType.CHEST);
@@ -947,16 +975,13 @@ public class EntityEvents
 				}
 			}
 			if(!(deadEntity instanceof PlayerEntity) && rand.nextFloat() < 0.025f) {
-				
-				Object2IntMap<Enchantment> list = new Object2IntOpenHashMap<>();
+				Set<Enchantment> ench = new ObjectOpenHashSet<>();
 				for (ItemStack stack : deadEntity.getAllSlots()) {
-					for( Entry<Enchantment, Integer> k:MiscUtil.getEnchantments(stack).entrySet()) {
-						list.putIfAbsent(k.getKey(), k.getValue());
+					ench.addAll(MiscUtil.getEnchantments(stack).keySet());
+					if(ench.size() >= 10) {
+						MiscUtil.spawnDrops(deadEntity, UE.GRIMOIRE, rand.nextInt(2));
+						break;
 					}
-				}
-				
-				if(list.size() >= 10) {
-					MiscUtil.spawnDrops(deadEntity, UE.GRIMOIRE, rand.nextInt(2));
 				}
 			}
 		}
@@ -1008,7 +1033,56 @@ public class EntityEvents
 				nbt.putInt(DeathsOdium.CURSE_STORAGE, (nbt.getInt(DeathsOdium.CURSE_STORAGE)+1));
 			}
 		}
+		if(deadEntity instanceof WitchEntity && rand.nextInt(100) < 2)
+		{
+			List<CombatEntry> entries = ((CombatTrackerMixin)deadEntity.getCombatTracker()).getCombatEntries();
+			boolean valid = true;
+			for(int i = 0,m=entries.size();i<m;i++)
+			{
+				CombatEntry entry = entries.get(i);
+				if(!entry.getSource().isMagic()){
+					valid = false;
+					break;
+				}
+			}
+			if(valid) MiscUtil.spawnDrops(deadEntity, UE.ALCHEMISTS_GRACE, MathHelper.nextInt(rand, 4, 10));
+		}
+		if(!(deadEntity instanceof PlayerEntity) && rand.nextInt(100) < 1)
+		{
+			if(deadEntity.hasEffect(Effects.ABSORPTION))
+			{
+				MiscUtil.spawnDrops(deadEntity, UE.PHOENIX_BLESSING, 1);
+			}
+			if(entity instanceof PlayerEntity)
+			{
+				float damageDealt = 0F;
+				float maxHealth = ((PlayerEntity)entity).getMaxHealth();
+				List<CombatEntry> entries = ((CombatTrackerMixin)((PlayerEntity)entity).getCombatTracker()).getCombatEntries();
+				for(int i = 0,m=entries.size();i<m;i++)
+				{
+					CombatEntry entry = entries.get(i);
+					if(entry.isCombatRelated() && entry.getSource().getEntity() == deadEntity)
+					{
+						damageDealt += entry.getDamage();
+						if(damageDealt / maxHealth >= 0.75)
+						{
+							MiscUtil.spawnDrops(deadEntity, UE.ARES_BLESSING, 1);
+							break;
+						}
+					}
+				}
+				if(deadEntity.hasEffect(Effects.LEVITATION) || ((PlayerEntity)entity).hasEffect(Effects.LEVITATION))
+				{
+					MiscUtil.spawnDrops(deadEntity, UE.CLOUD_WALKER, MathHelper.nextInt(rand, 1, 2));
+				}
+			}
+		}
+		if(deadEntity instanceof ShulkerEntity && entity instanceof ShulkerEntity && rand.nextInt(100) < 3)
+		{
+			MiscUtil.spawnDrops(deadEntity, UE.ENDEST_REAP, MathHelper.nextInt(rand, 2, 4));
+		}
 	}
+	
 	
 	@SubscribeEvent
 	public void onRespawn(PlayerEvent.Clone event)
@@ -1172,19 +1246,19 @@ public class EntityEvents
 	{
 		LivingEntity entity = event.getEntityLiving();
 		AttributeModifierManager attribute = entity.getAttributes();
-		Multimap<Attribute, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), entity, event.getSlot());
+		Multimap<Attribute, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), entity, event.getSlot(), true);
 		if(!mods.isEmpty())
 		{
 			attribute.removeAttributeModifiers(mods);
 		}		
-		mods = createModifiersFromStack(event.getTo(), entity, event.getSlot());
+		mods = createModifiersFromStack(event.getTo(), entity, event.getSlot(), false);
 		if(!mods.isEmpty())
 		{
 			attribute.addTransientAttributeModifiers(mods);
 		}		
 	}
 	
-	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(ItemStack stack, LivingEntity living, EquipmentSlotType slot)
+	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(ItemStack stack, LivingEntity living, EquipmentSlotType slot, boolean remove)
 	{
 		Multimap<Attribute, AttributeModifier> mods = HashMultimap.create();
 		//Optimization. After 3 Enchantment's its sure that on average you have more then 1 full iteration. So now we fully iterate once over it since hash-code would be a faster check.
@@ -1214,23 +1288,25 @@ public class EntityEvents
 			}
 		}
 		
-		//does not properly get removed if player looses EXP while still holding it
 		level = enchantments.getInt(UE.FOCUS_IMPACT);
-		if(level > 0 && MiscUtil.getSlotsFor(UE.FOCUS_IMPACT).contains(slot) && MiscUtil.isTranscendent(living, stack, UE.FOCUS_IMPACT))
+		if(level > 0 && MiscUtil.getSlotsFor(UE.FOCUS_IMPACT).contains(slot) && (remove || MiscUtil.isTranscendent(living, stack, UE.FOCUS_IMPACT)))
 		{
-			System.out.println("slowhello");
 			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(FocusedImpact.IMPACT_MOD, "Focus Impact", FocusedImpact.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UE.SWIFT_BLADE);
-		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT_BLADE).contains(slot) && MiscUtil.isTranscendent(living, stack, UE.SWIFT_BLADE))
+		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT_BLADE).contains(slot) && (remove || MiscUtil.isTranscendent(living, stack, UE.SWIFT_BLADE)))
 		{
-			System.out.println("hello");
 			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SwiftBlade.SWIFT_MOD, "Swift Blade", SwiftBlade.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
 		}
 		level = UE.AMELIORATED_UPGRADE.isValid(stack) ? UE.AMELIORATED_UPGRADE.getPoints(stack) : 0;
 		if(level > 0 && UE.AMELIORATED_UPGRADE.isValidSlot(slot))
 		{
 			mods.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(AmelioratedUpgrade.DAMAGE_ID, "Ameliorated Upgrade", MathCache.SQRT_EXTRA_SPECIAL.get(level), Operation.ADDITION));
+		}
+		if(MiscUtil.getEnchantedItem(UE.COMBO_STAR, living).getIntValue() > 0)
+		{
+			int counter = MiscUtil.getPersistentData(living).getInt(ComboStar.COMBO_NAME);
+			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(ComboStar.SPEED_EFFECT, "Combo Star Speed", MathCache.LOG10.get((int)ComboStar.COUNTER_MULTIPLIER.get(10+counter)), Operation.MULTIPLY_BASE));
 		}
 		return mods;
 	}

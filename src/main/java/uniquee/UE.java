@@ -49,6 +49,7 @@ import uniquee.enchantments.complex.PerpetualStrike;
 import uniquee.enchantments.complex.SmartAss;
 import uniquee.enchantments.complex.SpartanWeapon;
 import uniquee.enchantments.complex.SwiftBlade;
+import uniquee.enchantments.curse.ComboStar;
 import uniquee.enchantments.curse.DeathsOdium;
 import uniquee.enchantments.curse.PestilencesOdium;
 import uniquee.enchantments.simple.AmelioratedBaneOfArthropod;
@@ -136,6 +137,7 @@ public class UE extends BaseUEMod
 	//Curses
 	public static Enchantment PESTILENCES_ODIUM;
 	public static Enchantment DEATHS_ODIUM;
+	public static Enchantment COMBO_STAR;
 	
 	//Potions
 	public static Effect THROMBOSIS;
@@ -234,6 +236,7 @@ public class UE extends BaseUEMod
 		
 		PESTILENCES_ODIUM = register(new PestilencesOdium());
 		DEATHS_ODIUM = register(new DeathsOdium());
+		COMBO_STAR = register(new ComboStar());
 	}
 	
     @SubscribeEvent

@@ -9,13 +9,10 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.item.EnderCrystalEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.ByteNBT;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.BeaconTileEntity;
 import net.minecraft.tileentity.TileEntity;
@@ -148,20 +145,20 @@ public class FusionHandler
 	public void onPlayerTick(PlayerTickEvent event)
 	{
 		if(event.phase == Phase.START) return;
-		PlayerEntity player = event.player;
-		if(player.level.getGameTime() % 200 == 0)
-		{
-			for(EquipmentSlotType slot : EquipmentSlotType.values())
-			{
-				ItemStack stack = player.getItemBySlot(slot);
-				if(!stack.hasTag()) continue;
-				CompoundNBT data = stack.getTag();
-				if(!data.getBoolean("fusioned")) {
-					clearApex(stack);
-					continue;
-				}
-			}
-		}
+//		PlayerEntity player = event.player;
+//		if(player.level.getGameTime() % 200 == 0)
+//		{
+//			for(EquipmentSlotType slot : EquipmentSlotType.values())
+//			{
+//				ItemStack stack = player.getItemBySlot(slot);
+//				if(!stack.hasTag()) continue;
+//				CompoundNBT data = stack.getTag();
+//				if(!data.getBoolean("fusioned")) {
+//					clearApex(stack);
+//					continue;
+//				}
+//			}
+//		}
 	}
 	
 	private void clearApex(ItemStack stack)
