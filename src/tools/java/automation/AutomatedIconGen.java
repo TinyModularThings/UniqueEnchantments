@@ -57,7 +57,7 @@ public class AutomatedIconGen
 	}
 	
 	public static boolean isValidFile(Path path) {
-		return path.getFileName().toString().equalsIgnoreCase("en_us.json");
+		return path.getFileName().endsWith(".json") && path.getParent().getFileName().toString().equals("lang");
 	}
 	
 	public static class LangFile
