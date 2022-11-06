@@ -170,7 +170,6 @@ public class EnchantmentHandler
 			tooltip.add(ench.getFullname(compoundnbt.getInt("lvl")));
 			if(icons) addEnchantment(tooltip, ench, elements, total, cycleTime);
 			if(desciptions && (item == Items.ENCHANTED_BOOK || tools)) addDescriptions(tooltip, ench);
-			
 		}
 		return true;
 	}
