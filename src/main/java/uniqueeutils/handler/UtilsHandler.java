@@ -4,11 +4,21 @@ import java.util.List;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.math.Matrix4f;
 
 import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
@@ -26,6 +36,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -63,6 +74,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -160,86 +173,76 @@ public class UtilsHandler
 		}
 	}
 	
-//	@SubscribeEvent
-//	@OnlyIn(Dist.CLIENT)
-//	@SuppressWarnings("deprecation")
-//	public void onRender(RenderLevelLastEvent event)
-//	{
-//		TODO implement new Render Pipeline...
-//		if(toRender.isEmpty())
-//			return;
-//		Minecraft mc = Minecraft.getInstance();
-//		Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("uniquee", "treasurers_eyes"));
-//		if(ench == null)
-//			return;
-//		int level = MiscUtil.getEnchantmentLevel(ench, mc.player.getItemBySlot(EquipmentSlot.HEAD));
-//		if(level <= 0)
-//			return;
-//		Tesselator tes = Tesselator.getInstance();
-//		BufferBuilder buffer = tes.getBuilder();
-//		buffer.begin(GL11.GL_TRIANGLES, DefaultVertexFormat.POSITION_COLOR);
-//		PoseStack matrix = event.getPoseStack();
-//		matrix.pushPose();
-//		Vec3 playerPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-//		matrix.translate(-playerPos.x(), -playerPos.y(), -playerPos.z());
-//		Matrix4f transform = matrix.last().pose();
-//		for(int i = 0, m = toRender.size();i < m;i++)
-//		{
-//			toRender.get(i).render(buffer, transform);
-//		}
-//		matrix.popPose();
-//		GlStateManager._disableTexture();
-//		GlStateManager._disableDepthTest();
-//		GlStateManager._enableAlphaTest();
-//		GlStateManager._alphaFunc(516, 0.1F);
-//		GlStateManager._enableBlend();
-//		RenderSystem.defaultBlendFunc();
-//		tes.end();
-//		GlStateManager._enableTexture();
-//		GlStateManager._enableDepthTest();
-//	}
-//	
-//	@SubscribeEvent
-//	@OnlyIn(Dist.CLIENT)
-//	@SuppressWarnings("deprecation")
-//	public void onOverlay(RenderGameOverlayEvent.Post event)
-//	{
-//		if(event.getType() != ElementType.HEALTH)
-//		{
-//			return;
-//		}
-//		Minecraft mc = Minecraft.getInstance();
-//		Gui gui = mc.gui;
-//		Window window = mc.getWindow();
-//		Player player = mc.player;
-//		float shield = MiscUtil.getPersistentData(player).getInt(PhanesUpgrade.SHIELD_STORAGE);
-//		float max = MathCache.LOG.getFloat(1+ UEUtils.PHANES_UPGRADE.getCombinedPoints(player));
-//		int hearts = Mth.ceil(Mth.clamp(shield / max * 20F, 0, 20));
-//		if(hearts <= 0 || !UEUtils.RENDER_SHIELD_HUD.get()) return;
-//        RenderSystem.enableBlend();
-//        mc.getTextureManager().bind(new ResourceLocation("uniqueutil", "textures/gui/icons.png"));
-//        PoseStack mStack = event.getMatrixStack();
-//        int left = window.getGuiScaledWidth() / 2 - 91;
-//        int top = window.getGuiScaledHeight() - 39;
-//        int textureY = 9 * (mc.level.getLevelData().isHardcore() ? 5 : 0);
-//        int regen = player.hasEffect(MobEffects.REGENERATION) ? gui.getGuiTicks() % 25 : -1;
-//        int health = Mth.ceil(player.getHealth());
-//        RenderSystem.color4f(1F, 1F, 1F, 0.7F);
-//        for(int i = hearts/2;i>=0;i--)
-//        {
-//            int row = Mth.ceil((float)(i + 1) / 10.0F) - 1;
-//            int x = left + i % 10 * 8;
-//            int y = top - row * 3;
-//            if (health <= 4) y += mc.level.random.nextInt(2);
-//            if (i == regen) y -= 2;
-//            if (i * 2 + 1 < hearts)
-//            	gui.blit(mStack, x, y, 52, textureY, 9, 9); //4
-//            else if (i * 2 + 1 == hearts)
-//                gui.blit(mStack, x, y, 61, textureY, 9, 9); //5
-//        }
-//        RenderSystem.color4f(1F, 1F, 1F, 1F);
-//        RenderSystem.disableBlend();
-//	}
+	@SubscribeEvent
+	@OnlyIn(Dist.CLIENT)
+	public void onRender(RenderLevelStageEvent event)
+	{
+		if(toRender.isEmpty() || event.getStage() != Stage.AFTER_WEATHER) return;
+		Minecraft mc = Minecraft.getInstance();
+		Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("uniquee", "treasurers_eyes"));
+		if(ench == null)
+			return;
+		int level = MiscUtil.getEnchantmentLevel(ench, mc.player.getItemBySlot(EquipmentSlot.HEAD));
+		if(level <= 0)
+			return;
+		
+		Tesselator tes = Tesselator.getInstance();
+		BufferBuilder buffer = tes.getBuilder();
+		buffer.begin(Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR);
+		PoseStack matrix = event.getPoseStack();
+		matrix.pushPose();
+		Vec3 playerPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
+		matrix.translate(-playerPos.x(), -playerPos.y(), -playerPos.z());
+		Matrix4f transform = matrix.last().pose();
+		for(int i = 0, m = toRender.size();i < m;i++)
+		{
+			toRender.get(i).render(buffer, transform);
+		}
+		matrix.popPose();
+		RenderSystem.disableTexture();
+		RenderSystem.disableDepthTest();
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		tes.end();
+		RenderSystem.enableTexture();
+		RenderSystem.enableDepthTest();
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public void onOverlay(PoseStack mStack)
+	{
+		Minecraft mc = Minecraft.getInstance();
+		Gui gui = mc.gui;
+		Window window = mc.getWindow();
+		Player player = mc.player;
+		float shield = MiscUtil.getPersistentData(player).getInt(PhanesUpgrade.SHIELD_STORAGE);
+		float max = MathCache.LOG.getFloat(1+ UEUtils.PHANES_UPGRADE.getCombinedPoints(player));
+		int hearts = Mth.ceil(Mth.clamp(shield / max * 20F, 0, 20));
+		if(hearts <= 0 || !UEUtils.RENDER_SHIELD_HUD.get()) return;
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderTexture(0, new ResourceLocation("uniqueutil", "textures/gui/icons.png"));
+        int left = window.getGuiScaledWidth() / 2 - 91;
+        int top = window.getGuiScaledHeight() - 39;
+        int textureY = 9 * (mc.level.getLevelData().isHardcore() ? 5 : 0);
+        int regen = player.hasEffect(MobEffects.REGENERATION) ? gui.getGuiTicks() % 25 : -1;
+        int health = Mth.ceil(player.getHealth());
+        RenderSystem.setShaderColor(1F, 1F, 1F, 0.7F);
+        for(int i = hearts/2;i>=0;i--)
+        {
+            int row = Mth.ceil((float)(i + 1) / 10.0F) - 1;
+            int x = left + i % 10 * 8;
+            int y = top - row * 3;
+            if (health <= 4) y += mc.level.random.nextInt(2);
+            if (i == regen) y -= 2;
+            if (i * 2 + 1 < hearts)
+            	gui.blit(mStack, x, y, 52, textureY, 9, 9); //4
+            else if (i * 2 + 1 == hearts)
+                gui.blit(mStack, x, y, 61, textureY, 9, 9); //5
+        }
+        RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+        RenderSystem.disableBlend();
+	}
 	
 	public void addDrawPosition(BlockPos pos)
 	{
@@ -1070,7 +1073,6 @@ public class UtilsHandler
 	
 	public static void damageShield(float damage, Player player)
 	{
-		//TODO implement shield event instead
 		if(damage >= 3.0F && player.getUseItem().is(Tags.Items.TOOLS_SHIELDS))
 		{
 			ItemStack copyBeforeUse = player.getUseItem().copy();

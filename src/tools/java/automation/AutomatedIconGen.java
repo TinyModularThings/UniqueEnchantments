@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.gson.JsonArray;
@@ -27,25 +28,30 @@ public class AutomatedIconGen
 		Path iconPath = Paths.get(args[1]);
 		try(BufferedReader reader = Files.newBufferedReader(iconPath)) {
 			List<LangFile> list = new ObjectArrayList<>();
-			Map<String, LangFile> map = new Object2ObjectOpenHashMap<>();
+			Map<String, Map<String, LangFile>> map = new Object2ObjectOpenHashMap<>();
 			for(Iterator<Path> iter = Files.walk(langPath).iterator();iter.hasNext();) {
 				Path path = iter.next();
 				if(!isValidFile(path)) continue;
 				LangFile file = LangFile.map(path);
 				if(file == null) continue;
 				list.add(file);
-				file.fillMap(map);
+				Map<String, LangFile> langMap = new Object2ObjectOpenHashMap<>();
+				file.fillMap(langMap);
+				map.put(path.getFileName().toString(), langMap);
 			}
 			JsonArray icons = JsonParser.parseReader(reader).getAsJsonObject().getAsJsonArray("icons");
 			for(int i = 0,m=icons.size();i<m;i++) {
 				String s = icons.get(i).getAsString();
 				if(s.isEmpty()) continue;
-				LangFile file = map.get(s+".desc");
-				if(file == null) {
-					System.out.println("["+s+".desc] wasn't found in the language file, Skipping");
-					continue;
+				for(Entry<String, Map<String, LangFile>> entry : map.entrySet())
+				{
+					LangFile file = entry.getValue().get(s+".desc");
+					if(file == null) {
+						System.out.println("["+s+".desc] wasn't found in the language file ["+entry.getKey()+"], Skipping");
+						continue;
+					}
+					file.addLangEntry(s+".icon", i+1);
 				}
-				file.addLangEntry(s+".icon", i+1);
 			}
 			for(LangFile file : list) {
 				file.save();
@@ -57,7 +63,7 @@ public class AutomatedIconGen
 	}
 	
 	public static boolean isValidFile(Path path) {
-		return path.getFileName().toString().equalsIgnoreCase("en_us.json");
+		return path.getFileName().toString().endsWith(".json") && path.getParent().getFileName().startsWith("lang");
 	}
 	
 	public static class LangFile

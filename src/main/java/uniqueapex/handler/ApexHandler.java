@@ -1,29 +1,38 @@
 package uniqueapex.handler;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.ints.Int2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2LongMap;
+import it.unimi.dsi.fastutil.ints.Int2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.TickingBlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
@@ -42,11 +51,13 @@ import uniqueapex.UEApex;
 import uniqueapex.enchantments.simple.AbsoluteProtection;
 import uniqueapex.enchantments.simple.BlessedBlade;
 import uniqueapex.enchantments.simple.SecondLife;
+import uniqueapex.enchantments.unique.AeonsFragment;
 import uniqueapex.handler.misc.MiningArea;
 import uniquebase.api.events.ItemDurabilityChangeEvent;
 import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
+import uniquebase.utils.mixin.common.tile.ChunkMixin;
 
 public class ApexHandler
 {
@@ -124,49 +135,54 @@ public class ApexHandler
 		}
 	}
 	
-//	@SubscribeEvent
-//	public void onWorldTickEvent(LevelTickEvent event)
-//	{
-//		if(event.phase == Phase.START || event.side.isClient()) return;
-//		Int2LongMap map = tridentMap.get(event.level.dimension());
-//		if(map == null) return;
-//		Level world = event.level;
-//		MutableBlockPos pos = new MutableBlockPos();
-//		for(Iterator<Int2LongMap.Entry> iter = Int2LongMaps.fastIterator(map);iter.hasNext();)
-//		{
-//			Int2LongMap.Entry entry = iter.next();
-//			Entity entity = world.getEntity(entry.getIntKey());
-//			if(!(entity instanceof ThrownTrident trident))
-//			{
-//				iter.remove();
-//				continue;
-//			}
-//			if(world.isEmptyBlock(pos.set(entry.getLongValue())))
-//			{
-//				iter.remove();
-//				continue;
-//			}
-//			BlockEntity tile = world.getBlockEntity(pos);
-//			if(!(tile instanceof TickableBlockEntity)) 
-//			{
-//				iter.remove();
-//				continue;
-//			}
-//			int interval = Mth.ceil(Math.sqrt(AeonsFragment.INTERVAL.get()/((world.getDifficulty().ordinal()+1)*(world.getCurrentDifficultyAt(pos).getEffectiveDifficulty()+1))));
-//			if(world.getGameTime() % interval != 0)
-//			{
-//				continue;
-//			}
-//			ItemStack stack = StackUtils.getArrowStack(trident);
-//			double attack = EnchantmentHelper.getDamageBonus(stack, MobType.UNDEFINED) + 8;
-//			int level = MiscUtil.getEnchantmentLevel(UEApex.AEONS_FRAGMENT, stack);
-//			int ticks = Math.max(1, Mth.floor(-0.5+Math.sqrt(0.25+attack*AeonsFragment.TICK_SCALE.get(level))));
-//			TickableBlockEntity tick = (TickableBlockEntity)tile;
-//			for(int i = 0;i<ticks;i++) {
-//				tick.tick();
-//			}
-//		}
-//	}
+	@SubscribeEvent
+	public void onWorldTickEvent(LevelTickEvent event)
+	{
+		if(event.phase == Phase.START || event.side.isClient()) return;
+		Int2LongMap map = tridentMap.get(event.level.dimension());
+		if(map == null) return;
+		Level world = event.level;
+		MutableBlockPos pos = new MutableBlockPos();
+		for(Iterator<Int2LongMap.Entry> iter = Int2LongMaps.fastIterator(map);iter.hasNext();)
+		{
+			Int2LongMap.Entry entry = iter.next();
+			Entity entity = world.getEntity(entry.getIntKey());
+			if(!(entity instanceof ThrownTrident trident))
+			{
+				iter.remove();
+				continue;
+			}
+			if(world.isEmptyBlock(pos.set(entry.getLongValue())))
+			{
+				iter.remove();
+				continue;
+			}
+			LevelChunk chunk = world.getChunkAt(pos);
+			if(chunk == null)
+			{
+				iter.remove();
+				continue;
+			}
+			TickingBlockEntity tile = ((ChunkMixin)chunk).getTickerMap().get(pos);
+			if(tile == null || tile.isRemoved())
+			{
+				iter.remove();
+				continue;
+			}
+			int interval = Mth.ceil(Math.sqrt(AeonsFragment.INTERVAL.get()/((world.getDifficulty().ordinal()+1)*(world.getCurrentDifficultyAt(pos).getEffectiveDifficulty()+1))));
+			if(world.getGameTime() % interval != 0)
+			{
+				continue;
+			}
+			ItemStack stack = StackUtils.getArrowStack(trident);
+			double attack = EnchantmentHelper.getDamageBonus(stack, MobType.UNDEFINED) + 8;
+			int level = MiscUtil.getEnchantmentLevel(UEApex.AEONS_FRAGMENT, stack);
+			int ticks = Math.max(1, Mth.floor(-0.5+Math.sqrt(0.25+attack*AeonsFragment.TICK_SCALE.get(level))));
+			for(int i = 0;i<ticks;i++) {
+				tile.tick();
+			}
+		}
+	}
 	
 	@SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
 	public void onBreak(BreakEvent event)

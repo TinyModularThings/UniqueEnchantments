@@ -4,11 +4,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import uniquebase.UEBase;
@@ -94,7 +98,10 @@ public class UEUtils extends BaseUEMod
 		BaseHandler.INSTANCE.registerStorageTooltip(ANEMOIS_FRAGMENT, "tooltip.uniqueutil.stored.fuel.name", AnemoiFragment.STORAGE);
 		BaseHandler.INSTANCE.registerStorageTooltip(ALCHEMISTS_BLESSING, "tooltip.uniqueutil.stored.redstone.name", AlchemistsBlessing.STORED_REDSTONE);
 		BaseHandler.INSTANCE.registerStorageTooltip(SAGES_SOUL, "tooltip.uniqueutil.stored.soul.name", SagesSoul.STORED_XP);
-		BaseHandler.INSTANCE.registerStorageTooltip(REINFORCED, "tooltip.uniqueutil.stored.shield.name", Reinforced.SHIELD);	
+		BaseHandler.INSTANCE.registerStorageTooltip(REINFORCED, "tooltip.uniqueutil.stored.shield.name", Reinforced.SHIELD);
+		if(FMLEnvironment.dist.isClient()) {
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerOverlay);
+		}
 	}
 	
 	@Override
@@ -115,6 +122,14 @@ public class UEUtils extends BaseUEMod
 			event.getForgeRegistry().register("resonance_found", RESONANCE_SOUND);
 			event.getForgeRegistry().register("alchemist_blessing_transmutate", ALCHEMIST_BLESSING_SOUND);
 		}
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	public void registerOverlay(RegisterGuiOverlaysEvent event)
+	{
+		event.registerAbove(new ResourceLocation("player_health"), "overlay", (gui, poseStack, partialTick, screenWidth, screenHeight) -> {
+			UtilsHandler.INSTANCE.onOverlay(poseStack);
+		});
 	}
 	
 	@Override
