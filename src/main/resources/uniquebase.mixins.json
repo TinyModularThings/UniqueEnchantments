@@ -2,8 +2,8 @@
 	"package": "uniquebase.utils.mixin",
 	"required": true,
 	"refmap": "mixins.uniquebase.refmap.json",
-	"minVersion": "0.7",
-	"compatibilityLevel": "JAVA_8",
+	"minVersion": "0.8",
+	"compatibilityLevel": "JAVA_17",
 	"mixins": [
 		"common.enchantments.CombatRulesMixin",
 		"common.enchantments.EnchantmentMixin",

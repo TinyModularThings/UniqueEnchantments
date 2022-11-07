@@ -163,10 +163,10 @@ public class EnchantmentCategory implements IRecipeCategory<WrappedEnchantment>
 			EnchantedBookItem.addEnchantment(stack, new EnchantmentInstance(recipe.ench, i));
 			list.get(0).add(stack);
 		}
-		layout.addSlot(RecipeIngredientRole.INPUT, 89, 17).addItemStacks(list.get(0));
+		layout.addSlot(RecipeIngredientRole.INPUT, 90, 18).addItemStacks(list.get(0));
 		for(int i = 0;i<6;i++)
 		{
-			layout.addSlot(RecipeIngredientRole.INPUT, 112 + ((i % 3) * 18), 19 + ((i / 3) * 18)).addItemStacks(list.get(1+i));
+			layout.addSlot(RecipeIngredientRole.INPUT, 113 + ((i % 3) * 18), 20 + ((i / 3) * 18)).addItemStacks(list.get(1+i));
 		}
 	}
 }

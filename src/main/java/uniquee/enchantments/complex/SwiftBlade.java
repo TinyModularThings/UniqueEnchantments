@@ -19,7 +19,7 @@ public class SwiftBlade extends UniqueEnchantment
 
 	public SwiftBlade()
 	{
-		super(new DefaultData("swift_blade", Rarity.VERY_RARE, 2, false, false, 30, 85, 5).setTrancendenceLevel(200), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
+		super(new DefaultData("swift_blade", Rarity.VERY_RARE, 2, false, false, 30, 75, 5).setTrancendenceLevel(200), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
 		addStats(BASE_SPEED, TRANSCENDED_ATTACK_SPEED_MULTIPLIER);
 	}
 	

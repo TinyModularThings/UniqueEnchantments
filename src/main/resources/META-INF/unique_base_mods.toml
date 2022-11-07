@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[28,)"
+loaderVersion="[41,)"
 license="MIT License"
 [[mods]]
 	modId="uniquebase"

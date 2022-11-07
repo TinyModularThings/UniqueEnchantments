@@ -22,7 +22,7 @@ import uniquebase.utils.MiscUtil;
 @Mixin(EnchantmentMenu.class)
 public class EnchTableMixin
 {
-	@Redirect(method = {"lambda$clickMenuButton$1", "func_217003_a"}, 
+	@Redirect(method = {"lambda$clickMenuButton$1", "m_39475_"}, 
 	at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;onEnchantmentPerformed(Lnet/minecraft/world/item/ItemStack;I)V"))
 	public void onEnchanted(Player player, ItemStack stack, int level)
 	{

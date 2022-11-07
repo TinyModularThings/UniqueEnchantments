@@ -31,12 +31,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantment.Rarity;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CommandBlock;
@@ -119,12 +121,17 @@ public class MiscUtil
 	{
 		return getAttribute(entity, Attributes.ATTACK_SPEED, 0D);
 	}
-
+	
+	public static double getAttackSpeed(LivingEntity entity, double defaultValue)
+	{
+		return getAttribute(entity, Attributes.ATTACK_SPEED, defaultValue);
+	}
+	
 	public static double getAttribute(LivingEntity entity, Attribute attribute)
 	{
 		return getAttribute(entity, attribute, 0D);
 	}
-
+	
 	public static double getAttribute(LivingEntity entity, Attribute attribute, double defaultValue)
 	{
 		AttributeInstance instance = entity.getAttribute(attribute);
@@ -488,4 +495,8 @@ public class MiscUtil
 		return MiscUtil.toColor(config.getTextColor() == -1 ? (ench.isCurse() && allowCurseColor ? 0xFF5555 : 0xAAAAAAAA) : config.getTextColor());
 	}
 	
+	public static void spawnDrops(LivingEntity deadEntity, Enchantment enchantment, int level) {
+		ItemEntity itemEntity = deadEntity.spawnAtLocation(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(enchantment, level)), 0F);
+		if(itemEntity != null) itemEntity.setPickUpDelay(30);
+	}
 }

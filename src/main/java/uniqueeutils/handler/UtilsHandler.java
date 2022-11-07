@@ -39,6 +39,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
@@ -74,11 +75,13 @@ import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingTickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
+import net.minecraftforge.event.entity.player.AnvilRepairEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
@@ -464,6 +467,18 @@ public class UtilsHandler
 	}
 	
 	@SubscribeEvent
+	public void onDeath(LivingDeathEvent event)
+	{
+		LivingEntity deadEntity = event.getEntity();
+		boolean slime = deadEntity instanceof Slime && deadEntity.getRandom().nextInt(100) < 1;
+		boolean horse = deadEntity instanceof Horse && deadEntity.getRandom().nextInt(100) < 3;
+		if((slime || horse) && event.getSource() == DamageSource.FALL) {
+			if(slime) MiscUtil.spawnDrops(deadEntity, UEUtils.ESSENCE_OF_SLIME, 1);
+			else MiscUtil.spawnDrops(deadEntity, UEUtils.PEGASUS_SOUL, 1);
+		}
+	}
+	
+	@SubscribeEvent
 	public void onFall(LivingFallEvent event)
 	{
 		ItemStack stack = event.getEntity().getItemBySlot(EquipmentSlot.FEET);
@@ -566,6 +581,17 @@ public class UtilsHandler
 		}
 		PHANES_REGRET_ACTIVE.set(false);
 	}
+	
+	@SubscribeEvent
+	public void onRepair(AnvilRepairEvent event)
+	{
+		if(event.getEntity() == null) return;
+		if(event.getLeft().getDamageValue() > event.getOutput().getDamageValue() && event.getEntity().getRandom().nextInt(100) < 2)
+		{
+			MiscUtil.spawnDrops(event.getEntity(), UEUtils.REINFORCED, Mth.nextInt(event.getEntity().getRandom(), 3, 5));
+		}
+	}
+	
 	
 	@SubscribeEvent
 	public void onArrowHit(ProjectileImpactEvent event)
@@ -1012,7 +1038,7 @@ public class UtilsHandler
 		if(level > 0)
 		{
 			double base = Reinforced.BASE_REDUCTION.get();
-			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(Reinforced.SPEED_MOD, "Reinforced Boost", Math.pow((base + ((1D - base) * 0.01D) * level), Math.sqrt(level)), Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(Reinforced.SPEED_MOD, "Reinforced Boost", Math.pow(1D - base, level)-1, Operation.MULTIPLY_TOTAL));
 		}
 		level = ench.getInt(UEUtils.SAGES_SOUL);
 		if(level > 0)

@@ -1,28 +1,48 @@
 package uniqueapex.handler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.ints.Int2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.minecraftforge.event.TickEvent.LevelTickEvent;
+import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
+import net.minecraftforge.event.entity.player.PlayerEvent.HarvestCheck;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.event.level.BlockEvent.BreakEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniqueapex.UEApex;
 import uniqueapex.enchantments.simple.AbsoluteProtection;
 import uniqueapex.enchantments.simple.BlessedBlade;
 import uniqueapex.enchantments.simple.SecondLife;
+import uniqueapex.handler.misc.MiningArea;
 import uniquebase.api.events.ItemDurabilityChangeEvent;
 import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
@@ -32,6 +52,43 @@ public class ApexHandler
 {
 	public static final ApexHandler INSTANCE = new ApexHandler();
 	Map<ResourceKey<Level>, Int2LongMap> tridentMap = new Object2ObjectOpenHashMap<>();
+	Map<ResourceKey<Level>, List<MiningArea>> autominer = new Object2ObjectLinkedOpenHashMap<>();
+	
+	@SubscribeEvent
+	public void onWorldTick(LevelTickEvent event)
+	{
+		if(event.phase == Phase.START || event.side.isClient()) return;
+		List<MiningArea> list = autominer.get(event.level.dimension());
+		if(list == null) return;
+		list.removeIf(T -> T.mine(event.level));
+		if(list.isEmpty()) autominer.remove(event.level.dimension());
+	}
+	
+	@SubscribeEvent
+	public void onRightClick(RightClickBlock event)
+	{
+		Player player = event.getEntity();
+		if(player == null || !player.isShiftKeyDown()) return;
+		int level = MiscUtil.getEnchantmentLevel(UEApex.GAIAS_FRAGMENT, player.getMainHandItem());
+		if(level > 0 && player.getMainHandItem().getItem() instanceof TieredItem)
+		{
+			TieredItem item = (TieredItem)player.getMainHandItem().getItem();
+			CompoundTag nbt = MiscUtil.getPersistentData(player);
+			BlockPos pos = event.getPos();
+			if(nbt.contains("first_pos")) {
+				BlockPos other = BlockPos.of(nbt.getLong("first_pos"));
+				if(!player.level.isClientSide()) player.displayClientMessage(Component.translatable("unique.apex.mine", pos.getX(), pos.getY(), pos.getZ(), other.getX(), other.getY(), other.getZ()), false);
+				autominer.computeIfAbsent(player.level.dimension(), T -> new ArrayList<>()).add(new MiningArea(other, pos, (item.getTier().getSpeed() / 30F) * level));
+				nbt.remove("first_pos");
+			}
+			else {
+				nbt.putLong("first_pos", pos.asLong());
+				if(!player.level.isClientSide()) player.displayClientMessage(Component.translatable("unique.apex.first_pos", pos.getX(), pos.getY(), pos.getZ()), false);
+			}
+			event.setCanceled(true);
+			event.setCancellationResult(InteractionResult.SUCCESS);
+		}
+	}
 	
 	@SubscribeEvent
 	public void onEntityDamage(LivingDamageEvent event)
@@ -110,6 +167,59 @@ public class ApexHandler
 //			}
 //		}
 //	}
+	
+	@SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
+	public void onBreak(BreakEvent event)
+	{
+		Player player = event.getPlayer();
+		if(player == null) return;
+		int level = MiscUtil.getEnchantmentLevel(UEApex.PICKAXE_404, player.getMainHandItem());
+		if(level > 0)
+		{
+			event.setCanceled(false);
+			event.setExpToDrop(0);
+		}
+	}
+	
+	@SubscribeEvent(receiveCanceled = true, priority = EventPriority.LOWEST)
+	public void onBreakSpeed(BreakSpeed event)
+	{
+		Player player = event.getEntity();
+		if(player == null) return;
+		int level = MiscUtil.getEnchantmentLevel(UEApex.PICKAXE_404, player.getMainHandItem());
+		if(level > 0)
+		{
+			event.setCanceled(false);
+			event.setNewSpeed(1000000F);
+		}
+	}
+
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void canHarvest(HarvestCheck event)
+	{
+		Player player = event.getEntity();
+		if(player == null) return;
+		int level = MiscUtil.getEnchantmentLevel(UEApex.PICKAXE_404, player.getMainHandItem());
+		if(level > 0)
+		{
+			event.setCanHarvest(false);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onUnbreakableBreak(LeftClickBlock event)
+	{
+		Player player = event.getEntity();
+		if(player == null) return;
+		int level = MiscUtil.getEnchantmentLevel(UEApex.PICKAXE_404, player.getMainHandItem());
+		if(level > 0 && event.getLevel().getBlockState(event.getPos()).getDestroySpeed(event.getLevel(), event.getPos()) < 0F)
+		{
+			event.setCancellationResult(InteractionResult.SUCCESS);
+			event.setCanceled(true);
+			player.swing(InteractionHand.MAIN_HAND);
+			event.getLevel().setBlockAndUpdate(event.getPos(), Blocks.AIR.defaultBlockState());
+		}
+	}
 	
 	@SubscribeEvent
 	public void onArrowHit(ProjectileImpactEvent event)

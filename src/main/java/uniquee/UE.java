@@ -23,6 +23,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import uniquebase.api.BaseUEMod;
@@ -36,6 +37,7 @@ import uniquee.enchantments.complex.PerpetualStrike;
 import uniquee.enchantments.complex.SmartAss;
 import uniquee.enchantments.complex.SpartanWeapon;
 import uniquee.enchantments.complex.SwiftBlade;
+import uniquee.enchantments.curse.ComboStar;
 import uniquee.enchantments.curse.DeathsOdium;
 import uniquee.enchantments.curse.PestilencesOdium;
 import uniquee.enchantments.simple.AmelioratedBaneOfArthropod;
@@ -75,6 +77,7 @@ import uniquee.handler.EntityEvents;
 import uniquee.handler.LootModifier;
 import uniquee.handler.potion.EternalFlamePotion;
 import uniquee.handler.potion.PestilencesOdiumPotion;
+import uniquee.handler.potion.Thrombosis;
 
 @Mod("uniquee")
 public class UE extends BaseUEMod
@@ -122,10 +125,13 @@ public class UE extends BaseUEMod
 	//Curses
 	public static Enchantment PESTILENCES_ODIUM;
 	public static Enchantment DEATHS_ODIUM;
+	public static Enchantment COMBO_STAR;
 	
 	//Potions
 	public static MobEffect ETERNAL_FLAME_POTION;
 	public static MobEffect PESTILENCES_ODIUM_POTION;
+	public static MobEffect THROMBOSIS;
+
 	public static ForgeConfigSpec CONFIG;
 	
 
@@ -141,12 +147,13 @@ public class UE extends BaseUEMod
 	
 	public UE()
 	{
+		THROMBOSIS = new Thrombosis();
 		ETERNAL_FLAME_POTION = new EternalFlamePotion();
 		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		init(bus, "UE.toml");
 		bus.register(this);
-		bus.addListener(this::onClientInit);
+		if(FMLEnvironment.dist.isClient()) bus.addListener(this::onClientInit);
 		bus.addListener(this::registerContent);
 		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(this);
@@ -168,6 +175,8 @@ public class UE extends BaseUEMod
 		{
 	    	event.getForgeRegistry().register("pestilences_odium", PESTILENCES_ODIUM_POTION);
 	    	event.getForgeRegistry().register("eternal_flame", ETERNAL_FLAME_POTION);
+	    	event.getForgeRegistry().register("thrombosis", THROMBOSIS);
+	    	
 		}
 		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS))
 		{
@@ -233,6 +242,7 @@ public class UE extends BaseUEMod
 		
 		PESTILENCES_ODIUM = register(new PestilencesOdium());
 		DEATHS_ODIUM = register(new DeathsOdium());
+		COMBO_STAR = register(new ComboStar());
 	}
 	
     @SubscribeEvent

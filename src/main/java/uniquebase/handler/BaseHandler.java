@@ -318,6 +318,9 @@ public class BaseHandler
 					}
 				}
 			}
+			if(state.getEnchantPowerBonus(event.getLevel(), event.getPos()) > 0 && event.getItemStack().isEnchanted()) {
+				MiscUtil.toggleTrancendence(event.getItemStack());
+			}
 		}
 	}
 	
@@ -331,7 +334,7 @@ public class BaseHandler
 			if(stack.isEmpty()) return;
 			Level world = event.getLevel();
 			BlockPos pos = frame.getPos().relative(frame.getDirection().getOpposite());
-			if(world.getBlockState(pos).getBlock() == Blocks.ENCHANTING_TABLE)
+			if(world.getBlockState(pos).is(Blocks.CONDUIT))
 			{
 				List<EnchantedUpgrade> upgrades = new ObjectArrayList<>();
 				for(EnchantedUpgrade entry : EnchantedUpgrade.getAllUpgrades())

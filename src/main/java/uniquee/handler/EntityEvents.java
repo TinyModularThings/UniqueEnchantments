@@ -1,7 +1,7 @@
 package uniquee.handler;
 
 import java.util.List;
-import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.collect.HashMultimap;
@@ -10,6 +10,7 @@ import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +19,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.CombatEntry;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -40,6 +43,8 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Shulker;
+import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.AbstractArrow.Pickup;
@@ -85,6 +90,7 @@ import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.living.MobEffectEvent;
+import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
@@ -101,6 +107,7 @@ import uniquebase.utils.StackUtils;
 import uniquebase.utils.events.EndermenLookEvent;
 import uniquebase.utils.events.PiglinWearableCheckEvent;
 import uniquebase.utils.mixin.common.InteractionManagerMixin;
+import uniquebase.utils.mixin.common.entity.CombatTrackerMixin;
 import uniquebase.utils.mixin.common.entity.PotionMixin;
 import uniquebase.utils.mixin.common.item.MapDataMixin;
 import uniquee.UE;
@@ -110,6 +117,7 @@ import uniquee.enchantments.complex.PerpetualStrike;
 import uniquee.enchantments.complex.SmartAss;
 import uniquee.enchantments.complex.SpartanWeapon;
 import uniquee.enchantments.complex.SwiftBlade;
+import uniquee.enchantments.curse.ComboStar;
 import uniquee.enchantments.curse.DeathsOdium;
 import uniquee.enchantments.curse.PestilencesOdium;
 import uniquee.enchantments.simple.AmelioratedBaneOfArthropod;
@@ -137,13 +145,14 @@ import uniquee.enchantments.unique.NaturesGrace;
 import uniquee.enchantments.unique.PhoenixBlessing;
 import uniquee.enchantments.unique.WarriorsGrace;
 import uniquee.enchantments.upgrades.AmelioratedUpgrade;
+import uniquee.handler.potion.Thrombosis;
 
 public class EntityEvents
 {
 	public static final EntityEvents INSTANCE = new EntityEvents();
 	static final ThreadLocal<UUID> ENDER_MEN_TELEPORT = new ThreadLocal<>();
 	public static final ThreadLocal<Boolean> BREAKING = ThreadLocal.withInitial(() -> false);
-	public Random rand = new Random();
+	public RandomSource rand = RandomSource.create();
 	
 	@SubscribeEvent
 	public void onEntitySpawn(EntityJoinLevelEvent event)
@@ -632,9 +641,27 @@ public class EntityEvents
 	}
 	
 	@SubscribeEvent
+	public void onItemUseTick(LivingEntityUseItemEvent.Tick event)
+	{
+		if(event.getDuration() <= 10) return;
+		if(MiscUtil.getEnchantedItem(UE.COMBO_STAR, event.getEntity()).getIntValue() > 0)
+		{
+			int counter = MiscUtil.getPersistentData(event.getEntity()).getInt(ComboStar.COMBO_NAME);
+			event.setDuration(Math.max(10, (int)(event.getDuration() / MathCache.LOG10.get((int)ComboStar.COUNTER_MULTIPLIER.get(10+counter)))));
+		}
+	}
+	
+	@SubscribeEvent
 	public void onEntityHeal(LivingHealEvent event)
 	{
 		LivingEntity entity = event.getEntity();
+		if(entity.hasEffect(UE.THROMBOSIS)) {
+			MobEffectInstance eff = entity.getEffect(UE.THROMBOSIS);
+			double a = ((Thrombosis)eff.getEffect()).getChance() * (eff.getAmplifier()+1);
+			if(a >= 1D || rand.nextDouble() < a) {
+				event.setAmount(0);
+			}
+		}
 		if(MiscUtil.isTranscendent(entity, entity.getItemBySlot(EquipmentSlot.CHEST), UE.BERSERKER) && entity.getHealth() > (entity.getMaxHealth()*Berserk.TRANSCENDED_HEALTH.get()-0.25F) && MiscUtil.getEnchantmentLevel(UE.BERSERKER, entity.getItemBySlot(EquipmentSlot.CHEST)) > 0)
 		{
 			event.setAmount(0F);
@@ -663,7 +690,7 @@ public class EntityEvents
 				AttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (float)Math.log10(10D + (1.6 + Math.log(Math.max(0.25D, attr.getValue())) / SwiftBlade.BASE_SPEED.get()) * MathCache.LOG.get(1 + (level*level))));
+					event.setAmount(event.getAmount() * (float)Math.log(1.719d + Math.pow((level+0.1)/2, Math.sqrt(attr.getValue()/1.2))));
 				}
 			}
 			level = enchantments.getInt(UE.FOCUS_IMPACT);
@@ -672,7 +699,8 @@ public class EntityEvents
 				AttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (1F + (float)Math.log10(Math.pow(FocusedImpact.BASE_SPEED.get() / attr.getValue(), 2D)*MathCache.LOG.get(6+level))));
+					double val = Math.max(attr.getValue(), 0.01);
+					event.setAmount(event.getAmount() * (float)Math.log(1.719d + Math.pow((level+1.1D)*0.5D, Math.sqrt(1.2D/val))));
 				}
 			}
 			level = MiscUtil.getEnchantedItem(UE.CLIMATE_TRANQUILITY, base).getIntValue();
@@ -701,7 +729,7 @@ public class EntityEvents
 			level = MiscUtil.getEnchantmentLevel(UE.BERSERKER, base.getItemBySlot(EquipmentSlot.CHEST));
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() * (float)(1D + (Math.pow(1-(Berserk.MIN_HEALTH.getMax(base.getHealth(), 1D)/base.getMaxHealth()), 1/level) * Berserk.PERCENTUAL_DAMAGE.get())));
+				event.setAmount(event.getAmount() * (float)(1D + (Math.pow(1-(Berserk.MIN_HEALTH.getMax(base.getHealth(), 1D)/base.getMaxHealth()), 1D/level) * Berserk.PERCENTUAL_DAMAGE.get())));
 			}
 			level = enchantments.getInt(UE.PERPETUAL_STRIKE);
 			if(level > 0)
@@ -731,14 +759,23 @@ public class EntityEvents
 				{
 					count = 0;
 				}
-				double damage = target.getHealth() * (Math.pow(count+1, 0.25)/(100*base.getAttributeValue(Attributes.ATTACK_SPEED)));
-				double multiplier = Math.log10(10+damage*count);
-				event.setAmount((float)((event.getAmount()+damage)*multiplier));
 				StackUtils.setInt(held, PerpetualStrike.HIT_COUNT, count+1);
+				if(rand.nextInt(100) <= count) {
+					target.addEffect(new MobEffectInstance(UE.THROMBOSIS, 100*level, level-1));
+				}
+				double damage = target.getHealth() * (Math.pow((count * PerpetualStrike.PER_HIT.get() * PerpetualStrike.PER_HIT_LEVEL.get())+1, 0.25)/(100*MiscUtil.getAttackSpeed(base, 1D)));
+				double multiplier = PerpetualStrike.SCALING_STATE.get() ? 1 + Math.pow(count * PerpetualStrike.MULTIPLIER.get(), 2)/20 : Math.log10(10+damage*count*PerpetualStrike.MULTIPLIER.get());
+				event.setAmount((float)((event.getAmount()+damage)*multiplier));
+				StackUtils.setInt(held, PerpetualStrike.HIT_ID, target.getId());
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ENDER_EYES, target.getItemBySlot(EquipmentSlot.HEAD));
 			if(level > 0 && base.getType() == EntityType.ENDERMAN && EnderEyes.AFFECTED_ENTITIES.contains(base.getType()) && MiscUtil.isTranscendent(target, target.getItemBySlot(EquipmentSlot.HEAD), UE.ENDER_EYES) && rand.nextDouble() < EnderEyes.TRANSCENDED_CHANCE.get()) {
 				base.kill();
+			}
+			level = MiscUtil.getCombinedEnchantmentLevel(UE.COMBO_STAR, base);
+			if(level > 0)
+			{
+				event.setAmount((float)(event.getAmount()*Math.pow(ComboStar.DAMAGE_LOSS.get(), level)));
 			}
 		}
 	}
@@ -770,10 +807,14 @@ public class EntityEvents
 			level = MiscUtil.getEnchantmentLevel(UE.ENDEST_REAP, stack);
 			if(level > 0)
 			{
+				if(rand.nextDouble() > Math.pow(0.9d, level)) 
+				{
+					target.addEffect(new MobEffectInstance(UE.THROMBOSIS, 100*level, level-1));
+				}
 				event.setAmount(event.getAmount() + (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + (float)Math.sqrt(EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE)))));
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ADV_SHARPNESS, stack);
-			if(level > 0)
+			if(level > 0 && MiscUtil.isTranscendent(base, stack, UE.ADV_SHARPNESS))
 			{
 				if(stack.getItem() instanceof TieredItem)
 				{
@@ -785,12 +826,12 @@ public class EntityEvents
 				}
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ADV_SMITE, stack);
-			if(level > 0)
+			if(level > 0 && MiscUtil.isTranscendent(base, stack, UE.ADV_SMITE))
 			{
 				event.setAmount(event.getAmount() + (float)(Math.pow(target.getHealth(), AmelioratedSmite.TRANSCENDED_DAMAGE_EXPONENT.get())));
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ADV_BANE_OF_ARTHROPODS, stack);
-			if(level > 0)
+			if(level > 0 && MiscUtil.isTranscendent(base, stack, UE.ADV_BANE_OF_ARTHROPODS))
 			{
 				event.setAmount(event.getAmount() + (float)(Math.pow(target.getHealth(), AmelioratedBaneOfArthropod.TRANSCENDED_DAMAGE_EXPONENT.get())));
 			}
@@ -865,6 +906,24 @@ public class EntityEvents
 	}
 	
 	@SubscribeEvent
+	public void onCrit(CriticalHitEvent event)
+	{
+		if(event.getEntity() == null) return;
+		int level = MiscUtil.getCombinedEnchantmentLevel(UE.COMBO_STAR, event.getEntity());
+		if(level > 0)
+		{
+			CompoundTag nbt = MiscUtil.getPersistentData(event.getEntity());
+			if(event.isVanillaCritical()) nbt.putInt(ComboStar.COMBO_NAME, nbt.getInt(ComboStar.COMBO_NAME)+1);
+			else nbt.remove(ComboStar.COMBO_NAME);
+			int combo = nbt.getInt(ComboStar.COMBO_NAME);
+			
+			double damage = Math.pow(ComboStar.DAMAGE_LOSS.get(), level);
+			double crit = Math.pow(ComboStar.CRIT_DAMAGE.get(1D/damage), 1+ComboStar.COUNTER_MULTIPLIER.get(0.1*combo));
+			event.setDamageModifier((float)(event.getDamageModifier() * crit));
+		}
+	}
+	
+	@SubscribeEvent
 	public void onLivingFall(LivingFallEvent event)
 	{
 		ItemStack stack = event.getEntity().getItemBySlot(EquipmentSlot.CHEST);
@@ -887,6 +946,7 @@ public class EntityEvents
 	public void onEntityKilled(LivingDeathEvent event)
 	{
 		Entity entity = event.getSource().getEntity();
+		LivingEntity deadEntity = event.getEntity();
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity base = (LivingEntity)entity;
@@ -912,6 +972,16 @@ public class EntityEvents
 						CompoundTag nbt = MiscUtil.getPersistentData(entity);
 						nbt.putInt(EndestReap.REAP_STORAGE, Math.min(nbt.getInt(EndestReap.REAP_STORAGE)+amount, MiscUtil.isTranscendent(base, base.getMainHandItem(), UE.ENDEST_REAP) ? Integer.MAX_VALUE : ((Player)base).experienceLevel));
 						StackUtils.setInt(base.getMainHandItem(), EndestReap.REAP_STORAGE, nbt.getInt(EndestReap.REAP_STORAGE));
+					}
+				}
+			}
+			if(!(deadEntity instanceof Player) && rand.nextFloat() < 0.025f) {
+				Set<Enchantment> ench = new ObjectOpenHashSet<>();
+				for (ItemStack stack : deadEntity.getAllSlots()) {
+					ench.addAll(MiscUtil.getEnchantments(stack).keySet());
+					if(ench.size() >= 10) {
+						MiscUtil.spawnDrops(deadEntity, UE.GRIMOIRE, rand.nextInt(2));
+						break;
 					}
 				}
 			}
@@ -945,14 +1015,6 @@ public class EntityEvents
 					StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
 					StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(event.getEntity().getMaxHealth()) * 0.3F * rand.nextFloat()));
 				}
-				AttributeInstance instance = event.getEntity().getAttribute(Attributes.MAX_HEALTH);
-				AttributeModifier mod = instance.getModifier(DeathsOdium.REMOVE_UUID);
-				float toRemove = 0F;
-				if(mod != null)
-				{
-					toRemove += mod.getAmount();
-					instance.removeModifier(mod);
-				}
 				if(nbt.getBoolean(DeathsOdium.CURSE_RESET))
 				{
 					nbt.remove(DeathsOdium.CURSE_RESET);
@@ -968,8 +1030,56 @@ public class EntityEvents
 					}
 					return;
 				}
-				nbt.putFloat(DeathsOdium.CURSE_STORAGE, (toRemove+1F));
+				nbt.putInt(DeathsOdium.CURSE_STORAGE, (nbt.getInt(DeathsOdium.CURSE_STORAGE)+1));
 			}
+		}
+		if(deadEntity instanceof Witch && rand.nextInt(100) < 2)
+		{
+			List<CombatEntry> entries = ((CombatTrackerMixin)deadEntity.getCombatTracker()).getCombatEntries();
+			boolean valid = true;
+			for(int i = 0,m=entries.size();i<m;i++)
+			{
+				CombatEntry entry = entries.get(i);
+				if(!entry.getSource().isMagic()){
+					valid = false;
+					break;
+				}
+			}
+			if(valid) MiscUtil.spawnDrops(deadEntity, UE.ALCHEMISTS_GRACE, Mth.nextInt(rand, 4, 10));
+		}
+		if(!(deadEntity instanceof Player) && rand.nextInt(100) < 1)
+		{
+			if(deadEntity.hasEffect(MobEffects.ABSORPTION))
+			{
+				MiscUtil.spawnDrops(deadEntity, UE.PHOENIX_BLESSING, 1);
+			}
+			if(entity instanceof Player player)
+			{
+				float damageDealt = 0F;
+				float maxHealth = player.getMaxHealth();
+				List<CombatEntry> entries = ((CombatTrackerMixin)player.getCombatTracker()).getCombatEntries();
+				for(int i = 0,m=entries.size();i<m;i++)
+				{
+					CombatEntry entry = entries.get(i);
+					if(entry.isCombatRelated() && entry.getSource().getEntity() == deadEntity)
+					{
+						damageDealt += entry.getDamage();
+						if(damageDealt / maxHealth >= 0.75)
+						{
+							MiscUtil.spawnDrops(deadEntity, UE.ARES_BLESSING, 1);
+							break;
+						}
+					}
+				}
+				if(deadEntity.hasEffect(MobEffects.LEVITATION) || player.hasEffect(MobEffects.LEVITATION))
+				{
+					MiscUtil.spawnDrops(deadEntity, UE.CLOUD_WALKER, Mth.nextInt(rand, 1, 2));
+				}
+			}
+		}
+		if(deadEntity instanceof Shulker && entity instanceof Shulker && rand.nextInt(100) < 3)
+		{
+			MiscUtil.spawnDrops(deadEntity, UE.ENDEST_REAP, Mth.nextInt(rand, 2, 4));
 		}
 	}
 	
@@ -979,7 +1089,6 @@ public class EntityEvents
 		float f = MiscUtil.getPersistentData(event.getEntity()).getFloat(DeathsOdium.CURSE_STORAGE);
 		if(f != 0F)
 		{
-			System.out.println(f);
 			event.getEntity().getAttribute(Attributes.MAX_HEALTH).addTransientModifier(new AttributeModifier(DeathsOdium.REMOVE_UUID, "odiums_curse", Math.pow(0.95,f)-1, Operation.MULTIPLY_TOTAL));
 		}
 	}
@@ -1135,19 +1244,19 @@ public class EntityEvents
 	{
 		LivingEntity entity = event.getEntity();
 		AttributeMap attribute = entity.getAttributes();
-		Multimap<Attribute, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), entity, event.getSlot());
+		Multimap<Attribute, AttributeModifier> mods = createModifiersFromStack(event.getFrom(), entity, event.getSlot(), true);
 		if(!mods.isEmpty())
 		{
 			attribute.removeAttributeModifiers(mods);
 		}		
-		mods = createModifiersFromStack(event.getTo(), entity, event.getSlot());
+		mods = createModifiersFromStack(event.getTo(), entity, event.getSlot(), false);
 		if(!mods.isEmpty())
 		{
 			attribute.addTransientAttributeModifiers(mods);
 		}		
 	}
 	
-	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(ItemStack stack, LivingEntity living, EquipmentSlot slot)
+	private Multimap<Attribute, AttributeModifier> createModifiersFromStack(ItemStack stack, LivingEntity living, EquipmentSlot slot, boolean remove)
 	{
 		Multimap<Attribute, AttributeModifier> mods = HashMultimap.create();
 		//Optimization. After 3 Enchantment's its sure that on average you have more then 1 full iteration. So now we fully iterate once over it since hash-code would be a faster check.
@@ -1170,19 +1279,19 @@ public class EntityEvents
 		level = enchantments.getInt(UE.DEATHS_ODIUM);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.DEATHS_ODIUM).contains(slot))
 		{
-			int value = StackUtils.getInt(stack, DeathsOdium.CURSE_STORAGE, 0);
+			float value = StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0);
 			if(value > 0 && !MiscUtil.getPersistentData(living).getBoolean(DeathsOdium.CURSE_DISABLED))
 			{
 				mods.put(Attributes.MAX_HEALTH, new AttributeModifier(DeathsOdium.GENERAL_MOD.getId(slot), "Death Odiums Restore", value/100f, Operation.MULTIPLY_TOTAL));
 			}
 		}
 		level = enchantments.getInt(UE.FOCUS_IMPACT);
-		if(level > 0 && MiscUtil.getSlotsFor(UE.FOCUS_IMPACT).contains(slot) && MiscUtil.isTranscendent(living, stack, UE.FOCUS_IMPACT))
+		if(level > 0 && MiscUtil.getSlotsFor(UE.FOCUS_IMPACT).contains(slot) && (remove || MiscUtil.isTranscendent(living, stack, UE.FOCUS_IMPACT)))
 		{
 			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(FocusedImpact.IMPACT_MOD, "Focus Impact", FocusedImpact.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UE.SWIFT_BLADE);
-		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT_BLADE).contains(slot) && MiscUtil.isTranscendent(living, stack, UE.SWIFT_BLADE))
+		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT_BLADE).contains(slot) && (remove || MiscUtil.isTranscendent(living, stack, UE.SWIFT_BLADE)))
 		{
 			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SwiftBlade.SWIFT_MOD, "Swift Blade", SwiftBlade.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
 		}
@@ -1190,6 +1299,11 @@ public class EntityEvents
 		if(level > 0 && UE.AMELIORATED_UPGRADE.isValidSlot(slot))
 		{
 			mods.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(AmelioratedUpgrade.DAMAGE_ID, "Ameliorated Upgrade", MathCache.SQRT_EXTRA_SPECIAL.get(level), Operation.ADDITION));
+		}
+		if(MiscUtil.getEnchantedItem(UE.COMBO_STAR, living).getIntValue() > 0)
+		{
+			int counter = MiscUtil.getPersistentData(living).getInt(ComboStar.COMBO_NAME);
+			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(ComboStar.SPEED_EFFECT, "Combo Star Speed", MathCache.LOG10.get((int)ComboStar.COUNTER_MULTIPLIER.get(10+counter)), Operation.MULTIPLY_BASE));
 		}
 		return mods;
 	}

@@ -132,7 +132,7 @@ public class ColorConfig
 		acceptor.addColor(Enchantments.SMITE, "#20b63a", null, null, null);
 		acceptor.addColor(Enchantments.SOUL_SPEED, "#63667d", null, null, null);
 		acceptor.addColor(Enchantments.SWEEPING_EDGE, "#a6b5ba", null, null, null);
-		//acceptor.addColor(Enchantments.SWIFT_SNEAK, "#32f094", null, null, null); //SwiftSneak 1.19
+		acceptor.addColor(Enchantments.SWIFT_SNEAK, "#32f094", null, null, null); //SwiftSneak 1.19
 		acceptor.addColor(Enchantments.THORNS, "#1b8a43", null, null, null);
 		acceptor.addColor(Enchantments.UNBREAKING, "#b64b6e", null, null, null);
 
@@ -210,6 +210,7 @@ public class ColorConfig
 		acceptor.addColor(new ResourceLocation("uniquee:deaths_odium"), "#FF0000", null, "#C22237FF", "#EA0087FF");
 		acceptor.addColor(new ResourceLocation("uniquee:pestilences_odium"), "#FF0000", null, "#C22237FF", "#EA0087FF");
 		acceptor.addColor(new ResourceLocation("uniquee:grimoire"), "#FF0000", null, "#C22237FF", "#EA0087FF");
+		acceptor.addColor(new ResourceLocation("uniquee:combo_star"), "#FF0000", null, "#C22237FF", "#EA0087FF");
 		acceptor.addColor(new ResourceLocation("uniquee:pestilences_odium"), "#FF0000", null, "#C22237FF", "#EA0087FF");
 		acceptor.addColor(new ResourceLocation("uniqueutil:phanes_regret"), "#FF0000", null, "#C22237FF", "#EA0087FF");
 		acceptor.addColor(new ResourceLocation("uniqueutil:rocket_man"), "#FF0000", null, "#C22237FF", "#EA0087FF");
@@ -221,8 +222,9 @@ public class ColorConfig
 		acceptor.addColor(new ResourceLocation("uniqueapex:absolute_protection"), "#e4b83a", null, "#EAB8A3FF", "#EAB8A3FF");
 		acceptor.addColor(new ResourceLocation("uniqueapex:blessed_blade"), "#e4b83a", null, "#EAB8A3FF", "#EAB8A3FF");
 		acceptor.addColor(new ResourceLocation("uniqueapex:second_life"), "#e4b83a", null, "#EAB8A3FF", "#EAB8A3FF");
-		acceptor.addColor(new ResourceLocation("uniqueapex:aeons_fragment"), "#e4b83a", null, "#EAB8A3FF", "#EAB8A3FF");
-		
+		acceptor.addColor(new ResourceLocation("uniqueapex:aeons_fragment"), "#e4b83a", null, "#EAB8A3FF", "#EAB8A3FF");;
+		acceptor.addColor(new ResourceLocation("uniqueapex:gaias_fragment"), "#e4b83a", null, "#EAB8A3FF", "#EAB8A3FF");;
+		acceptor.addColor(new ResourceLocation("uniqueapex:pickaxe404"), "#e4b83a", null, "#EAB8A3FF", "#EAB8A3FF");
 	}
 	
 	public static interface IColorConfigBuilder

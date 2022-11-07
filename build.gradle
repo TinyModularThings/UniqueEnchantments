@@ -71,7 +71,7 @@ dependencies {
 //	compile fg.deobf("curse.maven:bookshelf-228525:3474499")
 //	compile fg.deobf("curse.maven:patchouli-306770:3459118")
 	
-    annotationProcessor 'org.spongepowered:mixin:0.8:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 mixin {

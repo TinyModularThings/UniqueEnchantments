@@ -34,7 +34,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -255,11 +254,11 @@ public class BattleHandler
 	{
 		int level = MiscUtil.getEnchantmentLevel(UEBattle.CELESTIAL_BLESSING, event.getItem());
 		LivingEntity entity = event.getEntity();
-		if(level > 0)
+		if(level > 0 && event.getDuration() > 10)
 		{
 			float boost = MiscUtil.isTranscendent(entity, event.getItem(), UEBattle.CELESTIAL_BLESSING) ? CelestialBlessing.SPEED_BONUS.getAsFloat(level) * CelestialBlessing.SPEED_BONUS.getAsFloat(level) : CelestialBlessing.SPEED_BONUS.getAsFloat(level);
 			double num = (1 + (event.getEntity().level.isNight() ? boost : 0));
-			event.setDuration(event.getItem().getItem() instanceof CrossbowItem ? (int)(event.getDuration()/num) : (int) Math.max(10,event.getDuration() / num));
+			event.setDuration((int)Math.max(10,event.getDuration() / num));
 		}
 		level = UEBattle.LUNATIC_UPGRADE.getCombinedPoints(entity);
 		if(level > 0)

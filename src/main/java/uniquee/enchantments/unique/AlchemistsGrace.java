@@ -134,7 +134,7 @@ public class AlchemistsGrace extends UniqueEnchantment
 		public MobEffectInstance createEffect(int baseLevel, float hitScalar)
 		{
 			int diff = Math.max(0, baseLevel - baseEnchantment);
-			return new MobEffectInstance(potion, (int)(baseDuration * Math.log((hitScalar+0.5F)*baseLevel)), basePotionLevel + (int)(PotionLevelIncrease * diff));
+			return new MobEffectInstance(potion, Math.min(5, (int)(baseDuration * Math.log((hitScalar+0.5F)*baseLevel))), basePotionLevel + (int)(PotionLevelIncrease * diff));
 		}
 		
 		public boolean isValid(boolean mining)

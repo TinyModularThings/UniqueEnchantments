@@ -11,11 +11,14 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
@@ -99,6 +102,10 @@ public class LootModifier implements IGlobalLootModifier
 					}
 				}
 			}
+		}
+		if(BuiltInLootTables.PIGLIN_BARTERING.equals(context.getQueriedLootTableId()) && context.getRandom().nextInt(200) < 1)
+		{
+			generatedLoot.add(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(UE.MIDAS_BLESSING, Mth.nextInt(context.getRandom(), 2, 3))));
 		}
 		return generatedLoot;
 	}

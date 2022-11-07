@@ -21,7 +21,8 @@ public class PlayerEntityMixin {
 				level += MiscUtil.getEnchantmentLevel(Enchantments.BLOCK_EFFICIENCY, stack);
 			}
 		}
-        return 6 + level * 4;
+		speed -= Math.pow(level,2) + 1;
+        return speed + 6 + level * 4;
     }
 	
 }

@@ -31,7 +31,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
@@ -60,6 +59,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.gui.TooltipIcon;
 import uniquebase.utils.IdStat;
+import uniquebase.utils.VisibilityMode;
 
 public class EnchantmentHandler
 {
@@ -80,6 +80,11 @@ public class EnchantmentHandler
 		while(list.size() > limit) {
 			list.remove(list.size()-1);
 		}
+	}
+	
+	public void cleanCache()
+	{
+		enchantedItems.clear();
 	}
 	
 	@SubscribeEvent
@@ -208,27 +213,37 @@ public class EnchantmentHandler
 	{
 		List<ItemStack> validItems = new ObjectArrayList<>();
 		List<ItemStack> validBlocks = new ObjectArrayList<>();
+		List<ItemStack> foods = new ObjectArrayList<>();
+		List<ItemStack> extra = new ObjectArrayList<>();
 		Collector<Class<?>> classBased = new Collector<>();
 		Collector<ArmorEntry> armor = new Collector<>();
 		Set<Class<?>> clz = new ObjectOpenHashSet<>();
 		IdStat<Item> stat = UEBase.APPLICABLE_ICON_OVERRIDE;
 		boolean check = !stat.isEmpty();
+		VisibilityMode mode = UEBase.ICON_MODE.get();
+		int limit = mode == VisibilityMode.LIMITED ? UEBase.LIMIT_AMOUNT.get() : Integer.MAX_VALUE;
 		for(Item item : ForgeRegistries.ITEMS)
 		{
-			if(check && !stat.contains(item))
+			if(check && !stat.contains(ForgeRegistries.ITEMS.getKey(item)))
 			{
 				continue;
 			}
 			ItemStack stack = new ItemStack(item);
 			if(ench.canApplyAtEnchantingTable(stack))
 			{
-				if(item instanceof TieredItem tier)
+				if(mode == VisibilityMode.EVERYTHING)
+				{
+					validItems.add(stack);
+					continue;
+				}
+				else if(item instanceof TieredItem tier)
 				{
 					classBased.add(stack, item.getClass(), TierSortingRegistry.getSortedTiers().indexOf(tier.getTier()));
 				}
 				else if(item instanceof ArmorItem)
 				{
 					boolean vanilla = item.getClass() == ArmorItem.class || item.getClass() == DyeableArmorItem.class;
+					if(mode == VisibilityMode.LIMITED && !vanilla) continue;
 					EquipmentSlot slot = Mob.getEquipmentSlotForItem(stack);
 					armor.add(stack, new ArmorEntry(slot, vanilla ? ArmorItem.class : item.getClass()), ((ArmorItem)item).getMaterial().getDurabilityForSlot(slot));
 				}
@@ -239,24 +254,32 @@ public class EnchantmentHandler
 				else if(item.isEdible())
 				{
 					ClientLevel world = Minecraft.getInstance().level;
-					Container inv = new SimpleContainer(1);
+					SimpleContainer inv = new SimpleContainer(1);
 					inv.setItem(0, stack.copy());
 					Optional<SmeltingRecipe> recipe = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, inv, world);
 					if(!recipe.isPresent() || !recipe.get().getResultItem().isEdible())
 					{
-						validItems.add(stack);						
+						foods.add(stack);						
 					}
 				}
 				else
 				{
 					if(ForgeRegistries.ITEMS.getKey(item).getNamespace().equalsIgnoreCase("minecraft") || clz.add(item.getClass())) {
-						validItems.add(stack);
+						extra.add(stack);
 					}
 				}
 			}
 		}
 		classBased.collect(validItems);
 		armor.collect(validItems);
+		if(!foods.isEmpty())
+		{
+			validItems.addAll(foods.subList(0, Math.min(foods.size(), limit)));
+		}
+		if(!extra.isEmpty())
+		{
+			validItems.addAll(extra.subList(0, Math.min(extra.size(), limit)));
+		}
 		if(validBlocks.size() < 10)
 		{
 			validItems.addAll(validBlocks);
