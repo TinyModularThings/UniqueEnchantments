@@ -8,11 +8,19 @@
 	"enchantment.uniqueapex.blessed_blade": "Blessed Blade",
 	"enchantment.uniqueapex.blessed_blade.desc": "Increases Attack Damage and deals additional Magic Damage",
 	"enchantment.uniqueapex.blessed_blade.icon": "\u000f",
+	"enchantment.uniqueapex.gaias_fragment": "Gaia's Fragment",
+	"enchantment.uniqueapex.gaias_fragment.desc": "Shift-rightclick both locations, can destroy all blocks in range",
+	"enchantment.uniqueapex.gaias_fragment.icon": "s",
+	"enchantment.uniqueapex.pickaxe404": "Pickaxe 404",
+	"enchantment.uniqueapex.pickaxe404.desc": "Destroys any block possible",
+	"enchantment.uniqueapex.pickaxe404.icon": "t",
 	"enchantment.uniqueapex.second_life": "Second Life",
 	"enchantment.uniqueapex.second_life.desc": "If an Item reaches 1 Durability it'll restore a part of it's durability. Every restore reduces this Enchantment Level by 1",
 	"enchantment.uniqueapex.second_life.icon": "X",
 	"unique.apex.bases": "Bases",
 	"unique.apex.catalyst": "Catalyst",
 	"unique.apex.desc": "Catalysts go into side chests.\nEnchantments go into the top.\nOutput is the first slot in the top chest",
-	"unique.apex.jei.name": "Enchantment Fusion"
+	"unique.apex.first_pos": "First Position: [x=%s, y=%s, z=%s]",
+	"unique.apex.jei.name": "Enchantment Fusion",
+	"unique.apex.mine": "Started Mining from: [x=%s, y=%s, z=%s] to: [x=%s, y=%s, z=%s]"
 }

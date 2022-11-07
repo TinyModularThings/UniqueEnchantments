@@ -23,6 +23,9 @@
 	"enchantment.uniquebattle.granis_soul": "Grani's Soul",
 	"enchantment.uniquebattle.granis_soul.desc": "Press the specified Key to start dashing. Entities around the start and end location start bleeding",
 	"enchantment.uniquebattle.granis_soul.icon": "0",
+	"enchantment.uniquebattle.hecates_blessing": "Hecates Blessing",
+	"enchantment.uniquebattle.hecates_blessing.desc": "At Night increases Attack Speed/Drawspeed",
+	"enchantment.uniquebattle.hecates_blessing.icon": "\u0011",
 	"enchantment.uniquebattle.ifrits_blessing": "Ifrit's Blessing'",
 	"enchantment.uniquebattle.ifrits_blessing.desc": "Hitting a burning Entity will deal additional Damage. Bonus is exponential if you're burning as well",
 	"enchantment.uniquebattle.ifrits_blessing.icon": "3",
@@ -47,9 +50,8 @@
 	"tooltip.uniquebattle.stored.ender.name": "Stored Ender Energy %s",
 	"tooltip.uniquebattle.stored.ender.souls.common.name": "Basic Souls stored %s",
 	"tooltip.uniquebattle.stored.ender.souls.higher.name": "Higher Souls stored %s",
-	
 	"upgrade.uniquebattle.crit": "Crit Damage %s",
+	"upgrade.uniquebattle.lifesteal": "Lifesteal %s",
 	"upgrade.uniquebattle.loot": "Loot %s",
-	"upgrade.uniquebattle.use_time": "Use Time %s",
-	"upgrade.uniquebattle.lifesteal": "Lifesteal %s"
+	"upgrade.uniquebattle.use_time": "Use Time %s"
 }

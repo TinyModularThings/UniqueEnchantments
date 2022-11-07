@@ -1,14 +1,18 @@
 {
 	"enchantment.uniqueapex.absolute_protection": "Absoluter Schutz",
 	"enchantment.uniqueapex.absolute_protection.desc": "Reduziert jeden erhaltenen Schaden",
-	"enchantment.uniqueapex.blessed_blade": "Gesegnete Klinge",
-	"enchantment.uniqueapex.blessed_blade.desc": "Erhoeht Angriffsschaden und teilt zusaetzlichen magischen Schaden",
-	"enchantment.uniqueapex.second_life": "Neues Leben",
-	"enchantment.uniqueapex.second_life.desc": "Erreicht ein Gegenstand 10 Haltbarkeit, stellt es einen teil der Haltbarkeit wieder her. Jedoch sinkt das Level der Verzauberung bei jeder aktivierung",
 	"enchantment.uniqueapex.aeons_fragment": "Aeon's Fragment",
 	"enchantment.uniqueapex.aeons_fragment.desc": "Schmeiße einen Dreizack um die Zeit um den Dreizack zu verschnellern",
-	"unique.apex.jei.name": "Verzauberungs Fusion",
-	"unique.apex.catalyst": "Katalysator",
+	"enchantment.uniqueapex.blessed_blade": "Gesegnete Klinge",
+	"enchantment.uniqueapex.blessed_blade.desc": "Erhoeht Angriffsschaden und teilt zusaetzlichen magischen Schaden",
+	"enchantment.uniqueapex.gaias_fragment": "Gaia's Fragment",
+	"enchantment.uniqueapex.gaias_fragment.desc": "Shift-rechtsklick beide positionen, zerstört alle Blöcke im Bereich.",
+	"enchantment.uniqueapex.pickaxe404": "Spitzhacke 404",
+	"enchantment.uniqueapex.pickaxe404.desc": "Zerstört jeden Block",
+	"enchantment.uniqueapex.second_life": "Neues Leben",
+	"enchantment.uniqueapex.second_life.desc": "Erreicht ein Gegenstand 10 Haltbarkeit, stellt es einen teil der Haltbarkeit wieder her. Jedoch sinkt das Level der Verzauberung bei jeder aktivierung",
 	"unique.apex.bases": "Basen",
-	"unique.apex.desc": "Katalysatoren kommen in die Truhe an der Seite.\nVerzauberungen in die obere.\nResultat im ersten Slot der oberen Truhe"
+	"unique.apex.catalyst": "Katalysator",
+	"unique.apex.desc": "Katalysatoren kommen in die Truhe an der Seite.\nVerzauberungen in die obere.\nResultat im ersten Slot der oberen Truhe",
+	"unique.apex.jei.name": "Verzauberungs Fusion"
 }
