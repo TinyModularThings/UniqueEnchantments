@@ -15,6 +15,11 @@
 			"text": "Whenever an entity dies with this curse active, transfers a percentage of health to the item enchanted",
 			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Death%27s-Odium",
 			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Disabling",
+			"text": "If desired you can disable this Curse for yourself. $(br)Simply enchant a cookie with this enchantment, wear a piece with this enchantment in any armor slot and consume the cookie. $(br)The next time you die you will no longer be effected by this curse"
 		}
 	]
 }

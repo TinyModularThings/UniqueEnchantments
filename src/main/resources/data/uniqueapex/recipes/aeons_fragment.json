@@ -37,7 +37,7 @@
         { "type": "minecraft:mending", "level": 1 } 
     ],
 	"lock": true,
-	"max": 2,
+	"max": 3,
     "output": "uniqueapex:aeons_fragment",
     "output_mode": "average" 
 }

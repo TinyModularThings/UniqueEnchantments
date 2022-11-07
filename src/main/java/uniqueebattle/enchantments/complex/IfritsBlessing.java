@@ -1,6 +1,5 @@
 package uniqueebattle.enchantments.complex;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BowItem;
@@ -20,12 +19,6 @@ public class IfritsBlessing extends UniqueEnchantment
 		super(new DefaultData("ifrits_blessing", Rarity.COMMON, 5, false, true, 12, 2, 60), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		setCategory("battle");
 		addStats(BONUS_DAMAGE);
-	}
-	
-	@Override
-	public void loadIncompats()
-	{
-		addIncompats(new ResourceLocation("uniquee", "berserk"));
 	}
 	
 	@Override

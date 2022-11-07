@@ -32,7 +32,7 @@ public class AresFragment extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(new ResourceLocation("uniquee", "berserk"), new ResourceLocation("uniquee", "alchemistsgrace"), new ResourceLocation("uniquee", "ender_mending"));
+		addIncompats(new ResourceLocation("uniquee", "alchemists_grace"), new ResourceLocation("uniquee", "ender_mending"));
 		addIncompats(Enchantments.MENDING);
 	}
 	

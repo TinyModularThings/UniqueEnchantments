@@ -15,7 +15,7 @@
 					]
 				],
 				"mapping": {
-					"E": "minecraft:enchanting_table"
+					"E": "minecraft:conduit"
 				}
 			}
 		},
@@ -23,7 +23,7 @@
 			"type": "patchouli:spotlight",
 			"title": "Modifiers",
 			"item": "minecraft:bell",
-			"text": "Some enchantments can also be spent to get modifiers. $(br)Those can be quite beneficial. $(br)You just need the highlighted Item and an enchanting table with an item frame in front of it. $(br)Drop all the enchantments on the enchanting table, put the item to enchant into the item frame, and use the highlighted item on the frame."
+			"text": "Some enchantments can also be spent to get modifiers. $(br)Those can be quite beneficial. $(br)You just need the highlighted Item and an conduit with an item frame on top of it. $(br)Drop all the enchantments on the conduit, put the item to enchant into the item frame, and use the highlighted item on the frame."
 		},
 		{
 			"type": "patchouli:link",

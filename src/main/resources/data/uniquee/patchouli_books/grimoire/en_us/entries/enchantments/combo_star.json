@@ -1,0 +1,20 @@
+{
+	"name": "Combo Star",
+	"icon": "uniquebase:textures/icons/combo_star.png",
+	"category": "uniquebase:uniquecurses",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Combo Star",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniquee:combo_star',lvl:2}]}",
+			"text": "$(li)Max Level = 2 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very_Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Reduces base damage, but increases Critical Damage for every consecutive Critical Hit",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Combo-Star",
+			"link_text": "Detailed Wiki"
+		}
+	]
+}
