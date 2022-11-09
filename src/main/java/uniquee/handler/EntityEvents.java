@@ -769,7 +769,7 @@ public class EntityEvents
 				StackUtils.setInt(held, PerpetualStrike.HIT_ID, target.getId());
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ENDER_EYES, target.getItemBySlot(EquipmentSlot.HEAD));
-			if(level > 0 && base.getType() == EntityType.ENDERMAN && EnderEyes.AFFECTED_ENTITIES.contains(base.getType()) && MiscUtil.isTranscendent(target, target.getItemBySlot(EquipmentSlot.HEAD), UE.ENDER_EYES) && rand.nextDouble() < EnderEyes.TRANSCENDED_CHANCE.get()) {
+			if(level > 0 && EnderEyes.AFFECTED_ENTITIES.contains(base.getType()) && MiscUtil.isTranscendent(target, target.getItemBySlot(EquipmentSlot.HEAD), UE.ENDER_EYES) && rand.nextDouble() < EnderEyes.TRANSCENDED_CHANCE.get()) {
 				base.kill();
 			}
 			level = MiscUtil.getCombinedEnchantmentLevel(UE.COMBO_STAR, base);

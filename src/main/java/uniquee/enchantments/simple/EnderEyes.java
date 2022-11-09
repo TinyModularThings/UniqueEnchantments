@@ -19,7 +19,7 @@ import uniquee.UE;
 public class EnderEyes extends UniqueEnchantment
 {
 	public static final DoubleStat TRANSCENDED_CHANCE = new DoubleStat(0.6, "transcended_chance");
-	public static final IdStat<EntityType<?>> AFFECTED_ENTITIES = new IdStat<>("affected_entities", ForgeRegistries.ENTITY_TYPES, EntityType.PLAYER);
+	public static final IdStat<EntityType<?>> AFFECTED_ENTITIES = new IdStat<>("affected_entities", ForgeRegistries.ENTITY_TYPES, EntityType.ENDERMAN);
 	
 	public EnderEyes()
 	{

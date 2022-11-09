@@ -2,6 +2,8 @@ package uniqueapex.enchantments;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.IApexEnchantment;
 import uniquebase.api.UniqueEnchantment;
@@ -49,7 +51,13 @@ public class ApexEnchantment extends UniqueEnchantment implements IApexEnchantme
 	{
 		return false;
 	}
-
+	
+	@Override
+	public boolean allowedInCreativeTab(Item book, CreativeModeTab tab)
+	{
+		return tab == CreativeModeTab.TAB_SEARCH ? category != null : tab.hasEnchantmentCategory(category);
+	}
+	
 	@Override
 	public int getMinCost(int enchantmentLevel)
 	{
