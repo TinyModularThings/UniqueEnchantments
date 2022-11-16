@@ -1,0 +1,16 @@
+{
+    "type": "uniqueapex:fusion",
+    "ingredients": [
+        {
+            "input": { "item": "minecraft:arrow" },
+            "amount": 256
+        }
+    ],
+    "enchantments": [
+        { "type": "minecraft:power", "level": 5 }
+    ],
+	"lock": false,
+	"max": 10,
+    "output": "minecraft:infinity",
+    "output_mode": "average" 
+}
