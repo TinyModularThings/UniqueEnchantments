@@ -127,7 +127,7 @@ public class UEBase
 		builder.comment("If Icons should be displayed. Can be toggled ingame with a key");
 		ICONS_VISIBLE = builder.define("Enchantment Icons Visible", false);
 		builder.comment("Decide how agressive the icon filter is", "Limited => tries to limit the amount of icons visible drastically", "Normal => is a reduced amount but everything important is still shown", "Everything => is for the crazy people out there and shows everything");
-		ICON_MODE = builder.defineEnum("Enchantment Icon Mode", VisibilityMode.NORMAL);
+		ICON_MODE = builder.defineEnum("Enchantment Icon Mode", VisibilityMode.LIMITED);
 		builder.comment("Icon Limit defines how many icons of each extra category are shown at once");
 		LIMIT_AMOUNT = builder.defineInRange("Icon Limit", 4, 0, 25);
 		builder.comment("How many Icon Rows should exists");
