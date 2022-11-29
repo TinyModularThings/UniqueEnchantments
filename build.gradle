@@ -64,7 +64,7 @@ configurations {
 
 dependencies {
 	minecraft 'net.minecraftforge:forge:1.19.2-43.1.47'
-//    compile fg.deobf("curse.maven:configured-457570:3340535")
+    implementation fg.deobf("curse.maven:configured-457570:4011355")
 	implementation fg.deobf("curse.maven:jei-238222:3944627")
 	implementation fg.deobf("curse.maven:patchouli-306770:4031402")
 	

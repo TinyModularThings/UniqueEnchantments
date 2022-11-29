@@ -24,6 +24,12 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 public class AutomatedIconGen
 {
 	public static void main(String...args) {
+		if(args == null || args.length <= 0) {
+			args = new String[] {
+				"src/main/resources",
+				"src/tools/resources/icons.json"
+			};
+		}
 		Path langPath = Paths.get(args[0]);
 		Path iconPath = Paths.get(args[1]);
 		try(BufferedReader reader = Files.newBufferedReader(iconPath)) {

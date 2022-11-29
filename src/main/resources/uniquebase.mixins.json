@@ -4,6 +4,7 @@
 	"refmap": "mixins.uniquebase.refmap.json",
 	"minVersion": "0.8",
 	"compatibilityLevel": "JAVA_17",
+	"plugin": "uniquebase.utils.mixin.config.MixinConfigPlugin",
 	"mixins": [
 		"common.enchantments.CombatRulesMixin",
 		"common.enchantments.EnchantmentMixin",

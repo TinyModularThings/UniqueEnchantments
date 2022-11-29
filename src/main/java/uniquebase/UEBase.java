@@ -56,6 +56,7 @@ public class UEBase
 	public static ConfigValue<List<? extends String>> COLOR_CONFIGS;
 	public static BooleanValue ITEM_COLORING_ENABLED;
 	public static Object2IntMap<ResourceLocation> ENCHANTMENT_LIMITS = new Object2IntOpenHashMap<>();
+	public static IdStat<Enchantment> ENCHANTMENT_LIMIT_BLACKLIST = new IdStat<>("enchantment_limit_blacklist", "Allows to Exclude the Enchantments from the Enchantment limit. This has a Performance hit", ForgeRegistries.ENCHANTMENTS);
 	public static IntValue ENCHANTMENT_LIMIT_DEFAULT;
 	public static ConfigValue<List<? extends String>> ENCHANTMENT_LIMITS_CONFIGS;
 	public static IntValue VIEW_COOLDOWN;
@@ -109,6 +110,7 @@ public class UEBase
 		builder.comment("Allows to limit how many Enchantments can be put on to a Item. Excess gets deleted", 
 				"Format: ItemRegistryName;MaxEnchantment (example: minecraft:diamond;2");
 		ENCHANTMENT_LIMITS_CONFIGS = builder.defineList("Item Enchantment Limits", ObjectLists.emptyList(), T -> true);
+		ENCHANTMENT_LIMIT_BLACKLIST.handleConfig(builder);
 		builder.comment("Enable the logging of Mods that create Invalid ItemStacks that will crash the game");
 		LOG_BROKEN_MODS = builder.define("Log Invalid ItemStacks", true);
 		builder.pop();

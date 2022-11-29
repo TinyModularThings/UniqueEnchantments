@@ -4,7 +4,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
-import uniquebase.utils.IntStat;
 import uniquebase.utils.SlotUUID;
 
 public class Vitae extends UniqueEnchantment

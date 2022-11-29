@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.mojang.datafixers.util.Either;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
@@ -70,15 +71,39 @@ public class EnchantmentHandler
 	
 	public void limitEnchantments(ListTag list, ItemStack stack) {
 		int limit = UEBase.ENCHANTMENT_LIMITS.getInt(ForgeRegistries.ITEMS.getKey(stack.getItem()));
-		while(list.size() > limit) {
-			list.remove(list.size()-1);
+		if(UEBase.ENCHANTMENT_LIMIT_BLACKLIST.isEmpty()) {
+			while(list.size() > limit) {
+				list.remove(list.size()-1);
+			}
+		}
+		else if(list.size() > limit) {
+			IntArrayList toDeleteList = new IntArrayList();
+			for(int i = 0,m=list.size();i<m;i++) {
+				if(UEBase.ENCHANTMENT_LIMIT_BLACKLIST.contains(ResourceLocation.tryParse(list.getCompound(i).getString("id")))) continue;
+				toDeleteList.add(i);
+			}
+			while(toDeleteList.size() > limit) {
+				list.remove(toDeleteList.popInt());
+			}
 		}
 	}
 	
 	public void limitEnchantments(List<EnchantmentInstance> list, ItemStack item) {
 		int limit = UEBase.ENCHANTMENT_LIMITS.getInt(ForgeRegistries.ITEMS.getKey(item.getItem()));
-		while(list.size() > limit) {
-			list.remove(list.size()-1);
+		if(UEBase.ENCHANTMENT_LIMIT_BLACKLIST.isEmpty()) {
+			while(list.size() > limit) {
+				list.remove(list.size()-1);
+			}
+		}
+		else if(list.size() > limit) {
+			IntArrayList toDeleteList = new IntArrayList();
+			for(int i = 0,m=list.size();i<m;i++) {
+				if(UEBase.ENCHANTMENT_LIMIT_BLACKLIST.contains(list.get(i).enchantment)) continue;
+				toDeleteList.add(i);
+			}
+			while(toDeleteList.size() > limit) {
+				list.remove(toDeleteList.popInt());
+			}
 		}
 	}
 	

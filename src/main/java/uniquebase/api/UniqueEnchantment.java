@@ -183,11 +183,13 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	{
 		int split = getConfigName().split(".").length+2;
 		config.push(getConfigName());
+		config.push("General Settings");
 		config.comment("If the Enchantment is Obtainable");
 		enabled = config.define("enabled", true);
 		config.comment("If the Enchantment has any effect");
 		activated = config.define("activated", true);
 		values.loadConfig(config);
+		config.pop();
 		for(int i = 0,m=stats.size();i<m;i++)
 		{
 			stats.get(i).handleConfig(config);
