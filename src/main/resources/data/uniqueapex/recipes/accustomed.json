@@ -26,6 +26,6 @@
     ],
 	"lock": true,
 	"max": 5,
-    "output": "uniqueapex:absolute_protection",
-    "output_mode": "min" 
+    "output": "uniqueapex:accustomed",
+    "output_mode": "sum" 
 }
