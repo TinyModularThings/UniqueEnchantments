@@ -1,0 +1,25 @@
+{
+	"name": "Accustomed",
+	"icon": "uniquebase:textures/icons/accustomed.png",
+	"category": "uniqueapex:uniqueapexcategory",
+	"pages": [
+		{
+			"type": "patchouli:spotlight",
+			"title": "Accustomed",
+			"item": "minecraft:enchanted_book{StoredEnchantments:[{id:'uniqueapex:accustomed',lvl:2}]}",
+			"text": "$(li)Max Level = 100 $(li)Treasure = True $(li)Tradeable = False $(li)Rarity = Very_Rare $()$(br)Values can be different from pack to pack"
+		},
+		{
+			"type": "patchouli:link",
+			"title": "Description",
+			"text": "Slightly reduces cooldown of items",
+			"url": "https://github.com/TinyModularThings/UniqueEnchantments/wiki/Accustomed",
+			"link_text": "Detailed Wiki"
+		},
+		{
+			"type": "patchouli:text",
+			"title": "Recipe",
+			"text": "Please use mods like 'Just Enough Items(JEI)' to see the recipes as they can vary from pack to pack. $(br)Simply press 'usage' on a beacon"
+		}
+	]
+}
