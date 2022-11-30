@@ -37,20 +37,24 @@ public class AutomatedIconGen
 				list.add(file);
 				Map<String, LangFile> langMap = new Object2ObjectOpenHashMap<>();
 				file.fillMap(langMap);
-				map.put(path.getFileName().toString(), langMap);
+				map.put(path.toString(), langMap);
 			}
 			JsonArray icons = JsonParser.parseReader(reader).getAsJsonObject().getAsJsonArray("icons");
 			for(int i = 0,m=icons.size();i<m;i++) {
 				String s = icons.get(i).getAsString();
 				if(s.isEmpty()) continue;
+				boolean found = false;
 				for(Entry<String, Map<String, LangFile>> entry : map.entrySet())
 				{
 					LangFile file = entry.getValue().get(s+".desc");
 					if(file == null) {
-						System.out.println("["+s+".desc] wasn't found in the language file ["+entry.getKey()+"], Skipping");
 						continue;
 					}
 					file.addLangEntry(s+".icon", i+1);
+					found = true;
+				}
+				if(!found) {
+					System.out.println("["+s+".desc] wasn't found in any language file, Skipping");
 				}
 			}
 			for(LangFile file : list) {
