@@ -9,18 +9,22 @@
             "input": { "item": "minecraft:nether_star" }, 
             "amount": 1
         },
+        { 
+            "input": { "item": "minecraft:blaze_rod" }, 
+            "amount": 1
+        },
         {
             "input": { 
 				"type": "forge:nbt",
 				"item": "minecraft:potion",
-				"nbt": { "Potion": "minecraft:strong_haste"}
+				"nbt": { "Potion": "minecraft:strong_swiftness"}
 			},
             "amount": 2
         }
     ],
     "enchantments": [
-        { "type": "minecraft:efficiency", "level": 5 },
-        { "type": "minecraft:mending", "level": 2 },
+        { "type": "minecraft:efficiency", "level": 6 },
+        { "type": "minecraft:mending", "level": 1 },
         { "type": "minecraft:power", "level": 5 },
         { "type": "minecraft:unbreaking", "level": 3 } 
     ],
