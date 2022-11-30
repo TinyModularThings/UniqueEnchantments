@@ -1,26 +1,15 @@
 {
-	"enchantment.uniqueapex.absolute_protection": "绝对保护",
 	"enchantment.uniqueapex.absolute_protection.desc": "降低所有伤害",
 	"enchantment.uniqueapex.absolute_protection.icon": "n",
-	"enchantment.uniqueapex.aeons_fragment": "永世碎片",
 	"enchantment.uniqueapex.aeons_fragment.desc": "投掷三叉戟会加速撞击区域周围的时间,三叉戟必须静止不动才能保持效果",
 	"enchantment.uniqueapex.aeons_fragment.icon": "m",
-	"enchantment.uniqueapex.blessed_blade": "祝福之刃",
 	"enchantment.uniqueapex.blessed_blade.desc": "增加攻击伤害并造成额外的魔法伤害",
 	"enchantment.uniqueapex.blessed_blade.icon": "\u000f",
-	"enchantment.uniqueapex.gaias_fragment": "盖亚碎片",
 	"enchantment.uniqueapex.gaias_fragment.desc": "按住 Shift 键并右击两个位置,可以摧毁范围内的所有方块",
 	"enchantment.uniqueapex.gaias_fragment.icon": "s",
-	"enchantment.uniqueapex.pickaxe404": "镐子404",
 	"enchantment.uniqueapex.pickaxe404.desc": "摧毁任何可能的方块",
 	"enchantment.uniqueapex.pickaxe404.icon": "t",
-	"enchantment.uniqueapex.second_life": "第二人生",
 	"enchantment.uniqueapex.second_life.desc": "如果一件物品的耐久度达到 1,它将恢复其部分耐久度,每次恢复都会使该附魔等级降低 1",
 	"enchantment.uniqueapex.second_life.icon": "X",
-	"unique.apex.bases": "基础",
-	"unique.apex.catalyst": "引发",
-	"unique.apex.desc": "引发进入侧箱.\n附魔进入顶部.\n输出是顶部箱子的第一个插槽",
-	"unique.apex.first_pos": "第一个位置:[x=%s, y=%s, z=%s]",
-	"unique.apex.jei.name": "附魔融合",
-	"unique.apex.mine": "开始挖矿从:[x=%s, y=%s, z=%s] 到:[x=%s, y=%s, z=%s]"
+	"unique.apex.desc": "引发进入侧箱.\n附魔进入顶部.\n输出是顶部箱子的第一个插槽"
 }
