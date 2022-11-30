@@ -333,7 +333,7 @@ public class EntityEvents
 					for(int i = 0,m=living.size();i<m;i++)
 					{
 						LivingEntity entity = living.get(i);
-						if(entity.getActiveEffects().isEmpty())
+						if(entity.getActiveEffects().isEmpty() && entity != player)
 						{
 							entity.addEffect(new MobEffectInstance(UE.PESTILENCES_ODIUM_POTION, 200, level));
 						}

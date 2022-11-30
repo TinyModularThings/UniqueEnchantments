@@ -114,6 +114,8 @@ public class UEApex extends BaseUEMod
 	protected void reloadConfig()
 	{
 		super.reloadConfig();
+		CRAFTING.onConfigChanged();
+		UPGRADING.onConfigChanged();
 		UPGRADE_MULTIPLIERS.clear();
 		List<? extends String> list = ENCHANTMENT_UPGRADE_CONFIGS.get();
 		for(int i = 0;i<list.size();i++)

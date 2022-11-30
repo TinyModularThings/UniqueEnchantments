@@ -13,7 +13,6 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: "org.spongepowered.mixin"
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
-apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
 version = "1.19.2-"+new Date().format("dd")+"-"+Math.abs(new Random().nextInt())
 group = "uniquee"

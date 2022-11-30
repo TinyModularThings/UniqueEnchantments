@@ -39,11 +39,11 @@ public class ApexEnchantment extends UniqueEnchantment implements IApexEnchantme
 	{
 		return 1;
 	}
-
+	
 	@Override
 	public boolean isTreasureOnly()
 	{
-		return false;
+		return true;
 	}
 
 	@Override

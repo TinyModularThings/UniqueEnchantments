@@ -13,6 +13,7 @@ import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
@@ -66,7 +67,7 @@ public class UEBase
 	public static BooleanValue SHOW_NON_BOOKS;
 	public static IntValue TOOLTIPS_FLAGS;
 	public static BooleanValue LOG_BROKEN_MODS;
-	public static final IdStat<Item> ATTRIBUTES = new IdStat<>("attribute_activators", ForgeRegistries.ITEMS);
+	public static final IdStat<Item> ATTRIBUTES = new IdStat<>("attribute_activators", ForgeRegistries.ITEMS, Items.BELL);
 	
 	public static BooleanValue ICONS;
 	public static BooleanValue ICONS_VISIBLE;
@@ -109,7 +110,7 @@ public class UEBase
 		builder.comment("The default limit for each Item, if not further specified in the List");
 		ENCHANTMENT_LIMIT_DEFAULT = builder.defineInRange("Item Enchantment Limit Default", Integer.MAX_VALUE, 0, Integer.MAX_VALUE);
 		builder.comment("Allows to limit how many Enchantments can be put on to a Item. Excess gets deleted", 
-				"Format: ItemRegistryName;MaxEnchantment (example: minecraft:diamond;2");
+				"Format: ItemRegistryName;MaxEnchantment (example: minecraft:diamond;2)");
 		ENCHANTMENT_LIMITS_CONFIGS = builder.defineList("Item Enchantment Limits", ObjectLists.emptyList(), T -> true);
 		ENCHANTMENT_LIMIT_BLACKLIST.handleConfig(builder);
 		builder.comment("Enable the logging of Mods that create Invalid ItemStacks that will crash the game");
@@ -187,6 +188,8 @@ public class UEBase
     {
 		EnchantmentHandler.INSTANCE.cleanCache();
 		APPLICABLE_ICON_OVERRIDE.onConfigChanged();
+		ENCHANTMENT_LIMIT_BLACKLIST.onConfigChanged();
+		ATTRIBUTES.onConfigChanged();
 		COLOR_SETTINGS.clear();
 		List<? extends String> list = COLOR_CONFIGS.get();
 		for (int i = 0; i < list.size(); i++) {
