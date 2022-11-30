@@ -82,9 +82,7 @@ public class AutomatedIconGen
 			this.obj = obj;
 			keys = new ObjectAVLTreeSet<>();
 			for(Map.Entry<String, JsonElement> entry : obj.entrySet()) {
-				if(entry.getKey().endsWith(".desc")) {
-					keys.add(entry.getKey());
-				}
+				keys.add(entry.getKey());
 			}
 		}
 		

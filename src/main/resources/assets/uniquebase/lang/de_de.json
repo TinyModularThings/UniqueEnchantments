@@ -1,1 +1,16 @@
-{}
+{
+	"unique.base.jei.common": "Haeufig",
+	"unique.base.jei.curse": "Fluch: ",
+	"unique.base.jei.incompats": "Inkompatibel mit: ",
+	"unique.base.jei.max_level": "Maximales Level: %s",
+	"unique.base.jei.name": "UE Verzauberungen",
+	"unique.base.jei.no.description": "Keine Beschreibung vorhanden",
+	"unique.base.jei.no.incompat": "Nichts",
+	"unique.base.jei.press_gui": "Halte %s um Verzauberungen zu sehen",
+	"unique.base.jei.rare": "Rar",
+	"unique.base.jei.rarity": "Seltenheit: %s",
+	"unique.base.jei.tradeable": "Verhandelbar: ",
+	"unique.base.jei.treasure": "Schatz: ",
+	"unique.base.jei.uncommon": "Selten",
+	"unique.base.jei.very_rare": "Sehr Rar"
+}
