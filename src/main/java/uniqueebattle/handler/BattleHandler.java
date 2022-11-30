@@ -402,7 +402,7 @@ public class BattleHandler
 				{
 					ItemStack stack = enemy.getItemBySlot(targetSlot);
 					if(stack.isEmpty()) continue;
-					stack.hurtAndBreak((int)Math.ceil(StreakersWill.LOSS_PER_LEVEL.get(level)/MiscUtil.getAttackSpeed(source)), enemy, MiscUtil.get(targetSlot));
+					stack.hurtAndBreak((int)Math.ceil(StreakersWill.LOSS_PER_LEVEL.get(level)/MiscUtil.getAttackSpeed(source, 1.6D)), enemy, MiscUtil.get(targetSlot));
 					break;
 				}
 			}

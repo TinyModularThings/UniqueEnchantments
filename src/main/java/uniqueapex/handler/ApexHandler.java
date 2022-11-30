@@ -38,6 +38,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
+import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
@@ -49,10 +50,13 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniqueapex.UEApex;
 import uniqueapex.enchantments.simple.AbsoluteProtection;
+import uniqueapex.enchantments.simple.Accustomed;
 import uniqueapex.enchantments.simple.BlessedBlade;
 import uniqueapex.enchantments.simple.SecondLife;
 import uniqueapex.enchantments.unique.AeonsFragment;
 import uniqueapex.handler.misc.MiningArea;
+import uniqueapex.network.ApexCooldownPacket;
+import uniquebase.UEBase;
 import uniquebase.api.events.ItemDurabilityChangeEvent;
 import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
@@ -117,6 +121,27 @@ public class ApexHandler
 			{
 				event.setAmount(event.getAmount() + (float)Math.pow(1+BlessedBlade.LEVEL_SCALE.get(MiscUtil.getPlayerLevel(entity, 200) * level), 0.2F));
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onPlayerTick(PlayerTickEvent event)
+	{
+		if(event.phase == Phase.START || event.side.isClient()) return;
+		int level = MiscUtil.getCombinedEnchantmentLevel(UEApex.ACCUSTOMED, event.player);
+		if(level > 0)
+		{
+			CompoundTag tag = MiscUtil.getPersistentData(event.player);
+			double current = tag.getDouble(Accustomed.GAGUE_COUNTER) + (Accustomed.SCALE.get(level));
+			if(current >= Accustomed.GAUGE.get()) {
+				current -= Accustomed.GAUGE.get();
+				int points = Mth.nextInt(event.player.getRandom(), 0, 3);
+				if(points > 0) {
+					for(int i = 0;i<points;i++) event.player.getCooldowns().tick();
+					UEBase.NETWORKING.sendToPlayer(new ApexCooldownPacket(points), event.player);
+				}
+			}
+			tag.putDouble(Accustomed.GAGUE_COUNTER, current);
 		}
 	}
 	

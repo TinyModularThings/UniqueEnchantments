@@ -66,6 +66,7 @@ public class UEBase
 	public static BooleanValue SHOW_NON_BOOKS;
 	public static IntValue TOOLTIPS_FLAGS;
 	public static BooleanValue LOG_BROKEN_MODS;
+	public static final IdStat<Item> ATTRIBUTES = new IdStat<>("attribute_activators", ForgeRegistries.ITEMS);
 	
 	public static BooleanValue ICONS;
 	public static BooleanValue ICONS_VISIBLE;
@@ -113,6 +114,7 @@ public class UEBase
 		ENCHANTMENT_LIMIT_BLACKLIST.handleConfig(builder);
 		builder.comment("Enable the logging of Mods that create Invalid ItemStacks that will crash the game");
 		LOG_BROKEN_MODS = builder.define("Log Invalid ItemStacks", true);
+		ATTRIBUTES.handleConfig(builder);
 		builder.pop();
 		builder.push("tooltips");
 		APPLICABLE_ICON_OVERRIDE.handleConfig(builder);

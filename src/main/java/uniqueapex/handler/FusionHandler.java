@@ -67,7 +67,7 @@ public class FusionHandler
 	{
 		if(event.getFace() == Direction.DOWN) return;
 		Item item = event.getItemStack().getItem();
-		if(item != Items.END_CRYSTAL && item != Items.TOTEM_OF_UNDYING) return;
+		if(!UEApex.CRAFTING.contains(item) && !UEApex.UPGRADING.contains(item)) return;
 		Level world = event.getLevel();
 		BlockPos pos = event.getPos();
 		if(world.getBlockState(pos).getBlock() != Blocks.CHEST) return;
@@ -80,7 +80,7 @@ public class FusionHandler
 			event.setCanceled(true);
 			return;
 		}
-		if(item == Items.TOTEM_OF_UNDYING)
+		if(UEApex.UPGRADING.contains(item))
 		{
 			FusionUpgradeRecipe recipe = getUpgradeRecipe(world, context);
 			if(recipe == null) return;
@@ -100,7 +100,7 @@ public class FusionHandler
 			event.setCancellationResult(InteractionResult.SUCCESS);
 			event.setCanceled(true);
 		}
-		else if(item == Items.END_CRYSTAL)
+		else if(UEApex.CRAFTING.contains(item))
 		{
 			FusionRecipe recipe = getFusionRecipe(world, context);
 			if(recipe == null) return;

@@ -7,6 +7,8 @@ import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -17,6 +19,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import uniqueapex.enchantments.simple.AbsoluteProtection;
+import uniqueapex.enchantments.simple.Accustomed;
 import uniqueapex.enchantments.simple.BlessedBlade;
 import uniqueapex.enchantments.simple.Pickaxe404;
 import uniqueapex.enchantments.simple.SecondLife;
@@ -28,9 +31,11 @@ import uniqueapex.handler.recipe.fusion.FusionRecipe;
 import uniqueapex.handler.recipe.fusion.FusionRecipeSerializer;
 import uniqueapex.handler.recipe.upgrade.FusionUpgradeRecipe;
 import uniqueapex.handler.recipe.upgrade.FusionUpgradeSerializer;
+import uniqueapex.network.ApexCooldownPacket;
 import uniqueapex.network.SyncRecipePacket;
 import uniquebase.UEBase;
 import uniquebase.api.BaseUEMod;
+import uniquebase.utils.IdStat;
 
 @Mod("uniqueapex")
 public class UEApex extends BaseUEMod
@@ -51,6 +56,7 @@ public class UEApex extends BaseUEMod
 	public static Enchantment BLESSED_BLADE;
 	public static Enchantment SECOND_LIFE;
 	public static Enchantment PICKAXE_404;
+	public static Enchantment ACCUSTOMED;
 	
 	//Unique
 	public static Enchantment AEONS_FRAGMENT;
@@ -59,11 +65,15 @@ public class UEApex extends BaseUEMod
 	public static final Object2FloatMap<Enchantment> UPGRADE_MULTIPLIERS = new Object2FloatOpenHashMap<>();
 	public static ConfigValue<List<? extends String>> ENCHANTMENT_UPGRADE_CONFIGS;
 	
+	public static final IdStat<Item> CRAFTING = new IdStat<>("fusion_activators", ForgeRegistries.ITEMS, Items.END_CRYSTAL);
+	public static final IdStat<Item> UPGRADING = new IdStat<>("fusion_upgrade_activators", ForgeRegistries.ITEMS, Items.TOTEM_OF_UNDYING);
+	
 	public static final SoundEvent SECOND_LIFE_SOUND = new SoundEvent(new ResourceLocation("uniqueapex", "second_life"));
 	
 	public UEApex()
 	{
 		UEBase.NETWORKING.registerInternalPacket(this, SyncRecipePacket.class, SyncRecipePacket::new, 30);
+		UEBase.NETWORKING.registerInternalPacket(this, ApexCooldownPacket.class, ApexCooldownPacket::new, 31);
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UEApex.toml");
 		MinecraftForge.EVENT_BUS.register(FusionHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(ApexHandler.INSTANCE);
@@ -71,6 +81,7 @@ public class UEApex extends BaseUEMod
 
 		UPGRADE_MULTIPLIERS.defaultReturnValue(1F);
 	}
+	
 	
 	public void registerContent(RegisterEvent event)
 	{
@@ -95,6 +106,8 @@ public class UEApex extends BaseUEMod
 	{
 		builder.comment("Multipliers of Enchantment Upgrades, format: minecraft:sharpness;5.2312");
 		ENCHANTMENT_UPGRADE_CONFIGS = builder.defineList("upgrade_multipliers", Collections.emptyList(), T -> true);
+		CRAFTING.handleConfig(builder);
+		UPGRADING.handleConfig(builder);
 	}
 	
 	@Override
@@ -133,6 +146,7 @@ public class UEApex extends BaseUEMod
 		BLESSED_BLADE = register(new BlessedBlade());
 		SECOND_LIFE = register(new SecondLife());
 		PICKAXE_404 = register(new Pickaxe404());
+		ACCUSTOMED = register(new Accustomed());
 		
 		AEONS_FRAGMENT = register(new AeonsFragment());
 		GAIAS_FRAGMENT = register(new GaiasFragment());

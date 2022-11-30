@@ -327,7 +327,7 @@ public class BaseHandler
 	@SubscribeEvent
 	public void onEntityClick(EntityInteract event)
 	{
-		if(event.getItemStack().getItem() == Items.BELL && event.getTarget() instanceof ItemFrame)
+		if(UEBase.ATTRIBUTES.contains(event.getItemStack().getItem()) && event.getTarget() instanceof ItemFrame)
 		{
 			ItemFrame frame = (ItemFrame)event.getTarget();
 			ItemStack stack = frame.getItem();

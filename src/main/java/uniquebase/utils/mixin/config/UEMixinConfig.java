@@ -126,6 +126,7 @@ public final class UEMixinConfig
 		boolean enabled = true;
 		boolean required;
 		String dependency = null;
+		boolean validating = false;
 		
 		public Entry(String name, String comment)
 		{
@@ -147,9 +148,13 @@ public final class UEMixinConfig
 		
 		private void validateDependency(Map<String, Entry> map)
 		{
-			if(dependency == null) return;
+			if(dependency == null || validating) return;
 			Entry entry = map.get(dependency);
-			if(entry == null || entry.isEnabled()) return;
+			if(entry == null) return;
+			validating = true;
+			entry.validateDependency(map);
+			validating = false;
+			if(entry.isEnabled()) return;
 			setConfig(false);
 		}
 		

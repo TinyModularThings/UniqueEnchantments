@@ -59,7 +59,7 @@ sourceSets {
 }
 
 configurations {
-    toolsCompile.extendsFrom compile;
+    toolsImplementation.extendsFrom implementation;
 }
 
 dependencies {
