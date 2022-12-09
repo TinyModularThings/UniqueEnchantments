@@ -202,6 +202,9 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 	public void onConfigChanged()
 	{
 		values.onConfigChanged();
+		for(int i = 0;i<stats.size();i++) {
+			stats.get(i).onConfigChanged();
+		}
 	}
 	
 	public void loadData(ForgeConfigSpec.Builder config) {}
