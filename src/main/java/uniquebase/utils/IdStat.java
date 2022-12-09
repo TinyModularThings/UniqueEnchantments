@@ -92,6 +92,7 @@ public class IdStat<T> implements IStat
 		this.config = config.defineList(id, defaultValues, T -> registry.containsKey(ResourceLocation.tryParse(T.toString())));
 	}
 	
+	@Override
 	public void onConfigChanged()
 	{
 		values.clear();

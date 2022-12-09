@@ -13,7 +13,6 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Matrix4f;
 
-import it.unimi.dsi.fastutil.ints.Int2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.client.Minecraft;
@@ -429,17 +428,20 @@ public class UtilsHandler
 			int duration = (int)Math.max((FaminesOdium.DELAY.get() / Math.pow(level, 0.125D)), 1);
 			if(time % duration == 0)
 			{
-				Int2FloatMap.Entry entry = FaminesOdium.consumeRandomItem(player.getInventory(), FaminesOdium.NURISHMENT.getFloat() * level);
-				if(entry != null)
-				{
-					float value = MathCache.LOG_ADD_MAX.getFloat(level);
-					player.getFoodData().eat(Mth.ceil(FaminesOdium.NURISHMENT.get(entry.getIntKey() * value)), entry.getFloatValue() * level * value);
-					player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_BURP, SoundSource.PLAYERS, 0.5F, player.level.random.nextFloat() * 0.1F + 0.9F);
-				}
-				else
-				{
-					player.hurt(DamageSource.MAGIC, FaminesOdium.DAMAGE.getFloat(duration * MathCache.LOG_ADD_MAX.getFloat(level)));
-				}
+				ItemStack stack = FaminesOdium.getRandomFood(player.getInventory(), player.getRandom());
+				if(!stack.isEmpty()) player.eat(player.level, stack);
+				
+//				Int2FloatMap.Entry entry = FaminesOdium.getRandomFood(player.getInventory(), FaminesOdium.NURISHMENT.getFloat() * level);
+//				if(entry != null)
+//				{
+//					float value = MathCache.LOG_ADD_MAX.getFloat(level);
+//					player.getFoodData().eat(Mth.ceil(FaminesOdium.NURISHMENT.get(entry.getIntKey() * value)), entry.getFloatValue() * level * value);
+//					player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_BURP, SoundSource.PLAYERS, 0.5F, player.level.random.nextFloat() * 0.1F + 0.9F);
+//				}
+//				else
+//				{
+//					player.hurt(DamageSource.MAGIC, FaminesOdium.DAMAGE.getFloat(duration * MathCache.LOG_ADD_MAX.getFloat(level)));
+//				}
 			}
 		}
 		int delay = Math.max(1, Mth.ceil(DemetersSoul.DELAY.get() / Math.log(10 + DemetersSoul.SCALING.get(MiscUtil.getEnchantmentLevel(UEUtils.DEMETERS_SOUL, player.getItemInHand(InteractionHand.MAIN_HAND))))));

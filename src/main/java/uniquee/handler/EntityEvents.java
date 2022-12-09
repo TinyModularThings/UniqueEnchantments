@@ -1033,6 +1033,7 @@ public class EntityEvents
 					ItemStack stack = event.getEntity().getItemBySlot(lowestSlot);
 					StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
 					StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(event.getEntity().getMaxHealth()) * 0.3F * rand.nextFloat()));
+					nbt.putInt(DeathsOdium.CURSE_STORAGE, (nbt.getInt(DeathsOdium.CURSE_STORAGE)+1));
 				}
 				if(nbt.getBoolean(DeathsOdium.CURSE_RESET))
 				{
@@ -1049,7 +1050,6 @@ public class EntityEvents
 					}
 					return;
 				}
-				nbt.putInt(DeathsOdium.CURSE_STORAGE, (nbt.getInt(DeathsOdium.CURSE_STORAGE)+1));
 			}
 		}
 		if(deadEntity instanceof Witch && rand.nextInt(100) < 2)
