@@ -119,7 +119,7 @@ public class MiscUtil
 
 	public static double getAttackSpeed(LivingEntity entity)
 	{
-		return getAttribute(entity, Attributes.ATTACK_SPEED, 0D);
+		return getAttribute(entity, Attributes.ATTACK_SPEED, 1.6D);
 	}
 	
 	public static double getAttackSpeed(LivingEntity entity, double defaultValue)

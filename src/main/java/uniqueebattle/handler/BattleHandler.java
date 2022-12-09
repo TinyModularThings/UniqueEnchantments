@@ -641,7 +641,7 @@ public class BattleHandler
 		int level = enchantments.getInt(UEBattle.CELESTIAL_BLESSING);
 		if(level > 0)
 		{
-			double value = world.isDay() ? (MiscUtil.isTranscendent(entity, stack, UEBattle.CELESTIAL_BLESSING) ? Math.pow(1+CelestialBlessing.SPEED_BONUS.getAsDouble(level),2)-1 : CelestialBlessing.SPEED_BONUS.getAsDouble(level)) : 0;
+			double value = !world.isDay() ? (MiscUtil.isTranscendent(entity, stack, UEBattle.CELESTIAL_BLESSING) ? Math.pow(1+CelestialBlessing.SPEED_BONUS.getAsDouble(level),2)-1 : CelestialBlessing.SPEED_BONUS.getAsDouble(level)) : 0;
 			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(CelestialBlessing.SPEED_MOD, "speed_boost", value, Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UEBattle.IRON_BIRD);
