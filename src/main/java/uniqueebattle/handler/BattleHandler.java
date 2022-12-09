@@ -256,7 +256,7 @@ public class BattleHandler
 		LivingEntity entity = event.getEntity();
 		if(level > 0 && event.getDuration() > 10)
 		{
-			float boost = MiscUtil.isTranscendent(entity, event.getItem(), UEBattle.CELESTIAL_BLESSING) ? CelestialBlessing.SPEED_BONUS.getAsFloat(level) * CelestialBlessing.SPEED_BONUS.getAsFloat(level) : CelestialBlessing.SPEED_BONUS.getAsFloat(level);
+			float boost = MiscUtil.isTranscendent(entity, event.getItem(), UEBattle.CELESTIAL_BLESSING) ? (1+CelestialBlessing.SPEED_BONUS.getAsFloat(level)) * (1+CelestialBlessing.SPEED_BONUS.getAsFloat(level))-1 : CelestialBlessing.SPEED_BONUS.getAsFloat(level);
 			double num = (1 + (event.getEntity().level.isNight() ? boost : 0));
 			event.setDuration((int)Math.max(10,event.getDuration() / num));
 		}
