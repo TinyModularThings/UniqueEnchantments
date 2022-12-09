@@ -1033,8 +1033,8 @@ public class EntityEvents
 					ItemStack stack = event.getEntity().getItemBySlot(lowestSlot);
 					StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
 					StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(event.getEntity().getMaxHealth()) * 0.3F * rand.nextFloat()));
-					nbt.putInt(DeathsOdium.CURSE_STORAGE, (nbt.getInt(DeathsOdium.CURSE_STORAGE)+1));
 				}
+				nbt.putInt(DeathsOdium.CURSE_STORAGE, (nbt.getInt(DeathsOdium.CURSE_STORAGE)+1));
 				if(nbt.getBoolean(DeathsOdium.CURSE_RESET))
 				{
 					nbt.remove(DeathsOdium.CURSE_RESET);
@@ -1048,6 +1048,7 @@ public class EntityEvents
 							stack.getTag().remove(DeathsOdium.CURSE_STORAGE);
 						}
 					}
+					deadEntity.getAttribute(Attributes.MAX_HEALTH).removeModifier(DeathsOdium.REMOVE_UUID);
 					return;
 				}
 			}
@@ -1299,7 +1300,7 @@ public class EntityEvents
 		if(level > 0 && MiscUtil.getSlotsFor(UE.DEATHS_ODIUM).contains(slot))
 		{
 			float value = StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0);
-			if(value > 0 && !MiscUtil.getPersistentData(living).getBoolean(DeathsOdium.CURSE_DISABLED))
+			if(!MiscUtil.getPersistentData(living).getBoolean(DeathsOdium.CURSE_DISABLED))
 			{
 				mods.put(Attributes.MAX_HEALTH, new AttributeModifier(DeathsOdium.GENERAL_MOD.getId(slot), "Death Odiums Restore", value/100f, Operation.MULTIPLY_TOTAL));
 			}
