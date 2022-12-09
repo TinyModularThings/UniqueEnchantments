@@ -89,9 +89,10 @@ public class IdStat<T> implements IStat
 	public void handleConfig(ForgeConfigSpec.Builder config)
 	{
 		if(comment != null) config.comment(comment);
-		this.config = config.defineList(id, defaultValues, T -> registry.containsKey(ResourceLocation.tryParse((String)T)));
+		this.config = config.defineList(id, defaultValues, T -> true);
 	}
 	
+	@Override
 	public void onConfigChanged()
 	{
 		values.clear();
@@ -99,7 +100,7 @@ public class IdStat<T> implements IStat
 		for(int i = 0;i<list.size();i++)
 		{
 			ResourceLocation location = ResourceLocation.tryParse(list.get(i));
-			if(location != null) values.add(location);
+			if(location != null && registry.containsKey(location)) values.add(location);
 		}
 	}
 	
