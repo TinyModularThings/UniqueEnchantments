@@ -521,14 +521,15 @@ public class UtilsHandler
 	@SubscribeEvent
 	public void onEaten(LivingEntityUseItemEvent.Finish event)
 	{
-		if(event.getEntity() instanceof Player)
+		if(event.getEntity() instanceof Player player)
 		{
 			int level = MiscUtil.getEnchantmentLevel(UEUtils.AMBROSIA, event.getItem());
 			if(level > 0)
 			{
-				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(MathCache.POW5.get(1 + ((Player)event.getEntity()).experienceLevel * level)) * Ambrosia.DURATION_MULTIPLIER.get()));
-				((Player)event.getEntity()).getFoodData().eat(2000, 0);
-				event.getEntity().addEffect(new MobEffectInstance(UEUtils.SATURATION, duration, Math.min(20, level)));
+				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(MathCache.POW5.get(1 + player.experienceLevel * level)) * Ambrosia.DURATION_MULTIPLIER.get()));
+				player.getFoodData().eat(2000, 0);
+				player.setHealth(player.getMaxHealth());
+				player.addEffect(new MobEffectInstance(UEUtils.SATURATION, duration, Math.min(20, level)));
 			}
 		}
 	}
@@ -860,7 +861,7 @@ public class UtilsHandler
 			event.setNewSpeed(event.getNewSpeed() * (player.isOnGround() ? 1F : 5F) * (inWater && !EnchantmentHelper.hasAquaAffinity(player) ? 5F : 1F));
 			if(inWater || !player.isOnGround())
 			{
-				event.setNewSpeed((float)(event.getNewSpeed() * -Math.sqrt(1 / (1 + level * level * Adept.SPEED_SCALE.get())) + 1));
+				event.setNewSpeed((float)(event.getNewSpeed() * (1-Math.sqrt(1 / (1 + level * level * Adept.SPEED_SCALE.get())))));
 			}
 		}
 		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(held);

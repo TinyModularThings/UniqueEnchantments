@@ -24,7 +24,7 @@
 	"enchantment.uniqueutil.essence_of_slime.desc": "Beim fallen wirst du nun federn. Fall Schaden wird zu Haltbarkeit konvertiert",
 	"enchantment.uniqueutil.essence_of_slime.icon": "$",
 	"enchantment.uniqueutil.famines_odium": "Abscheu des Hungers",
-	"enchantment.uniqueutil.famines_odium.desc": "Gelegentlich wird Essen aus deinem Inventar konsumiert unabhaengig deines Hungers. Das in diesem Wege konsumierte Essen, hat reduzierte Hunger und Saetigungs Werte. Sollte kein Essen gefunden werden erhaelt der Spieler, Schaden",
+	"enchantment.uniqueutil.famines_odium.desc": "Gelegentlich wird Essen aus deinem Inventar konsumiert unabhaengig deines Hungers. Sollte kein Essen gefunden werden erhaelt der Spieler, Schaden",
 	"enchantment.uniqueutil.famines_odium.icon": "%",
 	"enchantment.uniqueutil.mounting_aegis": "Schutz des Sockels",
 	"enchantment.uniqueutil.mounting_aegis.desc": "Schilde koennen nun auch Schaden gegen dein Ross blockieren",

@@ -30,7 +30,7 @@ public class MidasBlessing extends UniqueEnchantment
 		@Override
 		public boolean test(BlockState t)
 		{
-			return t.is(MIDIAS) || t.is(Tags.Blocks.ORES_LAPIS) || t.is(Tags.Blocks.ORES_DIAMOND) || t.is(Tags.Blocks.ORES_EMERALD) || t.is(Tags.Blocks.ORES_QUARTZ);
+			return t.is(MIDIAS) || t.is(Tags.Blocks.ORES);
 		}
 	};
 	public static TagKey<Block> MIDIAS = BlockTags.create(new ResourceLocation("uniquee", "midias_blessing"));

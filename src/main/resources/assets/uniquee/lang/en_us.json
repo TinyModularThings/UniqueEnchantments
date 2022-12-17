@@ -33,7 +33,7 @@
 	"enchantment.uniquee.cloud_walker.desc": "Sneaking changes the Mode(Toggle). When active Player can no longer fall for a while. Consumes Durability while active",
 	"enchantment.uniquee.cloud_walker.icon": "\u0015",
 	"enchantment.uniquee.combo_star": "Combo Star",
-	"enchantment.uniquee.combo_star.desc": "It might be in my dreams to hit crits like a certain Mage",
+	"enchantment.uniquee.combo_star.desc": "Decreases base damage, but increases damage dealt and attack speed for each consecutive critical hit",
 	"enchantment.uniquee.combo_star.icon": "r",
 	"enchantment.uniquee.deaths_odium": "Death's Odium",
 	"enchantment.uniquee.deaths_odium.desc": "Upon death, transfer some Health to the Item, while in an active Slot. Maybe this can be used in my favor",

@@ -1106,10 +1106,11 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onRespawn(PlayerEvent.Clone event)
 	{
+		CompoundTag nbt = event.getEntity().serializeNBT();
 		float f = MiscUtil.getPersistentData(event.getEntity()).getFloat(DeathsOdium.CURSE_STORAGE);
 		if(f != 0F)
 		{
-			event.getEntity().getAttribute(Attributes.MAX_HEALTH).addTransientModifier(new AttributeModifier(DeathsOdium.REMOVE_UUID, "odiums_curse", Math.pow(0.95,f)-1, Operation.MULTIPLY_TOTAL));
+			event.getEntity().getAttribute(Attributes.MAX_HEALTH).addTransientModifier(new AttributeModifier(DeathsOdium.REMOVE_UUID, "odiums_curse", nbt.getBoolean(DeathsOdium.CURSE_DISABLED) ? 0 : Math.pow(0.95,f)-1, Operation.MULTIPLY_TOTAL));
 		}
 	}
 	

@@ -6,7 +6,7 @@
 		{
 			"type": "patchouli:text",
 			"title": "Transcended",
-			"text": "Some enchantments will have another page titled 'Transcended', those enchantments have a special effect once the player reaches a certain Experience Level. $(br)You can also toggle the effect if you shift-rightlick an enchanting table with the item"
+			"text": "Some enchantments will have another page titled 'Transcended', those enchantments have a special effect once the player reaches a certain Experience Level. $(br)You can also toggle the effect if you shift-rightlick any block that provides Enchanting Power (e.g. Bookshelf) with the item"
 		}
 	]
 }

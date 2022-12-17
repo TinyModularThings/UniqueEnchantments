@@ -24,7 +24,7 @@
 	"enchantment.uniqueutil.essence_of_slime.desc": "You will now bounce when falling. Fall Damage is converted into Durability Loss",
 	"enchantment.uniqueutil.essence_of_slime.icon": "$",
 	"enchantment.uniqueutil.famines_odium": "Famine's Odium",
-	"enchantment.uniqueutil.famines_odium.desc": "Will eat occasionally Food from your inventory, regardless of your Hunger or Saturation, and wont restore full Hunger Value. If no Food is found in Inventory the Player will take damage",
+	"enchantment.uniqueutil.famines_odium.desc": "Will eat occasionally Food from your inventory, regardless of your Hunger or Saturation. If no Food is found in Inventory the Player will take damage",
 	"enchantment.uniqueutil.famines_odium.icon": "%",
 	"enchantment.uniqueutil.mounting_aegis": "Mounting Aegis",
 	"enchantment.uniqueutil.mounting_aegis.desc": "Shielding while riding an Entity, will also shield the Entity",
