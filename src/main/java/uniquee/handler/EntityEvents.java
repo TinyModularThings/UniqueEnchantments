@@ -1,6 +1,7 @@
 package uniquee.handler;
 
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,8 +14,10 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
@@ -60,6 +63,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.saveddata.maps.MapBanner;
@@ -802,6 +806,10 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onEntityDamage(LivingDamageEvent event)
 	{
+		
+		for(Entry<ResourceKey<BannerPattern>, BannerPattern> a:Registry.BANNER_PATTERN.entrySet()) {
+			System.out.println(a.getKey().registry() + " : " + a.getValue().getHashname());
+		}
 		LivingEntity target = event.getEntity();
 		Entity entity = event.getSource().getEntity();
 		

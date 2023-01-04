@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "uniquee:item/ameliorated_sharpness_banner_pattern"
+  }
+}

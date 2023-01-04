@@ -1,17 +1,25 @@
 package uniquee;
 
 import java.lang.reflect.Field;
+import java.util.Map.Entry;
 
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BannerPatternItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent.AddLayers;
@@ -24,12 +32,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
+import net.minecraftforge.registries.RegistryObject;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.EnchantedUpgrade;
 import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
+import uniquebase.utils.BannerUtils;
 import uniquee.client.EnchantmentLayer;
 import uniquee.enchantments.complex.EnderMending;
 import uniquee.enchantments.complex.Momentum;
@@ -144,6 +155,18 @@ public class UE extends BaseUEMod
 	public static final EnchantedUpgrade GRIMOIRES_UPGRADE = new GrimoiresUpgrade();
 	public static final EnchantedUpgrade PESTILENCE_UPGRADE = new PestilenceUpgrade();
 	public static final EnchantedUpgrade PHOENIX_UPGRADE = new PhoenixUpgrade();
+
+	public static final DeferredRegister<Item> BANNER_PATTERNS_ITEMS = DeferredRegister.create(Registry.ITEM_REGISTRY, "uniquee");
+	
+	public static final ResourceKey<BannerPattern> AMEL_SHARPNESS_BANNER = BannerUtils.createBanner("uniquee", "ameliorated_sharpness", "ueamlshrp", BANNER_PATTERNS_ITEMS, new Item.Properties().rarity(Rarity.RARE));
+	public static final ResourceKey<BannerPattern> AMEL_SHARPNESS_COLOR_BANNER = BannerUtils.createBanner("uniquee", "ameliorated_sharpness_color", "ueamlshrpc", BANNER_PATTERNS_ITEMS, new Item.Properties().rarity(Rarity.EPIC));
+	
+//	
+//	public static final TagKey<BannerPattern> PATTERN_ITEM_AMEL_SHARPNESS = TagKey.create(Registry.BANNER_PATTERN_REGISTRY, new ResourceLocation("uniquee:pattern_item/ameliorated_sharpness"));
+//	public static final RegistryObject<BannerPatternItem> AMEL_SHARPNESS_BANNER_ITEM = BANNER_PATTERNS_ITEMS.register("ameliorated_sharpness", () -> new BannerPatternItem(PATTERN_ITEM_AMEL_SHARPNESS, new Item.Properties().rarity(Rarity.RARE)));
+//
+//	public static final TagKey<BannerPattern> PATTERN_ITEM_AMEL_SHARPNESS_COLOR = TagKey.create(Registry.BANNER_PATTERN_REGISTRY, new ResourceLocation("uniquee:pattern_item/ameliorated_sharpness_color"));
+//	public static final RegistryObject<BannerPatternItem> AMEL_SHARPNESS_COLOR_BANNER_ITEM = BANNER_PATTERNS_ITEMS.register("ameliorated_sharpness_color", () -> new BannerPatternItem(PATTERN_ITEM_AMEL_SHARPNESS_COLOR, new Item.Properties().rarity(Rarity.RARE)));
 	
 	public UE()
 	{
@@ -167,6 +190,9 @@ public class UE extends BaseUEMod
 		BaseHandler.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessing.VALIDATOR, MidasBlessing.GOLD_COUNTER);
 		BaseHandler.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGrace.VALIDATOR, IfritsGrace.LAVA_COUNT);
 		BaseHandler.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, IcarusAegis.VALIDATOR, IcarusAegis.FEATHER_TAG);
+		
+//		BANNER_PATTERNS.register(bus);
+		BANNER_PATTERNS_ITEMS.register(bus);
 	}
 	
 	public void registerContent(RegisterEvent event)
@@ -176,7 +202,6 @@ public class UE extends BaseUEMod
 	    	event.getForgeRegistry().register("pestilences_odium", PESTILENCES_ODIUM_POTION);
 	    	event.getForgeRegistry().register("eternal_flame", ETERNAL_FLAME_POTION);
 	    	event.getForgeRegistry().register("thrombosis", THROMBOSIS);
-	    	
 		}
 		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS))
 		{
@@ -187,6 +212,13 @@ public class UE extends BaseUEMod
 			event.getForgeRegistry().register("ender_librarian", ENDER_LIBRARIAN_SOUND);
 			event.getForgeRegistry().register("grimoire", GRIMOIRE_SOUND);
 			event.getForgeRegistry().register("momentum", MOMENTUM_SOUND);
+		}
+		else if(event.getRegistryKey().equals(Registry.BANNER_PATTERN_REGISTRY)) {
+			for(Entry<ResourceKey<BannerPattern>, String> entry:BannerUtils.getBanners().entrySet()) {
+				Registry.register(Registry.BANNER_PATTERN, entry.getKey(), new BannerPattern(entry.getValue()));
+			}
+//			Registry.register(Registry.BANNER_PATTERN, AMEL_SHARPNESS_BANNER, new BannerPattern("ueamlshrp"));
+//			Registry.register(Registry.BANNER_PATTERN, AMEL_SHARPNESS_COLOR_BANNER, new BannerPattern("ueamlshrpc"));
 		}
 	}
 	
