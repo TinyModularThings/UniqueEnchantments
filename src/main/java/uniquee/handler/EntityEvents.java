@@ -199,7 +199,7 @@ public class EntityEvents
 			int points = UE.PESTILENCE_UPGRADE.getCombinedPoints(event.getEntity());
 			if(points > 0)
 			{
-				((PotionMixin)instance).setPotionDuration((int)(instance.getDuration() * (1F - (1F/MathCache.LOG10.getFloat(10+points)))));
+				((PotionMixin)instance).setPotionDuration((int)(instance.getDuration() * (1F/MathCache.LOG10.getFloat(10+points))));
 			}
 		}
 	}
@@ -360,7 +360,7 @@ public class EntityEvents
 			CompoundTag data = event.player.getPersistentData();
 			if(data.contains(DeathsOdium.CURSE_DAMAGE) && data.getLong(DeathsOdium.CURSE_TIMER) < event.player.level.getGameTime())
 			{
-				int total = Mth.floor(data.getFloat(DeathsOdium.CURSE_DAMAGE) / DeathsOdium.DAMAGE_FACTOR.get());
+				int total = (int) Math.pow(data.getFloat(DeathsOdium.CURSE_DAMAGE) * rand.nextDouble(), 0.25d);
 				if(total > 0)
 				{
 					AttributeInstance instance = event.player.getAttribute(Attributes.MAX_HEALTH);
@@ -663,14 +663,24 @@ public class EntityEvents
 		}
 	}
 	
+//	@SubscribeEvent
+//	public void onItemUseTick(LivingEntityUseItemEvent.Tick event)
+//	{
+//		if(event.getDuration() <= 10) return;
+//		if(MiscUtil.getEnchantedItem(UE.COMBO_STAR, event.getEntity()).getIntValue() > 0)
+//		{
+//			int counter = MiscUtil.getPersistentData(event.getEntity()).getInt(ComboStar.COMBO_NAME);
+//			event.setDuration(Math.max(10, (int)(event.getDuration() / MathCache.LOG10.get((int) (10+ComboStar.COUNTER_MULTIPLIER.get(counter))))));
+//		}
+//	}
+	
 	@SubscribeEvent
-	public void onItemUseTick(LivingEntityUseItemEvent.Tick event)
-	{
+	public void onItemUseStart(LivingEntityUseItemEvent.Start event) {
 		if(event.getDuration() <= 10) return;
 		if(MiscUtil.getEnchantedItem(UE.COMBO_STAR, event.getEntity()).getIntValue() > 0)
 		{
 			int counter = MiscUtil.getPersistentData(event.getEntity()).getInt(ComboStar.COMBO_NAME);
-			event.setDuration(Math.max(10, (int)(event.getDuration() / MathCache.LOG10.get((int)ComboStar.COUNTER_MULTIPLIER.get(10+counter)))));
+			event.setDuration(Math.max(10, (int)(event.getDuration() / MathCache.LOG10.get((int) (10+ComboStar.COUNTER_MULTIPLIER.get(counter))))));
 		}
 	}
 	
@@ -798,7 +808,7 @@ public class EntityEvents
 			level = MiscUtil.getCombinedEnchantmentLevel(UE.COMBO_STAR, base);
 			if(level > 0)
 			{
-				event.setAmount((float)(event.getAmount()*Math.pow(ComboStar.DAMAGE_LOSS.get(), level)));
+				event.setAmount((float)(event.getAmount()*Math.pow(ComboStar.DAMAGE_LOSS.get(), Math.sqrt(level))));
 			}
 		}
 	}
@@ -806,10 +816,6 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onEntityDamage(LivingDamageEvent event)
 	{
-		
-		for(Entry<ResourceKey<BannerPattern>, BannerPattern> a:Registry.BANNER_PATTERN.entrySet()) {
-			System.out.println(a.getKey().registry() + " : " + a.getValue().getHashname());
-		}
 		LivingEntity target = event.getEntity();
 		Entity entity = event.getSource().getEntity();
 		
@@ -936,17 +942,19 @@ public class EntityEvents
 	public void onCrit(CriticalHitEvent event)
 	{
 		if(event.getEntity() == null) return;
+		System.out.println("hello");
 		int level = MiscUtil.getCombinedEnchantmentLevel(UE.COMBO_STAR, event.getEntity());
 		if(level > 0)
 		{
 			CompoundTag nbt = MiscUtil.getPersistentData(event.getEntity());
-			if(event.isVanillaCritical()) nbt.putInt(ComboStar.COMBO_NAME, nbt.getInt(ComboStar.COMBO_NAME)+1);
+			if(event.isVanillaCritical()) nbt.putInt(ComboStar.COMBO_NAME, Math.min(nbt.getInt(ComboStar.COMBO_NAME)+1, 100));
 			else nbt.remove(ComboStar.COMBO_NAME);
+			
 			int combo = nbt.getInt(ComboStar.COMBO_NAME);
 			
-			double damage = Math.pow(ComboStar.DAMAGE_LOSS.get(), level);
-			double crit = Math.pow(ComboStar.CRIT_DAMAGE.get(1D/damage), 1+ComboStar.COUNTER_MULTIPLIER.get(0.1*combo));
-			event.setDamageModifier((float)(event.getDamageModifier() * crit));
+			double damage = Math.pow(ComboStar.DAMAGE_LOSS.get(), Math.sqrt(level));
+			double crit = ComboStar.CRIT_DAMAGE.get(1D/damage) * 1+ComboStar.COUNTER_MULTIPLIER.get(0.01*combo);
+			event.setDamageModifier((float) (event.getDamageModifier()*crit));
 		}
 	}
 	

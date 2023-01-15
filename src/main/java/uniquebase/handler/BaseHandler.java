@@ -23,6 +23,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -111,13 +112,18 @@ public class BaseHandler
 	@SubscribeEvent
 	public void onProjectileImpact(ProjectileImpactEvent event) {
 		if(event.getEntity() instanceof AbstractArrow) {
-			ItemStack stack = StackUtils.getArrowStack((AbstractArrow)event.getEntity());
+			System.out.println(event.getProjectile().getOwner());
+			Entity e = event.getProjectile().getOwner();
+			if(e == null) return;
+			ItemStack stack = ((LivingEntity)e).getMainHandItem();
+			if(stack.getItem() instanceof BowItem) return;
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
 			AbstractArrow ent = (AbstractArrow)event.getEntity();
 			Vec3 temp = event.getRayTraceResult().getLocation();
 			int level = enchantments.getInt(Enchantments.POWER_ARROWS);
 			if(level > 0) {
 				ent.setBaseDamage(ent.getBaseDamage() + 0.5 * level + 0.5);
+				System.out.println("oof");
 			}
 			int flame = enchantments.getInt(Enchantments.FLAMING_ARROWS);
 			int punch = enchantments.getInt(Enchantments.PUNCH_ARROWS);

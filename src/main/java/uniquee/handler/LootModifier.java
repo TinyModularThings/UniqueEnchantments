@@ -56,7 +56,7 @@ public class LootModifier implements IGlobalLootModifier
 			if(midas > 0)
 			{
 				int gold = StackUtils.getInt(stack, MidasBlessing.GOLD_COUNTER, 0);
-				if(gold > 0 && MidasBlessing.IS_GEM.test(state))
+				if(gold > 0 && MidasBlessing.IS_GEM.test(state) && !filterItem(generatedLoot, context))
 				{
 					gold -= (int)(Math.pow(MidasBlessing.GOLD_COST.getAsDouble(midas), 2)/midas);
 					StackUtils.setInt(stack, MidasBlessing.GOLD_COUNTER, Math.max(0, gold));
@@ -108,5 +108,12 @@ public class LootModifier implements IGlobalLootModifier
 			generatedLoot.add(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(UE.MIDAS_BLESSING, Mth.nextInt(context.getRandom(), 2, 3))));
 		}
 		return generatedLoot;
+	}
+	
+	private boolean filterItem(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
+		for(ItemStack a:generatedLoot) {
+			return a.getItem().equals(context.getParamOrNull(LootContextParams.BLOCK_STATE).getBlock().asItem());
+		}
+		return false;
 	}
 }

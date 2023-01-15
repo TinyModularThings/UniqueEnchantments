@@ -35,7 +35,7 @@ public class TrackedAbsorber
 	public boolean process()
 	{
 		if(!world.isLoaded(absorbPos) || !frame.isAlive() || frame.getItem() != myItem) return true;
-		if(world.getBlockState(absorbPos).getBlock() != Blocks.ENCHANTING_TABLE) return true;
+		if(world.getBlockState(absorbPos).getBlock() != Blocks.CONDUIT) return true;
 		for(ItemEntity item : world.getEntitiesOfClass(ItemEntity.class, new AABB(absorbPos)))
 		{
 			ItemStack stack = item.getItem();

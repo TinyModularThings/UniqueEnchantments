@@ -87,7 +87,7 @@
 	"enchantment.uniquee.pestilences_odium.desc": "Non-Hostile Entities in your area will be continuously damaged",
 	"enchantment.uniquee.pestilences_odium.icon": "F",
 	"enchantment.uniquee.phoenixs_blessing": "Phoenix's Blessing",
-	"enchantment.uniquee.phoenixs_blessing.desc": "Upon death, will resurrect you with full Health and Hunger, nearby Enemies will burn. There is an everlasting Hate between Phoenix's and Death",
+	"enchantment.uniquee.phoenixs_blessing.desc": "Upon resuurection, grants you full Health and Hunger, nearby Enemies will burn. There is an everlasting Hate between Phoenix's and Death",
 	"enchantment.uniquee.phoenixs_blessing.icon": "H",
 	"enchantment.uniquee.range": "Range",
 	"enchantment.uniquee.range.desc": "Increases Reach, but will reduce Mining Speed when the bonus Reach is in use",

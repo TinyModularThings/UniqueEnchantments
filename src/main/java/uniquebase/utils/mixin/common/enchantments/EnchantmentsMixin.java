@@ -29,7 +29,7 @@ public class EnchantmentsMixin {
 	@Inject(method ="canEnchant", at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onExposionCheck(ItemStack stack, CallbackInfoReturnable<Boolean> ci) {
 		Enchantment ench = ((Enchantment)(Object)this);
-		if(ench == Enchantments.ALL_DAMAGE_PROTECTION || ench == Enchantments.PROJECTILE_PROTECTION || ench == Enchantments.FALL_PROTECTION || ench == Enchantments.BLAST_PROTECTION || ench == Enchantments.FIRE_PROTECTION) {
+		if(ench == Enchantments.ALL_DAMAGE_PROTECTION || ench == Enchantments.PROJECTILE_PROTECTION || ench == Enchantments.BLAST_PROTECTION || ench == Enchantments.FIRE_PROTECTION) {
 			ci.setReturnValue(true);
 		}
 	}
@@ -46,7 +46,7 @@ public class EnchantmentsMixin {
 			ci.setReturnValue(true);
 			return;
 		}
-		if(item instanceof TridentItem && (ench == Enchantments.SHARPNESS || ench == Enchantments.SMITE || ench == Enchantments.BANE_OF_ARTHROPODS || ench == Enchantments.KNOCKBACK || ench == Enchantments.FIRE_ASPECT)) {
+		if(item instanceof TridentItem && (ench == Enchantments.POWER_ARROWS || ench == Enchantments.FLAMING_ARROWS || ench == Enchantments.PUNCH_ARROWS || ench == Enchantments.SHARPNESS || ench == Enchantments.SMITE || ench == Enchantments.BANE_OF_ARTHROPODS || ench == Enchantments.KNOCKBACK || ench == Enchantments.FIRE_ASPECT)) {
 			ci.setReturnValue(true);
 		}
 	}

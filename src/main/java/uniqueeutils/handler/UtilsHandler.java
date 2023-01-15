@@ -283,13 +283,13 @@ public class UtilsHandler
 		if(!armor.isEmpty())
 		{
 			int level = MiscUtil.getEnchantmentLevel(UEUtils.CLIMBER, armor);
-			if(level >= 0 && player.onClimbable() && !player.isShiftKeyDown() && !player.isSpectator() && !player.isInWater() && !player.isInLava())
+			if(level > 0 && player.onClimbable() && !player.isShiftKeyDown() && !player.isSpectator() && !player.isInWater() && !player.isInLava())
 			{
 				int motion = -Math.min(0, (int)(player.getRotationVector().x - 25F) / 25);
 				if(motion >= 1)
 				{
 					float data = (1f - ((2 - motion) * 0.1F));
-					player.setDeltaMovement(player.getDeltaMovement().add(0, data * 0.1, 0));
+					player.setDeltaMovement(player.getDeltaMovement().add(0, data * 0.075, 0));
 				}
 			}
 		}

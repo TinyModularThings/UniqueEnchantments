@@ -86,6 +86,7 @@ import uniquee.enchantments.upgrades.PestilenceUpgrade;
 import uniquee.enchantments.upgrades.PhoenixUpgrade;
 import uniquee.handler.EntityEvents;
 import uniquee.handler.LootModifier;
+import uniquee.handler.potion.AmelioratedStrength;
 import uniquee.handler.potion.EternalFlamePotion;
 import uniquee.handler.potion.PestilencesOdiumPotion;
 import uniquee.handler.potion.Thrombosis;
@@ -139,6 +140,7 @@ public class UE extends BaseUEMod
 	public static Enchantment COMBO_STAR;
 	
 	//Potions
+	public static MobEffect AMELIORATED_STRENGTH;
 	public static MobEffect ETERNAL_FLAME_POTION;
 	public static MobEffect PESTILENCES_ODIUM_POTION;
 	public static MobEffect THROMBOSIS;
@@ -160,8 +162,7 @@ public class UE extends BaseUEMod
 	
 	public static final ResourceKey<BannerPattern> AMEL_SHARPNESS_BANNER = BannerUtils.createBanner("uniquee", "ameliorated_sharpness", "ueamlshrp", BANNER_PATTERNS_ITEMS, new Item.Properties().rarity(Rarity.RARE));
 	public static final ResourceKey<BannerPattern> AMEL_SHARPNESS_COLOR_BANNER = BannerUtils.createBanner("uniquee", "ameliorated_sharpness_color", "ueamlshrpc", BANNER_PATTERNS_ITEMS, new Item.Properties().rarity(Rarity.EPIC));
-	
-//	
+
 //	public static final TagKey<BannerPattern> PATTERN_ITEM_AMEL_SHARPNESS = TagKey.create(Registry.BANNER_PATTERN_REGISTRY, new ResourceLocation("uniquee:pattern_item/ameliorated_sharpness"));
 //	public static final RegistryObject<BannerPatternItem> AMEL_SHARPNESS_BANNER_ITEM = BANNER_PATTERNS_ITEMS.register("ameliorated_sharpness", () -> new BannerPatternItem(PATTERN_ITEM_AMEL_SHARPNESS, new Item.Properties().rarity(Rarity.RARE)));
 //
@@ -170,6 +171,7 @@ public class UE extends BaseUEMod
 	
 	public UE()
 	{
+		AMELIORATED_STRENGTH = new AmelioratedStrength();
 		THROMBOSIS = new Thrombosis();
 		ETERNAL_FLAME_POTION = new EternalFlamePotion();
 		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
@@ -199,6 +201,7 @@ public class UE extends BaseUEMod
 	{
 		if(event.getRegistryKey().equals(ForgeRegistries.Keys.MOB_EFFECTS))
 		{
+			event.getForgeRegistry().register("ameliorated_strength", AMELIORATED_STRENGTH);
 	    	event.getForgeRegistry().register("pestilences_odium", PESTILENCES_ODIUM_POTION);
 	    	event.getForgeRegistry().register("eternal_flame", ETERNAL_FLAME_POTION);
 	    	event.getForgeRegistry().register("thrombosis", THROMBOSIS);
@@ -217,8 +220,6 @@ public class UE extends BaseUEMod
 			for(Entry<ResourceKey<BannerPattern>, String> entry:BannerUtils.getBanners().entrySet()) {
 				Registry.register(Registry.BANNER_PATTERN, entry.getKey(), new BannerPattern(entry.getValue()));
 			}
-//			Registry.register(Registry.BANNER_PATTERN, AMEL_SHARPNESS_BANNER, new BannerPattern("ueamlshrp"));
-//			Registry.register(Registry.BANNER_PATTERN, AMEL_SHARPNESS_COLOR_BANNER, new BannerPattern("ueamlshrpc"));
 		}
 	}
 	

@@ -108,6 +108,7 @@ public class ApexHandler
 	@SubscribeEvent
 	public void onEntityDamage(LivingDamageEvent event)
 	{
+		System.out.println(event.getAmount());
 		int level = MiscUtil.getEnchantedItem(UEApex.ABSOLUTE_PROTECTION, event.getEntity()).getIntValue();
 		if(level > 0)
 		{
@@ -122,6 +123,7 @@ public class ApexHandler
 				event.setAmount(event.getAmount() + (float)Math.pow(1+BlessedBlade.LEVEL_SCALE.get(MiscUtil.getPlayerLevel(entity, 200) * level), 0.2F));
 			}
 		}
+		System.out.println(event.getAmount());
 	}
 	
 	@SubscribeEvent
@@ -153,7 +155,7 @@ public class ApexHandler
 		{
 			int level = MiscUtil.getEnchantmentLevel(UEApex.SECOND_LIFE, stack);
 			if(level <= 0) return;
-			float restore = ((-1/(1+MathCache.LOG.getFloat((int)(1+MiscUtil.getPlayerLevel(event.entity, 100)*SecondLife.RESTORE.getFloat()))))+1);
+			float restore = ((-1/(1+MathCache.LOG.getFloat((int)(1.25f+MiscUtil.getPlayerLevel(event.entity, 100)*SecondLife.RESTORE.getFloat()))))+1);
 			stack.setDamageValue(Math.max(0, stack.getDamageValue()-Math.max(5, (int)(stack.getMaxDamage()*restore))));
 			MiscUtil.replaceEnchantmentLevel(UEApex.SECOND_LIFE, stack, level-1);
 			event.entity.level.playSound(null, event.entity.blockPosition(), UEApex.SECOND_LIFE_SOUND, SoundSource.AMBIENT, 1F, 1F);

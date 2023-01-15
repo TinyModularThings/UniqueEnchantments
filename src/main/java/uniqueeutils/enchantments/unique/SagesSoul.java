@@ -43,7 +43,7 @@ public class SagesSoul extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(new ResourceLocation("uniquee", "all"), new ResourceLocation("uniquee", "spartanweapon"), new ResourceLocation("uniquee", "berserk"), new ResourceLocation("uniquee", "alchemistsgrace"), new ResourceLocation("uniquee", "ender_mending"));
+		addIncompats(new ResourceLocation("uniquee", "ameliorated_sharpness"), new ResourceLocation("uniquee", "spartan_weapon"), new ResourceLocation("uniquee", "berserker"), new ResourceLocation("uniquee", "alchemists_grace"), new ResourceLocation("uniquee", "ender_mending"));
 		addIncompats(Enchantments.SHARPNESS, Enchantments.BLOCK_EFFICIENCY, Enchantments.ALL_DAMAGE_PROTECTION, Enchantments.MENDING);
 	}
 	

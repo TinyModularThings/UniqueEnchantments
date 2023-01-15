@@ -33,7 +33,7 @@ public class MidasBlessing extends UniqueEnchantment
 			return t.is(MIDIAS) || t.is(Tags.Blocks.ORES);
 		}
 	};
-	public static TagKey<Block> MIDIAS = BlockTags.create(new ResourceLocation("uniquee", "midias_blessing"));
+	public static TagKey<Block> MIDIAS = BlockTags.create(new ResourceLocation("uniquee", "midas_blessing"));
 	public static String GOLD_COUNTER = "gold_storage";
 	public static final DoubleLevelStats GOLD_COST = new DoubleLevelStats("gold_cost", 1D, 1D);
 	
