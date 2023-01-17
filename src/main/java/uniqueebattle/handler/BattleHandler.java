@@ -34,6 +34,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -73,6 +74,7 @@ import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.events.FishingLuckEvent;
+import uniquebase.utils.mixin.common.entity.ArrowMixin;
 import uniquebase.utils.mixin.common.entity.DragonManagerMixin;
 import uniqueebattle.UEBattle;
 import uniqueebattle.enchantments.complex.AresFragment;
@@ -225,7 +227,7 @@ public class BattleHandler
 		if(event.isVanillaCritical())
 		{
 			int points = UEBattle.ARES_UPGRADE.getPoints(source.getMainHandItem());
-			if(points > 0) event.setDamageModifier(event.getDamageModifier() + MathCache.SQRT_SPECIAL.getFloat(points));
+			if(points > 0) event.setDamageModifier((int) (event.getDamageModifier() * (1+Math.log(1+points)/100)));
 			dropPlayerHand(event.getTarget(), ench.getInt(UEBattle.FURY));
 			return;
 		}
@@ -327,7 +329,7 @@ public class BattleHandler
 			int level = UEBattle.IFRITS_UPGRADE.getCombinedPoints(base);
 			if(level > 0)
 			{
-				event.setLootingLevel(event.getLootingLevel() + (int)(MathCache.dynamicLog(level+1, 4)));
+				event.setLootingLevel(event.getLootingLevel() + (int) Math.floor(Math.log10(10+level)));
 			}
 		}
 	}
@@ -338,7 +340,7 @@ public class BattleHandler
 		int level = UEBattle.IFRITS_UPGRADE.getPoints(event.getStack());
 		if(level > 0)
 		{
-			event.setLevel(event.getLevel() + (int)(MathCache.dynamicLog(level+1, 4)));
+			event.setLevel(event.getLevel() + (int) Math.floor(Math.log10(10+level)));
 		}
 	}
 	
@@ -363,7 +365,7 @@ public class BattleHandler
 		{
 			LivingEntity source = (LivingEntity)entity;
 			LivingEntity target = event.getEntity();
-			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(source.getMainHandItem());
+			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : source.getMainHandItem());
 			int level = ench.getInt(UEBattle.ARES_FRAGMENT);
 			if(level > 0 && source instanceof Player)
 			{

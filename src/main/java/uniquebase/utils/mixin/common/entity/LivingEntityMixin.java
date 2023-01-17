@@ -15,7 +15,7 @@ public class LivingEntityMixin {
 		LivingEntity ent = ((LivingEntity)(Object)this);
 		if(!ent.hasEffect(MobEffects.DAMAGE_RESISTANCE)) return 1.0f;
 		
-		int i = ent.getEffect(MobEffects.DAMAGE_RESISTANCE).getAmplifier()+1;
-        return Math.max((float)Math.pow(0.85, i) - 0.05f, 0.01f);
+		int i = ent.getEffect(MobEffects.DAMAGE_RESISTANCE).getAmplifier();
+        return Math.max( (float)Math.pow(0.9, i) * 0.8f, 0.01f);
     }
 }

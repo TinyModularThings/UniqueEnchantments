@@ -14,10 +14,8 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
@@ -50,6 +48,7 @@ import net.minecraft.world.entity.monster.Witch;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.AbstractArrow.Pickup;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
@@ -63,7 +62,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.saveddata.maps.MapBanner;
@@ -111,6 +109,7 @@ import uniquebase.utils.StackUtils;
 import uniquebase.utils.events.EndermenLookEvent;
 import uniquebase.utils.events.PiglinWearableCheckEvent;
 import uniquebase.utils.mixin.common.InteractionManagerMixin;
+import uniquebase.utils.mixin.common.entity.ArrowMixin;
 import uniquebase.utils.mixin.common.entity.CombatTrackerMixin;
 import uniquebase.utils.mixin.common.entity.PotionMixin;
 import uniquebase.utils.mixin.common.item.MapDataMixin;
@@ -199,7 +198,7 @@ public class EntityEvents
 			int points = UE.PESTILENCE_UPGRADE.getCombinedPoints(event.getEntity());
 			if(points > 0)
 			{
-				((PotionMixin)instance).setPotionDuration((int)(instance.getDuration() * (1F/MathCache.LOG10.getFloat(10+points))));
+				((PotionMixin)instance).setPotionDuration((int)(instance.getDuration() * (100/(100+Math.pow(points, 0.25)))));
 			}
 		}
 	}
@@ -347,14 +346,14 @@ public class EntityEvents
 			if(player.level.getGameTime() % 20 == 0)
 			{
 				Object2IntMap.Entry<EquipmentSlot> level = container.getEnchantedItem(UE.SAGES_BLESSING);
-				if(level.getIntValue() > 0)
+				if(level.getIntValue() > 0 && MiscUtil.getTrancendenceLevel(UE.SAGES_BLESSING) <= player.experienceLevel)
 				{
 					player.causeFoodExhaustion(0.01F * level.getIntValue());
 				}
 				int points = UE.PHOENIX_UPGRADE.getCombinedPoints(player);
 				if(points > 0)
 				{
-					player.heal((float)(Math.sqrt(points))*0.01F);
+					player.heal((float)(Math.log(1+points)/10));
 				}
 			}
 			CompoundTag data = event.player.getPersistentData();
@@ -591,8 +590,10 @@ public class EntityEvents
 		level = enchs.getInt(UE.SAGES_BLESSING);
 		if(level > 0)
 		{
-			level += (event.getLevel().getRandom().nextInt(enchs.getInt(Enchantments.BLOCK_FORTUNE)+1)+1);
-			event.setExpToDrop((int)(event.getExpToDrop() + event.getExpToDrop() * SagesBlessing.XP_BOOST.get(level)));
+			double stacks = 1; //Here you should put the combined stacks
+			double val = Math.pow(event.getLevel().getRandom().nextInt(enchs.getInt(Enchantments.BLOCK_FORTUNE)+1)+1, 2);
+			double form = Math.pow(1+SagesBlessing.XP_BOOST.get(level*stacks*val), 0.1);
+			event.setExpToDrop((int) (event.getExpToDrop() * (MiscUtil.isTranscendent(player, held, UE.SAGES_BLESSING) ? Math.pow(form, SagesBlessing.TRANSCENDED_BOOST.get()) : form)));
 		}
 		level = enchs.getInt(UE.MOMENTUM);
 		if(level > 0)
@@ -716,14 +717,15 @@ public class EntityEvents
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity base = (LivingEntity)entity;
-			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(base.getMainHandItem());
+			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : base.getMainHandItem());
+			
 			int level = enchantments.getInt(UE.SWIFT_BLADE);
 			if(level > 0)
 			{
 				AttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (float)Math.log(1.719d + Math.pow((level+0.1)/2, Math.sqrt(attr.getValue()/1.2))));
+					event.setAmount(event.getAmount() * (float)Math.log(1.719d + Math.pow((level+0.1D)*0.5D, Math.sqrt(attr.getValue()/1.2))));
 				}
 			}
 			level = enchantments.getInt(UE.FOCUS_IMPACT);
@@ -733,7 +735,7 @@ public class EntityEvents
 				if(attr != null)
 				{
 					double val = Math.max(attr.getValue(), 0.01);
-					event.setAmount(event.getAmount() * (float)Math.log(1.719d + Math.pow((level+1.1D)*0.5D, Math.sqrt(1.2D/val))));
+					event.setAmount(event.getAmount() * (float)Math.log(1.719d + Math.pow((level+0.1D)*0.5D, Math.sqrt(1.2D/val))));
 				}
 			}
 			level = MiscUtil.getEnchantedItem(UE.CLIMATE_TRANQUILITY, base).getIntValue();
@@ -803,7 +805,7 @@ public class EntityEvents
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ENDER_EYES, target.getItemBySlot(EquipmentSlot.HEAD));
 			if(level > 0 && EnderEyes.AFFECTED_ENTITIES.contains(base.getType()) && MiscUtil.isTranscendent(target, target.getItemBySlot(EquipmentSlot.HEAD), UE.ENDER_EYES) && rand.nextDouble() < EnderEyes.TRANSCENDED_CHANCE.get()) {
-				base.kill();
+				base.hurt(DamageSource.OUT_OF_WORLD, (float) Math.sqrt(base.getMaxHealth()));
 			}
 			level = MiscUtil.getCombinedEnchantmentLevel(UE.COMBO_STAR, base);
 			if(level > 0)
@@ -818,35 +820,42 @@ public class EntityEvents
 	{
 		LivingEntity target = event.getEntity();
 		Entity entity = event.getSource().getEntity();
-		
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity base = (LivingEntity)entity;
-			ItemStack stack = base.getMainHandItem();
+			ItemStack stack = event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : base.getMainHandItem();
+			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
+			
 			int level = UE.DEATHS_UPGRADE.getPoints(stack);
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() + (target.getHealth() * (MathCache.SQRT_EXTRA_SPECIAL.getFloat(level)/100)));
+				int time = target.invulnerableTime;
+				target.invulnerableTime = 0;
+				target.hurt(DamageSource.MAGIC, (float) (target.getHealth()*Math.log10(1+level)/100));
+				target.invulnerableTime = time;
 			}
-			level = MiscUtil.getEnchantmentLevel(UE.SPARTAN_WEAPON, stack);
+			level = enchantments.getInt(UE.SPARTAN_WEAPON);
 			if(level > 0 && base.getOffhandItem().getItem() instanceof ShieldItem)
 			{
-				AttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
-				if(attr != null)
+				if(!event.getSource().isMagic())
 				{
-					event.setAmount((float)(event.getAmount() * (1D + SpartanWeapon.EXTRA_DAMAGE.getFloat()*Math.log((event.getAmount()*event.getAmount())/attr.getValue())*level)));
+					event.getSource().setMagic();
+					event.setAmount((float)(event.getAmount() * (1D + Math.sqrt(SpartanWeapon.EXTRA_DAMAGE.getFloat(level)))));
 				}			
 			}
-			level = MiscUtil.getEnchantmentLevel(UE.ENDEST_REAP, stack);
+			level = enchantments.getInt(UE.ENDEST_REAP);
 			if(level > 0)
 			{
 				if(rand.nextDouble() > Math.pow(0.9d, level)) 
 				{
 					target.addEffect(new MobEffectInstance(UE.THROMBOSIS, 100*level, level-1));
 				}
-				event.setAmount(event.getAmount() + (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + (float)Math.sqrt(EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE)))));
+				int time = target.invulnerableTime;
+				target.invulnerableTime = 0;
+				target.hurt(DamageSource.MAGIC, (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + (float)Math.sqrt(EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE)))));
+				target.invulnerableTime = time;
 			}
-			level = MiscUtil.getEnchantmentLevel(UE.ADV_SHARPNESS, stack);
+			level = enchantments.getInt(UE.ADV_SHARPNESS);
 			if(level > 0 && MiscUtil.isTranscendent(base, stack, UE.ADV_SHARPNESS))
 			{
 				if(stack.getItem() instanceof TieredItem)
@@ -858,12 +867,12 @@ public class EntityEvents
 					event.setAmount(event.getAmount() + (float)Math.sqrt(rand.nextDouble() * AmelioratedSharpness.TRANSCENDED_DAMAGE_MULTIPLIER.get() * EnchantmentHelper.getDamageBonus(stack, MobType.UNDEFINED) * (base.hasEffect(MobEffects.DAMAGE_BOOST) ? 2 : 1)));
 				}
 			}
-			level = MiscUtil.getEnchantmentLevel(UE.ADV_SMITE, stack);
+			level = enchantments.getInt(UE.ADV_SMITE);
 			if(level > 0 && MiscUtil.isTranscendent(base, stack, UE.ADV_SMITE))
 			{
 				event.setAmount(event.getAmount() + (float)(Math.pow(target.getHealth(), AmelioratedSmite.TRANSCENDED_DAMAGE_EXPONENT.get())));
 			}
-			level = MiscUtil.getEnchantmentLevel(UE.ADV_BANE_OF_ARTHROPODS, stack);
+			level = enchantments.getInt(UE.ADV_BANE_OF_ARTHROPODS);
 			if(level > 0 && MiscUtil.isTranscendent(base, stack, UE.ADV_BANE_OF_ARTHROPODS))
 			{
 				event.setAmount(event.getAmount() + (float)(Math.pow(target.getHealth(), AmelioratedBaneOfArthropod.TRANSCENDED_DAMAGE_EXPONENT.get())));
@@ -1145,7 +1154,7 @@ public class EntityEvents
 	{
 		if(event.damageDone <= 0) return;
 		int points = UE.GRIMOIRES_UPGRADE.getPoints(event.item);
-		if(points > 0 && event.entity.getRandom().nextDouble() < (Math.sqrt(points)*0.01))
+		if(points > 0 && event.entity.getRandom().nextDouble() < (1-Math.pow(0.9, Math.pow(points, 0.125))))
 		{
 			event.item.hurt(-event.damageDone, event.entity.getRandom(), null);
 		}
@@ -1161,9 +1170,11 @@ public class EntityEvents
 		int level = MiscUtil.getCombinedEnchantmentLevel(UE.SAGES_BLESSING, event.getAttackingPlayer());
 		if(level > 0)
 		{
-			level += (event.getAttackingPlayer().level.random.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.MOB_LOOTING, event.getAttackingPlayer().getItemBySlot(EquipmentSlot.MAINHAND))+1));
-			double num = (event.getDroppedExperience() + event.getDroppedExperience() * (SagesBlessing.XP_BOOST.get(level)));
-			event.setDroppedExperience((int) (MiscUtil.isTranscendent(event.getAttackingPlayer(), ItemStack.EMPTY, UE.SAGES_BLESSING) ? Math.pow(num, SagesBlessing.TRANSCENDED_BOOST.get()) : num));
+			ItemStack itemStack = event.getAttackingPlayer().getItemBySlot(EquipmentSlot.MAINHAND);
+			double stacks = 1; //Here you should put the combined stacks
+			double val = Math.pow(event.getAttackingPlayer().level.random.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.MOB_LOOTING, itemStack)+1)+1, 2);
+			double form = Math.pow(1+SagesBlessing.XP_BOOST.get(level*stacks*val), 0.1);
+			event.setDroppedExperience((int) (event.getDroppedExperience() * (MiscUtil.isTranscendent(event.getAttackingPlayer(), itemStack, UE.SAGES_BLESSING) ? Math.pow(form, SagesBlessing.TRANSCENDED_BOOST.get()) : form)));
 		}
 	}
 	
@@ -1311,7 +1322,8 @@ public class EntityEvents
 		level = enchantments.getInt(UE.RANGE);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.RANGE).contains(slot))
 		{
-			mods.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(Range.RANGE_MOD, "Range Boost", Range.RANGE.getAsFloat(level), Operation.ADDITION));
+			mods.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(Range.RANGE_MOD, "Reach Boost", Range.RANGE.getAsFloat(level), Operation.ADDITION));
+			mods.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(Range.RANGE_MOD, "Combat Range Boost", Range.RANGE.getAsFloat(level)/2, Operation.ADDITION));
 		}
 		level = enchantments.getInt(UE.DEATHS_ODIUM);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.DEATHS_ODIUM).contains(slot))
@@ -1335,7 +1347,7 @@ public class EntityEvents
 		level = UE.AMELIORATED_UPGRADE.isValid(stack) ? UE.AMELIORATED_UPGRADE.getPoints(stack) : 0;
 		if(level > 0 && UE.AMELIORATED_UPGRADE.isValidSlot(slot))
 		{
-			mods.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(AmelioratedUpgrade.DAMAGE_ID, "Ameliorated Upgrade", MathCache.SQRT_EXTRA_SPECIAL.get(level), Operation.ADDITION));
+			mods.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(AmelioratedUpgrade.DAMAGE_ID, "Ameliorated Upgrade", Math.pow(level, 0.125), Operation.ADDITION));
 		}
 		if(MiscUtil.getEnchantedItem(UE.COMBO_STAR, living).getIntValue() > 0)
 		{

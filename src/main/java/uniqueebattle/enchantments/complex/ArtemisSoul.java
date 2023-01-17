@@ -11,6 +11,7 @@ import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.UniqueEnchantment;
@@ -55,6 +56,6 @@ public class ArtemisSoul extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof BowItem && stack.getItem() instanceof DiggerItem && stack.getItem() instanceof HoeItem;
+		return stack.getItem() instanceof BowItem && stack.getItem() instanceof DiggerItem && stack.getItem() instanceof HoeItem || stack.getItem() instanceof TridentItem;
 	}
 }

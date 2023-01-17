@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantments;
 import uniquebase.api.UniqueEnchantment;
@@ -26,17 +27,14 @@ public class SagesSoul extends UniqueEnchantment
 	public static final IntStat DIVIDOR = new IntStat(4, "enchantment_devidor");
 	public static final DoubleStat MINING_SPEED = new DoubleStat(1D, "mining_speed");
 	public static final DoubleStat ATTACK_SPEED = new DoubleStat(1D, "attack_speed");
-	public static final IntStat ATTACK_DIVIDOR = new IntStat(128, "attack_dividor");
 	public static final DoubleStat DRAW_SPEED = new DoubleStat(1D, "draw_speed");
 	public static final DoubleStat ARMOR_SCALE = new DoubleStat(1D, "armor_scale");
-	public static final IntStat ARMOR_DIVIDOR = new IntStat(128, "armor_dividor");
 	public static final DoubleStat TOUGHNESS_SCALE = new DoubleStat(1D, "toughness_scale");
-	public static final IntStat TOUGHNESS_DIVIDOR = new IntStat(128, "armor_dividor");
 	
 	public SagesSoul()
 	{
-		super(new DefaultData("sages_soul", Rarity.VERY_RARE, 10, true, false, 50, 20, 5), EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
-		addStats(DIVIDOR, MINING_SPEED, ATTACK_DIVIDOR, ATTACK_SPEED, DRAW_SPEED, ARMOR_SCALE, ARMOR_DIVIDOR, TOUGHNESS_SCALE, TOUGHNESS_DIVIDOR);
+		super(new DefaultData("sages_soul", Rarity.VERY_RARE, 10, true, false, 50, 25, 50), EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
+		addStats(DIVIDOR, MINING_SPEED, ATTACK_SPEED, DRAW_SPEED, ARMOR_SCALE, TOUGHNESS_SCALE);
 		setCategory("utils");
 	}
 	
@@ -50,7 +48,7 @@ public class SagesSoul extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof PotionItem;
+		return stack.getItem() instanceof PotionItem || stack.getItem() instanceof TridentItem;
 	}
 	
 	public static double getEnchantPower(ItemStack stack, int level)

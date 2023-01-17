@@ -5,6 +5,7 @@ import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -23,7 +24,7 @@ public class BoneCrusher extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof AxeItem;
+		return stack.getItem() instanceof AxeItem || stack.getItem() instanceof TridentItem;
 	}
 	
 	public static boolean isNotArmored(AbstractSkeleton skeleton)

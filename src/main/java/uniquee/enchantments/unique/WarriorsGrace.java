@@ -3,6 +3,7 @@ package uniquee.enchantments.unique;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantments;
 import uniquebase.api.UniqueEnchantment;
@@ -22,7 +23,7 @@ public class WarriorsGrace extends UniqueEnchantment
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
-		return stack.getItem() instanceof AxeItem;
+		return stack.getItem() instanceof AxeItem || stack.getItem() instanceof TridentItem;
 	}
 	
 	@Override

@@ -14,7 +14,7 @@ public class EnderLibrarian extends UniqueEnchantment implements ICustomItemEnch
 {
 	public EnderLibrarian()
 	{
-		super(new DefaultData("ender_librarian", Rarity.VERY_RARE, 1, true, true, 24, 3, 10), EnchantmentCategory.FISHING_ROD, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
+		super(new DefaultData("ender_librarian", Rarity.VERY_RARE, 10, true, true, 20, 3, 50), EnchantmentCategory.FISHING_ROD, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		setDisableDefaultItems();
 	}
 	

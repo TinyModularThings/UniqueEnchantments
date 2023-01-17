@@ -19,6 +19,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
@@ -61,6 +62,7 @@ import uniquebase.api.events.ItemDurabilityChangeEvent;
 import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
+import uniquebase.utils.mixin.common.entity.ArrowMixin;
 import uniquebase.utils.mixin.common.tile.ChunkMixin;
 
 public class ApexHandler
@@ -108,22 +110,24 @@ public class ApexHandler
 	@SubscribeEvent
 	public void onEntityDamage(LivingDamageEvent event)
 	{
-		System.out.println(event.getAmount());
-		int level = MiscUtil.getEnchantedItem(UEApex.ABSOLUTE_PROTECTION, event.getEntity()).getIntValue();
+		LivingEntity target = event.getEntity();
+		int level = MiscUtil.getEnchantedItem(UEApex.ABSOLUTE_PROTECTION, target).getIntValue();
 		if(level > 0)
 		{
 			event.setAmount(event.getAmount() * (1F / (MathCache.LOG10.getFloat((int)(10+Math.sqrt(AbsoluteProtection.SCALE.get(level)))))));
 		}
 		Entity entity = event.getSource().getEntity();
-		if(entity instanceof LivingEntity)
+		if(entity instanceof LivingEntity ent)
 		{
-			level = MiscUtil.getEnchantmentLevel(UEApex.BLESSED_BLADE, ((LivingEntity)entity).getMainHandItem());
+			level = MiscUtil.getEnchantmentLevel(UEApex.BLESSED_BLADE, event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : ent.getMainHandItem());
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() + (float)Math.pow(1+BlessedBlade.LEVEL_SCALE.get(MiscUtil.getPlayerLevel(entity, 200) * level), 0.2F));
+				int time = target.invulnerableTime;
+				target.invulnerableTime = 0;
+				target.hurt(DamageSource.MAGIC, (float)Math.pow(1+BlessedBlade.LEVEL_SCALE.get(MiscUtil.getPlayerLevel(entity, 200) * level), 0.25F));
+				target.invulnerableTime = time;
 			}
 		}
-		System.out.println(event.getAmount());
 	}
 	
 	@SubscribeEvent

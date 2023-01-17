@@ -1,6 +1,8 @@
 package uniquee.enchantments.unique;
 
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -17,5 +19,10 @@ public class FastFood extends UniqueEnchantment
 	{
 		super(new DefaultData("fast_food", Rarity.RARE, 2, true, true, 14, 6, 10).setTrancendenceLevel(200), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(NURISHMENT, SATURATION, TRANSCENDED_STORAGE);
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack) {
+		return stack.getItem() instanceof TridentItem;
 	}
 }

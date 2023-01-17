@@ -870,10 +870,7 @@ public class UtilsHandler
 		{
 			double power = SagesSoul.getEnchantPower(held, level);
 			int levels = StackUtils.getInt(held, SagesSoul.STORED_XP, 0);
-			float toolSpeed = player.getInventory().getDestroySpeed(event.getState());
-			float invToolSpeed = 1F / toolSpeed;
-			float speed = event.getNewSpeed();
-			event.setNewSpeed(speed + toolSpeed * (1 + (float)Math.pow(Math.log(7.39 + (levels * levels) / (speed * invToolSpeed)), power) * invToolSpeed));
+			event.setNewSpeed((int) (event.getNewSpeed() * Math.log10(10+Math.pow(SagesSoul.MINING_SPEED.get(power*levels), 0.35))));
 		}
 		level = ench.getInt(UEUtils.THICK_PICK);
 		if(level > 0 && event.getState().getDestroySpeed(player.level, event.getPosition().orElse(BlockPos.ZERO)) >= 20)
@@ -892,17 +889,19 @@ public class UtilsHandler
 		level = UEUtils.THICK_UPGRADE.getPoints(held);
 		if(level > 0)
 		{
-			event.setNewSpeed(event.getNewSpeed() + MathCache.SQRT_EXTRA_SPECIAL.getFloat(level));
+			event.setNewSpeed(event.getNewSpeed() + (int)Math.log(1+level));
 		}
 	}
 	
 	@SubscribeEvent
-	public void onItemUseTick(LivingEntityUseItemEvent.Tick event)
+	public void onItemUseTick(LivingEntityUseItemEvent.Start event)
 	{
 		int level = MiscUtil.getEnchantmentLevel(UEUtils.SAGES_SOUL, event.getItem());
 		if(level > 0)
 		{
-			event.setDuration((int)(event.getDuration() * 1 / (Math.log10(Math.pow(1000 + SagesSoul.DRAW_SPEED.get(StackUtils.getInt(event.getItem(), SagesSoul.STORED_XP, 0)), SagesSoul.getEnchantPower(event.getItem(), level))) - 2)));
+			double power = SagesSoul.getEnchantPower(event.getItem(), level);
+			int levels = StackUtils.getInt(event.getItem(), SagesSoul.STORED_XP, 0);
+			event.setDuration((int)(event.getDuration() / (event.getDuration() * Math.log10(10+Math.pow(SagesSoul.DRAW_SPEED.get(power*levels), 0.25)))));
 		}
 	}
 	
@@ -995,13 +994,15 @@ public class UtilsHandler
 				if(points > 0)
 				{
 					RandomSource random = living.getRandom();
-					if(random.nextDouble() <= MathCache.SQRT_SPECIAL.get(points) * 0.01)
+					int num = (int) Math.log(1+points)*20;
+					while(random.nextDouble() <= num/100)
 					{
 						MobEffect effect = getRandomNegativeEffect(random);
 						if(effect != null)
 						{
-							event.getEntity().addEffect(new MobEffectInstance(effect, MathCache.SQRT_SPECIAL.getInt(points) * 10));
+							event.getEntity().addEffect(new MobEffectInstance(effect, num));
 						}
+						num -= 100;
 					}
 				}
 			}
@@ -1051,14 +1052,14 @@ public class UtilsHandler
 		{
 			int levels = StackUtils.getInt(stack, SagesSoul.STORED_XP, 0);
 			double power = SagesSoul.getEnchantPower(stack, level);
-			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SagesSoul.ATTACK_MOD.getId(slot), "Sage Attack Boost", Math.pow(-0.5 + Math.sqrt(0.25 + SagesSoul.ATTACK_SPEED.get(2 * levels)), power) / SagesSoul.ATTACK_SPEED.get(), Operation.MULTIPLY_TOTAL));
-			mods.put(Attributes.ARMOR, new AttributeModifier(SagesSoul.ARMOR_MOD.getId(slot), "Sages Armor Boost", Math.pow((-0.5 + SagesSoul.ARMOR_SCALE.get(Math.sqrt(0.25 + 8 * (levels * Math.sqrt(level))))), power) / SagesSoul.ARMOR_DIVIDOR.get(), Operation.ADDITION));
-			mods.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(SagesSoul.TOUGHNESS_MOD.getId(slot), "Sages Toughness Boost", Math.pow((-0.5 + SagesSoul.TOUGHNESS_SCALE.get(Math.sqrt(0.25 + 1 * (levels * Math.sqrt(level))))), power) / SagesSoul.TOUGHNESS_DIVIDOR.get(), Operation.ADDITION));
+			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SagesSoul.ATTACK_MOD.getId(slot), "Sage Attack Boost", Math.log10(10+Math.pow(SagesSoul.ATTACK_SPEED.get(power*levels), 0.25))-1, Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.ARMOR, new AttributeModifier(SagesSoul.ARMOR_MOD.getId(slot), "Sages Armor Boost", Math.log10(10+Math.pow(SagesSoul.ARMOR_SCALE.get(power*levels), 0.125))-1, Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(SagesSoul.TOUGHNESS_MOD.getId(slot), "Sages Toughness Boost", Math.log10(10+Math.pow(SagesSoul.TOUGHNESS_SCALE.get(power*levels), 0.125))-1, Operation.MULTIPLY_TOTAL));
 		}
 		level = UEUtils.ROCKET_UPGRADE.getCombinedPoints(living);
 		if(level > 0 || remove)
 		{
-			mods.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(RocketUpgrade.SPEED_MOD, "Rocket Upgrade", MathCache.dynamicLog(1 + level, 2) * 0.01D, Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(RocketUpgrade.SPEED_MOD, "Rocket Upgrade", Math.log(1+level)/100, Operation.MULTIPLY_TOTAL));
 		}
 		return mods;
 	}
