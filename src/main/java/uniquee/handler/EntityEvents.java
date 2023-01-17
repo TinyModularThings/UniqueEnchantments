@@ -1,7 +1,6 @@
 package uniquee.handler;
 
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -664,17 +663,6 @@ public class EntityEvents
 		}
 	}
 	
-//	@SubscribeEvent
-//	public void onItemUseTick(LivingEntityUseItemEvent.Tick event)
-//	{
-//		if(event.getDuration() <= 10) return;
-//		if(MiscUtil.getEnchantedItem(UE.COMBO_STAR, event.getEntity()).getIntValue() > 0)
-//		{
-//			int counter = MiscUtil.getPersistentData(event.getEntity()).getInt(ComboStar.COMBO_NAME);
-//			event.setDuration(Math.max(10, (int)(event.getDuration() / MathCache.LOG10.get((int) (10+ComboStar.COUNTER_MULTIPLIER.get(counter))))));
-//		}
-//	}
-	
 	@SubscribeEvent
 	public void onItemUseStart(LivingEntityUseItemEvent.Start event) {
 		if(event.getDuration() <= 10) return;
@@ -825,8 +813,13 @@ public class EntityEvents
 			LivingEntity base = (LivingEntity)entity;
 			ItemStack stack = event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : base.getMainHandItem();
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
-			
-			int level = UE.DEATHS_UPGRADE.getPoints(stack);
+			int level = UE.PROTECTION_UPGRADE.getCombinedPoints(target);
+			if(level > 0) 
+			{
+				float val = (float) Math.log10(1+level);
+				event.setAmount(event.getAmount() > val ? event.getAmount() - val : event.getAmount() * (1-(val/100)));
+			}
+			level = UE.DEATHS_UPGRADE.getPoints(stack);
 			if(level > 0)
 			{
 				int time = target.invulnerableTime;

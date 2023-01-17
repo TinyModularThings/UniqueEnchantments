@@ -10,12 +10,10 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BannerPatternItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -35,7 +33,6 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
-import net.minecraftforge.registries.RegistryObject;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.EnchantedUpgrade;
 import uniquebase.api.crops.CropHarvestRegistry;
@@ -84,6 +81,7 @@ import uniquee.enchantments.upgrades.DeathsUpgrade;
 import uniquee.enchantments.upgrades.GrimoiresUpgrade;
 import uniquee.enchantments.upgrades.PestilenceUpgrade;
 import uniquee.enchantments.upgrades.PhoenixUpgrade;
+import uniquee.enchantments.upgrades.ProtectionUpgrade;
 import uniquee.handler.EntityEvents;
 import uniquee.handler.LootModifier;
 import uniquee.handler.potion.AmelioratedStrength;
@@ -157,18 +155,13 @@ public class UE extends BaseUEMod
 	public static final EnchantedUpgrade GRIMOIRES_UPGRADE = new GrimoiresUpgrade();
 	public static final EnchantedUpgrade PESTILENCE_UPGRADE = new PestilenceUpgrade();
 	public static final EnchantedUpgrade PHOENIX_UPGRADE = new PhoenixUpgrade();
+	public static final EnchantedUpgrade PROTECTION_UPGRADE = new ProtectionUpgrade();
 
 	public static final DeferredRegister<Item> BANNER_PATTERNS_ITEMS = DeferredRegister.create(Registry.ITEM_REGISTRY, "uniquee");
 	
 	public static final ResourceKey<BannerPattern> AMEL_SHARPNESS_BANNER = BannerUtils.createBanner("uniquee", "ameliorated_sharpness", "ueamlshrp", BANNER_PATTERNS_ITEMS, new Item.Properties().rarity(Rarity.RARE));
 	public static final ResourceKey<BannerPattern> AMEL_SHARPNESS_COLOR_BANNER = BannerUtils.createBanner("uniquee", "ameliorated_sharpness_color", "ueamlshrpc", BANNER_PATTERNS_ITEMS, new Item.Properties().rarity(Rarity.EPIC));
 
-//	public static final TagKey<BannerPattern> PATTERN_ITEM_AMEL_SHARPNESS = TagKey.create(Registry.BANNER_PATTERN_REGISTRY, new ResourceLocation("uniquee:pattern_item/ameliorated_sharpness"));
-//	public static final RegistryObject<BannerPatternItem> AMEL_SHARPNESS_BANNER_ITEM = BANNER_PATTERNS_ITEMS.register("ameliorated_sharpness", () -> new BannerPatternItem(PATTERN_ITEM_AMEL_SHARPNESS, new Item.Properties().rarity(Rarity.RARE)));
-//
-//	public static final TagKey<BannerPattern> PATTERN_ITEM_AMEL_SHARPNESS_COLOR = TagKey.create(Registry.BANNER_PATTERN_REGISTRY, new ResourceLocation("uniquee:pattern_item/ameliorated_sharpness_color"));
-//	public static final RegistryObject<BannerPatternItem> AMEL_SHARPNESS_COLOR_BANNER_ITEM = BANNER_PATTERNS_ITEMS.register("ameliorated_sharpness_color", () -> new BannerPatternItem(PATTERN_ITEM_AMEL_SHARPNESS_COLOR, new Item.Properties().rarity(Rarity.RARE)));
-	
 	public UE()
 	{
 		AMELIORATED_STRENGTH = new AmelioratedStrength();
@@ -231,6 +224,7 @@ public class UE extends BaseUEMod
 		registerUpgrade(GRIMOIRES_UPGRADE);
 		registerUpgrade(PESTILENCE_UPGRADE);
 		registerUpgrade(PHOENIX_UPGRADE);
+		registerUpgrade(PROTECTION_UPGRADE);
 	}
     
 	@Override
