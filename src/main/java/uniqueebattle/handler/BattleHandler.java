@@ -252,7 +252,7 @@ public class BattleHandler
 	}
 	
 	@SubscribeEvent
-	public void onItemUseTick(LivingEntityUseItemEvent.Tick event)
+	public void onItemUseTick(LivingEntityUseItemEvent.Start event)
 	{
 		int level = MiscUtil.getEnchantmentLevel(UEBattle.CELESTIAL_BLESSING, event.getItem());
 		LivingEntity entity = event.getEntity();
