@@ -66,6 +66,7 @@ dependencies {
     implementation fg.deobf("curse.maven:configured-457570:4011355")
 	implementation fg.deobf("curse.maven:jei-238222:3944627")
 	implementation fg.deobf("curse.maven:patchouli-306770:4031402")
+	implementation fg.deobf("curse.maven:rubidium-574856:3973894") 
 	
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }

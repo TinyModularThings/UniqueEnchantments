@@ -659,7 +659,16 @@ public class EntityEvents
 				event.getEntity().teleportTo(pos.getX() + 0.5F, Math.max(world.getSeaLevel(), pos.getY() + 1), pos.getZ() + 0.5F);
 				world.playSound(null, event.getEntity().blockPosition(), UE.ENDER_LIBRARIAN_SOUND, SoundSource.AMBIENT, 100F, 2F);
 	        }
-	        stack.shrink(1);
+	        if(stack.getCount() <= 1) MiscUtil.decreaseEnchantmentLevel(UE.ENDER_LIBRARIAN, stack);
+	        else 
+	        {
+	        	ItemStack newStack = stack.split(1);
+	        	MiscUtil.decreaseEnchantmentLevel(UE.ENDER_LIBRARIAN, newStack);
+	        	if(!event.getEntity().getInventory().add(newStack))
+	        	{
+	        		event.getEntity().drop(newStack, false);
+	        	}
+	        }
 		}
 	}
 	
