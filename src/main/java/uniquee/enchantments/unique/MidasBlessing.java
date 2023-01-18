@@ -14,8 +14,10 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
+import uniquebase.utils.IdStat;
 
 public class MidasBlessing extends UniqueEnchantment
 {
@@ -33,14 +35,15 @@ public class MidasBlessing extends UniqueEnchantment
 			return t.is(MIDIAS) || t.is(Tags.Blocks.ORES);
 		}
 	};
-	public static TagKey<Block> MIDIAS = BlockTags.create(new ResourceLocation("uniquee", "midas_blessing"));
-	public static String GOLD_COUNTER = "gold_storage";
+	public static final TagKey<Block> MIDIAS = BlockTags.create(new ResourceLocation("uniquee", "midas_blessing"));
+	public static final String GOLD_COUNTER = "gold_storage";
 	public static final DoubleLevelStats GOLD_COST = new DoubleLevelStats("gold_cost", 1D, 1D);
+	public static final IdStat<Block> BLACK_LIST = new IdStat<>("blacklist", ForgeRegistries.BLOCKS);
 	
 	public MidasBlessing()
 	{
 		super(new DefaultData("midas_blessing", Rarity.VERY_RARE, 3, true, false, 14, 6, 75), EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND);
-		addStats(GOLD_COST);
+		addStats(GOLD_COST, BLACK_LIST);
 	}
 	
 	@Override

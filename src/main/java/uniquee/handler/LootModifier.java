@@ -53,7 +53,7 @@ public class LootModifier implements IGlobalLootModifier
 			BlockState state = context.getParamOrNull(LootContextParams.BLOCK_STATE);
 			Object2IntMap<Enchantment> enchs = MiscUtil.getEnchantments(stack);
 			int midas = enchs.getInt(UE.MIDAS_BLESSING);
-			if(midas > 0)
+			if(midas > 0 && MidasBlessing.BLACK_LIST.contains(state.getBlock()))
 			{
 				int gold = StackUtils.getInt(stack, MidasBlessing.GOLD_COUNTER, 0);
 				if(gold > 0 && MidasBlessing.IS_GEM.test(state) && !filterItem(generatedLoot, context))

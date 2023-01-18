@@ -197,6 +197,26 @@ public class MiscUtil
 		return 0;
 	}
 	
+	public static void decreaseEnchantmentLevel(Enchantment ench, ItemStack stack) {
+		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return;
+		if(stack.isEmpty()) return;
+		ListTag list = stack.getEnchantmentTags();
+		if(list.isEmpty()) return;
+		String id = ForgeRegistries.ENCHANTMENTS.getKey(ench).toString();
+		for(int i = 0, m = list.size();i < m;i++)
+		{
+			CompoundTag tag = list.getCompound(i);
+			if(tag.getString("id").equalsIgnoreCase(id))
+			{
+				int level = tag.getInt("lvl");
+				if(level <= 1) list.remove(i);
+				else tag.putInt("lvl", level-1);
+				break;
+			}
+		}
+		if(list.isEmpty()) stack.removeTagKey("Enchantments");
+	}
+	
 	public static void replaceEnchantmentLevel(Enchantment ench, ItemStack stack, int newLevel)
 	{
 		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return;
@@ -211,9 +231,10 @@ public class MiscUtil
 			{
 				if(newLevel <= 0) list.remove(i);
 				else tag.putInt("lvl", Math.min(newLevel, getHardCap(ench)));
-				return;
+				break;
 			}
 		}
+		if(list.isEmpty()) stack.removeTagKey("Enchantments");
 	}
 	
 	public static int getCombinedEnchantmentLevel(Enchantment ench, LivingEntity base)
