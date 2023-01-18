@@ -81,6 +81,7 @@ public class UEBase
 	public static DoubleValue XP_MULTIPLIER_ENCHANT;
 	public static BooleanValue XP_OVERRIDE_ANVIL;
 	public static DoubleValue XP_MULTIPLIER_ANVIL;
+	public static DoubleValue PROTECTION_MULTIPLIER;
 	
 	public static BooleanValue DISABLE_JEI;
 	public static final IdStat<Item> APPLICABLE_ICON_OVERRIDE = new IdStat<>("overrideIcons", "override that decides which items are used to decide to show in the tooltip display. If Empty all items are used", ForgeRegistries.ITEMS);
@@ -99,6 +100,8 @@ public class UEBase
 		VIEW_COOLDOWN = builder.defineInRange("View Enchantments Cooldown", 40, 1, 1200);
 		builder.comment("Allows to control if enchanted books have the glint. This is needed for the new texture looking better");
 		ENCHANTED_GLINT = builder.define("Enchanted Glint", false);
+		builder.comment("The multiplier for the Protection Tweaks we did, the higher this value the stronger they get");
+		PROTECTION_MULTIPLIER = builder.defineInRange("protection_multiplier", 0.0262345679012d, 0.01d, Double.MAX_VALUE);
 		builder.comment("Enables the feature that Enchantment Tables take Levels worth of XP instead of XPLevels, this affects only consumtion not checks");
 		XP_OVERRIDE_ENCHANT = builder.define("Enchanting Table XP override", false);
 		builder.comment("Allows modify the conversion rate from Level to XP points. This can result in consuming more then the player actually has");
