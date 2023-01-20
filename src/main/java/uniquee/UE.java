@@ -181,7 +181,9 @@ public class UE extends BaseUEMod
 		BaseHandler.INSTANCE.registerStorageTooltip(ICARUS_AEGIS, "tooltip.uniquee.stored.feather.name", IcarusAegis.FEATHER_TAG);
 		BaseHandler.INSTANCE.registerStorageTooltip(ENDER_MENDING, "tooltip.uniquee.stored.repair.name", EnderMending.ENDER_TAG);
 		BaseHandler.INSTANCE.registerStorageTooltip(ENDEST_REAP, "tooltip.uniquee.stored.reap.name", EndestReap.REAP_STORAGE);
-		
+		BaseHandler.INSTANCE.registerStorageTooltip(SAGES_BLESSING, "tooltip.uniquee.stored.xp.name", SagesBlessing.SAGES_XP);
+
+		BaseHandler.INSTANCE.registerAnvilHelper(SAGES_BLESSING, SagesBlessing.VALIDATOR, SagesBlessing.SAGES_XP);
 		BaseHandler.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessing.VALIDATOR, MidasBlessing.GOLD_COUNTER);
 		BaseHandler.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGrace.VALIDATOR, IfritsGrace.LAVA_COUNT);
 		BaseHandler.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, IcarusAegis.VALIDATOR, IcarusAegis.FEATHER_TAG);

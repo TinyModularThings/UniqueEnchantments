@@ -33,4 +33,10 @@ public class GranisSoul extends UniqueEnchantment
 	{
 		return stack.getItem() instanceof HorseArmorItem;
 	}
+	
+	@Override
+	protected boolean canNotApplyToItems(ItemStack stack)
+	{
+		return EnchantmentCategory.ARMOR_CHEST.canEnchant(stack.getItem());
+	}
 }

@@ -590,7 +590,11 @@ public class EntityEvents
 		level = enchs.getInt(UE.SAGES_BLESSING);
 		if(level > 0)
 		{
-			double stacks = 1; //Here you should put the combined stacks
+			double stacks = 1;
+			for(EquipmentSlot slot : MiscUtil.getSlotsFor(UE.SAGES_BLESSING))
+			{
+				stacks += StackUtils.getInt(player.getItemBySlot(slot), SagesBlessing.SAGES_XP, 0);
+			}
 			double val = Math.pow(event.getLevel().getRandom().nextInt(enchs.getInt(Enchantments.BLOCK_FORTUNE)+1)+1, 2);
 			double form = Math.pow(1+SagesBlessing.XP_BOOST.get(level*stacks*val), 0.1);
 			event.setExpToDrop((int) (event.getExpToDrop() * (MiscUtil.isTranscendent(player, held, UE.SAGES_BLESSING) ? Math.pow(form, SagesBlessing.TRANSCENDED_BOOST.get()) : form)));
@@ -774,7 +778,7 @@ public class EntityEvents
 				event.setAmount(event.getAmount() * (float)(1D + (Math.pow(1-(Berserk.MIN_HEALTH.getMax(base.getHealth(), 1D)/base.getMaxHealth()), 1D/level) * Berserk.PERCENTUAL_DAMAGE.get())));
 			}
 			level = enchantments.getInt(UE.PERPETUAL_STRIKE);
-			if(level > 0)
+			if(level > 0 && !(event.getSource().getDirectEntity() instanceof ThrownTrident))
 			{
 				ItemStack held = base.getMainHandItem();
 				int count = StackUtils.getInt(held, PerpetualStrike.HIT_COUNT, 0);
@@ -1174,18 +1178,20 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onXPDrop(LivingExperienceDropEvent event)
 	{
-		if(event.getAttackingPlayer() == null)
-		{
-			return;
-		}
-		int level = MiscUtil.getCombinedEnchantmentLevel(UE.SAGES_BLESSING, event.getAttackingPlayer());
+		Player player = event.getAttackingPlayer();
+		if(player == null) return;
+		int level = MiscUtil.getCombinedEnchantmentLevel(UE.SAGES_BLESSING, player);
 		if(level > 0)
 		{
+			double stacks = 1;
+			for(EquipmentSlot slot : MiscUtil.getSlotsFor(UE.SAGES_BLESSING))
+			{
+				stacks += StackUtils.getInt(player.getItemBySlot(slot), SagesBlessing.SAGES_XP, 0);
+			}
 			ItemStack itemStack = event.getAttackingPlayer().getItemBySlot(EquipmentSlot.MAINHAND);
-			double stacks = 1; //Here you should put the combined stacks
-			double val = Math.pow(event.getAttackingPlayer().level.random.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.MOB_LOOTING, itemStack)+1)+1, 2);
+			double val = Math.pow(player.level.random.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.MOB_LOOTING, itemStack)+1)+1, 2);
 			double form = Math.pow(1+SagesBlessing.XP_BOOST.get(level*stacks*val), 0.1);
-			event.setDroppedExperience((int) (event.getDroppedExperience() * (MiscUtil.isTranscendent(event.getAttackingPlayer(), itemStack, UE.SAGES_BLESSING) ? Math.pow(form, SagesBlessing.TRANSCENDED_BOOST.get()) : form)));
+			event.setDroppedExperience((int) (event.getDroppedExperience() * (MiscUtil.isTranscendent(player, itemStack, UE.SAGES_BLESSING) ? Math.pow(form, SagesBlessing.TRANSCENDED_BOOST.get()) : form)));
 		}
 	}
 	

@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.UniqueEnchantment;
@@ -30,18 +34,46 @@ public class FaminesOdium extends UniqueEnchantment
 		setCurse();	
 	}
 	
-	public static ItemStack getRandomFood(Container inventory, RandomSource rand)
+	public static FoodEntry getRandomFood(Player player, RandomSource rand)
 	{
-		List<ItemStack> list = new ArrayList<>();
-		for(int i = 0,m=inventory.getContainerSize();i<m;i++)
-		{
-			ItemStack stack = inventory.getItem(i);
-			if(!FOOD_BLACK_LIST.contains(stack.getItem()) && stack.getItem().isEdible())
-			{
-				list.add(stack);
-			}
-		}
-		return list.size() > 0 ? list.get(rand.nextInt(list.size())) : ItemStack.EMPTY;
+		List<FoodEntry> list = new ArrayList<>();
+		getRandomFood(player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(EmptyHandler.INSTANCE), false, list);
+		return list.size() > 0 ? list.get(rand.nextInt(list.size())) : null;
 	}
 	
+	private static void getRandomFood(IItemHandler handler, boolean subLayer, List<FoodEntry> result)
+	{
+		for(int i = 0,m=handler.getSlots();i<m;i++)
+		{
+			ItemStack stack = handler.extractItem(i, 1, true);
+			if(stack.isEmpty()) continue;
+			if(!FOOD_BLACK_LIST.contains(stack.getItem()) && stack.getItem().isEdible())
+			{
+				result.add(new FoodEntry(handler, i));
+			}
+			else if(!subLayer)
+			{
+				LazyOptional<IItemHandler> subHandler = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
+				if(!subHandler.isPresent()) continue;
+				getRandomFood(subHandler.orElse(EmptyHandler.INSTANCE), true, result);
+			}
+		}
+	}
+	
+	public static class FoodEntry
+	{
+		IItemHandler handler;
+		int slot;
+		
+		public FoodEntry(IItemHandler handler, int slot)
+		{
+			this.handler = handler;
+			this.slot = slot;
+		}
+
+		public void eat(Player player)
+		{
+			player.eat(player.level, handler.extractItem(slot, 1, false));
+		}
+	}
 }

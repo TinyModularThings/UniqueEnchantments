@@ -118,6 +118,7 @@ import uniqueeutils.enchantments.complex.Climber;
 import uniqueeutils.enchantments.complex.EssenceOfSlime;
 import uniqueeutils.enchantments.complex.SleipnirsGrace;
 import uniqueeutils.enchantments.curse.FaminesOdium;
+import uniqueeutils.enchantments.curse.FaminesOdium.FoodEntry;
 import uniqueeutils.enchantments.curse.RocketMan;
 import uniqueeutils.enchantments.simple.Adept;
 import uniqueeutils.enchantments.simple.ThickPick;
@@ -428,20 +429,8 @@ public class UtilsHandler
 			int duration = (int)Math.max((FaminesOdium.DELAY.get() / Math.pow(level, 0.125D)), 1);
 			if(time % duration == 0)
 			{
-				ItemStack stack = FaminesOdium.getRandomFood(player.getInventory(), player.getRandom());
-				if(!stack.isEmpty()) player.eat(player.level, stack);
-				
-//				Int2FloatMap.Entry entry = FaminesOdium.getRandomFood(player.getInventory(), FaminesOdium.NURISHMENT.getFloat() * level);
-//				if(entry != null)
-//				{
-//					float value = MathCache.LOG_ADD_MAX.getFloat(level);
-//					player.getFoodData().eat(Mth.ceil(FaminesOdium.NURISHMENT.get(entry.getIntKey() * value)), entry.getFloatValue() * level * value);
-//					player.level.playSound((Player)null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_BURP, SoundSource.PLAYERS, 0.5F, player.level.random.nextFloat() * 0.1F + 0.9F);
-//				}
-//				else
-//				{
-//					player.hurt(DamageSource.MAGIC, FaminesOdium.DAMAGE.getFloat(duration * MathCache.LOG_ADD_MAX.getFloat(level)));
-//				}
+				FoodEntry entry = FaminesOdium.getRandomFood(player, player.getRandom());
+				if(entry != null) entry.eat(player);
 			}
 		}
 		int delay = Math.max(1, Mth.ceil(DemetersSoul.DELAY.get() / Math.log(10 + DemetersSoul.SCALING.get(MiscUtil.getEnchantmentLevel(UEUtils.DEMETERS_SOUL, player.getItemInHand(InteractionHand.MAIN_HAND))))));
