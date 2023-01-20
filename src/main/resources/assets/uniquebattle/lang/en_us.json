@@ -42,7 +42,7 @@
 	"enchantment.uniquebattle.streakers_will.desc": "Has a chance to damage the Targets Armor Durability",
 	"enchantment.uniquebattle.streakers_will.icon": "a",
 	"enchantment.uniquebattle.wars_odium": "War's Odium",
-	"enchantment.uniquebattle.wars_odium.desc": "Killing a Mob, has a Chance to respawn the Mob",
+	"enchantment.uniquebattle.wars_odium.desc": "Killing a Mob, has a Chance to respawn the Mob, works on Bosses",
 	"enchantment.uniquebattle.wars_odium.icon": "j",
 	"tooltip.uniquebattle.stored.ender.name": "Stored Ender Energy %s",
 	"tooltip.uniquebattle.stored.ender.souls.common.name": "Basic Souls stored %s",

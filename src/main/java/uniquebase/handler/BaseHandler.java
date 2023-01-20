@@ -112,7 +112,6 @@ public class BaseHandler
 	@SubscribeEvent
 	public void onProjectileImpact(ProjectileImpactEvent event) {
 		if(event.getEntity() instanceof AbstractArrow) {
-			System.out.println(event.getProjectile().getOwner());
 			Entity e = event.getProjectile().getOwner();
 			if(e == null) return;
 			ItemStack stack = ((LivingEntity)e).getMainHandItem();
@@ -123,7 +122,6 @@ public class BaseHandler
 			int level = enchantments.getInt(Enchantments.POWER_ARROWS);
 			if(level > 0) {
 				ent.setBaseDamage(ent.getBaseDamage() + 0.5 * level + 0.5);
-				System.out.println("oof");
 			}
 			int flame = enchantments.getInt(Enchantments.FLAMING_ARROWS);
 			int punch = enchantments.getInt(Enchantments.PUNCH_ARROWS);
@@ -144,7 +142,7 @@ public class BaseHandler
 		
 	}
 	
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onEntityDamaged(LivingDamageEvent event) {
 		LivingEntity target = event.getEntity();
 		Entity ent = event.getSource().getEntity();

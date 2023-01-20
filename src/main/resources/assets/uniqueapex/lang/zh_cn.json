@@ -14,6 +14,8 @@
 	"enchantment.uniqueapex.gaias_fragment": "盖亚碎片",
 	"enchantment.uniqueapex.gaias_fragment.desc": "按住 Shift 键并右击两个位置,可以摧毁范围内的所有方块",
 	"enchantment.uniqueapex.gaias_fragment.icon": "s",
+	"enchantment.uniqueapex.harbingers_odium": "灾厄洪流",
+	"enchantment.uniqueapex.harbingers_odium.desc": "你受到的诅咒越多，你的诅咒就越强。根据所造成伤害的一定百分比降低目标的最大生命值，并为拥有者恢复该数量。你应用的效果被放大。",
 	"enchantment.uniqueapex.pickaxe404": "镐子404",
 	"enchantment.uniqueapex.pickaxe404.desc": "摧毁任何可能的方块",
 	"enchantment.uniqueapex.pickaxe404.icon": "t",
