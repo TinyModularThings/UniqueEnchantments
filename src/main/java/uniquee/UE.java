@@ -159,8 +159,8 @@ public class UE extends BaseUEMod
 
 	public static final DeferredRegister<Item> BANNER_PATTERNS_ITEMS = DeferredRegister.create(Registry.ITEM_REGISTRY, "uniquee");
 	
-	public static final ResourceKey<BannerPattern> AMEL_SHARPNESS_BANNER = BannerUtils.createBanner("uniquee", "ameliorated_sharpness", "ueamlshrp", BANNER_PATTERNS_ITEMS, new Item.Properties().rarity(Rarity.RARE));
-	public static final ResourceKey<BannerPattern> AMEL_SHARPNESS_COLOR_BANNER = BannerUtils.createBanner("uniquee", "ameliorated_sharpness_color", "ueamlshrpc", BANNER_PATTERNS_ITEMS, new Item.Properties().rarity(Rarity.EPIC));
+	public static final ResourceKey<BannerPattern> AMEL_SHARPNESS_BANNER = BannerUtils.createBanner("uniquee", "ameliorated_sharpness_small", "ueamlshrp", BANNER_PATTERNS_ITEMS, new Item.Properties().rarity(Rarity.RARE));
+	public static final ResourceKey<BannerPattern> AMEL_SHARPNESS_COLOR_BANNER = BannerUtils.createBanner("uniquee", "ameliorated_sharpness_small_color", "ueamlshrpc", BANNER_PATTERNS_ITEMS, new Item.Properties().rarity(Rarity.EPIC));
 
 	public UE()
 	{
