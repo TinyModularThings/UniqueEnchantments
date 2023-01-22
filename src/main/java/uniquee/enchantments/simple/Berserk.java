@@ -21,6 +21,6 @@ public class Berserk extends UniqueEnchantment
 	@Override
 	public void loadIncompats()
 	{
-		addIncompats(UE.SWIFT_BLADE, UE.SPARTAN_WEAPON);
+		addIncompats(UE.VITAE, UE.ARES_BLESSING);
 	}
 }
