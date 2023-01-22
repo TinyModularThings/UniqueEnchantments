@@ -3,18 +3,27 @@ package uniquee;
 import java.lang.reflect.Field;
 import java.util.Map.Entry;
 
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.entity.BannerPattern;
@@ -23,6 +32,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent.AddLayers;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
@@ -30,7 +40,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import uniquebase.api.BaseUEMod;
@@ -38,6 +47,7 @@ import uniquebase.api.EnchantedUpgrade;
 import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
 import uniquebase.utils.BannerUtils;
+import uniquebase.utils.MiscUtil;
 import uniquee.client.EnchantmentLayer;
 import uniquee.enchantments.complex.EnderMending;
 import uniquee.enchantments.complex.Momentum;
@@ -156,12 +166,7 @@ public class UE extends BaseUEMod
 	public static final EnchantedUpgrade PESTILENCE_UPGRADE = new PestilenceUpgrade();
 	public static final EnchantedUpgrade PHOENIX_UPGRADE = new PhoenixUpgrade();
 	public static final EnchantedUpgrade PROTECTION_UPGRADE = new ProtectionUpgrade();
-
-	public static final DeferredRegister<Item> BANNER_PATTERNS_ITEMS = DeferredRegister.create(Registry.ITEM_REGISTRY, "uniquee");
 	
-	public static final ResourceKey<BannerPattern> AMEL_SHARPNESS_BANNER = BannerUtils.createBanner("uniquee", "ameliorated_sharpness_small", "ueamlshrp", BANNER_PATTERNS_ITEMS, new Item.Properties().rarity(Rarity.RARE));
-	public static final ResourceKey<BannerPattern> AMEL_SHARPNESS_COLOR_BANNER = BannerUtils.createBanner("uniquee", "ameliorated_sharpness_small_color", "ueamlshrpc", BANNER_PATTERNS_ITEMS, new Item.Properties().rarity(Rarity.EPIC));
-
 	public UE()
 	{
 		AMELIORATED_STRENGTH = new AmelioratedStrength();
@@ -175,6 +180,7 @@ public class UE extends BaseUEMod
 		bus.addListener(this::registerContent);
 		MinecraftForge.EVENT_BUS.register(EntityEvents.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(this);
+		MinecraftForge.EVENT_BUS.addListener(this::onCommandLoad);
 		
 		BaseHandler.INSTANCE.registerStorageTooltip(MIDAS_BLESSING, "tooltip.uniquee.stored.gold.name", MidasBlessing.GOLD_COUNTER);
 		BaseHandler.INSTANCE.registerStorageTooltip(IFRIDS_GRACE, "tooltip.uniquee.stored.lava.name", IfritsGrace.LAVA_COUNT);
@@ -188,8 +194,6 @@ public class UE extends BaseUEMod
 		BaseHandler.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGrace.VALIDATOR, IfritsGrace.LAVA_COUNT);
 		BaseHandler.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, IcarusAegis.VALIDATOR, IcarusAegis.FEATHER_TAG);
 		
-//		BANNER_PATTERNS.register(bus);
-		BANNER_PATTERNS_ITEMS.register(bus);
 	}
 	
 	public void registerContent(RegisterEvent event)
@@ -227,6 +231,14 @@ public class UE extends BaseUEMod
 		registerUpgrade(PESTILENCE_UPGRADE);
 		registerUpgrade(PHOENIX_UPGRADE);
 		registerUpgrade(PROTECTION_UPGRADE);
+	}
+	
+	@Override
+	protected void loadBanners()
+	{
+		registerPattern("uniquee", "ameliorated_sharpness", "ueamlshrp", Rarity.RARE);
+		registerPattern("uniquee", "ameliorated_sharpness_color", "ueamlshrpc", Rarity.EPIC);
+
 	}
     
 	@Override
@@ -297,6 +309,29 @@ public class UE extends BaseUEMod
 			}
 		}
 	}
+    
+    public void onCommandLoad(RegisterCommandsEvent event)
+    {
+    	event.getDispatcher().register(Commands.literal("ue").requires(T -> T.hasPermission(3)).then(Commands.literal("remove_deaths_odium").then(Commands.argument("player", EntityArgument.player())).executes(this::removeCurse)));
+    }
+    
+    private int removeCurse(CommandContext<CommandSourceStack> command) throws CommandSyntaxException
+    {
+    	Player player = EntityArgument.getPlayer(command, "player");
+    	CompoundTag nbt = MiscUtil.getPersistentData(player);
+		nbt.remove(DeathsOdium.CURSE_RESET);
+		nbt.remove(DeathsOdium.CURSE_STORAGE);
+		for(EquipmentSlot slot : EquipmentSlot.values())
+		{
+			ItemStack stack = player.getItemBySlot(slot);
+			if(MiscUtil.getEnchantmentLevel(UE.DEATHS_ODIUM, stack) > 0)
+			{
+				stack.getTag().remove(DeathsOdium.CURSE_STORAGE);
+			}
+		}
+		player.getAttribute(Attributes.MAX_HEALTH).removeModifier(DeathsOdium.REMOVE_UUID);
+    	return 0;
+    }
     
     @OnlyIn(Dist.CLIENT)
     public void onClientInit(AddLayers event)

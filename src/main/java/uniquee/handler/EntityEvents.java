@@ -1044,48 +1044,50 @@ public class EntityEvents
 		CompoundTag nbt = MiscUtil.getPersistentData(event.getEntity());
 		if(!nbt.getBoolean(DeathsOdium.CURSE_DISABLED))
 		{
-			int maxLevel = MiscUtil.getCombinedEnchantmentLevel(UE.DEATHS_ODIUM, event.getEntity());
-			if(maxLevel > 0)
+			if(nbt.getBoolean(DeathsOdium.CURSE_RESET))
 			{
-				int lowest = Integer.MAX_VALUE;
-				EquipmentSlot lowestSlot = null;
-				int max = maxLevel+10;
+				nbt.remove(DeathsOdium.CURSE_RESET);
+				nbt.remove(DeathsOdium.CURSE_STORAGE);
+				nbt.putBoolean(DeathsOdium.CURSE_DISABLED, true);
 				for(EquipmentSlot slot : EquipmentSlot.values())
 				{
 					ItemStack stack = event.getEntity().getItemBySlot(slot);
 					if(MiscUtil.getEnchantmentLevel(UE.DEATHS_ODIUM, stack) > 0)
 					{
-						int value = StackUtils.getInt(stack, DeathsOdium.CURSE_COUNTER, 0);
-						int newValue = Math.min(value + 1, max);
-						if(value == newValue) continue;
-						if(lowest > value)
-						{
-							lowest = value;
-							lowestSlot = slot;
-						}
+						stack.getTag().remove(DeathsOdium.CURSE_STORAGE);
 					}
 				}
-				if(lowestSlot != null) {
-					ItemStack stack = event.getEntity().getItemBySlot(lowestSlot);
-					StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
-					StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(event.getEntity().getMaxHealth()) * 0.3F * rand.nextFloat()));
-				}
-				nbt.putInt(DeathsOdium.CURSE_STORAGE, (nbt.getInt(DeathsOdium.CURSE_STORAGE)+1));
-				if(nbt.getBoolean(DeathsOdium.CURSE_RESET))
+				deadEntity.getAttribute(Attributes.MAX_HEALTH).removeModifier(DeathsOdium.REMOVE_UUID);
+			}
+			else
+			{
+				int maxLevel = MiscUtil.getCombinedEnchantmentLevel(UE.DEATHS_ODIUM, event.getEntity());
+				if(maxLevel > 0)
 				{
-					nbt.remove(DeathsOdium.CURSE_RESET);
-					nbt.remove(DeathsOdium.CURSE_STORAGE);
-					nbt.putBoolean(DeathsOdium.CURSE_DISABLED, true);
+					int lowest = Integer.MAX_VALUE;
+					EquipmentSlot lowestSlot = null;
+					int max = maxLevel+10;
 					for(EquipmentSlot slot : EquipmentSlot.values())
 					{
 						ItemStack stack = event.getEntity().getItemBySlot(slot);
 						if(MiscUtil.getEnchantmentLevel(UE.DEATHS_ODIUM, stack) > 0)
 						{
-							stack.getTag().remove(DeathsOdium.CURSE_STORAGE);
+							int value = StackUtils.getInt(stack, DeathsOdium.CURSE_COUNTER, 0);
+							int newValue = Math.min(value + 1, max);
+							if(value == newValue) continue;
+							if(lowest > value)
+							{
+								lowest = value;
+								lowestSlot = slot;
+							}
 						}
 					}
-					deadEntity.getAttribute(Attributes.MAX_HEALTH).removeModifier(DeathsOdium.REMOVE_UUID);
-					return;
+					if(lowestSlot != null) {
+						ItemStack stack = event.getEntity().getItemBySlot(lowestSlot);
+						StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
+						StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(event.getEntity().getMaxHealth()) * 0.3F * rand.nextFloat()));
+					}
+					nbt.putInt(DeathsOdium.CURSE_STORAGE, (nbt.getInt(DeathsOdium.CURSE_STORAGE)+1));
 				}
 			}
 		}
@@ -1142,11 +1144,12 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onRespawn(PlayerEvent.Clone event)
 	{
-		CompoundTag nbt = event.getEntity().serializeNBT();
-		float f = MiscUtil.getPersistentData(event.getEntity()).getFloat(DeathsOdium.CURSE_STORAGE);
+		CompoundTag nbt = MiscUtil.getPersistentData(event.getEntity());
+		if(nbt.getBoolean(DeathsOdium.CURSE_DISABLED)) return;
+		float f = nbt.getFloat(DeathsOdium.CURSE_STORAGE);
 		if(f != 0F)
 		{
-			event.getEntity().getAttribute(Attributes.MAX_HEALTH).addTransientModifier(new AttributeModifier(DeathsOdium.REMOVE_UUID, "odiums_curse", nbt.getBoolean(DeathsOdium.CURSE_DISABLED) ? 0 : Math.pow(0.95,f)-1, Operation.MULTIPLY_TOTAL));
+			event.getEntity().getAttribute(Attributes.MAX_HEALTH).addTransientModifier(new AttributeModifier(DeathsOdium.REMOVE_UUID, "odiums_curse", Math.pow(0.95,f)-1, Operation.MULTIPLY_TOTAL));
 		}
 	}
 	
@@ -1155,7 +1158,7 @@ public class EntityEvents
 	{
 		if(event.getItem().getItem() == Items.COOKIE && MiscUtil.getEnchantmentLevel(UE.DEATHS_ODIUM, event.getItem()) > 0)
 		{
-			event.getEntity().getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).putBoolean(DeathsOdium.CURSE_RESET, true);
+			MiscUtil.getPersistentData(event.getEntity()).putBoolean(DeathsOdium.CURSE_RESET, true);
 			event.getEntity().kill();
 		}
 	}

@@ -3,13 +3,23 @@ package uniquebase.api;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.item.BannerPatternItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -26,6 +36,8 @@ public abstract class BaseUEMod
 	static final List<BaseUEMod> ALL_MODS = ObjectLists.synchronize(new ObjectArrayList<>());
 	List<IToggleEnchantment> enchantments = new ObjectArrayList<>();
 	ObjectList<EnchantedUpgrade> upgrades = new ObjectArrayList<>();
+	Map<ResourceLocation, Tuple<BannerPattern, Item.Properties>> banners = new Object2ObjectLinkedOpenHashMap<>();
+	
 	public ForgeConfigSpec config;
 
 	public BaseUEMod()
@@ -52,7 +64,7 @@ public abstract class BaseUEMod
 	
 	public void init(IEventBus bus, String name)
 	{
-		bus.addListener(this::registerEnchantments);
+		bus.addListener(this::registerInternal);
 		bus.addListener(this::onLoad);
 		bus.addListener(this::onFileChange);
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -60,6 +72,7 @@ public abstract class BaseUEMod
 		addConfig(builder);
 		loadEnchantments();
 		loadUpgrades();
+		loadBanners();
 		for(int i = 0,m=upgrades.size();i<m;i++)
 		{
 			upgrades.get(i).register();
@@ -81,6 +94,7 @@ public abstract class BaseUEMod
 	
 	protected abstract void loadEnchantments();
 	protected void loadUpgrades() {};
+	protected void loadBanners() {};
 	
 	
 	protected void addConfig(ForgeConfigSpec.Builder builder) {}
@@ -88,6 +102,21 @@ public abstract class BaseUEMod
 	protected void registerUpgrade(EnchantedUpgrade upgrades)
 	{
 		this.upgrades.add(upgrades);
+	}
+	
+	protected void registerPattern(String id, String name, String hash)
+	{
+		registerPattern(id, name, hash, new Item.Properties());
+	}
+	
+	protected void registerPattern(String id, String name, String hash, Rarity rarity)
+	{
+		registerPattern(id, name, hash, new Item.Properties().rarity(rarity));
+	}
+	
+	protected void registerPattern(String id, String name, String hash, Item.Properties props)
+	{
+		banners.put(new ResourceLocation(id, name), new Tuple<>(new BannerPattern(hash), props));
 	}
 	
 	protected Enchantment register(Enchantment ench)
@@ -117,15 +146,25 @@ public abstract class BaseUEMod
     	reloadConfig();
     }
     
-	public void registerEnchantments(RegisterEvent event)
+	private void registerInternal(RegisterEvent event)
 	{
-//		if(event.getRegistryKey().equals(ForgeRegistries.Keys.ENCHANTMENTS))
-//		{
-//			for(IToggleEnchantment ench : enchantments)
-//			{
-//				event.getForgeRegistry().register(ench.getId(), (Enchantment)ench);
-//			}
-//		}
+		if(event.getRegistryKey().equals(Registry.BANNER_PATTERN_REGISTRY))
+		{
+			for(Map.Entry<ResourceLocation, Tuple<BannerPattern, Item.Properties>> entry : banners.entrySet())
+			{
+				Registry.register(Registry.BANNER_PATTERN, ResourceKey.create(Registry.BANNER_PATTERN_REGISTRY, entry.getKey()), entry.getValue().getA());
+			}
+		}
+		else if(event.getRegistryKey().equals(Registry.ITEM_REGISTRY))
+		{
+			for(Map.Entry<ResourceLocation, Tuple<BannerPattern, Item.Properties>> entry : banners.entrySet())
+			{
+				ResourceLocation id = entry.getKey(); 
+				Tuple<BannerPattern, Item.Properties> props = entry.getValue();
+				TagKey<BannerPattern> tag = TagKey.create(Registry.BANNER_PATTERN_REGISTRY, new ResourceLocation(id.getNamespace(), "pattern_item/"+id.getPath()));
+				event.getForgeRegistry().register(new ResourceLocation(id.getNamespace(), id.getPath()+"_banner_pattern"), new BannerPatternItem(tag, props.getB()));
+			}
+		}
 	}
 	
 	private static boolean canEnchant(Item item)
