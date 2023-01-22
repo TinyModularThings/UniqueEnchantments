@@ -48,6 +48,11 @@ public class AlchemistsBlessing extends UniqueEnchantment
 	}
 	
 	@Override
+	protected boolean canNotApplyToItems(ItemStack stack) {
+		return !stack.isDamageableItem();
+	}
+	
+	@Override
 	public void loadIncompats()
 	{
 		addIncompats(Enchantments.MENDING);

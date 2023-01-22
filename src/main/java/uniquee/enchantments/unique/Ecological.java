@@ -27,19 +27,24 @@ public class Ecological extends UniqueEnchantment
 			return t.is(BlockTags.LOGS) || t.is(BlockTags.LEAVES) || t.is(ECOLOGICAL) ? 1 : 0;
 		}
 	};
-	public static final IntStat SPEED = new IntStat(330, "baseDuration");
-	public static final DoubleStat SPEED_SCALE = new DoubleStat(16D, "scalingReduction");
+	public static final IntStat SPEED = new IntStat(600, "baseDuration");
+	public static final DoubleStat AMOUNT_SCALE = new DoubleStat(1.0D, "amountScaling");
 	
 	public Ecological()
 	{
 		super(new DefaultData("ecological", Rarity.RARE, 3, false, true, 20, 8, 10), EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
-		addStats(SPEED, SPEED_SCALE);
+		addStats(SPEED, AMOUNT_SCALE);
 	}
 	
 	@Override
 	protected boolean canApplyToItem(ItemStack stack)
 	{
 		return stack.getItem() instanceof CrossbowItem;
+	}
+	
+	@Override
+	protected boolean canNotApplyToItems(ItemStack stack) {
+		return !stack.isDamageableItem();
 	}
 	
 	@Override

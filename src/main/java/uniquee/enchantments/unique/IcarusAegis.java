@@ -35,4 +35,9 @@ public class IcarusAegis extends UniqueEnchantment
 	{
 		return stack.getItem() instanceof ElytraItem;
 	}
+	
+	@Override
+	protected boolean canNotApplyToItems(ItemStack stack) {
+		return !stack.isDamageableItem();
+	}
 }

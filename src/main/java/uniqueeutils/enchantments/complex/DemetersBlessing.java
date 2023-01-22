@@ -18,7 +18,7 @@ public class DemetersBlessing extends UniqueEnchantment
 	@Override
 	protected boolean canNotApplyToItems(ItemStack stack)
 	{
-		return !(stack.getItem() instanceof HoeItem);
+		return !(stack.getItem() instanceof HoeItem) || !stack.isDamageableItem();
 	}
 	
 	@Override

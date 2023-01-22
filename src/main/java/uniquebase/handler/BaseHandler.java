@@ -16,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ItemFrame;
@@ -48,6 +49,7 @@ import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
@@ -140,6 +142,15 @@ public class BaseHandler
 			}
 		}
 		
+	}
+
+	@SubscribeEvent
+	public void onNock(ArrowNockEvent e) {
+		ItemStack stack = e.getBow();
+		if(MiscUtil.getEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) > 0) {
+			e.getEntity().startUsingItem(e.getHand());
+			e.setAction(InteractionResultHolder.consume(stack));
+		}
 	}
 	
 	@SubscribeEvent(priority = EventPriority.LOWEST)

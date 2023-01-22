@@ -22,7 +22,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.CombatEntry;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -257,6 +256,18 @@ public class EntityEvents
 						StackUtils.setInt(stack, FastFood.FASTFOOD, stored-num);
 					}
 				}
+				if(StackUtils.hasBlockCount(player.level, player.blockPosition(), 1, Ecological.STATES) > 0) {
+					EquipmentSlot[] slots = MiscUtil.getEquipmentSlotsFor(UE.ECOLOGICAL);
+					for(int i = 0;i<slots.length;i++)
+					{
+						ItemStack equipStack = player.getItemBySlot(slots[i]); 
+						int level = container.getEnchantment(UE.ECOLOGICAL, slots[i]);
+						if(level > 0 && equipStack.isDamaged())
+						{
+							equipStack.hurtAndBreak((int) Ecological.AMOUNT_SCALE.get(-level), player, MiscUtil.get(slots[i]));
+						}
+					}
+				}
 				EnderMending.shareXP(player, container);				
 			}
 			if(player.level.getGameTime() % 100 == 0)
@@ -425,21 +436,6 @@ public class EntityEvents
 		if(level > 0 && player.onClimbable() && player.zza != 0F && player.getDeltaMovement().y() > 0 && player.getDeltaMovement().y() <= 0.2 && !player.isShiftKeyDown())
 		{
 			player.setDeltaMovement(player.getDeltaMovement().add(0, Swift.SPEED_BONUS.getAsDouble(level) * 3D, 0));
-		}
-		Boolean cache = null;
-		//Reflection is slower then direct call. But Twice the Iteration & Double IsEmpty Check is slower then Reflection.
-		EquipmentSlot[] slots = MiscUtil.getEquipmentSlotsFor(UE.ECOLOGICAL);
-		for(int i = 0;i<slots.length;i++)
-		{
-			ItemStack equipStack = player.getItemBySlot(slots[i]); 
-			level = container.getEnchantment(UE.ECOLOGICAL, slots[i]);
-			if(level > 0 && equipStack.isDamaged() && player.level.getGameTime() % Math.max(1, (int)(Ecological.SPEED.get() / Math.log10(10.0D + (player.experienceLevel*level) / Ecological.SPEED_SCALE.get()))) == 0)
-			{
-				if((cache == null ? cache = StackUtils.hasBlockCount(player.level, player.blockPosition(), 1, Ecological.STATES) > 0 : cache.booleanValue()))
-				{
-					equipStack.hurtAndBreak(-1, player, MiscUtil.get(slots[i]));
-				}
-			}
 		}
 	}
 	
