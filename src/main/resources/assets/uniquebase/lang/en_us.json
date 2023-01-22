@@ -49,7 +49,7 @@
 	"enchantment.minecraft.power.icon": "K",
 	"enchantment.minecraft.projectile_protection.desc": "Reduces damage received from projectiles",
 	"enchantment.minecraft.projectile_protection.icon": "L",
-	"enchantment.minecraft.protection.desc": "Reduces damage received that is not covered by other protection enchantments",
+	"enchantment.minecraft.protection.desc": "Reduces all damage received, if only just a little bit",
 	"enchantment.minecraft.protection.icon": "M",
 	"enchantment.minecraft.punch.desc": "Increased knockback by arrows",
 	"enchantment.minecraft.punch.icon": "N",

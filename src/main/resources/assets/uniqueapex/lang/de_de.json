@@ -14,6 +14,8 @@
 	"enchantment.uniqueapex.gaias_fragment": "Gaia's Fragment",
 	"enchantment.uniqueapex.gaias_fragment.desc": "Shift-rechtsklick beide positionen, zerstoert alle Bloecke im Bereich.",
 	"enchantment.uniqueapex.gaias_fragment.icon": "s",
+	"enchantment.uniqueapex.harbingers_odium": "Abscheu der Reiter",
+	"enchantment.uniqueapex.harbingers_odium.desc": "Reduziert die maximalen Lebenspunkte des Gegners. Verbessert Trank-Effekte",
 	"enchantment.uniqueapex.pickaxe404": "Spitzhacke 404",
 	"enchantment.uniqueapex.pickaxe404.desc": "Zerstoert jeden Block",
 	"enchantment.uniqueapex.pickaxe404.icon": "t",
@@ -22,6 +24,8 @@
 	"enchantment.uniqueapex.second_life.icon": "X",
 	"unique.apex.bases": "Basen",
 	"unique.apex.catalyst": "Katalysator",
-	"unique.apex.desc": "Katalysatoren kommen in die Truhe an der Seite.\nVerzauberungen in die obere.\nResultat im ersten Slot der oberen Truhe",
-	"unique.apex.jei.name": "Verzauberungs Fusion"
+	"unique.apex.desc": "Katalysatoren kommen in die Truhe an der Seite.\nBasen in die obere.\nResultat im ersten Slot der oberen Truhe",
+	"unique.apex.jei.name": "Verzauberungs Fusion",
+	"unique.apex.first_pos": "Erste Position: [x=%s, y=%s, z=%s]",
+	"unique.apex.mine": "Abbau beginn bei: [x=%s, y=%s, z=%s] to: [x=%s, y=%s, z=%s]"
 }

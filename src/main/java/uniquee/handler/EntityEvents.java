@@ -22,6 +22,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.CombatEntry;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -729,6 +730,15 @@ public class EntityEvents
 					event.setAmount(event.getAmount() * (float)Math.log(1.719d + Math.pow((level+0.1D)*0.5D, Math.sqrt(attr.getValue()/1.2))));
 				}
 			}
+			level = enchantments.getInt(UE.RANGE);
+			if(level > 0 && base instanceof Player player)
+			{
+				double value = MiscUtil.getBaseAttribute(player, ForgeMod.ATTACK_RANGE.get());
+				if(value * value < new BlockPos(target.position()).distToCenterSqr(player.position()))
+				{
+					event.setAmount(event.getAmount() * Range.REDUCTION.getLogDevided(level+1));
+				}
+			}
 			level = enchantments.getInt(UE.FOCUS_IMPACT);
 			if(level > 0)
 			{
@@ -957,7 +967,6 @@ public class EntityEvents
 	public void onCrit(CriticalHitEvent event)
 	{
 		if(event.getEntity() == null) return;
-		System.out.println("hello");
 		int level = MiscUtil.getCombinedEnchantmentLevel(UE.COMBO_STAR, event.getEntity());
 		if(level > 0)
 		{
@@ -1323,7 +1332,7 @@ public class EntityEvents
 		int level = enchantments.getInt(UE.VITAE);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.VITAE).contains(slot))
 		{
-			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD.getId(slot), "Vitae", Math.log(1+ level*(Vitae.BASE_BOOST.get()+MiscUtil.getPlayerLevel(living, 200))), Operation.ADDITION));
+			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD.getId(slot), "Vitae", Math.log(1+ level*(Vitae.BASE_BOOST.get()+Vitae.SCALE_BOOST.get(MiscUtil.getPlayerLevel(living, 200)))), Operation.ADDITION));
 		}
 		level = enchantments.getInt(UE.SWIFT);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT).contains(slot))
