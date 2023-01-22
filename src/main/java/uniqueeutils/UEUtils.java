@@ -3,6 +3,7 @@ package uniqueeutils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -122,6 +123,100 @@ public class UEUtils extends BaseUEMod
 			event.getForgeRegistry().register("resonance_found", RESONANCE_SOUND);
 			event.getForgeRegistry().register("alchemist_blessing_transmutate", ALCHEMIST_BLESSING_SOUND);
 		}
+	}
+	
+	@Override
+	protected void loadBanners() 
+	{
+		registerPattern("uniqueutil", "adept", "ueudpt", Rarity.RARE);
+		registerPattern("uniqueutil", "adept_color", "ueudptclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "alchemists_blessing_large", "ueulchmstsblssnglrg", Rarity.RARE);
+		registerPattern("uniqueutil", "alchemists_blessing_large_color", "ueulchmstsblssnglrgclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "alchemists_blessing_small", "ueulchmstsblssngsmll", Rarity.RARE);
+		registerPattern("uniqueutil", "alchemists_blessing_small_color", "ueulchmstsblssngsmllclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "alchemists_mending_border", "ueulchmstsmndngbrdr", Rarity.RARE);
+		registerPattern("uniqueutil", "alchemists_mending_border_color", "ueulchmstsmndngbrdrclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "alchemists_mending_small", "ueulchmstsmndngsmll", Rarity.RARE);
+		registerPattern("uniqueutil", "alchemists_mending_small_color", "ueulchmstsmndngsmllclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "ambrosia", "ueumbrs", Rarity.RARE);
+		registerPattern("uniqueutil", "ambrosia_color", "ueumbrsclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "anemoi_fragment_border", "ueunmfrgmntbrdr", Rarity.RARE);
+		registerPattern("uniqueutil", "anemoi_fragment_border_color", "ueunmfrgmntbrdrclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "anemoi_fragment_small", "ueunmfrgmntsmll", Rarity.RARE);
+		registerPattern("uniqueutil", "anemoi_fragment_small_color", "ueunmfrgmntsmllclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "climber", "ueuclmbr", Rarity.RARE);
+		registerPattern("uniqueutil", "climber_color", "ueuclmbrclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "demeters_blessing", "ueudmtrsblssng", Rarity.RARE);
+		registerPattern("uniqueutil", "demeters_blessing_color", "ueudmtrsblssngclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "demeters_soul", "ueudmtrssl", Rarity.RARE);
+		registerPattern("uniqueutil", "demeters_soul_color", "ueudmtrsslclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "dreams", "ueudrms", Rarity.RARE);
+		registerPattern("uniqueutil", "dreams_color", "ueudrmsclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "dreams_tall_clear", "ueudrmstllclr", Rarity.RARE);
+		registerPattern("uniqueutil", "dreams_tall_clear_color", "ueudrmstllclrclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "dreams_tall_cloudy", "ueudrmstllcldy", Rarity.RARE);
+		registerPattern("uniqueutil", "dreams_tall_cloudy_color", "ueudrmstllcldyclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "essence_of_slime", "ueussncfslm", Rarity.RARE);
+		registerPattern("uniqueutil", "essence_of_slime_color", "ueussncfslmclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "famines_odium", "ueufmnsdm", Rarity.RARE);
+		registerPattern("uniqueutil", "famines_odium_color", "ueufmnsdmclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "mounting_aegis", "ueumntnggs", Rarity.RARE);
+		registerPattern("uniqueutil", "mounting_aegis_color", "ueumntnggsclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "pegasus_soul", "ueupgsssl", Rarity.RARE);
+		registerPattern("uniqueutil", "pegasus_soul_color", "ueupgssslclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "phanes_regret", "ueuphnsrgrt", Rarity.RARE);
+		registerPattern("uniqueutil", "phanes_regret_color", "ueuphnsrgrtclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "poseidons_soul_large", "ueupsdnssllrg", Rarity.RARE);
+		registerPattern("uniqueutil", "poseidons_soul_large_color", "ueupsdnssllrgclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "poseidons_soul_large_unused", "ueupsdnssllrgnsd", Rarity.RARE);
+		registerPattern("uniqueutil", "poseidons_soul_large_unused_color", "ueupsdnssllrgnsdclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "poseidons_soul_small", "ueupsdnsslsmll", Rarity.RARE);
+		registerPattern("uniqueutil", "poseidons_soul_small_color", "ueupsdnsslsmllclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "reinforced", "ueurnfrcd", Rarity.RARE);
+		registerPattern("uniqueutil", "reinforced_color", "ueurnfrcdclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "resonance_large_dark", "ueursnnclrgdrk", Rarity.RARE);
+		registerPattern("uniqueutil", "resonance_large_dark_color", "ueursnnclrgdrkclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "resonance_large_light", "ueursnnclrglght", Rarity.RARE);
+		registerPattern("uniqueutil", "resonance_large_light_color", "ueursnnclrglghtclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "resonance_small", "ueursnncsmll", Rarity.RARE);
+		registerPattern("uniqueutil", "resonance_small_color", "ueursnncsmllclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "rocket_man", "ueurcktmn", Rarity.RARE);
+		registerPattern("uniqueutil", "rocket_man_color", "ueurcktmnclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "sages_soul", "ueusgssl", Rarity.RARE);
+		registerPattern("uniqueutil", "sages_soul_color", "ueusgsslclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "sleipnirs_grace", "ueuslpnrsgrc", Rarity.RARE);
+		registerPattern("uniqueutil", "sleipnirs_grace_color", "ueuslpnrsgrcclr", Rarity.EPIC);
+
+		registerPattern("uniqueutil", "thick_pick", "ueuthckpck", Rarity.RARE);
+		registerPattern("uniqueutil", "thick_pick_color", "ueuthckpckclr", Rarity.EPIC);
 	}
 	
 	@OnlyIn(Dist.CLIENT)

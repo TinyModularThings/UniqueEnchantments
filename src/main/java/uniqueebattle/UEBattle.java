@@ -3,6 +3,7 @@ package uniqueebattle;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -114,6 +115,70 @@ public class UEBattle extends BaseUEMod
 		registerUpgrade(IFRITS_UPGRADE);
 		registerUpgrade(LUNATIC_UPGRADE);
 		registerUpgrade(WARS_UPGRADE);
+	}
+	
+	@Override
+	protected void loadBanners() 
+	{
+		registerPattern("uniquebattle", "ares_fragment", "uebrsfrgmnt", Rarity.RARE);
+		registerPattern("uniquebattle", "ares_fragment_color", "uebrsfrgmntclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "ares_grace", "uebrsgrc", Rarity.RARE);
+		registerPattern("uniquebattle", "ares_grace_color", "uebrsgrcclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "artemis_soul", "uebrtmssl", Rarity.RARE);
+		registerPattern("uniquebattle", "artemis_soul_color", "uebrtmsslclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "deep_wounds_border", "uebdpwndsbrdr", Rarity.RARE);
+		registerPattern("uniquebattle", "deep_wounds_border_color", "uebdpwndsbrdrclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "deep_wounds_small", "uebdpwndssmll", Rarity.RARE);
+		registerPattern("uniquebattle", "deep_wounds_small_color", "uebdpwndssmllclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "fury", "uebfry", Rarity.RARE);
+		registerPattern("uniquebattle", "fury_color", "uebfryclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "golem_soul", "uebglmsl", Rarity.RARE);
+		registerPattern("uniquebattle", "golem_soul_color", "uebglmslclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "granis_soul", "uebgrnssl", Rarity.RARE);
+		registerPattern("uniquebattle", "granis_soul_color", "uebgrnsslclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "hecates_blessing", "uebhctsblssng", Rarity.RARE);
+		registerPattern("uniquebattle", "hecates_blessing_color", "uebhctsblssngclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "hecates_blessing_full", "uebhctsblssngfll", Rarity.RARE);
+		registerPattern("uniquebattle", "hecates_blessing_full_color", "uebhctsblssngfllclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "ifrits_blessing", "uebfrtsblssng", Rarity.RARE);
+		registerPattern("uniquebattle", "ifrits_blessing_color", "uebfrtsblssngclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "ifrits_judgement", "uebfrtsjdgmnt", Rarity.RARE);
+		registerPattern("uniquebattle", "ifrits_judgement_color", "uebfrtsjdgmntclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "iron_bird_dark", "uebrnbrddrk", Rarity.RARE);
+		registerPattern("uniquebattle", "iron_bird_dark_color", "uebrnbrddrkclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "iron_bird_light", "uebrnbrdlght", Rarity.RARE);
+		registerPattern("uniquebattle", "iron_bird_light_color", "uebrnbrdlghtclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "lunatic_despair", "ueblntcdspr", Rarity.RARE);
+		registerPattern("uniquebattle", "lunatic_despair_color", "ueblntcdsprclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "snare_border", "uebsnrbrdr", Rarity.RARE);
+		registerPattern("uniquebattle", "snare_border_color", "uebsnrbrdrclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "snare_small", "uebsnrsmll", Rarity.RARE);
+		registerPattern("uniquebattle", "snare_small_color", "uebsnrsmllclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "streakers_will_alt", "uebstrkrswlllt", Rarity.RARE);
+		registerPattern("uniquebattle", "streakers_will_alt_color", "uebstrkrswllltclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "streakers_will_small", "uebstrkrswllsmll", Rarity.RARE);
+		registerPattern("uniquebattle", "streakers_will_small_color", "uebstrkrswllsmllclr", Rarity.EPIC);
+
+		registerPattern("uniquebattle", "wars_odium", "uebwrsdm", Rarity.RARE);
+		registerPattern("uniquebattle", "wars_odium_color", "uebwrsdmclr", Rarity.EPIC);
 	}
 	
 	@Override

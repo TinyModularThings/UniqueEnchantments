@@ -36,7 +36,7 @@
     ],
     "enchantments": [
         { "type": "uniquee:deaths_odium", "level": 1 },
-        { "type": "uniquee_pestilences_odium", "level": 1 },
+        { "type": "uniquee:pestilences_odium", "level": 1 },
         { "type": "uniquebattle:wars_odium", "level": 1 },
         { "type": "uniqueutil:famines_odium", "level": 1 } 
     ],

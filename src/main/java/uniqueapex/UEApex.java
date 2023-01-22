@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -101,6 +102,49 @@ public class UEApex extends BaseUEMod
 		{
 			event.getForgeRegistry().register("second_life", SECOND_LIFE_SOUND);
 		}
+	}
+	
+	@Override
+	protected void loadBanners() 
+	{
+		registerPattern("uniqueapex", "absolute_protection_large", "ueabsltprtctnlrg", Rarity.RARE);
+		registerPattern("uniqueapex", "absolute_protection_large_color", "ueabsltprtctnlrgclr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "absolute_protection_small", "ueabsltprtctnsmll", Rarity.RARE);
+		registerPattern("uniqueapex", "absolute_protection_small_color", "ueabsltprtctnsmllclr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "accustomed", "ueaccstmd", Rarity.RARE);
+		registerPattern("uniqueapex", "accustomed_color", "ueaccstmdclr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "aeons_fragment_large", "ueansfrgmntlrg", Rarity.RARE);
+		registerPattern("uniqueapex", "aeons_fragment_large_color", "ueansfrgmntlrgclr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "aeons_fragment_small", "ueansfrgmntsmll", Rarity.RARE);
+		registerPattern("uniqueapex", "aeons_fragment_small_color", "ueansfrgmntsmllclr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "blessed_blade_large", "ueablssdbldlrg", Rarity.RARE);
+		registerPattern("uniqueapex", "blessed_blade_large_color", "ueablssdbldlrgclr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "blessed_blade_small", "ueablssdbldsmll", Rarity.RARE);
+		registerPattern("uniqueapex", "blessed_blade_small_color", "ueablssdbldsmllclr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "gaias_fragment_border_dark", "ueagsfrgmntbrdrdrk", Rarity.RARE);
+		registerPattern("uniqueapex", "gaias_fragment_border_dark_color", "ueagsfrgmntbrdrdrkclr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "gaias_fragment_border_light", "ueagsfrgmntbrdrlght", Rarity.RARE);
+		registerPattern("uniqueapex", "gaias_fragment_border_light_color", "ueagsfrgmntbrdrlghtclr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "gaias_fragment_small", "ueagsfrgmntsmll", Rarity.RARE);
+		registerPattern("uniqueapex", "gaias_fragment_small_color", "ueagsfrgmntsmllclr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "harbringers_odium", "ueahrbrngrsdm", Rarity.RARE);
+		registerPattern("uniqueapex", "harbringers_odium_color", "ueahrbrngrsdmclr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "pickaxe_404", "ueapckx404", Rarity.RARE);
+		registerPattern("uniqueapex", "pickaxe_404_color", "ueapckx404clr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "second_life", "ueascndlf", Rarity.RARE);
+		registerPattern("uniqueapex", "second_life_color", "ueascndlfclr", Rarity.EPIC);
 	}
 	
 	@Override

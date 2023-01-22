@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.BannerPatternItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -96,7 +97,6 @@ public abstract class BaseUEMod
 	protected void loadUpgrades() {};
 	protected void loadBanners() {};
 	
-	
 	protected void addConfig(ForgeConfigSpec.Builder builder) {}
 	
 	protected void registerUpgrade(EnchantedUpgrade upgrades)
@@ -111,7 +111,7 @@ public abstract class BaseUEMod
 	
 	protected void registerPattern(String id, String name, String hash, Rarity rarity)
 	{
-		registerPattern(id, name, hash, new Item.Properties().rarity(rarity));
+		registerPattern(id, name, hash, new Item.Properties().rarity(rarity).tab(CreativeModeTab.TAB_MISC));
 	}
 	
 	protected void registerPattern(String id, String name, String hash, Item.Properties props)
