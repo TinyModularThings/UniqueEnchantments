@@ -24,6 +24,7 @@ import uniqueapex.enchantments.simple.BlessedBlade;
 import uniqueapex.enchantments.simple.Pickaxe404;
 import uniqueapex.enchantments.simple.SecondLife;
 import uniqueapex.enchantments.unique.AeonsFragment;
+import uniqueapex.enchantments.unique.AeonsSoul;
 import uniqueapex.enchantments.unique.GaiasFragment;
 import uniqueapex.handler.ApexHandler;
 import uniqueapex.handler.FusionHandler;
@@ -60,6 +61,7 @@ public class UEApex extends BaseUEMod
 	
 	//Unique
 	public static Enchantment AEONS_FRAGMENT;
+	public static Enchantment AEONS_SOUL;
 	public static Enchantment GAIAS_FRAGMENT;
 	
 	public static final Object2FloatMap<Enchantment> UPGRADE_MULTIPLIERS = new Object2FloatOpenHashMap<>();
@@ -151,6 +153,7 @@ public class UEApex extends BaseUEMod
 		ACCUSTOMED = register(new Accustomed());
 		
 		AEONS_FRAGMENT = register(new AeonsFragment());
+		AEONS_SOUL = register(new AeonsSoul());
 		GAIAS_FRAGMENT = register(new GaiasFragment());
 	}
 }
