@@ -1,5 +1,9 @@
 package uniquebase;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +34,10 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.ColorConfig;
@@ -40,6 +46,7 @@ import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
 import uniquebase.handler.ClientProxy;
 import uniquebase.handler.EnchantmentHandler;
+import uniquebase.handler.PackHandler;
 import uniquebase.handler.Proxy;
 import uniquebase.networking.PacketHandler;
 import uniquebase.utils.IdStat;
@@ -87,7 +94,9 @@ public class UEBase
 	public static BooleanValue DISABLE_JEI;
 	public static final IdStat<Item> APPLICABLE_ICON_OVERRIDE = new IdStat<>("overrideIcons", "override that decides which items are used to decide to show in the tooltip display. If Empty all items are used", ForgeRegistries.ITEMS);
 	
-	public static ForgeConfigSpec CONFIG;	
+	public static ForgeConfigSpec CONFIG;
+	
+	public static boolean SHOULD_LOAD_RESOURCEPACK = false;
 	
 	public static final SoundEvent ANVIL_STACK = new SoundEvent(new ResourceLocation("uniquebase", "anvil_stacks"));
 	
@@ -175,6 +184,27 @@ public class UEBase
 		ENCHANTMENT_LIMITS.defaultReturnValue(Integer.MAX_VALUE);
 		
 		ForgeRegistries.SOUND_EVENTS.register("anvil_stacks", ANVIL_STACK);
+		Path path = FMLPaths.CONFIGDIR.get().resolve("ue").resolve("resourcePack.txt");
+		if(Files.notExists(path))
+		{
+			try { Files.createDirectories(path.getParent()); }
+			catch(IOException e1) {}
+			SHOULD_LOAD_RESOURCEPACK = true;
+			try(BufferedWriter writer = Files.newBufferedWriter(path))
+			{
+				writer.write("This File only exists so the new Unique Enchantments Enchanted Book texture pack is loaded by default but still can be turned off. Since neither Vanilla or forge are capable of having defaulty enabled ResourcePacks and forges config sucks so bad that you can't have configs that load before texture packs load so we have to do this shitty solution to make it work!");
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+		}
+		PackHandler.loaded();
+	}
+	
+	@SubscribeEvent
+	public void clientInit(FMLClientSetupEvent event)
+	{
 	}
 	
     @SubscribeEvent

@@ -38,7 +38,8 @@ public class FusionUpgradeSerializer implements RecipeSerializer<FusionUpgradeRe
 		}
 		int xp = object.has("xp") ? object.get("xp").getAsInt() : 0;
 		int books = object.has("books") ? object.get("books").getAsInt() : 4;
-		return new FusionUpgradeRecipe(id, map, ench, xp, books);
+		int lvl = object.has("maxLevel") ? object.get("maxLevel").getAsInt() : 10;
+		return new FusionUpgradeRecipe(id, map, ench, xp, books, lvl);
 	}
 
 	@Override

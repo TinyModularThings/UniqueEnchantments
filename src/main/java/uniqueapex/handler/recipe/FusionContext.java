@@ -140,12 +140,12 @@ public final class FusionContext extends SimpleContainer
 		return (!stack.hasTag() || stack.getTag().getByte("fusioned") != 2);
 	}
 	
-	public void mergeEnchantments(int bookCount)
+	public void mergeEnchantments(int bookCount, int maxLevel)
 	{
 		ItemStack stack = mainChest.getStackInSlot(0);
 		Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(stack);
 		Enchantment ench = getLargestEnchantment();
-		int level = getAchievedLevel(bookCount);
+		int level = Math.min(maxLevel, getAchievedLevel(bookCount));
 		if(level >= map.getOrDefault(ench, 0))
 		{
 			map.put(ench, level);
