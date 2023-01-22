@@ -23,7 +23,7 @@ public class JEIApex implements IModPlugin
 	{
 		return new ResourceLocation("uniqueapex", "core");
 	}
-	
+		
 	@Override
 	public void registerRecipes(IRecipeRegistration registration)
 	{

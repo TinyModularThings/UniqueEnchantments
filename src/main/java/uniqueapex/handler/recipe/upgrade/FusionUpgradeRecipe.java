@@ -24,14 +24,16 @@ public class FusionUpgradeRecipe implements Recipe<FusionContext>
 	protected Enchantment enchantment;
 	protected int requiredExperience;
 	protected int requiredBooks;
+	protected int maxLevel;
 	
-	public FusionUpgradeRecipe(ResourceLocation id, Object2IntMap<Ingredient> requestedItems, Enchantment enchantment, int requiredExperience, int requiredBooks)
+	public FusionUpgradeRecipe(ResourceLocation id, Object2IntMap<Ingredient> requestedItems, Enchantment enchantment, int requiredExperience, int requiredBooks, int maxLevel)
 	{
 		this.id = id;
 		this.requestedItems = requestedItems;
 		this.enchantment = enchantment;
 		this.requiredExperience = requiredExperience;
 		this.requiredBooks = requiredBooks;
+		this.maxLevel = maxLevel;
 	}
 	
 	public static FusionUpgradeRecipe load(ResourceLocation location, FriendlyByteBuf buffer)
@@ -44,7 +46,8 @@ public class FusionUpgradeRecipe implements Recipe<FusionContext>
 		Enchantment ench = buffer.readRegistryIdUnsafe(ForgeRegistries.ENCHANTMENTS);
 		int exp = buffer.readVarInt();
 		int books = buffer.readVarInt();
-		return ench == null ? null : new FusionUpgradeRecipe(location, requestedItems, ench, exp, books);
+		int lvl = buffer.readVarInt();
+		return ench == null ? null : new FusionUpgradeRecipe(location, requestedItems, ench, exp, books, lvl);
 	}
 	
 	public void writePacket(FriendlyByteBuf buffer)
@@ -58,6 +61,7 @@ public class FusionUpgradeRecipe implements Recipe<FusionContext>
 		buffer.writeRegistryIdUnsafe(ForgeRegistries.ENCHANTMENTS, enchantment);
 		buffer.writeVarInt(requiredExperience);
 		buffer.writeVarInt(requiredBooks);
+		buffer.writeVarInt(maxLevel);
 	}
 	
 	@Override
@@ -78,7 +82,7 @@ public class FusionUpgradeRecipe implements Recipe<FusionContext>
 	
 	public void mergeEnchantments(FusionContext context)
 	{
-		context.mergeEnchantments(requiredBooks);
+		context.mergeEnchantments(requiredBooks, maxLevel);
 		context.containsItem(requestedItems, false);
 	}
 	
