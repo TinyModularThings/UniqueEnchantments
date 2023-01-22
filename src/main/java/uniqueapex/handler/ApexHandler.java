@@ -12,9 +12,14 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -30,6 +35,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.TickingBlockEntity;
@@ -49,12 +55,14 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import uniqueapex.UEApex;
 import uniqueapex.enchantments.simple.AbsoluteProtection;
 import uniqueapex.enchantments.simple.Accustomed;
 import uniqueapex.enchantments.simple.BlessedBlade;
 import uniqueapex.enchantments.simple.SecondLife;
 import uniqueapex.enchantments.unique.AeonsFragment;
+import uniqueapex.enchantments.unique.AeonsSoul;
 import uniqueapex.handler.misc.MiningArea;
 import uniqueapex.network.ApexCooldownPacket;
 import uniquebase.UEBase;
@@ -82,6 +90,35 @@ public class ApexHandler
 	}
 	
 	@SubscribeEvent
+	public void onPlayerTickEvent(PlayerTickEvent event)
+	{
+		if(event.phase == Phase.END || event.side.isClient()) return;
+		if(event.player.level.getGameTime() % 24000 == 0)
+		{
+			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+			if(server == null) return;
+			ListTag data = event.player.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).getCompound(AeonsSoul.TICKET_STORAGE).getList("entries", 10);
+			if(!data.isEmpty())
+			{
+				int totalDrained = 0;
+				for(int i = 0,m=data.size();i<m;i++)
+				{
+					CompoundTag tag = data.getCompound(i);
+					int xpRequired = (int)(((1F+data.size())/tag.getInt("level"))*AeonsSoul.FACTOR.get());
+					if(event.player.totalExperience < totalDrained + xpRequired) break;
+					
+					ServerLevel level = server.getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, ResourceLocation.tryParse(tag.getString("dim"))));
+					if(level == null) continue;
+					totalDrained += xpRequired;
+					ChunkPos pos = new ChunkPos(tag.getLong("pos"));
+					level.getChunkSource().addRegionTicket(AeonsSoul.CUSTOM_TICKET, pos, xpRequired, pos, true);
+				}
+				MiscUtil.drainExperience(event.player, totalDrained);
+			}
+		}
+	}
+	
+	@SubscribeEvent
 	public void onRightClick(RightClickBlock event)
 	{
 		Player player = event.getEntity();
@@ -104,6 +141,40 @@ public class ApexHandler
 			}
 			event.setCanceled(true);
 			event.setCancellationResult(InteractionResult.SUCCESS);
+		}
+		level = MiscUtil.getEnchantmentLevel(UEApex.AEONS_SOUL, player.getMainHandItem());
+		if(level > 0)
+		{
+			CompoundTag nbt = MiscUtil.getPersistentData(player);
+			if(!nbt.contains(AeonsSoul.TICKET_STORAGE)) nbt.put(AeonsSoul.TICKET_STORAGE, new CompoundTag());
+			CompoundTag data = nbt.getCompound(AeonsSoul.TICKET_STORAGE);
+			if(!data.contains("entries")) data.put("entries", new ListTag());
+			ListTag entries = data.getList("entries", 10);
+			
+			
+			long targetPos = ChunkPos.asLong(player.blockPosition());
+			String dim = player.level.dimension().location().toString();
+			
+			for(int i = 0,m=entries.size();i<m;i++)
+			{
+				CompoundTag tag = entries.getCompound(i);
+				if(tag.getLong("pos") == targetPos && dim.equals(tag.getString("dim")))
+				{
+					entries.remove(i--);
+					//TODO Translate and come up with a better name.
+					//Note this doesn't stop chunkloading instantly but stops the refreshing. So they gain 20 mins for free still.
+					player.sendSystemMessage(Component.literal("Stopped fueling Chunk"));
+					return;
+				}
+			}
+			CompoundTag newEntry = new CompoundTag();
+			newEntry.putLong("pos", targetPos);
+			newEntry.putString("dim", dim);
+			newEntry.putInt("level", level);
+			entries.add(newEntry);
+			//TODO Translate and come up with a better name.
+			//Note this doesn't instantly load chunks it still has to await the next cycle. So if you do accidently stuff you won't lose XP xD
+			player.sendSystemMessage(Component.literal("Started fueling Chunk"));
 		}
 	}
 	
