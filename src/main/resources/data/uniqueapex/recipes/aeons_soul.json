@@ -1,0 +1,31 @@
+{
+    "type": "uniqueapex:fusion",
+    "ingredients": [
+        {
+            "input": { "item": "minecraft:fermented_spider_eye" },
+            "amount": 64
+        },
+        {
+            "input": { "item": "minecraft:bamboo" },
+            "amount": 256
+        },
+        {
+            "input": { "item": "minecraft:obsidian" },
+            "amount": 32
+        },
+        {
+            "input": { "item": "minecraft:nether_star" },
+            "amount": 1
+        }
+    ],
+    "enchantments": [
+        { "type": "minecraft:soul_speed", "level": 5 },
+        { "type": "minecraft:efficiency", "level": 5 },
+        { "type": "minecraft:protection", "level": 5 },
+        { "type": "minecraft:smite", "level": 5 } 
+    ],
+	"lock": true,
+	"max": 3,
+    "output": "uniqueapex:aeons_soul",
+    "output_mode": "min" 
+}
