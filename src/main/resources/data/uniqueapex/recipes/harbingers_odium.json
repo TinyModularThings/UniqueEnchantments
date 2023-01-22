@@ -1,0 +1,47 @@
+{
+    "type": "uniqueapex:fusion",
+    "ingredients": [
+        {
+            "input": { "item": "minecraft:firework_star" },
+            "amount": 64
+        },
+        {
+            "input": { "item": "minecraft:quartz" },
+            "amount": 128
+        },
+        {
+            "input": { "item": "minecraft:obsidian" },
+            "amount": 256
+        },
+        {
+            "input": { "item": "minecraft:creeper_head" },
+            "amount": 1
+        },
+        {
+            "input": { "item": "minecraft:nether_star" },
+            "amount": 1
+        },
+        {
+            "input": { 
+				"type": "forge:nbt",
+				"item": "minecraft:potion",
+				"nbt": { "Potion": "minecraft:strong_regeneration"}
+			},
+            "amount": 1
+        },
+        {
+            "input": { "item": "minecraft:lapis_lazuli" },
+            "amount": 64
+        }
+    ],
+    "enchantments": [
+        { "type": "uniquee:deaths_odium", "level": 1 },
+        { "type": "uniquee_pestilences_odium", "level": 1 },
+        { "type": "uniquebattle:wars_odium", "level": 1 },
+        { "type": "uniqueutil:famines_odium", "level": 1 } 
+    ],
+	"lock": true,
+	"max": 5,
+    "output": "uniqueapex:harbingers_odium",
+    "output_mode": "min" 
+}
