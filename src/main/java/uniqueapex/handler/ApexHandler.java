@@ -25,9 +25,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ThrownTrident;
@@ -48,6 +53,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.MobEffectEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerEvent.HarvestCheck;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock;
@@ -63,6 +69,7 @@ import uniqueapex.enchantments.simple.BlessedBlade;
 import uniqueapex.enchantments.simple.SecondLife;
 import uniqueapex.enchantments.unique.AeonsFragment;
 import uniqueapex.enchantments.unique.AeonsSoul;
+import uniqueapex.enchantments.unique.HarbingersOdium;
 import uniqueapex.handler.misc.MiningArea;
 import uniqueapex.network.ApexCooldownPacket;
 import uniquebase.UEBase;
@@ -71,6 +78,7 @@ import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.mixin.common.entity.ArrowMixin;
+import uniquebase.utils.mixin.common.entity.PotionMixin;
 import uniquebase.utils.mixin.common.tile.ChunkMixin;
 
 public class ApexHandler
@@ -187,10 +195,11 @@ public class ApexHandler
 		{
 			event.setAmount(event.getAmount() * (1F / (MathCache.LOG10.getFloat((int)(10+Math.sqrt(AbsoluteProtection.SCALE.get(level)))))));
 		}
-		Entity entity = event.getSource().getEntity();
+		Entity entity = event.getSource().getDirectEntity();
 		if(entity instanceof LivingEntity ent)
 		{
-			level = MiscUtil.getEnchantmentLevel(UEApex.BLESSED_BLADE, event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : ent.getMainHandItem());
+			ItemStack stack = event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : ent.getMainHandItem();
+			level = MiscUtil.getEnchantmentLevel(UEApex.BLESSED_BLADE, stack);
 			if(level > 0)
 			{
 				int time = target.invulnerableTime;
@@ -198,6 +207,47 @@ public class ApexHandler
 				target.hurt(DamageSource.MAGIC, (float)Math.pow(1+BlessedBlade.LEVEL_SCALE.get(MiscUtil.getPlayerLevel(entity, 200) * level), 0.25F));
 				target.invulnerableTime = time;
 			}
+		}
+	}
+	
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void onEntityDamged(LivingDamageEvent event) 
+	{
+		LivingEntity target = event.getEntity();
+		if(event.getSource().getDirectEntity() instanceof LivingEntity ent) 
+		{
+			ItemStack stack = event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : ent.getMainHandItem();
+			int level = MiscUtil.getEnchantmentLevel(UEApex.HARBINGERS_ODIUM, stack);
+			if(level > 0) 
+			{
+				AttributeInstance attri = target.getAttribute(Attributes.MAX_HEALTH);
+				double amount = 0;
+				AttributeModifier attrMod = attri.getModifier(HarbingersOdium.DEBUFF_UUID);
+				if(attrMod != null) {
+					amount = attrMod.getAmount();
+					attri.removeModifier(HarbingersOdium.DEBUFF_UUID);
+				}
+				double value = Math.min(HarbingersOdium.VALUE_MODIFIER.get(event.getAmount()*(1+MiscUtil.getItemCurseLevel(stack))), Math.sqrt(HarbingersOdium.VALUE_CAP_SCALING.get(level)));
+				attri.addPermanentModifier(new AttributeModifier(HarbingersOdium.DEBUFF_UUID, "Harbingers Odium Health loss", amount - value, Operation.ADDITION));
+				ent.heal((float) value);
+				if(ent instanceof Player player) {
+					player.getFoodData().eat((int)value, (float)value);
+				}
+			}
+		}
+		System.out.println(target.getMaxHealth());
+	}
+	
+	@SubscribeEvent
+	public void onPotionApplied(MobEffectEvent.Added event)
+	{
+		MobEffectInstance instance = event.getEffectInstance();
+		int level = MiscUtil.getCombinedEnchantmentLevel(UEApex.HARBINGERS_ODIUM, event.getEntity());
+		if(level > 0)
+		{
+			int curse = MiscUtil.getCombinedCurseLevel(UEApex.HARBINGERS_ODIUM, event.getEntity());
+			((PotionMixin)instance).setPotionDuration((int)(instance.getDuration() * HarbingersOdium.EFFECT_DURATION_SCALING.get(Math.log(2.8+curse))));
+			((PotionMixin)instance).setPotionAmplifier((int)(instance.getAmplifier() + HarbingersOdium.EFFECT_LEVEL_SCALING.get(Math.log(2.8+curse))));
 		}
 	}
 	

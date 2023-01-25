@@ -10,4 +10,7 @@ public interface PotionMixin
 {
 	@Accessor("duration")
 	public void setPotionDuration(int time);
+	
+	@Accessor("amplifier")
+	public void setPotionAmplifier(int amplifier);
 }

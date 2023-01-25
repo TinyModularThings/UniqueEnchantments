@@ -2,6 +2,7 @@ package uniquebase.utils;
 
 import java.math.RoundingMode;
 import java.util.Collections;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -246,6 +247,43 @@ public class MiscUtil
 		for(int i = 0;i < slots.length;i++)
 		{
 			totalLevel += getEnchantmentLevel(ench, base.getItemBySlot(slots[i]));
+		}
+		return totalLevel;
+	}
+	
+	
+	public static int getItemLevel(ItemStack stack)
+	{
+		int totalLevel = 0;
+		for(Entry<Enchantment, Integer> ench : MiscUtil.getEnchantments(stack).object2IntEntrySet()) 
+		{
+			if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) continue;
+			totalLevel += ench.getValue();
+		}
+		return totalLevel;
+	}
+	
+	public static int getItemCurseLevel(ItemStack stack)
+	{
+		int totalLevel = 0;
+		for(Entry<Enchantment, Integer> ench : MiscUtil.getEnchantments(stack).object2IntEntrySet()) 
+		{
+			if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) continue;
+			totalLevel += ench.getKey().isCurse() ? ench.getValue() : 0;
+		}
+		return totalLevel;
+	}
+	
+	public static int getCombinedCurseLevel(Enchantment ench, LivingEntity base)
+	{
+		//Only takes Enchantments from Items that have the Enchantment
+		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return 0;
+		EquipmentSlot[] slots = getEquipmentSlotsFor(ench);
+		if(slots.length <= 0) return 0;
+		int totalLevel = 0;
+		for(int i = 0;i < slots.length;i++)
+		{
+			totalLevel += getItemCurseLevel(base.getItemBySlot(slots[i]));
 		}
 		return totalLevel;
 	}

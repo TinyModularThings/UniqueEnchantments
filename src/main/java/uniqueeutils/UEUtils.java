@@ -188,9 +188,6 @@ public class UEUtils extends BaseUEMod
 		registerPattern("uniqueutil", "poseidons_soul_large", "ueupsdnssllrg", Rarity.RARE);
 		registerPattern("uniqueutil", "poseidons_soul_large_color", "ueupsdnssllrgclr", Rarity.EPIC);
 
-		registerPattern("uniqueutil", "poseidons_soul_large_unused", "ueupsdnssllrgnsd", Rarity.RARE);
-		registerPattern("uniqueutil", "poseidons_soul_large_unused_color", "ueupsdnssllrgnsdclr", Rarity.EPIC);
-
 		registerPattern("uniqueutil", "poseidons_soul_small", "ueupsdnsslsmll", Rarity.RARE);
 		registerPattern("uniqueutil", "poseidons_soul_small_color", "ueupsdnsslsmllclr", Rarity.EPIC);
 

@@ -10,6 +10,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
+import uniquebase.utils.MiscUtil;
 import uniquebase.utils.SlotUUID;
 
 public class SagesSoul extends UniqueEnchantment
@@ -53,6 +54,6 @@ public class SagesSoul extends UniqueEnchantment
 	
 	public static double getEnchantPower(ItemStack stack, int level)
 	{
-		return Math.log10(10+Math.pow(((level*level*0.5D)+stack.getEnchantmentTags().size()), (1/DIVIDOR.get())));
+		return Math.log10(10+Math.pow(((level*level*0.5D)+MiscUtil.getItemLevel(stack)), (1/DIVIDOR.get())));
 	}
 }

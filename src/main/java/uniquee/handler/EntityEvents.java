@@ -127,6 +127,7 @@ import uniquee.enchantments.simple.AmelioratedSharpness;
 import uniquee.enchantments.simple.AmelioratedSmite;
 import uniquee.enchantments.simple.Berserk;
 import uniquee.enchantments.simple.BoneCrusher;
+import uniquee.enchantments.simple.BrittlingBlade;
 import uniquee.enchantments.simple.EnderEyes;
 import uniquee.enchantments.simple.FocusedImpact;
 import uniquee.enchantments.simple.Range;
@@ -230,16 +231,13 @@ public class EntityEvents
 		EnchantmentContainer container = new EnchantmentContainer(player);
 		if(event.side.isServer())
 		{
-			if(player.getHealth() < player.getMaxHealth())
+			if(player.level.getGameTime() % 300 == 0 && player.getHealth() < player.getMaxHealth()) 
 			{
 				int level = container.getEnchantment(UE.NATURES_GRACE, EquipmentSlot.CHEST);
-				if(level > 0 && player.level.getGameTime() % Math.max((int)(NaturesGrace.DELAY.get() / MathCache.LOG101.get(level)), 1) == 0)
+				if(level > 0 && player.getCombatTracker().getKiller() == null) 
 				{
-					if(player.getCombatTracker().getKiller() == null)
-					{
-						int value = StackUtils.hasBlockCount(player.level, player.blockPosition(), 24, NaturesGrace.FLOWERS);
-						if(value >= 4) player.heal((float)Math.log(7.39D + Math.pow((float)Math.sqrt(value), MathCache.LOG.get(level+1))));
-					}
+					int value = StackUtils.hasBlockCount(player.level, player.blockPosition(), (int)Math.sqrt(player.experienceLevel), NaturesGrace.FLOWERS);
+					if(value >= 4) player.heal((float)Math.log10(1+NaturesGrace.HEALING.getAsDouble(value*level)));
 				}
 			}
 			if(player.level.getGameTime() % 400 == 0)
@@ -254,6 +252,7 @@ public class EntityEvents
 					{
 						food.eat(num, num);
 						StackUtils.setInt(stack, FastFood.FASTFOOD, stored-num);
+						 
 					}
 				}
 				if(StackUtils.hasBlockCount(player.level, player.blockPosition(), 1, Ecological.STATES) > 0) {
@@ -715,7 +714,8 @@ public class EntityEvents
 		if(entity instanceof LivingEntity)
 		{
 			LivingEntity base = (LivingEntity)entity;
-			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : base.getMainHandItem());
+			ItemStack stack = event.getSource().getDirectEntity() instanceof ThrownTrident ? ((ArrowMixin)event.getSource().getDirectEntity()).getArrowItem() : base.getMainHandItem();
+			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
 			
 			int level = enchantments.getInt(UE.SWIFT_BLADE);
 			if(level > 0)
@@ -745,6 +745,12 @@ public class EntityEvents
 					event.setAmount(event.getAmount() * (float)Math.log(1.719d + Math.pow((level+0.1D)*0.5D, Math.sqrt(1.2D/val))));
 				}
 			}
+			level = enchantments.getInt(UE.BRITTLING_BLADE);
+			if(level > 0) 
+			{
+				double expo = MiscUtil.isTranscendent(base, stack, UE.BRITTLING_BLADE) ? BrittlingBlade.DURABILITY_EXPONENT.get() * BrittlingBlade.TRANSCENDED_EXPONENT_SCALING.get() : BrittlingBlade.DURABILITY_EXPONENT.get();
+				event.setAmount((float) (event.getAmount() * Math.log(Math.E + BrittlingBlade.DAMAGE_SCALING.get(level*Math.pow(1-(stack.getDamageValue()/stack.getMaxDamage()), expo)))));
+			}
 			level = MiscUtil.getEnchantedItem(UE.CLIMATE_TRANQUILITY, base).getIntValue();
 			if(level > 0)
 			{
@@ -762,7 +768,7 @@ public class EntityEvents
 			}
 			if(event.getEntity() instanceof AbstractSkeleton)
 			{
-				level = MiscUtil.getEnchantmentLevel(UE.BONE_CRUSH, base.getMainHandItem());
+				level = enchantments.getInt(UE.BONE_CRUSH);
 				if(level > 0 && BoneCrusher.isNotArmored((AbstractSkeleton)event.getEntity()))
 				{
 					event.setAmount((float)(event.getAmount() * (Math.log10(10F+BoneCrusher.BONUS_DAMAGE.getFloat(level)))));
@@ -776,12 +782,11 @@ public class EntityEvents
 			level = enchantments.getInt(UE.PERPETUAL_STRIKE);
 			if(level > 0 && !(event.getSource().getDirectEntity() instanceof ThrownTrident))
 			{
-				ItemStack held = base.getMainHandItem();
-				int count = StackUtils.getInt(held, PerpetualStrike.HIT_COUNT, 0);
-				int lastEntity = StackUtils.getInt(held, PerpetualStrike.HIT_ID, 0);
-				int mercy = StackUtils.getInt(held, "mercy", PerpetualStrike.TRANSCENDED_MERCY.get());
+				int count = StackUtils.getInt(stack, PerpetualStrike.HIT_COUNT, 0);
+				int lastEntity = StackUtils.getInt(stack, PerpetualStrike.HIT_ID, 0);
+				int mercy = StackUtils.getInt(stack, "mercy", PerpetualStrike.TRANSCENDED_MERCY.get());
 				int mercyReset = PerpetualStrike.TRANSCENDED_MERCY.get();
-				if(MiscUtil.isTranscendent(base, held, UE.PERPETUAL_STRIKE))
+				if(MiscUtil.isTranscendent(base, stack, UE.PERPETUAL_STRIKE))
 				{
 					if(lastEntity != target.getId())
 					{
@@ -795,20 +800,20 @@ public class EntityEvents
 					{
 						mercy = mercyReset;
 					}
-					StackUtils.setInt(held, "mercy", mercy);
+					StackUtils.setInt(stack, "mercy", mercy);
 				}
 				else if(lastEntity != target.getId())
 				{
 					count = 0;
 				}
-				StackUtils.setInt(held, PerpetualStrike.HIT_COUNT, count+1);
+				StackUtils.setInt(stack, PerpetualStrike.HIT_COUNT, count+1);
 				if(rand.nextInt(100) <= count) {
 					target.addEffect(new MobEffectInstance(UE.THROMBOSIS, 100*level, level-1));
 				}
 				double damage = target.getHealth() * (Math.pow((count * PerpetualStrike.PER_HIT.get() * PerpetualStrike.PER_HIT_LEVEL.get())+1, 0.25)/(100*MiscUtil.getAttackSpeed(base, 1D)));
 				double multiplier = PerpetualStrike.SCALING_STATE.get() ? 1 + Math.pow(count * PerpetualStrike.MULTIPLIER.get(), 2)/20 : Math.log10(10+damage*count*PerpetualStrike.MULTIPLIER.get());
 				event.setAmount((float)((event.getAmount()+damage)*multiplier));
-				StackUtils.setInt(held, PerpetualStrike.HIT_ID, target.getId());
+				StackUtils.setInt(stack, PerpetualStrike.HIT_ID, target.getId());
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ENDER_EYES, target.getItemBySlot(EquipmentSlot.HEAD));
 			if(level > 0 && EnderEyes.AFFECTED_ENTITIES.contains(base.getType()) && MiscUtil.isTranscendent(target, target.getItemBySlot(EquipmentSlot.HEAD), UE.ENDER_EYES) && rand.nextDouble() < EnderEyes.TRANSCENDED_CHANCE.get()) {
@@ -1061,7 +1066,8 @@ public class EntityEvents
 			}
 			else
 			{
-				int maxLevel = MiscUtil.getCombinedEnchantmentLevel(UE.DEATHS_ODIUM, event.getEntity());
+				LivingEntity ent = event.getEntity();
+				int maxLevel = MiscUtil.getCombinedEnchantmentLevel(UE.DEATHS_ODIUM, ent);
 				if(maxLevel > 0)
 				{
 					int lowest = Integer.MAX_VALUE;
@@ -1069,7 +1075,7 @@ public class EntityEvents
 					int max = maxLevel+10;
 					for(EquipmentSlot slot : EquipmentSlot.values())
 					{
-						ItemStack stack = event.getEntity().getItemBySlot(slot);
+						ItemStack stack = ent.getItemBySlot(slot);
 						if(MiscUtil.getEnchantmentLevel(UE.DEATHS_ODIUM, stack) > 0)
 						{
 							int value = StackUtils.getInt(stack, DeathsOdium.CURSE_COUNTER, 0);
@@ -1083,9 +1089,9 @@ public class EntityEvents
 						}
 					}
 					if(lowestSlot != null) {
-						ItemStack stack = event.getEntity().getItemBySlot(lowestSlot);
+						ItemStack stack = ent.getItemBySlot(lowestSlot);
 						StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
-						StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(event.getEntity().getMaxHealth()) * 0.3F * rand.nextFloat()));
+						StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(ent.getMaxHealth()) * 0.3F * rand.nextFloat()));
 					}
 					nbt.putInt(DeathsOdium.CURSE_STORAGE, (nbt.getInt(DeathsOdium.CURSE_STORAGE)+1));
 				}

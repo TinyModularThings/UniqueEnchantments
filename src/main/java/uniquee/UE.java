@@ -103,18 +103,19 @@ import uniquee.handler.potion.Thrombosis;
 @Mod("uniquee")
 public class UE extends BaseUEMod
 {
-	public static Enchantment BERSERKER;
 	public static Enchantment ADV_SHARPNESS;
 	public static Enchantment ADV_SMITE;
 	public static Enchantment ADV_BANE_OF_ARTHROPODS;
-	public static Enchantment VITAE;
-	public static Enchantment SWIFT;
-	public static Enchantment SAGES_BLESSING;
+	public static Enchantment BERSERKER;
+	public static Enchantment BONE_CRUSH;
+	public static Enchantment BRITTLING_BLADE;
 	public static Enchantment ENDER_EYES;
 	public static Enchantment FOCUS_IMPACT;
-	public static Enchantment BONE_CRUSH;
 	public static Enchantment RANGE;
+	public static Enchantment SAGES_BLESSING;
+	public static Enchantment SWIFT;
 	public static Enchantment TREASURERS_EYES;
+	public static Enchantment VITAE;
 	
 	//Complex
 	public static Enchantment SWIFT_BLADE;

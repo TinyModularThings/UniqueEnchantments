@@ -1,0 +1,20 @@
+{
+    "type": "uniqueapex:fusion",
+    "ingredients": [
+        {
+            "input": { "item": "minecraft:prismarine_shard" },
+            "amount": 256
+        },
+        {
+            "input": { "item": "minecraft:prismarine_crystals" },
+            "amount": 64
+        }
+    ],
+    "enchantments": [
+        { "type": "minecraft:sharpness", "level": 1 }
+    ],
+	"lock": false,
+	"max": 10,
+    "output": "minecraft:impaling",
+    "output_mode": "average" 
+}

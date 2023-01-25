@@ -27,6 +27,7 @@ import uniqueapex.enchantments.simple.SecondLife;
 import uniqueapex.enchantments.unique.AeonsFragment;
 import uniqueapex.enchantments.unique.AeonsSoul;
 import uniqueapex.enchantments.unique.GaiasFragment;
+import uniqueapex.enchantments.unique.HarbingersOdium;
 import uniqueapex.handler.ApexHandler;
 import uniqueapex.handler.FusionHandler;
 import uniqueapex.handler.recipe.fusion.FusionRecipe;
@@ -64,6 +65,7 @@ public class UEApex extends BaseUEMod
 	public static Enchantment AEONS_FRAGMENT;
 	public static Enchantment AEONS_SOUL;
 	public static Enchantment GAIAS_FRAGMENT;
+	public static Enchantment HARBINGERS_ODIUM;
 	
 	public static final Object2FloatMap<Enchantment> UPGRADE_MULTIPLIERS = new Object2FloatOpenHashMap<>();
 	public static ConfigValue<List<? extends String>> ENCHANTMENT_UPGRADE_CONFIGS;
@@ -199,5 +201,6 @@ public class UEApex extends BaseUEMod
 		AEONS_FRAGMENT = register(new AeonsFragment());
 		AEONS_SOUL = register(new AeonsSoul());
 		GAIAS_FRAGMENT = register(new GaiasFragment());
+		HARBINGERS_ODIUM = register(new HarbingersOdium());
 	}
 }

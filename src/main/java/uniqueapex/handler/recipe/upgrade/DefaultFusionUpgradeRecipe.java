@@ -7,7 +7,7 @@ public class DefaultFusionUpgradeRecipe extends FusionUpgradeRecipe
 {
 	public DefaultFusionUpgradeRecipe(Enchantment enchantment)
 	{
-		super(null, Object2IntMaps.emptyMap(), enchantment, 300, 2, 10);
+		super(null, Object2IntMaps.emptyMap(), enchantment, 300, 4, 10);
 	}
 	
 }

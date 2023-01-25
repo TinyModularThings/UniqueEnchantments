@@ -517,7 +517,9 @@ public class UtilsHandler
 			{
 				int duration = (int)(Ambrosia.BASE_DURATION.get() + (Math.log(MathCache.POW5.get(1 + player.experienceLevel * level)) * Ambrosia.DURATION_MULTIPLIER.get()));
 				player.getFoodData().eat(2000, 0);
-				player.setHealth(player.getMaxHealth());
+				if(!player.getCombatTracker().isInCombat() && Ambrosia.HEALING.get()) {
+					player.setHealth(player.getMaxHealth());
+				}
 				player.addEffect(new MobEffectInstance(UEUtils.SATURATION, duration, Math.min(20, level)));
 			}
 		}

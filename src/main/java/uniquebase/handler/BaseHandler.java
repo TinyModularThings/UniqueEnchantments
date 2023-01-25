@@ -23,6 +23,7 @@ import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
@@ -64,6 +65,7 @@ import uniquebase.gui.EnchantmentGui;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.Triple;
+import uniquebase.utils.mixin.common.entity.ArrowMixin;
 
 public class BaseHandler
 {
@@ -115,33 +117,34 @@ public class BaseHandler
 	public void onProjectileImpact(ProjectileImpactEvent event) {
 		if(event.getEntity() instanceof AbstractArrow) {
 			Entity e = event.getProjectile().getOwner();
-			if(e == null) return;
-			ItemStack stack = ((LivingEntity)e).getMainHandItem();
-			if(stack.getItem() instanceof BowItem) return;
-			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
-			AbstractArrow ent = (AbstractArrow)event.getEntity();
-			Vec3 temp = event.getRayTraceResult().getLocation();
-			int level = enchantments.getInt(Enchantments.POWER_ARROWS);
-			if(level > 0) {
-				ent.setBaseDamage(ent.getBaseDamage() + 0.5 * level + 0.5);
-			}
-			int flame = enchantments.getInt(Enchantments.FLAMING_ARROWS);
-			int punch = enchantments.getInt(Enchantments.PUNCH_ARROWS);
-			List<LivingEntity> list = flame > 0 || punch > 0 ? event.getEntity().level.getEntitiesOfClass(LivingEntity.class, new AABB(new BlockPos(temp.x, temp.y, temp.z))) : Collections.emptyList();
-			if(flame > 0) {
-				int time = 100*flame;
-				for(LivingEntity entry : list) {
-					entry.setSecondsOnFire(time);
-		        }
-			}
-			if(punch > 0) {
-				Vec3 vec = ent.position().subtract(event.getRayTraceResult().getLocation());
-				for(LivingEntity entry : list) {
-					entry.knockback(punch, vec.x(), vec.z());
+			if(e instanceof LivingEntity ent) {
+				ItemStack stack = event.getProjectile() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : ent.getMainHandItem();
+				if(stack.getItem() instanceof BowItem) return;
+				
+				Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
+				AbstractArrow pent = (AbstractArrow)event.getEntity();
+				Vec3 temp = event.getRayTraceResult().getLocation();
+				int level = enchantments.getInt(Enchantments.POWER_ARROWS);
+				if(level > 0) {
+					pent.setBaseDamage(pent.getBaseDamage() + 0.5 * level + 0.5);
+				}
+				int flame = enchantments.getInt(Enchantments.FLAMING_ARROWS);
+				int punch = enchantments.getInt(Enchantments.PUNCH_ARROWS);
+				List<LivingEntity> list = flame > 0 || punch > 0 ? event.getEntity().level.getEntitiesOfClass(LivingEntity.class, new AABB(new BlockPos(temp.x, temp.y, temp.z))) : Collections.emptyList();
+				if(flame > 0) {
+					int time = 5*flame;
+					for(LivingEntity entry : list) {
+						entry.setSecondsOnFire(time);
+			        }
+				}
+				if(punch > 0) {
+					Vec3 vec = pent.position().subtract(event.getRayTraceResult().getLocation());
+					for(LivingEntity entry : list) {
+						entry.knockback(punch, vec.x(), vec.z());
+					}
 				}
 			}
 		}
-		
 	}
 
 	@SubscribeEvent
@@ -162,7 +165,7 @@ public class BaseHandler
 			LivingEntity source = (LivingEntity)ent;
 			int level = MiscUtil.getEnchantmentLevel(Enchantments.IMPALING, source.getMainHandItem().isEmpty() ? source.getOffhandItem() : source.getMainHandItem());
 			if(level > 0) {
-				event.setAmount(event.getAmount()+2.5f*level);
+				event.setAmount(event.getAmount()+1.5f*(target.fireImmune() ? level*2 : level));
 			}
 		}
 	}
