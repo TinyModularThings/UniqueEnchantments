@@ -124,6 +124,9 @@ public class UEApex extends BaseUEMod
 		registerPattern("uniqueapex", "aeons_fragment_small", "ueansfrgmntsmll", Rarity.RARE);
 		registerPattern("uniqueapex", "aeons_fragment_small_color", "ueansfrgmntsmllclr", Rarity.EPIC);
 
+		registerPattern("uniqueapex", "aeons_soul_small", "ueansslsmll", Rarity.RARE);
+		registerPattern("uniqueapex", "aeons_soul_small_color", "ueansslsmllclr", Rarity.EPIC);
+
 		registerPattern("uniqueapex", "blessed_blade_large", "ueablssdbldlrg", Rarity.RARE);
 		registerPattern("uniqueapex", "blessed_blade_large_color", "ueablssdbldlrgclr", Rarity.EPIC);
 
@@ -144,6 +147,9 @@ public class UEApex extends BaseUEMod
 
 		registerPattern("uniqueapex", "pickaxe_404", "ueapckx404", Rarity.RARE);
 		registerPattern("uniqueapex", "pickaxe_404_color", "ueapckx404clr", Rarity.EPIC);
+
+		registerPattern("uniqueapex", "sages_fragment", "ueasgsfrgmnt", Rarity.RARE);
+		registerPattern("uniqueapex", "sages_fragment_color", "ueasgsfrgmntclr", Rarity.EPIC);
 
 		registerPattern("uniqueapex", "second_life", "ueascndlf", Rarity.RARE);
 		registerPattern("uniqueapex", "second_life_color", "ueascndlfclr", Rarity.EPIC);

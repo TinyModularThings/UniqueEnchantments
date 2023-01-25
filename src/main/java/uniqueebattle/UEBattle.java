@@ -164,7 +164,10 @@ public class UEBattle extends BaseUEMod
 
 		registerPattern("uniquebattle", "lunatic_despair", "ueblntcdspr", Rarity.RARE);
 		registerPattern("uniquebattle", "lunatic_despair_color", "ueblntcdsprclr", Rarity.EPIC);
-
+		
+		registerPattern("unqiuebattle", "sages_grace", "uebsgsgrc", Rarity.RARE);
+		registerPattern("unqiuebattle", "sages_grace_color", "uebsgsgrcclr", Rarity.EPIC);
+		
 		registerPattern("uniquebattle", "snare_border", "uebsnrbrdr", Rarity.RARE);
 		registerPattern("uniquebattle", "snare_border_color", "uebsnrbrdrclr", Rarity.EPIC);
 

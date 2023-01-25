@@ -142,6 +142,9 @@ public class UEUtils extends BaseUEMod
 
 		registerPattern("uniqueutil", "alchemists_mending_small", "ueulchmstsmndngsmll", Rarity.RARE);
 		registerPattern("uniqueutil", "alchemists_mending_small_color", "ueulchmstsmndngsmllclr", Rarity.EPIC);
+		
+		registerPattern("uniqueutil", "alchemists_mending_part", "ueulchmstsmndngprt", Rarity.RARE);
+		registerPattern("uniqueutil", "alchemists_mending_part_color", "ueulchmstsmndngsprtclr", Rarity.EPIC);
 
 		registerPattern("uniqueutil", "ambrosia", "ueumbrs", Rarity.RARE);
 		registerPattern("uniqueutil", "ambrosia_color", "ueumbrsclr", Rarity.EPIC);

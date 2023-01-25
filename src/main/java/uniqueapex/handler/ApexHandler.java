@@ -228,7 +228,7 @@ public class ApexHandler
 					attri.removeModifier(HarbingersOdium.DEBUFF_UUID);
 				}
 				double value = Math.min(HarbingersOdium.VALUE_MODIFIER.get(event.getAmount()*(1+MiscUtil.getItemCurseLevel(stack))), Math.sqrt(HarbingersOdium.VALUE_CAP_SCALING.get(level)));
-				attri.addPermanentModifier(new AttributeModifier(HarbingersOdium.DEBUFF_UUID, "Harbingers Odium Health loss", amount - value, Operation.ADDITION));
+				attri.addTransientModifier(new AttributeModifier(HarbingersOdium.DEBUFF_UUID, "Harbingers Odium Health loss", amount - value, Operation.ADDITION));
 				ent.heal((float) value);
 				if(ent instanceof Player player) {
 					player.getFoodData().eat((int)value, (float)value);

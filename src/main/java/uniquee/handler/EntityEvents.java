@@ -1165,7 +1165,11 @@ public class EntityEvents
 		if(event.getItem().getItem() == Items.COOKIE && MiscUtil.getEnchantmentLevel(UE.DEATHS_ODIUM, event.getItem()) > 0)
 		{
 			MiscUtil.getPersistentData(event.getEntity()).putBoolean(DeathsOdium.CURSE_RESET, true);
-			event.getEntity().kill();
+			
+			if(!event.getEntity().hurt(UE.COOKIE, Integer.MAX_VALUE/2)) 
+			{
+				event.getEntity().kill();
+			}
 		}
 	}
 	

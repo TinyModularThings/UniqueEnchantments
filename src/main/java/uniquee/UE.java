@@ -18,6 +18,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -157,6 +158,7 @@ public class UE extends BaseUEMod
 
 	public static ForgeConfigSpec CONFIG;
 	
+	public static final DamageSource COOKIE = (new DamageSource("cookie")).bypassArmor().bypassInvul().bypassEnchantments();
 
 	public static final SoundEvent ENDER_LIBRARIAN_SOUND = new SoundEvent(new ResourceLocation("uniquee", "ender_librarian"));
 	public static final SoundEvent GRIMOIRE_SOUND = new SoundEvent(new ResourceLocation("uniquee", "grimoire"));
@@ -243,7 +245,7 @@ public class UE extends BaseUEMod
 
 		registerPattern("uniquee", "alchemists_grace_small", "ueelchmstsgrcsmll", Rarity.RARE);
 		registerPattern("uniquee", "alchemists_grace_small_color", "ueelchmstsgrcsmllclr", Rarity.EPIC);
-
+		
 		registerPattern("uniquee", "ameliorated_bane_of_arthropods", "ueemlrtdbnfrthrpds", Rarity.RARE);
 		registerPattern("uniquee", "ameliorated_bane_of_arthropods_color", "ueemlrtdbnfrthrpdsclr", Rarity.EPIC);
 
@@ -264,6 +266,9 @@ public class UE extends BaseUEMod
 
 		registerPattern("uniquee", "bone_crusher", "ueebncrshr", Rarity.RARE);
 		registerPattern("uniquee", "bone_crusher_color", "ueebncrshrclr", Rarity.EPIC);
+		
+		registerPattern("uniquee", "brittling_blade", "ueebrttlngbld", Rarity.RARE);
+		registerPattern("uniquee", "brittling_blade_color", "ueebrttlngbldclr", Rarity.EPIC);
 
 		registerPattern("uniquee", "climate_tranquility", "ueeclmttrnqlty", Rarity.RARE);
 		registerPattern("uniquee", "climate_tranquility_color", "ueeclmttrnqltyclr", Rarity.EPIC);
@@ -279,6 +284,9 @@ public class UE extends BaseUEMod
 
 		registerPattern("uniquee", "ecological", "ueeclgcl", Rarity.RARE);
 		registerPattern("uniquee", "ecological_color", "ueeclgclclr", Rarity.EPIC);
+		
+		registerPattern("uniquee", "ecological_tree", "ueeclgcltr", Rarity.RARE);
+		registerPattern("uniquee", "ecological_tree_color", "ueeclgcltrclr", Rarity.EPIC);
 
 		registerPattern("uniquee", "ender_eyes_left", "ueendryslft", Rarity.RARE);
 		registerPattern("uniquee", "ender_eyes_left_color", "ueendryslftclr", Rarity.EPIC);
@@ -297,6 +305,9 @@ public class UE extends BaseUEMod
 
 		registerPattern("uniquee", "ender_mending_small", "ueendrmndngsmll", Rarity.RARE);
 		registerPattern("uniquee", "ender_mending_small_color", "ueendrmndngsmllclr", Rarity.EPIC);
+		
+		registerPattern("uniquee", "ender_mending_part", "ueendrmndngprt", Rarity.RARE);
+		registerPattern("uniquee", "ender_mending_part_color", "ueendrmndngprtclr", Rarity.EPIC);
 
 		registerPattern("uniquee", "endest_reap", "ueendstrp", Rarity.RARE);
 		registerPattern("uniquee", "endest_reap_color", "ueendstrpclr", Rarity.EPIC);
@@ -336,6 +347,9 @@ public class UE extends BaseUEMod
 
 		registerPattern("uniquee", "pheonixs_blessing", "ueephnxsblssng", Rarity.RARE);
 		registerPattern("uniquee", "pheonixs_blessing_color", "ueephnxsblssngclr", Rarity.EPIC);
+
+		registerPattern("uniquee", "pheonixs_blessing_large", "ueephnxsblssnglrg", Rarity.RARE);
+		registerPattern("uniquee", "pheonixs_blessing_large_color", "ueephnxsblssnglrgclr", Rarity.EPIC);
 
 		registerPattern("uniquee", "range_large_vertical", "ueernglrgvrtcl", Rarity.RARE);
 		registerPattern("uniquee", "range_large_vertical_color", "ueernglrgvrtclclr", Rarity.EPIC);
@@ -430,6 +444,15 @@ public class UE extends BaseUEMod
 
 		registerPattern("uniquebase", "flame", "mcflm", Rarity.RARE);
 		registerPattern("uniquebase", "flame_color", "mcflmclr", Rarity.EPIC);
+		
+		registerPattern("uniquebase", "flame_border", "mcflmbrdr", Rarity.RARE);
+		registerPattern("uniquebase", "flame_border_color", "mcflmbrdrclr", Rarity.EPIC);
+		
+		registerPattern("uniquebase", "flame_bottom", "mcflmbttm", Rarity.RARE);
+		registerPattern("uniquebase", "flame_bottom_color", "mcflmbttmclr", Rarity.EPIC);
+		
+		registerPattern("uniquebase", "flame_top", "mcflmtp", Rarity.RARE);
+		registerPattern("uniquebase", "flame_top_color", "mcflmtpclr", Rarity.EPIC);
 
 		registerPattern("uniquebase", "fortune_large", "mcfrtnlrg", Rarity.RARE);
 		registerPattern("uniquebase", "fortune_large_color", "mcfrtnlrgclr", Rarity.EPIC);
@@ -488,6 +511,9 @@ public class UE extends BaseUEMod
 		registerPattern("uniquebase", "mending_border", "mcmndngbrdr", Rarity.RARE);
 		registerPattern("uniquebase", "mending_border_color", "mcmndngbrdrclr", Rarity.EPIC);
 
+		registerPattern("uniquebase", "mending_part", "mcmndngprt", Rarity.RARE);
+		registerPattern("uniquebase", "mending_part_color", "mcmndngprtclr", Rarity.EPIC);
+		
 		registerPattern("uniquebase", "mending_small", "mcmndngsmll", Rarity.RARE);
 		registerPattern("uniquebase", "mending_small_color", "mcmndngsmllclr", Rarity.EPIC);
 
@@ -526,6 +552,12 @@ public class UE extends BaseUEMod
 
 		registerPattern("uniquebase", "riptide", "mcrptd", Rarity.RARE);
 		registerPattern("uniquebase", "riptide_color", "mcrptdclr", Rarity.EPIC);
+		
+		registerPattern("uniquebase", "riptide_bubble_border_blue", "mcrptdbbblbrdrbl", Rarity.RARE);
+		registerPattern("uniquebase", "riptide_bubble_border_blue_color", "mcrptdbbblbrdrblclr", Rarity.EPIC);
+		
+		registerPattern("uniquebase", "riptide_bubble_border_grey", "mcrptdbbblbrdrgry", Rarity.RARE);
+		registerPattern("uniquebase", "riptide_bubble_border_grey_color", "mcrptdbbblbrdrgryclr", Rarity.EPIC);
 
 		registerPattern("uniquebase", "sharpness_large", "mcshrpnsslrg", Rarity.RARE);
 		registerPattern("uniquebase", "sharpness_large_color", "mcshrpnsslrgclr", Rarity.EPIC);
@@ -550,6 +582,9 @@ public class UE extends BaseUEMod
 
 		registerPattern("uniquebase", "thorns", "mcthrns", Rarity.RARE);
 		registerPattern("uniquebase", "thorns_color", "mcthrnsclr", Rarity.EPIC);
+		
+		registerPattern("uniquebase", "thorns_border", "mcthrnsbrdr", Rarity.RARE);
+		registerPattern("uniquebase", "thorns_color_border", "mcthrnsbrdrclr", Rarity.EPIC);
 
 		registerPattern("uniquebase", "unbreaking_large", "mcnbrknglrg", Rarity.RARE);
 		registerPattern("uniquebase", "unbreaking_large_color", "mcnbrknglrgclr", Rarity.EPIC);

@@ -3,7 +3,7 @@
 	"enchantment.uniquebattle.ares_fragment.desc": "Entweder wird dein Schaden erhoeht oder reduziert. Chance skaliert mit Spieler Erfahrung",
 	"enchantment.uniquebattle.ares_fragment.icon": "\t",
 	"enchantment.uniquebattle.ares_grace": "Grazie des Ares",
-	"enchantment.uniquebattle.ares_grace.desc": " Erhoeht Schaden gegen geruestete Entitaeten",
+	"enchantment.uniquebattle.ares_grace.desc": " Erhoeht Schaden gegen geruestete Entitaeten, verbraucht dafuer Haltbarkeit",
 	"enchantment.uniquebattle.ares_grace.icon": "\n",
 	"enchantment.uniquebattle.artemis_soul": "Seele der Artemis",
 	"enchantment.uniquebattle.artemis_soul.desc": "Shift-Rechtsklick einen Amboss mit ender-verwandten Gegenstaenden um sie zu speichern. Toetest du eine Entitaet, wird die Seele im Gegenstand gespeichert. Seelen verbessern die Beute. Der Gegenstand ist jedoch hungrig nach Ender oder Seelen",
