@@ -33,7 +33,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -1117,14 +1116,7 @@ public class UtilsHandler
 	
 	private MobEffect getRandomNegativeEffect(RandomSource rand)
 	{
-		List<MobEffect> effects = new ObjectArrayList<>();
-		for(MobEffect effect : ForgeRegistries.MOB_EFFECTS)
-		{
-			if(effect.getCategory() == MobEffectCategory.HARMFUL)
-			{
-				effects.add(effect);
-			}
-		}
+		List<MobEffect> effects = UEUtils.NEGATIVE_EFFECTS;
 		return effects.isEmpty() ? null : effects.get(rand.nextInt(effects.size()));
 	}
 }

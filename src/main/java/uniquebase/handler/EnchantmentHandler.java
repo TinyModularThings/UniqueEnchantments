@@ -43,15 +43,18 @@ import net.minecraft.world.item.DyeableArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.common.TierSortingRegistry;
+import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -133,6 +136,25 @@ public class EnchantmentHandler
 				else if(!isPressed && toggle) {
 					toggle = false;
 				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onAnvilRepair(AnvilUpdateEvent repair)
+	{
+		ItemStack left = repair.getLeft();
+		ItemStack right = repair.getRight();
+		if((right.is(Items.TUBE_CORAL_BLOCK) && left.getItem() instanceof ShieldItem) || (right.is(Items.BRAIN_CORAL_BLOCK) && EnchantmentCategory.ARMOR.canEnchant(left.getItem())) || (right.is(Items.BUBBLE_CORAL_BLOCK) && (EnchantmentCategory.BOW.canEnchant(left.getItem()) || EnchantmentCategory.CROSSBOW.canEnchant(left.getItem()))) || (right.is(Items.FIRE_CORAL_BLOCK) && EnchantmentCategory.WEAPON.canEnchant(left.getItem())) || (right.is(Items.HORN_CORAL_BLOCK) && EnchantmentCategory.DIGGER.canEnchant(left.getItem())))
+		{
+			ItemStack copy = left.copy();
+			int toConsume = Math.min(copy.getBaseRepairCost(), right.getCount());
+			if(toConsume > 0)
+			{
+				copy.setRepairCost(copy.getBaseRepairCost()-toConsume);
+				repair.setOutput(copy);
+				repair.setCost(5);
+				repair.setMaterialCost(toConsume);
 			}
 		}
 	}

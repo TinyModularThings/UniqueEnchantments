@@ -9,6 +9,7 @@ import uniquee.UE;
 
 public class EnderMarksmen extends UniqueEnchantment
 {
+	public static final String DID_ALREADY_HIT = "marksmen_hit";
 	public static final DoubleStat EXTRA_DURABILITY = new DoubleStat(2D, "extra_durability");
 	
 	public EnderMarksmen()

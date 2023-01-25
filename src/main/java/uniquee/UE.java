@@ -1,6 +1,5 @@
 package uniquee;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Map.Entry;
 
@@ -15,6 +14,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -664,7 +664,7 @@ public class UE extends BaseUEMod
     
     public void onCommandLoad(RegisterCommandsEvent event)
     {
-    	event.getDispatcher().register(Commands.literal("ue").requires(T -> T.hasPermission(3)).then(Commands.literal("remove_deaths_odium").then(Commands.argument("player", EntityArgument.player())).executes(this::removeCurse)));
+    	event.getDispatcher().register(Commands.literal("ue").requires(T -> T.hasPermission(3)).then(Commands.literal("remove_deaths_odium").then(Commands.argument("player", EntityArgument.players()).executes(this::removeCurse))));
     }
     
     private int removeCurse(CommandContext<CommandSourceStack> command) throws CommandSyntaxException
@@ -682,6 +682,7 @@ public class UE extends BaseUEMod
 			}
 		}
 		player.getAttribute(Attributes.MAX_HEALTH).removeModifier(DeathsOdium.REMOVE_UUID);
+		command.getSource().sendSuccess(Component.translatable("unique.curse.removal"), true);
     	return 0;
     }
     

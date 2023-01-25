@@ -169,9 +169,7 @@ public class ApexHandler
 				if(tag.getLong("pos") == targetPos && dim.equals(tag.getString("dim")))
 				{
 					entries.remove(i--);
-					//TODO Translate and come up with a better name.
-					//Note this doesn't stop chunkloading instantly but stops the refreshing. So they gain 20 mins for free still.
-					player.sendSystemMessage(Component.literal("Stopped fueling Chunk"));
+					player.sendSystemMessage(Component.translatable("unique.apex.chunkload.enable"));
 					return;
 				}
 			}
@@ -180,9 +178,7 @@ public class ApexHandler
 			newEntry.putString("dim", dim);
 			newEntry.putInt("level", level);
 			entries.add(newEntry);
-			//TODO Translate and come up with a better name.
-			//Note this doesn't instantly load chunks it still has to await the next cycle. So if you do accidently stuff you won't lose XP xD
-			player.sendSystemMessage(Component.literal("Started fueling Chunk"));
+			player.sendSystemMessage(Component.translatable("unique.apex.chunkload.disable"));
 		}
 	}
 	

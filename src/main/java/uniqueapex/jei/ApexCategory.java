@@ -116,7 +116,12 @@ public class ApexCategory implements IRecipeCategory<FusionRecipe>
 		{
 			layout.addSlot(RecipeIngredientRole.INPUT, 105 + ((i % 3) * 18), 10 + ((i / 3) * 18)).addItemStacks(list.get(i+9));
 		}
-		layout.addSlot(RecipeIngredientRole.OUTPUT, 72, 28).addItemStack(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(recipe.getOutput(), 1)));
+		List<ItemStack> outputs = new ObjectArrayList<>();
+		for(int i = 1;i<3;i++)
+		{
+			outputs.add(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(recipe.getOutput(), i)));
+		}
+		layout.addSlot(RecipeIngredientRole.OUTPUT, 72, 28).addItemStacks(outputs);
 	}
 	
 	private ItemStack copyWithSize(ItemStack stack, int size)

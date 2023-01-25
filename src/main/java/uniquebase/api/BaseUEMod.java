@@ -33,6 +33,7 @@ import net.minecraftforge.registries.RegisterEvent;
 public abstract class BaseUEMod
 {
 	private static final ThreadLocal<Boolean> CHECKING = ThreadLocal.withInitial(() -> false);
+	private static final Object SYNC_LOCK = new Object();
 	public static final EnchantmentCategory ALL_TYPES = EnchantmentCategory.create("ANY", BaseUEMod::canEnchant);
 	static final List<BaseUEMod> ALL_MODS = ObjectLists.synchronize(new ObjectArrayList<>());
 	List<IToggleEnchantment> enchantments = new ObjectArrayList<>();
@@ -78,9 +79,12 @@ public abstract class BaseUEMod
 		{
 			upgrades.get(i).register();
 		}
-		for(IToggleEnchantment ench : enchantments)
+		synchronized(SYNC_LOCK)
 		{
-			ForgeRegistries.ENCHANTMENTS.register(ench.getId(), (Enchantment)ench);
+			for(IToggleEnchantment ench : enchantments)
+			{
+				ForgeRegistries.ENCHANTMENTS.register(ench.getId(), (Enchantment)ench);
+			}
 		}
 		for(int i = 0,m=enchantments.size();i<m;i++)
 		{

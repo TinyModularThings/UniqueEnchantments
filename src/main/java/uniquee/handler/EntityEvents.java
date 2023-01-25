@@ -1273,12 +1273,12 @@ public class EntityEvents
 		}
 		Entity shooter = arrow.getOwner();
 		AlchemistsGrace.applyToEntity(shooter, false, 1.5F);
-		if(shooter instanceof Player)
+		if(shooter instanceof Player player)
 		{
-			Player player = (Player)shooter;
 			Object2IntMap.Entry<EquipmentSlot> slot = MiscUtil.getEnchantedItem(UE.ENDERMARKSMEN, player);
-			if(slot.getIntValue() > 0)
+			if(slot.getIntValue() > 0 && !arrow.getPersistentData().contains(EnderMarksmen.DID_ALREADY_HIT))
 			{
+				arrow.getPersistentData().putBoolean(EnderMarksmen.DID_ALREADY_HIT, true);
 				int level = slot.getIntValue();
 				ItemStack stack = player.getItemBySlot(slot.getKey());
 				arrow.pickup = Pickup.DISALLOWED;

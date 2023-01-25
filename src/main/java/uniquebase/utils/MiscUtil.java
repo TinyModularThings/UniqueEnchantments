@@ -546,7 +546,7 @@ public class MiscUtil
 			result.append(" ");
 		}
 		result.append(textComponent);
-		if(ench instanceof IToggleEnchantment toggle && !toggle.isEnabled()) result.append(Component.literal(" (Disabled)"));//TODO add translation support.
+		if(ench instanceof IToggleEnchantment toggle && !toggle.isEnabled()) result.append(Component.translatable("unique.base.enchantment.disabled"));
 		return result;
 	}
 	

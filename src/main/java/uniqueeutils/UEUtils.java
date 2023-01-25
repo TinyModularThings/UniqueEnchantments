@@ -1,8 +1,12 @@
 package uniqueeutils;
 
+import java.util.List;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,6 +16,7 @@ import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -81,6 +86,8 @@ public class UEUtils extends BaseUEMod
 	public static final EnchantedUpgrade FAMINES_UPGRADE = new FaminesUpgrade();
 	public static final EnchantedUpgrade PHANES_UPGRADE = new PhanesUpgrade();
 	
+	public static final List<MobEffect> NEGATIVE_EFFECTS = new ObjectArrayList<>();
+	
 	public static IKeyBind BOOST_KEY = IKeyBind.empty();
 	public static BooleanValue RENDER_SHIELD_HUD;
 	
@@ -90,6 +97,7 @@ public class UEUtils extends BaseUEMod
 		BOOST_KEY = UEBase.PROXY.registerKey("Pegasus Soul Key", 341);
 		SATURATION = new SaturationEffect();
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerContent);
+		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::postInit);
 		init(FMLJavaModLoadingContext.get().getModEventBus(), "UEUtils.toml");
 		MinecraftForge.EVENT_BUS.register(UtilsHandler.INSTANCE);
 		BaseHandler.INSTANCE.registerAnvilHelper(THICK_PICK, ThickPick.VALIDATOR, ThickPick.TAG);
@@ -122,6 +130,17 @@ public class UEUtils extends BaseUEMod
 		{
 			event.getForgeRegistry().register("resonance_found", RESONANCE_SOUND);
 			event.getForgeRegistry().register("alchemist_blessing_transmutate", ALCHEMIST_BLESSING_SOUND);
+		}
+	}
+	
+	public void postInit(FMLCommonSetupEvent setup) 
+	{
+		for(MobEffect effect : ForgeRegistries.MOB_EFFECTS)
+		{
+			if(effect.getCategory() == MobEffectCategory.HARMFUL)
+			{
+				NEGATIVE_EFFECTS.add(effect);
+			}
 		}
 	}
 	
