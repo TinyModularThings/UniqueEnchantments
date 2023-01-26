@@ -29,6 +29,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -66,7 +67,12 @@ public class UEBase
 	public static IdStat<Enchantment> ENCHANTMENT_LIMIT_BLACKLIST = new IdStat<>("enchantment_limit_blacklist", "Allows to Exclude the Enchantments from the Enchantment limit. This has a Performance hit", ForgeRegistries.ENCHANTMENTS);
 	public static IntValue ENCHANTMENT_LIMIT_DEFAULT;
 	public static ConfigValue<List<? extends String>> ENCHANTMENT_LIMITS_CONFIGS;
+	public static Object2IntMap<ResourceLocation> ENCHANTMENT_PRIORITY = new Object2IntOpenHashMap<>();
+	public static ConfigValue<List<? extends String>> ENCHANTMENT_PRIORITY_CONFIGS;
+	public static BooleanValue SORT_ENCHANTMENT_TOOLTIP;
+	
 	public static IntValue VIEW_COOLDOWN;
+	public static BooleanValue HIDE_ENCHANTMENTS;
 	public static BooleanValue ENCHANTED_GLINT;
 	public static BooleanValue HIDE_CURSES;
 	public static BooleanValue SHOW_DESCRIPTION;
@@ -100,6 +106,7 @@ public class UEBase
 	
 	public UEBase()
 	{
+		boolean addonsLoaded = ModList.get().isLoaded("uniquee") || ModList.get().isLoaded("uniqueapex") || ModList.get().isLoaded("uniquebattle") || ModList.get().isLoaded("uniqueutil");
 		ENCHANTMENT_GUI = PROXY.registerKey("Enchantment Gui", 342);
 		ENCHANTMENT_ICONS = PROXY.registerKey("Enchantment Icons", 342);
 		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -130,6 +137,14 @@ public class UEBase
 		builder.pop();
 		builder.push("tooltips");
 		APPLICABLE_ICON_OVERRIDE.handleConfig(builder);
+		builder.comment("Hides Enchantments on Non Enchanted Books until Shift is held");
+		//For anyone screaming WHAT THE FUCK IS THIS... Basically UEBase alone shouldn't be so game changing so this is a compromise.
+		HIDE_ENCHANTMENTS = builder.define("hide_enchantments", addonsLoaded);
+		
+		builder.comment("Enables if Enchantment Tooltips are sorted by a Priority. This is Client only and might confuse with enchantment removing/extracting mods");
+		SORT_ENCHANTMENT_TOOLTIP = builder.define("sort_enchantment_tooltips", addonsLoaded);
+		builder.comment("Allows to sort Enchantment Entries by a desired order. Format: EnchantmentRegistryName;priority (example: minecraft:fortune;25)");
+		ENCHANTMENT_PRIORITY_CONFIGS = builder.defineList("Enchantment Tooltip Order", ObjectLists.emptyList(), T -> true);
 		builder.comment("Allows to control which Keybind Tooltips are displayed, 1 => Description, 2 => Icons, 4 => View, they can be added together if wanted.", "This won't disable functionality just hide the keybinding tooltip itself");
 		TOOLTIPS_FLAGS = builder.defineInRange("Visible Tooltips", 7, 0, 7);
 		builder.comment("Hides curses from items until shift is pressed");
@@ -237,6 +252,18 @@ public class UEBase
 			ResourceLocation item = ResourceLocation.tryParse(split[0]);
 			if(item != null) {
 				try { ENCHANTMENT_LIMITS.put(item, Integer.parseInt(split[1])); }
+				catch(Exception e) { UEBase.LOGGER.info("Failed To load: "+list.get(i)+", Error: "+e); }
+			}
+		}
+		ENCHANTMENT_PRIORITY.clear();
+		ENCHANTMENT_PRIORITY.defaultReturnValue(1);
+		list = ENCHANTMENT_PRIORITY_CONFIGS.get();
+		for(int i = 0; i < list.size(); i++) {
+			String[] split = list.get(i).split(";");
+			if(split.length != 2) continue;
+			ResourceLocation item = ResourceLocation.tryParse(split[0]);
+			if(item != null) {
+				try { ENCHANTMENT_PRIORITY.put(item, Integer.parseInt(split[1])); }
 				catch(Exception e) { UEBase.LOGGER.info("Failed To load: "+list.get(i)+", Error: "+e); }
 			}
 		}

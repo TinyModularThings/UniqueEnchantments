@@ -1,6 +1,7 @@
 package uniquebase.handler;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,6 +24,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.HoverEvent;
@@ -197,8 +199,9 @@ public class EnchantmentHandler
 	@OnlyIn(Dist.CLIENT)
 	public boolean addEnchantmentInfo(ListTag list, List<Component> tooltip, Item item)
 	{
-		if(item != Items.ENCHANTED_BOOK && !Screen.hasShiftDown())
+		if(item != Items.ENCHANTED_BOOK && !Screen.hasShiftDown() && UEBase.HIDE_ENCHANTMENTS.get())
 		{
+			tooltip.add(Component.translatable("unique.base.enchantment.listed"));
 			return true;
 		}
 		boolean hideCurses = UEBase.HIDE_CURSES.get();
@@ -210,6 +213,13 @@ public class EnchantmentHandler
 		int elements = UEBase.ICON_ROW_ELEMENTS.get();
 		int total = UEBase.ICON_ROWS.get() * elements;
 		int cycleTime = UEBase.ICON_CYCLE_TIME.get();
+		if(UEBase.SORT_ENCHANTMENT_TOOLTIP.get())
+		{
+			ListTag newList = new ListTag();
+			newList.addAll(list);
+			newList.sort(Comparator.comparingInt(this::getEnchantmentPriority).reversed().thenComparing(this::getEnchantmentId, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
+			list = newList;
+		}
 		for(int i = 0;i < list.size();++i)
 		{
 			CompoundTag compoundnbt = list.getCompound(i);
@@ -218,9 +228,26 @@ public class EnchantmentHandler
 			tooltip.add(ench.getFullname(compoundnbt.getInt("lvl")));
 			if(icons) addEnchantment(tooltip, ench, elements, total, cycleTime);
 			if(desciptions && (item == Items.ENCHANTED_BOOK || tools)) addDescriptions(tooltip, ench);
-			
 		}
 		return true;
+	}
+	
+	private String getEnchantmentId(Tag key)
+	{
+		if(key instanceof CompoundTag keyTag)
+		{
+			return keyTag.getString("id");
+		}
+		return null;
+	}
+	
+	private int getEnchantmentPriority(Tag key)
+	{
+		if(key instanceof CompoundTag keyTag)
+		{
+			return UEBase.ENCHANTMENT_PRIORITY.getInt(ResourceLocation.tryParse(keyTag.getString("id")));
+		}
+		return -1;
 	}
 	
 	@OnlyIn(Dist.CLIENT)
