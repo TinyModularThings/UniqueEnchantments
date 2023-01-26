@@ -231,7 +231,6 @@ public class ApexHandler
 				}
 			}
 		}
-		System.out.println(target.getMaxHealth());
 	}
 	
 	@SubscribeEvent

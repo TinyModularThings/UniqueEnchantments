@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "uniquebase:item/unique_banner_pattern"
+  }
+}
