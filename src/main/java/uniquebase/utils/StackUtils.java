@@ -10,7 +10,10 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
@@ -70,6 +73,14 @@ public class StackUtils
 			output.add(stack);
 			size -= stack.getCount();
 		}
+	}
+	
+	public static void addTooltip(ItemStack stack, Component s)
+	{
+		CompoundTag nbt = stack.getOrCreateTagElement("display");
+		ListTag list = nbt.getList("Lore", 8);
+		list.add(StringTag.valueOf(Component.Serializer.toJson(s)));
+		nbt.put("Lore", list);
 	}
 	
 	public static ItemStack getArrowStack(AbstractArrow arrow)

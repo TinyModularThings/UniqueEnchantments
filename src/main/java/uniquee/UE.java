@@ -552,7 +552,7 @@ public class UE extends BaseUEMod
 
 		registerPattern("uniquebase", "riptide", "mcrptd", Rarity.RARE);
 		registerPattern("uniquebase", "riptide_color", "mcrptdclr", Rarity.EPIC);
-		
+				
 		registerPattern("uniquebase", "riptide_bubble_border_blue", "mcrptdbbblbrdrbl", Rarity.RARE);
 		registerPattern("uniquebase", "riptide_bubble_border_blue_color", "mcrptdbbblbrdrblclr", Rarity.EPIC);
 		

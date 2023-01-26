@@ -34,6 +34,7 @@
 	"unique.apex.mine": "Started Mining from: [x=%s, y=%s, z=%s] to: [x=%s, y=%s, z=%s]",
 	"unique.apex.chunkload.enable": "Started fueling Chunk",
 	"unique.apex.chunkload.disable": "Stopped fueling Chunk",
+	"unique.apex.removal": "Removes Apex Limitation",
 	"item.uniqueapex.absolute_protection_large_banner_pattern": "Banner Pattern",
 	"item.uniqueapex.absolute_protection_large_banner_pattern.desc": "Absolute Protection Large",
 	"item.uniqueapex.absolute_protection_large_color_banner_pattern": "Banner Pattern",

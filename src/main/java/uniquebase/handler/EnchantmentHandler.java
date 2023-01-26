@@ -197,6 +197,10 @@ public class EnchantmentHandler
 	@OnlyIn(Dist.CLIENT)
 	public boolean addEnchantmentInfo(ListTag list, List<Component> tooltip, Item item)
 	{
+		if(item != Items.ENCHANTED_BOOK && !Screen.hasShiftDown())
+		{
+			return true;
+		}
 		boolean hideCurses = UEBase.HIDE_CURSES.get();
 		boolean icons = UEBase.ICONS.get() && UEBase.ICONS_VISIBLE.get();
 		boolean desciptions = !ModList.get().isLoaded("enchdesc") && UEBase.SHOW_DESCRIPTION.get();
