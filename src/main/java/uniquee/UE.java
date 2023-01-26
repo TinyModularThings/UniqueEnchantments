@@ -345,11 +345,11 @@ public class UE extends BaseUEMod
 		registerPattern("uniquee", "pestilences_odium", "ueepstlncsdm", Rarity.RARE);
 		registerPattern("uniquee", "pestilences_odium_color", "ueepstlncsdmclr", Rarity.EPIC);
 
-		registerPattern("uniquee", "pheonixs_blessing", "ueephnxsblssng", Rarity.RARE);
-		registerPattern("uniquee", "pheonixs_blessing_color", "ueephnxsblssngclr", Rarity.EPIC);
+		registerPattern("uniquee", "phoenixs_blessing", "ueephnxsblssng", Rarity.RARE);
+		registerPattern("uniquee", "phoenixs_blessing_color", "ueephnxsblssngclr", Rarity.EPIC);
 
-		registerPattern("uniquee", "pheonixs_blessing_large", "ueephnxsblssnglrg", Rarity.RARE);
-		registerPattern("uniquee", "pheonixs_blessing_large_color", "ueephnxsblssnglrgclr", Rarity.EPIC);
+		registerPattern("uniquee", "phoenixs_blessing_large", "ueephnxsblssnglrg", Rarity.RARE);
+		registerPattern("uniquee", "phoenixs_blessing_large_color", "ueephnxsblssnglrgclr", Rarity.EPIC);
 
 		registerPattern("uniquee", "range_large_vertical", "ueernglrgvrtcl", Rarity.RARE);
 		registerPattern("uniquee", "range_large_vertical_color", "ueernglrgvrtclclr", Rarity.EPIC);
@@ -584,7 +584,7 @@ public class UE extends BaseUEMod
 		registerPattern("uniquebase", "thorns_color", "mcthrnsclr", Rarity.EPIC);
 		
 		registerPattern("uniquebase", "thorns_border", "mcthrnsbrdr", Rarity.RARE);
-		registerPattern("uniquebase", "thorns_color_border", "mcthrnsbrdrclr", Rarity.EPIC);
+		registerPattern("uniquebase", "thorns_border_color", "mcthrnsbrdrclr", Rarity.EPIC);
 
 		registerPattern("uniquebase", "unbreaking_large", "mcnbrknglrg", Rarity.RARE);
 		registerPattern("uniquebase", "unbreaking_large_color", "mcnbrknglrgclr", Rarity.EPIC);
