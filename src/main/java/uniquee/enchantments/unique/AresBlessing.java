@@ -12,7 +12,7 @@ public class AresBlessing extends UniqueEnchantment
 	
 	public AresBlessing()
 	{
-		super(new DefaultData("ares_blessing", Rarity.VERY_RARE, 3, true, false, 28, 2, 45), EnchantmentCategory.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.CHEST});
+		super(new DefaultData("ares_blessing", Rarity.VERY_RARE, 3, true, false, 28, 2, 45).setTrancendenceLevel(500), EnchantmentCategory.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.CHEST});
 		addStats(BASE_DAMAGE);
 	}
 	

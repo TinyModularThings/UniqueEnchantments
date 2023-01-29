@@ -810,7 +810,7 @@ public class EntityEvents
 				if(rand.nextInt(100) <= count) {
 					target.addEffect(new MobEffectInstance(UE.THROMBOSIS, 100*level, level-1));
 				}
-				double damage = target.getHealth() * (Math.pow((count * PerpetualStrike.PER_HIT.get() * PerpetualStrike.PER_HIT_LEVEL.get())+1, 0.25)/(100*MiscUtil.getAttackSpeed(base, 1D)));
+				double damage = Math.pow((target.getHealth()*PerpetualStrike.PER_HIT_LEVEL.get(count))/MiscUtil.getAttackSpeed(base, 1D), 0.25);
 				double multiplier = PerpetualStrike.SCALING_STATE.get() ? 1 + Math.pow(count * PerpetualStrike.MULTIPLIER.get(), 2)/20 : Math.log10(10+damage*count*PerpetualStrike.MULTIPLIER.get());
 				event.setAmount((float)((event.getAmount()+damage)*multiplier));
 				StackUtils.setInt(stack, PerpetualStrike.HIT_ID, target.getId());
@@ -843,6 +843,11 @@ public class EntityEvents
 				float val = (float) Math.log10(1+level);
 				event.setAmount(event.getAmount() > val ? event.getAmount() - val : event.getAmount() * (1-(val/100)));
 			}
+			if(target.hasEffect(UE.RESILIENCE)) {
+				MobEffectInstance mei = target.getEffect(UE.RESILIENCE);
+				event.setAmount((float) (event.getAmount() * Math.pow(0.99, mei.getAmplifier()+1)));
+				((PotionMixin)mei).setPotionAmplifier(Math.max(mei.getAmplifier()-1, 0));
+			}
 			level = UE.DEATHS_UPGRADE.getPoints(stack);
 			if(level > 0)
 			{
@@ -857,8 +862,8 @@ public class EntityEvents
 				if(!event.getSource().isMagic())
 				{
 					event.getSource().setMagic();
-					event.setAmount((float)(event.getAmount() * (1D + Math.sqrt(SpartanWeapon.EXTRA_DAMAGE.getFloat(level)))));
 				}			
+				event.setAmount((float)(event.getAmount() * (1D + Math.sqrt(SpartanWeapon.EXTRA_DAMAGE.getFloat(level)))));
 			}
 			level = enchantments.getInt(UE.ENDEST_REAP);
 			if(level > 0)
@@ -915,18 +920,22 @@ public class EntityEvents
 		if(event.getAmount() >= event.getEntity().getHealth())
 		{
 			DamageSource source = event.getSource();
+			
 			if(!source.isMagic())
-			{
+			aresBlessingLabel: {
 				ItemStack stack = event.getEntity().getItemBySlot(EquipmentSlot.CHEST);
-				if(!MiscUtil.isTranscendent(entity, stack, UE.ARES_BLESSING))
-				{
-					if(source == DamageSource.FALL) return;
-				}
 				int level = MiscUtil.getEnchantmentLevel(UE.ARES_BLESSING, stack);
 				if(level > 0 && stack.isDamageableItem())
 				{
+					if(!MiscUtil.isTranscendent(target, stack, UE.ARES_BLESSING))
+					{
+						if(source == DamageSource.FALL) break aresBlessingLabel;
+					} else 
+					{
+						target.addEffect(new MobEffectInstance(UE.RESILIENCE, 100*level, 1));
+					}
 					float damage = event.getAmount();
-					stack.hurtAndBreak((int)(damage * AresBlessing.BASE_DAMAGE.get() / MathCache.LOG.get(level+1)), event.getEntity(), MiscUtil.get(EquipmentSlot.CHEST));
+					stack.hurtAndBreak((int)(damage * AresBlessing.BASE_DAMAGE.get() / MathCache.LOG10.get(level+1)), event.getEntity(), MiscUtil.get(EquipmentSlot.CHEST));
 					event.setCanceled(true);
 					return;
 				}	
@@ -1007,13 +1016,12 @@ public class EntityEvents
 	{
 		Entity entity = event.getSource().getEntity();
 		LivingEntity deadEntity = event.getEntity();
-		if(entity instanceof LivingEntity)
+		if(entity instanceof LivingEntity base)
 		{
-			LivingEntity base = (LivingEntity)entity;
+			ItemStack stack = event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : base.getMainHandItem();
 			int level = MiscUtil.getEnchantmentLevel(UE.WARRIORS_GRACE, base.getMainHandItem());
 			if(level > 0)
 			{
-				ItemStack stack = base.getMainHandItem();
 				int amount = Math.min(stack.getDamageValue(), Mth.ceil(Math.sqrt(event.getEntity().getMaxHealth() * level) * WarriorsGrace.DURABILITY_GAIN.get()));
 				if(amount > 0)
 				{
@@ -1037,8 +1045,8 @@ public class EntityEvents
 			}
 			if(!(deadEntity instanceof Player) && rand.nextFloat() < 0.025f) {
 				Set<Enchantment> ench = new ObjectOpenHashSet<>();
-				for (ItemStack stack : deadEntity.getAllSlots()) {
-					ench.addAll(MiscUtil.getEnchantments(stack).keySet());
+				for (ItemStack item : deadEntity.getAllSlots()) {
+					ench.addAll(MiscUtil.getEnchantments(item).keySet());
 					if(ench.size() >= 10) {
 						MiscUtil.spawnDrops(deadEntity, UE.GRIMOIRE, rand.nextInt(2));
 						break;

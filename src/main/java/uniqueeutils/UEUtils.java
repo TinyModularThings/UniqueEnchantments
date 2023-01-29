@@ -27,6 +27,7 @@ import uniquebase.api.EnchantedUpgrade;
 import uniquebase.api.IKeyBind;
 import uniquebase.handler.BaseHandler;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing;
+import uniqueeutils.enchantments.complex.AlchemistsMending;
 import uniqueeutils.enchantments.complex.Ambrosia;
 import uniqueeutils.enchantments.complex.Climber;
 import uniqueeutils.enchantments.complex.DemetersBlessing;
@@ -36,6 +37,7 @@ import uniqueeutils.enchantments.curse.FaminesOdium;
 import uniqueeutils.enchantments.curse.PhanesRegret;
 import uniqueeutils.enchantments.curse.RocketMan;
 import uniqueeutils.enchantments.simple.Adept;
+import uniqueeutils.enchantments.simple.Dreams;
 import uniqueeutils.enchantments.simple.ThickPick;
 import uniqueeutils.enchantments.unique.AnemoiFragment;
 import uniqueeutils.enchantments.unique.DemetersSoul;
@@ -75,6 +77,8 @@ public class UEUtils extends BaseUEMod
 	public static Enchantment RESONANCE;
 	public static Enchantment SAGES_SOUL;
 	public static Enchantment PEGASUS_SOUL;
+	public static Enchantment DREAMS;
+	public static Enchantment ALCHEMISTS_MENDING;
 	
 	public static MobEffect SATURATION;
 	
@@ -277,5 +281,7 @@ public class UEUtils extends BaseUEMod
 		RESONANCE = register(new Resonance());
 		SAGES_SOUL = register(new SagesSoul());
 		PEGASUS_SOUL = register(new PegasusSoul());
+		DREAMS = register(new Dreams());
+		ALCHEMISTS_MENDING = register(new AlchemistsMending());
 	}
 }

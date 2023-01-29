@@ -16,7 +16,7 @@ public class Reinforced extends UniqueEnchantment
 	public static final DoubleStat FLAT_REPAIR = new DoubleStat(1D, "repair_flat");
 	public static final DoubleStat MUL_REPAIR = new DoubleStat(1D, "repair_multiplier");
 	public static final IntStat BASE_DURATION = new IntStat(6000, "base_duration");
-	public static final DoubleStat BASE_REDUCTION = new DoubleStat(0.1, "base_reduction");
+	public static final DoubleStat BASE_REDUCTION = new DoubleStat(0.01148D, "base_reduction");
 	
 	public Reinforced()
 	{

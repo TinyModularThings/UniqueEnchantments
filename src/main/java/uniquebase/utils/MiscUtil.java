@@ -120,12 +120,12 @@ public class MiscUtil
 
 	public static double getAttackSpeed(LivingEntity entity)
 	{
-		return getAttribute(entity, Attributes.ATTACK_SPEED, 1.6D);
+		return Math.max(getAttribute(entity, Attributes.ATTACK_SPEED, 1.6D), 0.1D);
 	}
 	
 	public static double getAttackSpeed(LivingEntity entity, double defaultValue)
 	{
-		return getAttribute(entity, Attributes.ATTACK_SPEED, defaultValue);
+		return Math.max(getAttribute(entity, Attributes.ATTACK_SPEED, defaultValue), 0.1D);
 	}
 	
 	public static double getAttribute(LivingEntity entity, Attribute attribute)

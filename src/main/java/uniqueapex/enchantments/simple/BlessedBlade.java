@@ -28,10 +28,8 @@ public class BlessedBlade extends ApexEnchantment
 		return stack.getItem() instanceof AxeItem || stack.getItem() instanceof HoeItem || stack.getItem() instanceof TridentItem;
 	}
 	
-    @Override
-	public float getDamageBonus(int level, MobType creatureType)
-    {
-    	return (float)Math.sqrt(ATTACK.getFloat(level));
-    }
-	
+	@Override
+	public float getDamageBonus(int level, MobType mobType, ItemStack enchantedItem) {
+		return (float) Math.log(1+Math.pow(ATTACK.get(level), 3));
+	}
 }

@@ -14,18 +14,17 @@ import uniquee.UE;
 
 public class PerpetualStrike extends UniqueEnchantment
 {
-	public static final DoubleStat PER_HIT = new DoubleStat(0.1D, "bonus_per_hit");
 	public static final DoubleStat PER_HIT_LEVEL = new DoubleStat(1D, "bonus_per_level");
 	public static final DoubleStat MULTIPLIER = new DoubleStat(1D, "damage_multiplier");
 	public static final IntStat TRANSCENDED_MERCY = new IntStat(1, "transcended_mercy_hits");
 	public static final String HIT_COUNT = "strikes";
 	public static final String HIT_ID = "hit_id";
-	public static final BooleanStat SCALING_STATE = new BooleanStat(false, "exponential_scaling", "changes damage formual to exponential instead of logarithmic");
+	public static final BooleanStat SCALING_STATE = new BooleanStat(false, "exponential_scaling", "changes damage formula to exponential instead of logarithmic");
 
 	public PerpetualStrike()
 	{
-		super(new DefaultData("perpetual_strike", Rarity.RARE, 3, false, true, 16, 6, 4).setTrancendenceLevel(200), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
-		addStats(PER_HIT, MULTIPLIER, PER_HIT_LEVEL, TRANSCENDED_MERCY, SCALING_STATE);
+		super(new DefaultData("perpetual_strike", Rarity.RARE, 3, false, true, 16, 6, 4).setTrancendenceLevel(600), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND);
+		addStats(MULTIPLIER, PER_HIT_LEVEL, TRANSCENDED_MERCY, SCALING_STATE);
 	}
 	
 	@Override

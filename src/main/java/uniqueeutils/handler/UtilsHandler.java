@@ -25,6 +25,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -96,12 +97,15 @@ import net.minecraftforge.event.entity.player.AnvilRepairEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
+import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
+import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.api.crops.CropHarvestRegistry;
+import uniquebase.api.events.ItemDurabilityChangeEvent;
 import uniquebase.handler.MathCache;
 import uniquebase.networking.EntityPacket;
 import uniquebase.utils.HarvestEntry;
@@ -109,6 +113,7 @@ import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.mixin.common.entity.EntityMixin;
 import uniquebase.utils.mixin.common.entity.FireworkMixin;
+import uniquebase.utils.mixin.common.entity.PotionMixin;
 import uniqueeutils.UEUtils;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing.ConversionEntry;
@@ -120,6 +125,7 @@ import uniqueeutils.enchantments.curse.FaminesOdium;
 import uniqueeutils.enchantments.curse.FaminesOdium.FoodEntry;
 import uniqueeutils.enchantments.curse.RocketMan;
 import uniqueeutils.enchantments.simple.Adept;
+import uniqueeutils.enchantments.simple.Dreams;
 import uniqueeutils.enchantments.simple.ThickPick;
 import uniqueeutils.enchantments.unique.AnemoiFragment;
 import uniqueeutils.enchantments.unique.DemetersSoul;
@@ -254,6 +260,57 @@ public class UtilsHandler
 		if(event.level.isClientSide)
 			return;
 		Resonance.tick(event.level);
+	}
+	
+	@SubscribeEvent
+	public void onSleep(PlayerWakeUpEvent event) {
+		if(event.getResult() == Result.DENY) return;
+		Player player = event.getEntity();
+		Inventory inv = player.getInventory();
+		for(EquipmentSlot slot :MiscUtil.getEquipmentSlotsFor(UEUtils.DREAMS)) {
+			int level = MiscUtil.getEnchantmentLevel(UEUtils.DREAMS, player.getItemBySlot(slot)); 
+			for(int i=0; i<inv.getContainerSize(); i++) {
+				ItemStack stack = inv.getItem(i);
+				if(stack.isDamageableItem()) {
+					stack.setDamageValue((int) (stack.getDamageValue()*(1-Math.pow(Dreams.DURABILITY_FACTOR.get(), Math.sqrt(level)))));
+				}
+			}
+		}
+	}
+	
+	@SubscribeEvent
+	public void onItemDamage(ItemDurabilityChangeEvent event) 
+	{
+		ItemStack stack = event.item;
+		LivingEntity ent = event.entity;
+		double damage = stack.getDamageValue();
+		if(damage > stack.getMaxDamage()*0.9d) 
+		{
+			int level = MiscUtil.getEnchantmentLevel(UEUtils.ALCHEMISTS_MENDING, stack);
+			if(level > 0 && ent.getActiveEffects().size() > 0) 
+			{	
+				MobEffectInstance mei = getFirstEffect(600, 106800, ent);
+				if(mei == null) return;
+				int duration = mei.getDuration();
+				double factor = (mei.getAmplifier() + level);
+				double a = Math.ceil(damage/factor);
+				int rem = (int) Math.max(duration - (a*20), 1);
+				stack.setDamageValue((int) Math.max(damage-(a*factor),0));
+				((PotionMixin)mei).setPotionDuration(rem);
+			}
+		}
+	}
+	
+	private MobEffectInstance getFirstEffect(int min, int max, LivingEntity ent) {
+		for(MobEffectInstance mei : ent.getActiveEffects()) 
+		{
+			int duration = mei.getDuration();
+			if(duration > min && duration < max) 
+			{
+				return mei;
+			}
+		}
+		return null;
 	}
 	
 	@SubscribeEvent

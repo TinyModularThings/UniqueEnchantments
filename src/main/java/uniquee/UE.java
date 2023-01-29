@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -99,6 +100,7 @@ import uniquee.handler.LootModifier;
 import uniquee.handler.potion.AmelioratedStrength;
 import uniquee.handler.potion.EternalFlamePotion;
 import uniquee.handler.potion.PestilencesOdiumPotion;
+import uniquee.handler.potion.Resilience;
 import uniquee.handler.potion.Thrombosis;
 
 @Mod("uniquee")
@@ -155,6 +157,7 @@ public class UE extends BaseUEMod
 	public static MobEffect ETERNAL_FLAME_POTION;
 	public static MobEffect PESTILENCES_ODIUM_POTION;
 	public static MobEffect THROMBOSIS;
+	public static MobEffect RESILIENCE;
 
 	public static ForgeConfigSpec CONFIG;
 	
@@ -177,6 +180,7 @@ public class UE extends BaseUEMod
 		THROMBOSIS = new Thrombosis();
 		ETERNAL_FLAME_POTION = new EternalFlamePotion();
 		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
+		RESILIENCE = new Resilience();
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		init(bus, "UE.toml");
 		bus.register(this);
@@ -208,6 +212,7 @@ public class UE extends BaseUEMod
 	    	event.getForgeRegistry().register("pestilences_odium", PESTILENCES_ODIUM_POTION);
 	    	event.getForgeRegistry().register("eternal_flame", ETERNAL_FLAME_POTION);
 	    	event.getForgeRegistry().register("thrombosis", THROMBOSIS);
+	    	event.getForgeRegistry().register("resilienced", RESILIENCE);
 		}
 		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS))
 		{
@@ -504,7 +509,7 @@ public class UE extends BaseUEMod
 
 		registerPattern("uniquebase", "luck_of_the_sea", "mclckfths", Rarity.RARE);
 		registerPattern("uniquebase", "luck_of_the_sea_color", "mclckfthsclr", Rarity.EPIC);
-
+		
 		registerPattern("uniquebase", "lure", "mclr", Rarity.RARE);
 		registerPattern("uniquebase", "lure_color", "mclrclr", Rarity.EPIC);
 
