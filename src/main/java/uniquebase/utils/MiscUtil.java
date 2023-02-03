@@ -49,7 +49,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.registries.ForgeRegistries;
-import uniquebase.UEBase;
+import uniquebase.BaseConfig;
 import uniquebase.api.ColorConfig;
 import uniquebase.api.IToggleEnchantment;
 import uniquebase.utils.mixin.common.enchantments.EnchantmentMixin;
@@ -551,7 +551,7 @@ public class MiscUtil
 	}
 	
 	public static Style getEnchantmentColor(Enchantment ench, boolean allowCurseColor) {
-		ColorConfig config = UEBase.getEnchantmentColor(ench);
+		ColorConfig config = BaseConfig.BOOKS.getEnchantmentColor(ench);
 		return MiscUtil.toColor(config.getTextColor() == -1 ? (ench.isCurse() && allowCurseColor ? 0xFF5555 : 0xAAAAAAAA) : config.getTextColor());
 	}
 	

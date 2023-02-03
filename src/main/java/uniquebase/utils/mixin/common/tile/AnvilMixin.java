@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AnvilMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import uniquebase.UEBase;
+import uniquebase.BaseConfig;
 import uniquebase.handler.EnchantmentHandler;
 import uniquebase.utils.MiscUtil;
 
@@ -25,7 +25,7 @@ public class AnvilMixin
 	at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;giveExperienceLevels(I)V"))
 	public void drainXP(Player player, int levels)
 	{
-		if(UEBase.XP_OVERRIDE_ANVIL.get()) MiscUtil.drainExperience(player, Mth.ceil(MiscUtil.getXPForLvl(-levels) * UEBase.XP_MULTIPLIER_ANVIL.get()));
+		if(BaseConfig.TWEAKS.anvilOverride.get()) MiscUtil.drainExperience(player, Mth.ceil(MiscUtil.getXPForLvl(-levels) * BaseConfig.TWEAKS.anvilMultiplier.get()));
 		else player.giveExperienceLevels(levels);
 	}
 	

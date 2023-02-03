@@ -15,7 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.EnchantmentMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentInstance;
-import uniquebase.UEBase;
+import uniquebase.BaseConfig;
 import uniquebase.handler.EnchantmentHandler;
 import uniquebase.utils.MiscUtil;
 
@@ -26,7 +26,7 @@ public class EnchTableMixin
 	at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;onEnchantmentPerformed(Lnet/minecraft/world/item/ItemStack;I)V"))
 	public void onEnchanted(Player player, ItemStack stack, int level)
 	{
-		if(UEBase.XP_OVERRIDE_ENCHANT.get()) MiscUtil.drainExperience(player, Mth.ceil(MiscUtil.getXPForLvl(level) * UEBase.XP_MULTIPLIER_ENCHANT.get()));
+		if(BaseConfig.TWEAKS.tableOverride.get()) MiscUtil.drainExperience(player, Mth.ceil(MiscUtil.getXPForLvl(level) * BaseConfig.TWEAKS.tableMultiplier.get()));
 		else player.onEnchantmentPerformed(stack, level);
 	}
 	

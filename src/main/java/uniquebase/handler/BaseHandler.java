@@ -58,6 +58,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import uniquebase.BaseConfig;
 import uniquebase.UEBase;
 import uniquebase.api.ColorConfig;
 import uniquebase.api.EnchantedUpgrade;
@@ -202,7 +203,7 @@ public class BaseHandler
 			if(slot != null && slot.hasItem() && EnchantmentHelper.getEnchantments(slot.getItem()).size() > 0)
 			{
 				tooltipCounter++;
-				if(tooltipCounter >= UEBase.VIEW_COOLDOWN.get()) {
+				if(tooltipCounter >= BaseConfig.TOOLTIPS.viewCooldowns.get()) {
 					mc.setScreen(new EnchantmentGui(slot.getItem().copy(), mc.player, mc.screen));
 				}
 			}
@@ -226,7 +227,7 @@ public class BaseHandler
 		if(stack.isEnchanted() || stack.getItem() == Items.ENCHANTED_BOOK) {
 			Object2IntMap.Entry<Enchantment> ench = MiscUtil.getFirstEnchantment(stack);
 			if(ench == null) return;
-			ColorConfig config = UEBase.getEnchantmentColor(ench.getKey());
+			ColorConfig config = BaseConfig.BOOKS.getEnchantmentColor(ench.getKey());
 			if(config.isDefault()) return;
 			if(config.getBorderStartColor() != -1) event.setBorderStart(config.getBorderStartColor());
 			if(config.getBorderEndColor() != -1) event.setBorderEnd(config.getBorderEndColor());
@@ -239,14 +240,14 @@ public class BaseHandler
 	public void onToolTipEvent(ItemTooltipEvent event)
 	{
 		ItemStack stack = event.getItemStack();
-		int flags = UEBase.TOOLTIPS_FLAGS.get();
+		int flags = BaseConfig.TOOLTIPS.flags.get();
 		Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
-		boolean hasEnchantments = (stack.getItem() == Items.ENCHANTED_BOOK || UEBase.SHOW_NON_BOOKS.get()) && EnchantmentHelper.getEnchantments(stack).size() > 0;
-		if((flags & 1) != 0 && hasEnchantments && UEBase.SHOW_DESCRIPTION.get() && !Screen.hasShiftDown())
+		boolean hasEnchantments = (stack.getItem() == Items.ENCHANTED_BOOK || BaseConfig.TOOLTIPS.showOnTools.get()) && EnchantmentHelper.getEnchantments(stack).size() > 0;
+		if((flags & 1) != 0 && hasEnchantments && BaseConfig.TOOLTIPS.showDescription.get() && !Screen.hasShiftDown())
 		{
 			event.getToolTip().add(Component.translatable("unique.base.desc").withStyle(ChatFormatting.DARK_GRAY));
 		}
-		if((flags & 2) != 0 && hasEnchantments && UEBase.ICONS.get() && !UEBase.ENCHANTMENT_ICONS.test(event.getEntity())) {
+		if((flags & 2) != 0 && hasEnchantments && BaseConfig.ICONS.isEnabled.get() && !UEBase.ENCHANTMENT_ICONS.test(event.getEntity())) {
 			event.getToolTip().add(Component.translatable("unique.base.icon", UEBase.ENCHANTMENT_ICONS.getKeyName().copy().withStyle(ChatFormatting.LIGHT_PURPLE)).withStyle(ChatFormatting.DARK_GRAY));
 		}
 		for(int i = 0,m=tooltips.size();i<m;i++)
@@ -276,7 +277,7 @@ public class BaseHandler
 				{
 					StringBuilder builder = new StringBuilder();
 					int i = 0;
-					int max = (int)((tooltipCounter / (double)UEBase.VIEW_COOLDOWN.get()) * 40);
+					int max = (int)((tooltipCounter / (double)BaseConfig.TOOLTIPS.viewCooldowns.get()) * 40);
 					for(;i<max;i++)
 					{
 						builder.append("|");
@@ -345,7 +346,7 @@ public class BaseHandler
 	@SubscribeEvent
 	public void onEntityClick(EntityInteract event)
 	{
-		if(UEBase.ATTRIBUTES.contains(event.getItemStack().getItem()) && event.getTarget() instanceof ItemFrame)
+		if(BaseConfig.TWEAKS.attribute.contains(event.getItemStack().getItem()) && event.getTarget() instanceof ItemFrame)
 		{
 			ItemFrame frame = (ItemFrame)event.getTarget();
 			ItemStack stack = frame.getItem();
