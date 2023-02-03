@@ -806,7 +806,7 @@ public class EntityEvents
 				{
 					count = 0;
 				}
-				StackUtils.setInt(stack, PerpetualStrike.HIT_COUNT, count+1);
+				StackUtils.setInt(stack, PerpetualStrike.HIT_COUNT, Math.min(count+1, PerpetualStrike.HIT_CAP.get(level)));
 				if(rand.nextInt(100) <= count) {
 					target.addEffect(new MobEffectInstance(UE.THROMBOSIS, 100*level, level-1));
 				}

@@ -14,6 +14,6 @@ public class CombatRulesMixin {
 	
 	@Inject(method = "getDamageAfterMagicAbsorb", at = @At("INVOKE"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private static void getDamageAfterMagicAbsorb(float damage, float points, CallbackInfoReturnable<Float> ci) {
-		ci.setReturnValue((float) (damage/Math.sqrt(1+UEBase.PROTECTION_MULTIPLIER.get().doubleValue()*Math.pow(points, 2))));
+		ci.setReturnValue((float) (damage*Math.pow(1+UEBase.PROTECTION_MULTIPLIER.get().doubleValue()*Math.pow(points, 3), -0.2)));
 	}
 }

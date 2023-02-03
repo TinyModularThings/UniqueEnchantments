@@ -116,7 +116,7 @@ public class UEBase
 		builder.comment("Allows to control if enchanted books have the glint. This is needed for the new texture looking better");
 		ENCHANTED_GLINT = builder.define("Enchanted Glint", false);
 		builder.comment("The multiplier for the Protection Tweaks we did, the higher this value the stronger they get");
-		PROTECTION_MULTIPLIER = builder.defineInRange("protection_multiplier", 0.0262345679012d, 0.01d, Double.MAX_VALUE);
+		PROTECTION_MULTIPLIER = builder.defineInRange("protection_multiplier", 0.003875d, 0.0d, Double.MAX_VALUE);
 		builder.comment("Enables the feature that Enchantment Tables take Levels worth of XP instead of XPLevels, this affects only consumtion not checks");
 		XP_OVERRIDE_ENCHANT = builder.define("Enchanting Table XP override", false);
 		builder.comment("Allows modify the conversion rate from Level to XP points. This can result in consuming more then the player actually has");

@@ -34,7 +34,7 @@ public class ThickPick extends UniqueEnchantment
 	
 	public ThickPick()
 	{
-		super(new DefaultData("thick_pick", Rarity.RARE, 2, false, true, 26, 4, 75), EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
+		super(new DefaultData("thick_pick", Rarity.RARE, 2, false, true, 26, 4, 75).setTrancendenceLevel(500), EnchantmentCategory.DIGGER, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		setCategory("utils");
 	}
 	

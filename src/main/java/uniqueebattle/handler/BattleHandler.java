@@ -252,13 +252,22 @@ public class BattleHandler
 	}
 	
 	@SubscribeEvent
-	public void onItemUseTick(LivingEntityUseItemEvent.Start event)
+	public void onItemUseTick(LivingEntityUseItemEvent.Tick event) {
+		int level = MiscUtil.getEnchantmentLevel(UEBattle.CELESTIAL_BLESSING, event.getItem());
+		LivingEntity entity = event.getEntity();
+		if(level > 0 && event.getDuration() > 10 && entity.getLevel().isNight() && MiscUtil.isTranscendent(entity, event.getItem(), UEBattle.CELESTIAL_BLESSING)) {
+			event.setDuration(event.getDuration() - level);
+		}
+	}
+	
+	@SubscribeEvent
+	public void onItemUseStart(LivingEntityUseItemEvent.Start event)
 	{
 		int level = MiscUtil.getEnchantmentLevel(UEBattle.CELESTIAL_BLESSING, event.getItem());
 		LivingEntity entity = event.getEntity();
 		if(level > 0 && event.getDuration() > 10)
 		{
-			float boost = MiscUtil.isTranscendent(entity, event.getItem(), UEBattle.CELESTIAL_BLESSING) ? (1+CelestialBlessing.SPEED_BONUS.getAsFloat(level)) * (1+CelestialBlessing.SPEED_BONUS.getAsFloat(level))-1 : CelestialBlessing.SPEED_BONUS.getAsFloat(level);
+			float boost = CelestialBlessing.SPEED_BONUS.getAsFloat(level);
 			double num = (1 + (event.getEntity().level.isNight() ? boost : 0));
 			event.setDuration((int)Math.max(10,event.getDuration() / num));
 		}
@@ -626,9 +635,10 @@ public class BattleHandler
 				int level = MiscUtil.getEnchantmentLevel(UEBattle.GOLEM_SOUL, stack);
 				for(Entity ent : entity.level.getEntities(entity, new AABB(entity.blockPosition()).inflate(Math.min(distance, 16)))) 
 				{
-					if(ent instanceof LivingEntity)
+					if(ent instanceof LivingEntity enti)
 					{
-						((LivingEntity)ent).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, GolemSoul.TRANSCENDED_SLOW_TIME.get(level), Math.min(level-1,5)));
+						enti.hurt(DamageSource.DRAGON_BREATH, (float) Math.sqrt(distance));
+						enti.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, GolemSoul.TRANSCENDED_SLOW_TIME.get(level), Math.min(level-1,5)));
 					}
 				}
 			}

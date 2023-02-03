@@ -967,7 +967,12 @@ public class UtilsHandler
 			int amount = StackUtils.getInt(held, ThickPick.TAG, 0);
 			if(amount > 0)
 			{
-				StackUtils.setInt(held, ThickPick.TAG, amount - 1);
+				int i = 0;
+				if(MiscUtil.isTranscendent(player, held, UEUtils.THICK_PICK) && event.getLevel().getRandom().nextDouble() < (player.getDigSpeed(event.getState(), event.getPos())/Math.sqrt(30*event.getState().getDestroySpeed(player.getLevel(), event.getPos())))) 
+				{
+					held.setDamageValue(held.getDamageValue()-(++i));
+				}
+				StackUtils.setInt(held, ThickPick.TAG, amount - (1+i));
 			}
 		}
 	}
