@@ -62,6 +62,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
+import uniquebase.BaseConfig;
 import uniquebase.UEBase;
 import uniquebase.gui.TooltipIcon;
 import uniquebase.utils.IdStat;
@@ -75,8 +76,8 @@ public class EnchantmentHandler
 	int ticker = 0;
 	
 	public void limitEnchantments(ListTag list, ItemStack stack) {
-		int limit = UEBase.ENCHANTMENT_LIMITS.getInt(ForgeRegistries.ITEMS.getKey(stack.getItem()));
-		if(UEBase.ENCHANTMENT_LIMIT_BLACKLIST.isEmpty()) {
+		int limit = BaseConfig.TWEAKS.getLimit(stack.getItem());
+		if(BaseConfig.TWEAKS.blacklist.isEmpty()) {
 			while(list.size() > limit) {
 				list.remove(list.size()-1);
 			}
@@ -84,7 +85,7 @@ public class EnchantmentHandler
 		else if(list.size() > limit) {
 			IntArrayList toDeleteList = new IntArrayList();
 			for(int i = 0,m=list.size();i<m;i++) {
-				if(UEBase.ENCHANTMENT_LIMIT_BLACKLIST.contains(ResourceLocation.tryParse(list.getCompound(i).getString("id")))) continue;
+				if(BaseConfig.TWEAKS.blacklist.contains(ResourceLocation.tryParse(list.getCompound(i).getString("id")))) continue;
 				toDeleteList.add(i);
 			}
 			while(toDeleteList.size() > limit) {
@@ -94,8 +95,8 @@ public class EnchantmentHandler
 	}
 	
 	public void limitEnchantments(List<EnchantmentInstance> list, ItemStack item) {
-		int limit = UEBase.ENCHANTMENT_LIMITS.getInt(ForgeRegistries.ITEMS.getKey(item.getItem()));
-		if(UEBase.ENCHANTMENT_LIMIT_BLACKLIST.isEmpty()) {
+		int limit = BaseConfig.TWEAKS.getLimit(item.getItem());
+		if(BaseConfig.TWEAKS.blacklist.isEmpty()) {
 			while(list.size() > limit) {
 				list.remove(list.size()-1);
 			}
@@ -103,7 +104,7 @@ public class EnchantmentHandler
 		else if(list.size() > limit) {
 			IntArrayList toDeleteList = new IntArrayList();
 			for(int i = 0,m=list.size();i<m;i++) {
-				if(UEBase.ENCHANTMENT_LIMIT_BLACKLIST.contains(list.get(i).enchantment)) continue;
+				if(BaseConfig.TWEAKS.blacklist.contains(list.get(i).enchantment)) continue;
 				toDeleteList.add(i);
 			}
 			while(toDeleteList.size() > limit) {
@@ -122,17 +123,17 @@ public class EnchantmentHandler
 	public void onClientTick(ClientTickEvent event)
 	{
 		if(event.phase == Phase.START) return;
-		if(UEBase.ICONS_VISIBLE.get()) {
+		if(BaseConfig.ICONS.isVisible.get()) {
 			if(Screen.hasControlDown()) ticker = 0;
 			ticker += Screen.hasShiftDown() ? 0 : 1;
 		}
-		if(UEBase.ICONS.get()) {
+		if(BaseConfig.ICONS.isEnabled.get()) {
 			Player player = Minecraft.getInstance().player;
 			if(player != null) {
 				boolean isPressed = UEBase.ENCHANTMENT_ICONS.test(player);
 				if(isPressed && !toggle) {
 					toggle = true;
-					UEBase.ICONS_VISIBLE.set(!UEBase.ICONS_VISIBLE.get());
+					BaseConfig.ICONS.isVisible.set(!BaseConfig.ICONS.isVisible.get());
 					UEBase.CONFIG.save();
 				}
 				else if(!isPressed && toggle) {
@@ -165,7 +166,7 @@ public class EnchantmentHandler
 	@OnlyIn(Dist.CLIENT)
 	public void renderTooltip(RenderTooltipEvent.GatherComponents event)
 	{
-		if(!UEBase.ICONS.get()) return;
+		if(!BaseConfig.ICONS.isEnabled.get()) return;
 		List<Either<FormattedText, TooltipComponent>> lines = event.getTooltipElements();
 		for(int i = 0,m=lines.size();i<m;i++)
 		{
@@ -199,21 +200,21 @@ public class EnchantmentHandler
 	@OnlyIn(Dist.CLIENT)
 	public boolean addEnchantmentInfo(ListTag list, List<Component> tooltip, Item item)
 	{
-		if(item != Items.ENCHANTED_BOOK && !Screen.hasShiftDown() && UEBase.HIDE_ENCHANTMENTS.get())
+		if(item != Items.ENCHANTED_BOOK && !Screen.hasShiftDown() && BaseConfig.TOOLTIPS.hideEnchantments.get())
 		{
 			tooltip.add(Component.translatable("unique.base.enchantment.listed"));
 			return true;
 		}
-		boolean hideCurses = UEBase.HIDE_CURSES.get();
-		boolean icons = UEBase.ICONS.get() && UEBase.ICONS_VISIBLE.get();
-		boolean desciptions = !ModList.get().isLoaded("enchdesc") && UEBase.SHOW_DESCRIPTION.get();
+		boolean hideCurses = BaseConfig.TOOLTIPS.hideCurses.get();
+		boolean icons = BaseConfig.ICONS.isEnabled.get() && BaseConfig.ICONS.isVisible.get();
+		boolean desciptions = !ModList.get().isLoaded("enchdesc") && BaseConfig.TOOLTIPS.showDescription.get();
 		if(!hideCurses && !icons && !desciptions) return false;
-		boolean tools = UEBase.SHOW_NON_BOOKS.get();
+		boolean tools = BaseConfig.TOOLTIPS.showOnTools.get();
 		boolean shiftPressed = Screen.hasShiftDown();
-		int elements = UEBase.ICON_ROW_ELEMENTS.get();
-		int total = UEBase.ICON_ROWS.get() * elements;
-		int cycleTime = UEBase.ICON_CYCLE_TIME.get();
-		if(UEBase.SORT_ENCHANTMENT_TOOLTIP.get())
+		int elements = BaseConfig.ICONS.visibleColumn.get();
+		int total = BaseConfig.ICONS.visibleRows.get() * elements;
+		int cycleTime = BaseConfig.ICONS.cycleTime.get();
+		if(BaseConfig.TOOLTIPS.sortEnchantments.get())
 		{
 			ListTag newList = new ListTag();
 			newList.addAll(list);
@@ -245,7 +246,7 @@ public class EnchantmentHandler
 	{
 		if(key instanceof CompoundTag keyTag)
 		{
-			return UEBase.ENCHANTMENT_PRIORITY.getInt(ResourceLocation.tryParse(keyTag.getString("id")));
+			return BaseConfig.TOOLTIPS.getPriority(keyTag.getString("id"));
 		}
 		return -1;
 	}
@@ -296,10 +297,10 @@ public class EnchantmentHandler
 		Collector<Class<?>> classBased = new Collector<>();
 		Collector<ArmorEntry> armor = new Collector<>();
 		Set<Class<?>> clz = new ObjectOpenHashSet<>();
-		IdStat<Item> stat = UEBase.APPLICABLE_ICON_OVERRIDE;
+		IdStat<Item> stat = BaseConfig.ICONS.iconOverride;
 		boolean check = !stat.isEmpty();
-		VisibilityMode mode = UEBase.ICON_MODE.get();
-		int limit = mode == VisibilityMode.LIMITED ? UEBase.LIMIT_AMOUNT.get() : Integer.MAX_VALUE;
+		VisibilityMode mode = BaseConfig.ICONS.visiblityMode.get();
+		int limit = mode == VisibilityMode.LIMITED ? BaseConfig.ICONS.iconLimit.get() : Integer.MAX_VALUE;
 		for(Item item : ForgeRegistries.ITEMS)
 		{
 			if(check && !stat.contains(ForgeRegistries.ITEMS.getKey(item)))

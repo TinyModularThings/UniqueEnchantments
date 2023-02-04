@@ -3,7 +3,6 @@ package uniquebase.utils;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.NonNullList;
@@ -14,7 +13,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -26,7 +24,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
-import uniquebase.UEBase;
 import uniquebase.utils.mixin.common.entity.ArrowMixin;
 
 public class StackUtils
@@ -87,17 +84,7 @@ public class StackUtils
 	{
 		try
 		{
-			ItemStack stack = ((ArrowMixin)arrow).getArrowItem();
-			if(stack == null) {
-				if(UEBase.LOG_BROKEN_MODS.get()) {
-					boolean mcCreator = ObjectArrayList.wrap(arrow.getClass().getName().split("\\.")).contains("mcreator");
-					ResourceLocation id = ForgeRegistries.ENTITY_TYPES.getKey(arrow.getType());
-					if(mcCreator) UEBase.LOGGER.info("A MCreator mod ["+id.getNamespace()+"] with a broken Custom Projectile has been found. Please make sure to ask them to export the said mod again with the MCreator 2020.1 again, if it has been released already.");
-					else UEBase.LOGGER.info("Entity ["+id.getPath()+"] from the mod ["+id.getNamespace()+"] creates a Null-ItemStack in a custom Projectile. Please report it to the said Mod that they should fix this. For the modder: getItem/getArrowStack/getPickupItem is the function they need to fix.");
-				}
-				return ItemStack.EMPTY;
-			}
-			return stack;
+			return ((ArrowMixin)arrow).getArrowItem();
 		}
 		catch(Exception e)
 		{

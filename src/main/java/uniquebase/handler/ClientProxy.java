@@ -34,6 +34,7 @@ import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.ForgeRegistries;
+import uniquebase.BaseConfig;
 import uniquebase.UEBase;
 import uniquebase.api.IKeyBind;
 import uniquebase.gui.TooltipIcon;
@@ -71,8 +72,8 @@ public class ClientProxy extends Proxy
 	private void registerColor(RegisterColorHandlersEvent.Item event)
 	{
 		event.register((I, T) -> {
-			if(!UEBase.ITEM_COLORING_ENABLED.get()) return -1;
-			if(T == 0) return UEBase.getEnchantmentColor(getEnchantment(I)).getTextColor();
+			if(!BaseConfig.BOOKS.enableItemColoring.get()) return -1;
+			if(T == 0) return BaseConfig.BOOKS.getEnchantmentColor(getEnchantment(I)).getTextColor();
 			if(T == 1)
 			{
 				Enchantment ench = getEnchantment(I);
