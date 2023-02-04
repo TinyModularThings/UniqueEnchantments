@@ -2,6 +2,7 @@ package uniqueebattle;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -69,6 +70,8 @@ public class UEBattle extends BaseUEMod
 	public static final SoundEvent CELESTIAL_BLESSING_END_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "celestial_blessing_end"));
 	public static final SoundEvent FURY_DROP_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "fury_drop"));
 	public static final SoundEvent WARS_ODIUM_REVIVE_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "wars_odium_revive"));
+
+	public static final DamageSource ARES_GRACE_DAMAGE = (new DamageSource("ares_grace_damage")).bypassArmor();
 	
 	public static final EnchantedUpgrade ARES_UPGRADE = new AresUpgrade();
 	public static final EnchantedUpgrade IFRITS_UPGRADE = new IfritsUpgrade();

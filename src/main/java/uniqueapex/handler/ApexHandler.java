@@ -200,7 +200,7 @@ public class ApexHandler
 			{
 				int time = target.invulnerableTime;
 				target.invulnerableTime = 0;
-				target.hurt(DamageSource.MAGIC, (float)Math.pow(1+(BlessedBlade.LEVEL_SCALE.get(MiscUtil.getPlayerLevel(entity, 200) * level)*MiscUtil.getAttribute(ent, Attributes.ATTACK_DAMAGE)),0.2d));
+				target.hurt(DamageSource.OUT_OF_WORLD, (float)Math.pow(1+(BlessedBlade.LEVEL_SCALE.get(MiscUtil.getPlayerLevel(entity, 200) * level)*MiscUtil.getAttribute(ent, Attributes.ATTACK_DAMAGE)),0.2d));
 				target.invulnerableTime = time;
 			}
 		}

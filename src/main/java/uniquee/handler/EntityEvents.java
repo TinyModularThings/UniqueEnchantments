@@ -61,6 +61,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.saveddata.maps.MapBanner;
@@ -290,6 +291,12 @@ public class EntityEvents
 				{
 					StackUtils.setInt(player.getMainHandItem(), EndestReap.REAP_STORAGE, player.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE));
 				}
+
+				level = UE.PHOENIX_UPGRADE.getCombinedPoints(player);
+				if(level > 0 && !player.getCombatTracker().isInCombat())
+				{
+					player.heal((float)(Math.log(1+level)/10));
+				}
 			}
 			if(player.level.getGameTime() % 1200 == 0)
 			{
@@ -356,14 +363,9 @@ public class EntityEvents
 			if(player.level.getGameTime() % 20 == 0)
 			{
 				Object2IntMap.Entry<EquipmentSlot> level = container.getEnchantedItem(UE.SAGES_BLESSING);
-				if(level.getIntValue() > 0 && MiscUtil.getTrancendenceLevel(UE.SAGES_BLESSING) <= player.experienceLevel)
+				if(level.getIntValue() > 0 && !MiscUtil.isTranscendent(player, player.getItemBySlot(level.getKey()), UE.SAGES_BLESSING))
 				{
 					player.causeFoodExhaustion(0.01F * level.getIntValue());
-				}
-				int points = UE.PHOENIX_UPGRADE.getCombinedPoints(player);
-				if(points > 0)
-				{
-					player.heal((float)(Math.log(1+points)/10));
 				}
 			}
 			CompoundTag data = event.player.getPersistentData();
@@ -647,6 +649,18 @@ public class EntityEvents
 	        if(position != null)
 	        {
 				BlockPos pos = event.getLevel().getHeightmapPos(Types.MOTION_BLOCKING, position);
+				int d = 0,c = 0;
+            	while(d++ < 256) 
+            	posLoop: {
+            		if(world.getBlockState(pos).getBlock() == Blocks.AIR) {
+            			if(c > 0) {
+                			BlockPos pos1 = new BlockPos(pos.getX(), pos.getY()+d, pos.getZ());
+                			pos = pos1;
+                			break posLoop;
+                		}
+            			c++;
+            		}
+            	}
 				event.getEntity().teleportTo(pos.getX() + 0.5F, Math.max(isBanner ? 0 : world.getSeaLevel(), pos.getY() + 1), pos.getZ() + 0.5F);
 				world.playSound(null, event.getEntity().blockPosition(), UE.ENDER_LIBRARIAN_SOUND, SoundSource.AMBIENT, 100F, 2F);
 	        }

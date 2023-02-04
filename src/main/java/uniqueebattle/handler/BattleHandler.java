@@ -226,28 +226,25 @@ public class BattleHandler
 		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(source.getMainHandItem());
 		if(event.isVanillaCritical())
 		{
-			int points = UEBattle.ARES_UPGRADE.getPoints(source.getMainHandItem());
-			if(points > 0) event.setDamageModifier((int) (event.getDamageModifier() * (1+Math.log(1+points)/100)));
 			dropPlayerHand(event.getTarget(), ench.getInt(UEBattle.FURY));
-			return;
-		}
-		int level = ench.getInt(UEBattle.ARES_FRAGMENT);
-		if(level > 0 && source instanceof Player)
-		{
-			Player player = (Player)source;
-			int maxRolls = Mth.floor(Math.sqrt(level*player.experienceLevel)*AresFragment.BASE_ROLL_MULTIPLIER.get()) + AresFragment.BASE_ROLL.get();
-			int posRolls = Math.max(source.level.random.nextInt(Math.max(1, maxRolls)), Mth.floor(Math.sqrt(level)));
-			int negRolls = maxRolls - posRolls;
-			if(negRolls >= posRolls) return;
-			event.setResult(Result.ALLOW);
-			event.setDamageModifier(1.5F);
-			if(MiscUtil.isTranscendent(source, player.getMainHandItem(), UEBattle.ARES_FRAGMENT))
+			
+			int level = ench.getInt(UEBattle.ARES_FRAGMENT);
+			if(level > 0 && source instanceof Player)
 			{
-				event.setDamageModifier(event.getDamageModifier() + AresFragment.TRANSCENDED_CRIT_MULTIPLIER.getFloat()*(event.isVanillaCritical() ? 1.0F : 0.0F));
+				Player player = (Player)source;
+				int maxRolls = Mth.floor(Math.sqrt(level*player.experienceLevel)*AresFragment.BASE_ROLL_MULTIPLIER.get()) + AresFragment.BASE_ROLL.get();
+				int posRolls = Math.max(source.level.random.nextInt(Math.max(1, maxRolls)), Mth.floor(Math.sqrt(level)));
+				int negRolls = maxRolls - posRolls;
+				if(negRolls >= posRolls) return;
+				event.setResult(Result.ALLOW);
+				if(MiscUtil.isTranscendent(source, player.getMainHandItem(), UEBattle.ARES_FRAGMENT))
+				{
+					event.setDamageModifier(event.getDamageModifier() + AresFragment.TRANSCENDED_CRIT_MULTIPLIER.getFloat()*(event.isVanillaCritical() ? 1.0F : 0.0F));
+				}
 			}
-			int points = UEBattle.ARES_UPGRADE.getPoints(source.getMainHandItem());
-			if(points > 0) event.setDamageModifier(event.getDamageModifier() + MathCache.SQRT_SPECIAL.getFloat(points));
-			dropPlayerHand(event.getTarget(), ench.getInt(UEBattle.FURY));
+
+			level = UEBattle.ARES_UPGRADE.getPoints(source.getMainHandItem());
+			if(level > 0) event.setDamageModifier((int) (event.getDamageModifier() * (1+Math.log(1+level)/100)));
 		}
 	}
 	
@@ -374,7 +371,8 @@ public class BattleHandler
 		{
 			LivingEntity source = (LivingEntity)entity;
 			LivingEntity target = event.getEntity();
-			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : source.getMainHandItem());
+			ItemStack stack = event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : source.getMainHandItem();
+			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(stack);
 			int level = ench.getInt(UEBattle.ARES_FRAGMENT);
 			if(level > 0 && source instanceof Player)
 			{
@@ -385,7 +383,7 @@ public class BattleHandler
 				double speed = MiscUtil.getAttackSpeed(player);
 				float damageFactor = (float)(Math.log(1+Math.sqrt(player.experienceLevel*level*level)*(1+(MiscUtil.getArmorProtection(target))*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
 				event.setAmount(event.getAmount() * (1F+(damageFactor*posRolls)) / (1F+(damageFactor*negRolls)));
-				source.getMainHandItem().hurtAndBreak(Mth.ceil(Math.log(Math.abs(posRolls-Math.sqrt(negRolls)))*(((posRolls-negRolls) != 0 ? posRolls-negRolls : 1)/speed)), source, MiscUtil.get(EquipmentSlot.MAINHAND));
+				stack.hurtAndBreak(Mth.ceil(Math.log(Math.abs(posRolls-Math.sqrt(negRolls)))*(((posRolls-negRolls) != 0 ? posRolls-negRolls : 1)/speed)), source, MiscUtil.get(EquipmentSlot.MAINHAND));
 			}
 			if(event.getEntity().isOnFire())
 			{
@@ -411,36 +409,38 @@ public class BattleHandler
 				LivingEntity enemy = target;
 				for(EquipmentSlot targetSlot : new EquipmentSlot[]{EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.HEAD})
 				{
-					ItemStack stack = enemy.getItemBySlot(targetSlot);
-					if(stack.isEmpty()) continue;
-					stack.hurtAndBreak((int)Math.ceil(StreakersWill.LOSS_PER_LEVEL.get(level)/MiscUtil.getAttackSpeed(source, 1.6D)), enemy, MiscUtil.get(targetSlot));
+					ItemStack itemStack = enemy.getItemBySlot(targetSlot);
+					if(itemStack.isEmpty()) continue;
+					itemStack.hurtAndBreak((int)Math.ceil(StreakersWill.LOSS_PER_LEVEL.get(level)/MiscUtil.getAttackSpeed(source, 1.6D)), enemy, MiscUtil.get(targetSlot));
 					break;
 				}
 			}
 			level = MiscUtil.getEnchantedItem(UEBattle.ARES_GRACE, source).getIntValue();
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() + (float)Math.log(1+Math.sqrt(MiscUtil.getArmorProtection(target)*target.getHealth()*MiscUtil.getPlayerLevel(source, 0)*level)*AresGrace.DAMAGE.get()));
-				source.getMainHandItem().hurtAndBreak(Mth.ceil(AresGrace.DURABILITY.get(Math.log(1+level*source.getHealth()))), source, MiscUtil.get(EquipmentSlot.MAINHAND));
+				MiscUtil.doNewDamageInstance(target, UEBattle.ARES_GRACE_DAMAGE, (float)Math.log(1+Math.sqrt(MiscUtil.getArmorProtection(target)*target.getHealth()*MiscUtil.getPlayerLevel(source, 0)*level)*AresGrace.DAMAGE.get()));
+				stack.hurtAndBreak(Mth.ceil(AresGrace.DURABILITY.get(Math.log(1+level*source.getHealth()))), source, MiscUtil.get(EquipmentSlot.MAINHAND));
 			}
-			EquipmentSlot slot = null;
-			if(event.getSource().isProjectile())
-			{
-				Object2IntMap.Entry<EquipmentSlot> found = MiscUtil.getEnchantedItem(UEBattle.IFRITS_BLESSING, source);
-				slot = found.getKey();
-				level = found.getIntValue();
-			}
-			else
-			{
-				level = ench.getInt(UEBattle.IFRITS_JUDGEMENT);
-				slot = level > 0 ? EquipmentSlot.MAINHAND : null;
-			}
+//			EquipmentSlot slot = null;
+//			if(event.getSource().isProjectile())
+//			{
+//				Object2IntMap.Entry<EquipmentSlot> found = MiscUtil.getEnchantedItem(UEBattle.IFRITS_JUDGEMENT, source);
+//				slot = found.getKey();
+//				level = found.getIntValue();
+//				level = MiscUtil.getEnchantmentLevel(UEBattle.IFRITS_JUDGEMENT, stack);
+//			}
+//			else
+//			{
+//				level = ench.getInt(UEBattle.IFRITS_JUDGEMENT);
+//				slot = level > 0 ? EquipmentSlot.MAINHAND : null;
+//			}
+			level = ench.getInt(UEBattle.IFRITS_JUDGEMENT);
 			if(level > 0)
 			{
 				CompoundTag entityNBT = MiscUtil.getPersistentData(event.getEntity());
 				ListTag list = entityNBT.getList(IfritsJudgement.FLAG_JUDGEMENT_ID, 10);
 				boolean found = false;
-				String id = ForgeRegistries.ITEMS.getKey(source.getItemBySlot(slot).getItem()).toString();
+				String id = ForgeRegistries.ITEMS.getKey(stack.getItem()).toString();
 				for(int i = 0,m=list.size();i<m;i++)
 				{
 					CompoundTag data = list.getCompound(i);
@@ -479,8 +479,7 @@ public class BattleHandler
 			if(level > 0)
 			{
 				event.setAmount(event.getAmount() * (1F + LunaticDespair.BONUS_DAMAGE.getFloat(MathCache.LOG_ADD.getFloat(level))));
-				source.invulnerableTime = 0;
-				source.hurt(DamageSource.MAGIC, (float)Math.pow(event.getAmount()*level, 0.25)-1);
+				MiscUtil.doNewDamageInstance(source, DamageSource.MAGIC, (float)Math.pow(event.getAmount()*level, 0.25)-1);
 			}
 			level = MiscUtil.getCombinedEnchantmentLevel(UEBattle.WARS_ODIUM, source);
 			if(level > 0)
@@ -527,13 +526,13 @@ public class BattleHandler
 				if(max > IfritsJudgement.LAVA_HITS.get())
 				{
 					int combined = MiscUtil.getCombinedEnchantmentLevel(UEBattle.IFRITS_JUDGEMENT, source);
-					source.hurt(DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
+					MiscUtil.doNewDamageInstance(source, DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
 					entity.setSecondsOnFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));
 				}
 				else if(max > IfritsJudgement.FIRE_HITS.get())
 				{
 					int combined = MiscUtil.getCombinedEnchantmentLevel(UEBattle.IFRITS_JUDGEMENT, source);
-					source.hurt(DamageSource.IN_FIRE, IfritsJudgement.FIRE_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
+					MiscUtil.doNewDamageInstance(source, DamageSource.IN_FIRE, IfritsJudgement.FIRE_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
 					entity.setSecondsOnFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));					
 				}
 				else if(max > 0)

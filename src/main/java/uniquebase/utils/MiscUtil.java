@@ -26,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -176,6 +177,12 @@ public class MiscUtil
 			total += getStoredPoints(living.getItemBySlot(slot), id);
 		}
 		return total;
+	}
+
+	public static void doNewDamageInstance(LivingEntity ent, DamageSource source, float amount) {
+		int time = ent.invulnerableTime;
+		ent.hurt(source, amount);
+		ent.invulnerableTime = Math.max(time, ent.invulnerableTime);
 	}
 	
 	public static int getEnchantmentLevel(Enchantment ench, ItemStack stack)
