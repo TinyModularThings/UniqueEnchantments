@@ -76,38 +76,42 @@ public class EnchantmentHandler
 	int ticker = 0;
 	
 	public void limitEnchantments(ListTag list, ItemStack stack) {
-		int limit = BaseConfig.TWEAKS.getLimit(stack.getItem());
-		if(BaseConfig.TWEAKS.blacklist.isEmpty()) {
-			while(list.size() > limit) {
-				list.remove(list.size()-1);
-			}
-		}
-		else if(list.size() > limit) {
+		if(BaseConfig.TWEAKS.enableLimits.get())
+		{
 			IntArrayList toDeleteList = new IntArrayList();
+			double left = BaseConfig.TWEAKS.getComplexityLimit(stack);
 			for(int i = 0,m=list.size();i<m;i++) {
-				if(BaseConfig.TWEAKS.blacklist.contains(ResourceLocation.tryParse(list.getCompound(i).getString("id")))) continue;
+				CompoundTag tag = list.getCompound(i);
+				double required = BaseConfig.TWEAKS.getComplexity(ResourceLocation.tryParse(tag.getString("id")), tag.getInt("lvl"));
+				if(left >= required)
+				{
+					left -= required;
+					continue;
+				}
 				toDeleteList.add(i);
 			}
-			while(toDeleteList.size() > limit) {
+			while(toDeleteList.size() > 0) {
 				list.remove(toDeleteList.popInt());
 			}
 		}
 	}
 	
 	public void limitEnchantments(List<EnchantmentInstance> list, ItemStack item) {
-		int limit = BaseConfig.TWEAKS.getLimit(item.getItem());
-		if(BaseConfig.TWEAKS.blacklist.isEmpty()) {
-			while(list.size() > limit) {
-				list.remove(list.size()-1);
-			}
-		}
-		else if(list.size() > limit) {
+		if(BaseConfig.TWEAKS.enableLimits.get())
+		{
 			IntArrayList toDeleteList = new IntArrayList();
+			double left = BaseConfig.TWEAKS.getComplexityLimit(item);
 			for(int i = 0,m=list.size();i<m;i++) {
-				if(BaseConfig.TWEAKS.blacklist.contains(list.get(i).enchantment)) continue;
+				EnchantmentInstance instance = list.get(i);
+				double required = BaseConfig.TWEAKS.getComplexity(ForgeRegistries.ENCHANTMENTS.getKey(instance.enchantment), instance.level);
+				if(left >= required)
+				{
+					left -= required;
+					continue;
+				}
 				toDeleteList.add(i);
 			}
-			while(toDeleteList.size() > limit) {
+			while(toDeleteList.size() > 0) {
 				list.remove(toDeleteList.popInt());
 			}
 		}

@@ -6,9 +6,11 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -19,6 +21,7 @@ import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.ColorConfig;
+import uniquebase.utils.DoubleLevelStats;
 import uniquebase.utils.IdStat;
 import uniquebase.utils.VisibilityMode;
 
@@ -179,10 +182,11 @@ public class BaseConfig
 		public BooleanValue anvilOverride;
 		public DoubleValue anvilMultiplier;
 		public DoubleValue protectionMultiplier;
-		public IntValue limitDefault;
-		ConfigValue<List<? extends String>> limitConfig;
-		Object2IntMap<ResourceLocation> limits = new Object2IntOpenHashMap<>();
-		public IdStat<Enchantment> blacklist = new IdStat<>("enchantment_limit_blacklist", "Allows to Exclude the Enchantments from the Enchantment limit. This has a Performance hit", ForgeRegistries.ENCHANTMENTS);
+		public BooleanValue enableLimits;
+		Object2ObjectMap<ResourceLocation, DoubleLevelStats> itemComplexity = new Object2ObjectOpenHashMap<>();
+		Object2ObjectMap<ResourceLocation, DoubleLevelStats> enchantmentComplexity = new Object2ObjectOpenHashMap<>();
+		ConfigValue<List<? extends String>> itemComplexityConfig;
+		ConfigValue<List<? extends String>> enchantmentComplexityConfig;
 		public IdStat<Item> attribute = new IdStat<>("attribute_activators", ForgeRegistries.ITEMS, Items.BELL);
 		
 		public void load(ForgeConfigSpec.Builder configs, boolean addonsLoaded)
@@ -201,38 +205,62 @@ public class BaseConfig
 			protectionMultiplier = configs.defineInRange("protection_multiplier", 0.003875D, 0D, Double.MAX_VALUE);
 			configs.pop();
 			configs.push("features");
-			configs.comment("The default limit for each Item, if not further specified in the List");
-			limitDefault = configs.defineInRange("Item Enchantment Limit Default", Integer.MAX_VALUE, 0, Integer.MAX_VALUE);
-			configs.comment("Allows to limit how many Enchantments can be put on to a Item. Excess gets deleted", 
-					"Format: ItemRegistryName;MaxEnchantment (example: minecraft:diamond;2)");
-			limitConfig = configs.defineList("Item Enchantment Limits", ObjectLists.emptyList(), T -> true);
-			blacklist.handleConfig(configs);
+			configs.comment("Enables the Enchantment Limit Feature, which allows you to customize how many enchantments and what tiers of enchantments can be put on items.",
+					"Disabled by default since this is exteremly altering of the Default Experience");
+			enableLimits = configs.define("Enchantment Limits", false);
+			configs.comment("Defines the Complexity Limits of items. These Complexity Limits define how many enchantments can be on a Item.",
+					"Format: ItemReqistryName;base;perEnchantability",
+					"Example: minecraft:carrot;15;0.23",
+					"Default: 10+0.2*enchantability");
+			itemComplexityConfig = configs.defineList("Item Complexity Limits", ObjectLists.emptyList(), T -> true);
+			configs.comment("Defines the Complexity of the Enchantment, read \"Item Complexity Limits\" to understand what that is.",
+					"Format: EnchantmentRegistryName;base;perLevel",
+					"Example: minecraft:protection;1;2.3",
+					"Default: 1*level");
+			enchantmentComplexityConfig = configs.defineList("Enchantment Complexity", ObjectLists.emptyList(), T -> true);
 			attribute.handleConfig(configs);
 			configs.pop(2);
-			limits.defaultReturnValue(Integer.MAX_VALUE);
 		}
 		
 		public void onConfigChanged()
 		{
-			blacklist.onConfigChanged();
 			attribute.onConfigChanged();
-			limits.clear();
-			limits.defaultReturnValue(limitDefault.get());
-			List<? extends String> list = limitConfig.get();
+			itemComplexity.clear();
+			List<? extends String> list = itemComplexityConfig.get();
 			for(int i = 0; i < list.size(); i++) {
 				String[] split = list.get(i).split(";");
-				if(split.length != 2) continue;
+				if(split.length != 3) continue;
 				ResourceLocation item = ResourceLocation.tryParse(split[0]);
 				if(item != null) {
-					try { limits.put(item, Integer.parseInt(split[1])); }
+					try { itemComplexity.put(item, new DoubleLevelStats("unknown", Double.parseDouble(split[1]), Double.parseDouble(split[2]))); }
+					catch(Exception e) { UEBase.LOGGER.info("Failed To load: "+list.get(i)+", Error: "+e); }
+				}
+			}
+			enchantmentComplexity.clear();
+			list = enchantmentComplexityConfig.get();
+			for(int i = 0; i < list.size(); i++) {
+				String[] split = list.get(i).split(";");
+				if(split.length != 3) continue;
+				ResourceLocation item = ResourceLocation.tryParse(split[0]);
+				if(item != null) {
+					try { enchantmentComplexity.put(item, new DoubleLevelStats("unknown", Double.parseDouble(split[1]), Double.parseDouble(split[2]))); }
 					catch(Exception e) { UEBase.LOGGER.info("Failed To load: "+list.get(i)+", Error: "+e); }
 				}
 			}
 		}
 		
-		public int getLimit(Item item)
+		public double getComplexityLimit(ItemStack item)
 		{
-			return limits.getInt(ForgeRegistries.ITEMS.getKey(item));
+			DoubleLevelStats stats = itemComplexity.get(ForgeRegistries.ITEMS.getKey(item.getItem()));
+			if(stats == null) return 10D+(0.2D*item.getEnchantmentValue());
+			return stats.getAsDouble(item.getEnchantmentValue());
+		}
+		
+		public double getComplexity(ResourceLocation id, int level)
+		{
+			DoubleLevelStats stats = enchantmentComplexity.get(id);
+			if(stats == null) return 1D*level;
+			return stats.getAsDouble(level);
 		}
 	}
 }
