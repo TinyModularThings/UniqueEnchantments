@@ -1,6 +1,8 @@
 package uniqueeutils.handler;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -53,6 +55,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -77,6 +80,7 @@ import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -100,6 +104,7 @@ import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
@@ -265,14 +270,32 @@ public class UtilsHandler
 	public void onSleep(PlayerWakeUpEvent event) {
 		if(event.getResult() == Result.DENY) return;
 		Player player = event.getEntity();
-		Inventory inv = player.getInventory();
-		for(EquipmentSlot slot :MiscUtil.getEquipmentSlotsFor(UEUtils.DREAMS)) {
-			int level = MiscUtil.getEnchantmentLevel(UEUtils.DREAMS, player.getItemBySlot(slot)); 
-			for(int i=0; i<inv.getContainerSize(); i++) {
-				ItemStack stack = inv.getItem(i);
-				if(stack.isDamageableItem()) {
-					stack.setDamageValue((int) (stack.getDamageValue()*(1-Math.pow(Dreams.DURABILITY_FACTOR.get(), Math.sqrt(level)))));
-				}
+		Set<EquipmentSlot> slots = MiscUtil.getEquipWithEnchantment(UEUtils.DREAMS, player);
+		if(!(slots.size() > 0)) return;
+
+		List<ItemStack> items = new ArrayList<>();
+		IItemHandler handler = player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(EmptyHandler.INSTANCE);
+		filterItem(handler, false, items);
+			
+		for(EquipmentSlot slot :slots) for(ItemStack item : items) 
+				item.setDamageValue((int) (item.getDamageValue()*(1-Math.pow(Dreams.DURABILITY_FACTOR.get(), Math.sqrt(player.getItemBySlot(slot).getEnchantmentLevel(UEUtils.DREAMS))))));
+	}
+	
+	private static void filterItem(IItemHandler handler, boolean subLayer, List<ItemStack> result) 
+	{
+		for(int i = 0,m=handler.getSlots();i<m;i++)
+		{
+			ItemStack stack = handler.extractItem(i, 1, true);
+			if(stack.isEmpty()) continue;
+			if(stack.isDamageableItem() && stack.isDamaged())
+			{
+				result.add(stack);
+			}
+			else if(!subLayer)
+			{
+				LazyOptional<IItemHandler> subHandler = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
+				if(!subHandler.isPresent()) continue;
+				filterItem(subHandler.orElse(EmptyHandler.INSTANCE), true, result);
 			}
 		}
 	}
@@ -899,24 +922,12 @@ public class UtilsHandler
 		}
 		Player player = event.getEntity();
 		ItemStack held = player.getMainHandItem();
-		
-		int level = MiscUtil.getEnchantmentLevel(UEUtils.ADEPT, player.getItemBySlot(EquipmentSlot.HEAD));
-		if(level > 0)
-		{
-			boolean inWater = player.isEyeInFluidType(ForgeMod.WATER_TYPE.get());
-			event.setNewSpeed(event.getNewSpeed() * (player.isOnGround() ? 1F : 5F) * (inWater && !EnchantmentHelper.hasAquaAffinity(player) ? 5F : 1F));
-			if(inWater || !player.isOnGround())
-			{
-				event.setNewSpeed((float)(event.getNewSpeed() * (1-Math.sqrt(1 / (1 + level * level * Adept.SPEED_SCALE.get())))));
-			}
-		}
 		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(held);
-		level = ench.getInt(UEUtils.SAGES_SOUL);
+		
+		int level = UEUtils.THICK_UPGRADE.getPoints(held);
 		if(level > 0)
 		{
-			double power = SagesSoul.getEnchantPower(held, level);
-			int levels = StackUtils.getInt(held, SagesSoul.STORED_XP, 0);
-			event.setNewSpeed((int) (event.getNewSpeed() * Math.log10(10+Math.pow(SagesSoul.MINING_SPEED.get(power*levels), 0.35))));
+			event.setNewSpeed(event.getNewSpeed() + (float)Math.log(1+level));
 		}
 		level = ench.getInt(UEUtils.THICK_PICK);
 		if(level > 0 && event.getState().getDestroySpeed(player.level, event.getPosition().orElse(BlockPos.ZERO)) >= 20)
@@ -927,20 +938,32 @@ public class UtilsHandler
 				event.setNewSpeed(event.getNewSpeed() * ThickPick.MINING_SPEED.getAsFloat(level));
 			}
 		}
+		level = ench.getInt(UEUtils.SAGES_SOUL);
+		if(level > 0)
+		{
+			double power = SagesSoul.getEnchantPower(held, level);
+			int levels = StackUtils.getInt(held, SagesSoul.STORED_XP, 0);
+			event.setNewSpeed((int) (event.getNewSpeed() * Math.log10(10+Math.pow(SagesSoul.MINING_SPEED.get(power*levels), 0.35))));
+		}
+		level = MiscUtil.getEnchantmentLevel(UEUtils.ADEPT, player.getItemBySlot(EquipmentSlot.HEAD));
+		if(level > 0)
+		{
+			boolean inWater = player.isEyeInFluidType(ForgeMod.WATER_TYPE.get());
+			event.setNewSpeed(event.getNewSpeed() * (player.isOnGround() ? 1F : 5F) * (inWater && !EnchantmentHelper.hasAquaAffinity(player) ? 5F : 1F));
+			if(inWater || !player.isOnGround())
+			{
+				event.setNewSpeed((float)(event.getNewSpeed() * (1-Math.sqrt(1 / (1 + level * level * Adept.SPEED_SCALE.get())))));
+			}
+		}
 		level = ench.getInt(UEUtils.REINFORCED);
 		if(level > 0)
 		{
-			event.setNewSpeed((float)(event.getNewSpeed() / (1 + Reinforced.BASE_REDUCTION.get(level) / 100)));
-		}
-		level = UEUtils.THICK_UPGRADE.getPoints(held);
-		if(level > 0)
-		{
-			event.setNewSpeed(event.getNewSpeed() + (int)Math.log(1+level));
+			event.setNewSpeed((float)(event.getNewSpeed() * Math.pow(1-Reinforced.BASE_REDUCTION.get(), level)));
 		}
 	}
 	
 	@SubscribeEvent
-	public void onItemUseTick(LivingEntityUseItemEvent.Start event)
+	public void onItemUseStart(LivingEntityUseItemEvent.Start event)
 	{
 		int level = MiscUtil.getEnchantmentLevel(UEUtils.SAGES_SOUL, event.getItem());
 		if(level > 0)
@@ -1028,7 +1051,7 @@ public class UtilsHandler
 			}
 			catch(Exception e)
 			{
-				e.printStackTrace();
+				UEBase.LOGGER.warn("Rocketman Enchantment failed to apply bonus Lifetime");
 			}
 		}
 	}
@@ -1046,15 +1069,14 @@ public class UtilsHandler
 				{
 					RandomSource random = living.getRandom();
 					int num = (int) Math.log(1+points)*20;
-					while(random.nextDouble() <= num/100)
+					do
 					{
 						MobEffect effect = getRandomNegativeEffect(random);
 						if(effect != null)
 						{
 							event.getEntity().addEffect(new MobEffectInstance(effect, num));
 						}
-						num -= 100;
-					}
+					} while(random.nextDouble() <= (num-=100)/100);
 				}
 			}
 		}

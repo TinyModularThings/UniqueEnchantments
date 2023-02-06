@@ -15,7 +15,7 @@ public class FocusedImpact extends UniqueEnchantment
 {
 	public static final UUID IMPACT_MOD = UUID.fromString("3b535821-d4d7-4aa3-8c64-e9849f43516a");
 	public static final DoubleStat BASE_SPEED = new DoubleStat(1.05D, "attack_speed_comparison");
-	public static final DoubleStat TRANSCENDED_ATTACK_SPEED_MULTIPLIER = new DoubleStat(0.5D, "transcended_attack_speed_mulitiplier");
+	public static final DoubleStat TRANSCENDED_ATTACK_SPEED_MULTIPLIER = new DoubleStat(0.715D, "transcended_attack_speed_mulitiplier");
 	
 	public FocusedImpact()
 	{
