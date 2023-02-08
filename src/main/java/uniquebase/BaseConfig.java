@@ -190,8 +190,11 @@ public class BaseConfig
 		ConfigValue<List<? extends String>> itemComplexityConfig;
 		ConfigValue<List<? extends String>> enchantmentComplexityConfig;
 		DoubleLevelStats defaultItemCompelxity = new DoubleLevelStats("item complexity default", 7, 0.5D, "Defines the Default Value for Item limits if they are not defined");
-		public DoubleValue defaultEnchantmentComplexity;
+		public DoubleValue defaultBaseEnchantmentComplexity;
+		public DoubleValue defaultLevelEnchantmentComplexity;
 		public IdStat<Item> attribute = new IdStat<>("attribute_activators", ForgeRegistries.ITEMS, Items.BELL);
+		BooleanValue enchantmentComplexityConsiderLevel;
+		BooleanValue itemConsiderEnchantability;
 		
 		public void load(ForgeConfigSpec.Builder configs, boolean addonsLoaded)
 		{
@@ -209,7 +212,6 @@ public class BaseConfig
 			protectionMultiplier = configs.defineInRange("protection_multiplier", 0.003875D, 0D, Double.MAX_VALUE);
 			configs.pop();
 			configs.push("features");
-			defaultItemCompelxity.handleConfig(configs);
 			configs.comment("Enables the Enchantment Limit Feature, which allows you to customize how many enchantments and what tiers of enchantments can be put on items.",
 					"Disabled by default since this is exteremly altering of the Default Experience");
 			enableLimits = configs.define("Enchantment Limits", false);
@@ -218,13 +220,21 @@ public class BaseConfig
 					"Example: minecraft:carrot;15;0.23",
 					"Default: 10+0.2*enchantability");
 			itemComplexityConfig = configs.defineList("Item Complexity Limits", ObjectLists.emptyList(), T -> true);
-			configs.comment("Default value if a Enchantment isn't listed under enchantment Complexity");
-			defaultEnchantmentComplexity = configs.defineInRange("Default Enchantment Complexity", 1D, 0.1D, Double.MAX_VALUE);
+			configs.comment("Default value of Complexity, for items that are not in the list");
+			defaultItemCompelxity.handleConfig(configs);
+			configs.comment("Should enchantability increase the maximum complexity of the item");
+			itemConsiderEnchantability = configs.define("itemConsiderEnchantability", false);
 			configs.comment("Defines the Complexity of the Enchantment, read \"Item Complexity Limits\" to understand what that is.",
 					"Format: EnchantmentRegistryName;base;perLevel",
 					"Example: minecraft:protection;1;2.3",
 					"Default: 1*level");
 			enchantmentComplexityConfig = configs.defineList("Enchantment Complexity", ObjectLists.emptyList(), T -> true);
+			configs.comment("Default base value of Enchantments that arent listed under enchantment Complexity");
+			defaultBaseEnchantmentComplexity = configs.defineInRange("Default Base Enchantment Complexity", 1D, 0.1D, Double.MAX_VALUE);
+			configs.comment("Default level value of Enchantments that arent listed under enchantment Complexity");
+			defaultLevelEnchantmentComplexity = configs.defineInRange("Default Level Enchantment Complexity", 1D, 0.1D, Double.MAX_VALUE);
+			configs.comment("Should higher levels increase the cost");
+			enchantmentComplexityConsiderLevel = configs.define("enchantmentComplexityConsiderLevel", false);
 			attribute.handleConfig(configs);
 			configs.pop(2);
 		}
@@ -259,14 +269,14 @@ public class BaseConfig
 		public double getComplexityLimit(ItemStack item)
 		{
 			DoubleLevelStats stats = itemComplexity.get(ForgeRegistries.ITEMS.getKey(item.getItem()));
-			if(stats == null) return defaultItemCompelxity.getAsDouble(item.getEnchantmentValue());
+			if(stats == null) return defaultItemCompelxity.getAsDouble(itemConsiderEnchantability.get() ? item.getEnchantmentValue() : 0);
 			return stats.getAsDouble(item.getEnchantmentValue());
 		}
 		
 		public double getComplexity(ResourceLocation id, int level)
 		{
 			DoubleLevelStats stats = enchantmentComplexity.get(id);
-			if(stats == null) return defaultEnchantmentComplexity.get()*level;
+			if(stats == null) return defaultBaseEnchantmentComplexity.get() + defaultLevelEnchantmentComplexity.get() * (enchantmentComplexityConsiderLevel.get() ? level : 1);
 			return stats.getAsDouble(level);
 		}
 	}
