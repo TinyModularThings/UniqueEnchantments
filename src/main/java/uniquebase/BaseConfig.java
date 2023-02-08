@@ -58,9 +58,9 @@ public class BaseConfig
 			configs.comment("Defines how many icons are visible at once in limited filter mode");
 			iconLimit = configs.defineInRange("Limited Icon Limit", 4, 0, 25);
 			configs.comment("Defines how many rows for the Enchantment Icons exist");
-			visibleRows = configs.defineInRange("Enchantment Icon Rows", 2, 1, 100);;
+			visibleRows = configs.defineInRange("Enchantment Icon Rows", 1, 1, 100);;
 			configs.comment("Defines how many columns for the Enchantment Icons exist");
-			visibleColumn = configs.defineInRange("Enchantment Icon Columns", 9, 1, 100);
+			visibleColumn = configs.defineInRange("Enchantment Icon Columns", 18, 1, 100);
 			configs.comment("Defines how many ticks should pass to cycle icons, if there is to many icons to display at once");
 			cycleTime = configs.defineInRange("Cycle Time", 40, 5, 10000);
 			iconOverride.handleConfig(configs);
@@ -189,7 +189,7 @@ public class BaseConfig
 		Object2ObjectMap<ResourceLocation, DoubleLevelStats> enchantmentComplexity = new Object2ObjectOpenHashMap<>();
 		ConfigValue<List<? extends String>> itemComplexityConfig;
 		ConfigValue<List<? extends String>> enchantmentComplexityConfig;
-		DoubleLevelStats defaultItemCompelxity = new DoubleLevelStats("item complexity default", 10, 0.2D, "Defines the Default Value for Item limits if they are not defined");
+		DoubleLevelStats defaultItemCompelxity = new DoubleLevelStats("item complexity default", 7, 0.5D, "Defines the Default Value for Item limits if they are not defined");
 		public DoubleValue defaultEnchantmentComplexity;
 		public IdStat<Item> attribute = new IdStat<>("attribute_activators", ForgeRegistries.ITEMS, Items.BELL);
 		
@@ -259,14 +259,14 @@ public class BaseConfig
 		public double getComplexityLimit(ItemStack item)
 		{
 			DoubleLevelStats stats = itemComplexity.get(ForgeRegistries.ITEMS.getKey(item.getItem()));
-			if(stats == null) return 10D+(0.2D*item.getEnchantmentValue());
+			if(stats == null) return defaultItemCompelxity.getAsDouble(item.getEnchantmentValue());
 			return stats.getAsDouble(item.getEnchantmentValue());
 		}
 		
 		public double getComplexity(ResourceLocation id, int level)
 		{
 			DoubleLevelStats stats = enchantmentComplexity.get(id);
-			if(stats == null) return 1D*level;
+			if(stats == null) return defaultEnchantmentComplexity.get()*level;
 			return stats.getAsDouble(level);
 		}
 	}

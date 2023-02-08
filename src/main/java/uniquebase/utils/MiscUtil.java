@@ -559,7 +559,7 @@ public class MiscUtil
 		Language map = Language.getInstance();
 		String s = ench.getDescriptionId()+".icon";
 		if(map.has(s)) {
-			result.append(Component.translatable(s).withStyle(Style.EMPTY.withFont(new ResourceLocation("uniquebase:icons"))));
+			result.append(Component.translatable(s).withStyle(Style.EMPTY.withFont(new ResourceLocation("uniquebase:icons"))).withStyle(MiscUtil.toColor(0xFFFFFF)));
 			result.append(" ");
 		}
 		result.append(textComponent);

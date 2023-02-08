@@ -15,6 +15,6 @@ public class UnbreakingEnchantmentMixin {
 
 	@Inject(method ="shouldIgnoreDurabilityDrop", at = @At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private static void getThornDamage(ItemStack stack, int levels, RandomSource rand, CallbackInfoReturnable<Boolean> ci) {
-		ci.setReturnValue(rand.nextDouble() > 1-(1/(1+Math.sqrt(levels))));
+		ci.setReturnValue(rand.nextDouble() < 1-(1/(1+Math.sqrt(levels))));
 	}
 }

@@ -66,6 +66,7 @@ import uniquebase.BaseConfig;
 import uniquebase.UEBase;
 import uniquebase.gui.TooltipIcon;
 import uniquebase.utils.IdStat;
+import uniquebase.utils.MiscUtil;
 import uniquebase.utils.VisibilityMode;
 
 public class EnchantmentHandler
@@ -235,7 +236,8 @@ public class EnchantmentHandler
 				if(ench == null) continue;
 				current += BaseConfig.TWEAKS.getComplexity(ForgeRegistries.ENCHANTMENTS.getKey(ench), compoundnbt.getInt("lvl"));
 			}
-			tooltip.add(Component.translatable("unique.base.enchantment.power", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(current), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(BaseConfig.TWEAKS.getComplexityLimit(stack))).withStyle(ChatFormatting.GRAY));
+			double lim = BaseConfig.TWEAKS.getComplexityLimit(stack);
+			tooltip.add(Component.translatable("unique.base.enchantment.power", Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(current)).withStyle((current/lim) < 0.5 ? MiscUtil.toColor(0x66A86E) : ((current/lim) < 0.75 ? MiscUtil.toColor(0x4C91E0) : MiscUtil.toColor(0xE05565))), Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(lim)).withStyle(MiscUtil.toColor(0xE05565))).withStyle(ChatFormatting.GRAY));
 		}
 		for(int i = 0;i < list.size();++i)
 		{
@@ -244,7 +246,8 @@ public class EnchantmentHandler
 			if(ench == null || (ench.isCurse() && hideCurses && !shiftPressed)) continue;
 			if(BaseConfig.TWEAKS.enableLimits.get()) {
 				int lvl = compoundnbt.getInt("lvl");
-				tooltip.add(Component.literal("["+ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(BaseConfig.TWEAKS.getComplexity(ForgeRegistries.ENCHANTMENTS.getKey(ench), lvl))+"] ").withStyle(ChatFormatting.GRAY).append(ench.getFullname(lvl)));
+				MutableComponent comp = Component.literal("[").withStyle(ChatFormatting.DARK_GRAY).append(Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(BaseConfig.TWEAKS.getComplexity(ForgeRegistries.ENCHANTMENTS.getKey(ench), lvl))).withStyle(MiscUtil.toColor(0xCC00CC))).append(Component.literal("] ").withStyle(ChatFormatting.DARK_GRAY));
+				tooltip.add(comp.append(ench.getFullname(lvl)));
 			}
 			else tooltip.add(ench.getFullname(compoundnbt.getInt("lvl")));
 			if(icons && (item == Items.ENCHANTED_BOOK || tools)) addEnchantment(tooltip, ench, elements, total, cycleTime);

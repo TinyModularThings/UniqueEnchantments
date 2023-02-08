@@ -17,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ItemFrame;
@@ -162,11 +163,18 @@ public class BaseHandler
 		LivingEntity target = event.getEntity();
 		Entity ent = event.getSource().getEntity();
 		
-		if(target.isInWaterRainOrBubble() && ent instanceof LivingEntity ) {
+		if(target.isInWaterRainOrBubble() && ent instanceof LivingEntity ) 
+		impalingLabel: {
 			LivingEntity source = (LivingEntity)ent;
 			int level = MiscUtil.getEnchantmentLevel(Enchantments.IMPALING, source.getMainHandItem().isEmpty() ? source.getOffhandItem() : source.getMainHandItem());
 			if(level > 0) {
-				event.setAmount(event.getAmount()+1.5f*(target.fireImmune() ? level*2 : level));
+				if(target.fireImmune()) {
+					float dmg = (event.getAmount() + 1.5f*level)/2;
+					MiscUtil.doNewDamageInstance(target, DamageSource.explosion(source).bypassArmor(), dmg);
+					event.setAmount(dmg);
+					break impalingLabel;
+				}
+				event.setAmount(event.getAmount()+1.5f*level);
 			}
 		}
 	}
