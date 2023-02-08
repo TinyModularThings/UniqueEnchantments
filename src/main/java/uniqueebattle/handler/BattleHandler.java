@@ -421,19 +421,6 @@ public class BattleHandler
 				MiscUtil.doNewDamageInstance(target, UEBattle.ARES_GRACE_DAMAGE, (float)Math.log(1+Math.sqrt(MiscUtil.getArmorProtection(target)*target.getHealth()*MiscUtil.getPlayerLevel(source, 0)*level)*AresGrace.DAMAGE.get()));
 				stack.hurtAndBreak(Mth.ceil(AresGrace.DURABILITY.get(Math.log(1+level*source.getHealth()))), source, MiscUtil.get(EquipmentSlot.MAINHAND));
 			}
-//			EquipmentSlot slot = null;
-//			if(event.getSource().isProjectile())
-//			{
-//				Object2IntMap.Entry<EquipmentSlot> found = MiscUtil.getEnchantedItem(UEBattle.IFRITS_JUDGEMENT, source);
-//				slot = found.getKey();
-//				level = found.getIntValue();
-//				level = MiscUtil.getEnchantmentLevel(UEBattle.IFRITS_JUDGEMENT, stack);
-//			}
-//			else
-//			{
-//				level = ench.getInt(UEBattle.IFRITS_JUDGEMENT);
-//				slot = level > 0 ? EquipmentSlot.MAINHAND : null;
-//			}
 			level = ench.getInt(UEBattle.IFRITS_JUDGEMENT);
 			if(level > 0)
 			{
@@ -545,41 +532,46 @@ public class BattleHandler
 			if(level > 0 && !(event.getEntity() instanceof Player) && !WarsOdium.BLACKLIST.contains(event.getEntity().getType()))
 			{
 				CompoundTag nbt = MiscUtil.getPersistentData(source);
-				double chance = WarsOdium.SPAWN_CHANCE.getAsDouble(nbt.getInt(WarsOdium.HIT_COUNTER)) * MathCache.LOG_ADD_MAX.get(level);
+				boolean isBoss = WarsOdium.BOSS_LIST.contains(event.getEntity().getType());
 				nbt.remove(WarsOdium.HIT_COUNTER);
-				double random = source.level.random.nextDouble();
-				if(chance >= random)
+				int limit = 1+Math.min(9, isBoss ? 0 : MiscUtil.getPlayerLevel(source, 0)/100);
+				double chance = (1-Math.pow((isBoss ? WarsOdium.BOSS_CHANCE : WarsOdium.SPAWN_CHANCE).get(), Math.sqrt(nbt.getInt(WarsOdium.HIT_COUNTER)+level))) / limit;
+				for(int j = 0;j<limit;j++)
 				{
-					double spawnMod = Math.log(54.6+WarsOdium.MULTIPLIER.get(level))-3;
-					int value = (int)spawnMod;
-					if(value > 0)
+					double random = source.level.random.nextDouble();
+					if(chance >= random)
 					{
-						double extraHealth = WarsOdium.HEALTH_BUFF.getAsDouble(spawnMod);
-						SpawnGroupData data = null;//IDEA implement group data support so the curse gets really mean
-						EntityType<?> location = event.getEntity().getType();
-						Vec3 pos = event.getEntity().position();
-						if(location != null)
+						double spawnMod = Math.log(54.6+WarsOdium.MULTIPLIER.get(level))-3;
+						int value = (int)spawnMod;
+						if(value > 0)
 						{
-							for(int i = 0;i<value;i++)
+							double extraHealth = WarsOdium.HEALTH_BUFF.getAsDouble(spawnMod);
+							SpawnGroupData data = null;//IDEA implement group data support so the curse gets really mean
+							EntityType<?> location = event.getEntity().getType();
+							Vec3 pos = event.getEntity().position();
+							if(location != null)
 							{
-								Entity toSpawn = location.create(event.getEntity().level);
-								if(toSpawn instanceof Mob)
+								for(int i = 0;i<value;i++)
 								{
-									Mob base = (Mob)toSpawn;
-									base.moveTo(pos.x, pos.y, pos.z, Mth.wrapDegrees(event.getEntity().level.random.nextFloat() * 360.0F), 0.0F);
-									base.yRotO = base.getYRot();
-									base.xRotO = base.getXRot();
-									data = base.finalizeSpawn((ServerLevelAccessor)event.getEntity().level, event.getEntity().level.getCurrentDifficultyAt(toSpawn.blockPosition()), MobSpawnType.COMMAND, data, null);
-									base.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(WarsOdium.HEALTH_MOD, "wars_spawn_buff", extraHealth, Operation.MULTIPLY_TOTAL));
-									base.setHealth(base.getMaxHealth());
-									event.getEntity().level.addFreshEntity(toSpawn);
-									toSpawn.level.playSound(null, toSpawn.blockPosition(), UEBattle.WARS_ODIUM_REVIVE_SOUND, SoundSource.AMBIENT, 1F, 1F);
-									base.playAmbientSound();
-									Level world = event.getEntity().level;
-									if(base instanceof EnderDragon && world instanceof ServerLevel)
+									Entity toSpawn = location.create(event.getEntity().level);
+									if(toSpawn instanceof Mob)
 									{
-										EndDragonFight manager = ((ServerLevel)world).dragonFight();
-										if(manager != null) ((DragonManagerMixin)manager).setNewDragon(base.getUUID());
+										Mob base = (Mob)toSpawn;
+										base.moveTo(pos.x, pos.y, pos.z, Mth.wrapDegrees(event.getEntity().level.random.nextFloat() * 360.0F), 0.0F);
+										base.yRotO = base.getYRot();
+										base.xRotO = base.getXRot();
+										data = base.finalizeSpawn((ServerLevelAccessor)event.getEntity().level, event.getEntity().level.getCurrentDifficultyAt(toSpawn.blockPosition()), MobSpawnType.COMMAND, data, null);
+										base.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(WarsOdium.HEALTH_MOD, "wars_spawn_buff", extraHealth, Operation.MULTIPLY_TOTAL));
+										base.setHealth(base.getMaxHealth());
+										event.getEntity().level.addFreshEntity(toSpawn);
+										toSpawn.level.playSound(null, toSpawn.blockPosition(), UEBattle.WARS_ODIUM_REVIVE_SOUND, SoundSource.AMBIENT, 1F, 1F);
+										base.playAmbientSound();
+										Level world = event.getEntity().level;
+										if(base instanceof EnderDragon && world instanceof ServerLevel)
+										{
+											EndDragonFight manager = ((ServerLevel)world).dragonFight();
+											if(manager != null) ((DragonManagerMixin)manager).setNewDragon(base.getUUID());
+										}
 									}
 								}
 							}

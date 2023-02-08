@@ -10,6 +10,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.ListTag;
@@ -36,7 +38,7 @@ public final class FusionContext extends SimpleContainer
 	IItemHandler mainChest;
 	boolean init = false;
 	Enchantment largestEnchantment;
-	int largestLevel;
+	long largestLevel;
 	int largestCount;
 	
 	
@@ -87,10 +89,6 @@ public final class FusionContext extends SimpleContainer
 	public void applyEnchantment(Enchantment ench, int level, boolean lock, int max)
 	{
 		ItemStack stack = mainChest.getStackInSlot(0);
-		ListTag list = stack.getEnchantmentTags();
-		while(list.size() > max && !list.isEmpty()) {
-			list.remove(list.size()-1);
-		}
 		Map<Enchantment, Integer> enchs = EnchantmentHelper.getEnchantments(stack);
 		int existingLevel = enchs.getOrDefault(ench, 0);
 		if(existingLevel <= level) {
@@ -120,6 +118,7 @@ public final class FusionContext extends SimpleContainer
 	
 	public boolean isValid(Object2IntMap<Ingredient> items, Enchantment ench, List<Object2IntMap.Entry<Enchantment>> enchantments)
 	{
+		if(!isValidItem()) return false;
 		if(!isValidTool(ench)) return false;
 		if(!containsItem(items, true)) return false;
 		Object2IntMap<Enchantment> map = getEnchantmentInputs(new ObjectOpenHashSet<>(Lists.transform(enchantments, Entry::getKey)));
@@ -134,6 +133,11 @@ public final class FusionContext extends SimpleContainer
 		return true;
 	}
 	
+	public boolean isValidItem()
+	{
+		return mainChest.getStackInSlot(0).getCount() <= 1;
+	}
+	
 	public boolean isValidTool(Enchantment ench)
 	{
 		ItemStack stack = mainChest.getStackInSlot(0);
@@ -143,6 +147,11 @@ public final class FusionContext extends SimpleContainer
 	public void mergeEnchantments(int bookCount, int maxLevel)
 	{
 		ItemStack stack = mainChest.getStackInSlot(0);
+		boolean replaced = false;
+		if(stack.getItem() == Items.BOOK) {
+			stack = new ItemStack(Items.ENCHANTED_BOOK);
+			replaced = true;
+		}
 		Map<Enchantment, Integer> map = EnchantmentHelper.getEnchantments(stack);
 		Enchantment ench = getLargestEnchantment();
 		int level = Math.min(maxLevel, getAchievedLevel(bookCount));
@@ -155,6 +164,10 @@ public final class FusionContext extends SimpleContainer
 		for(int i = 1,m=mainChest.getSlots();i<m;i++)
 		{
 			removeEnchantments(mainChest, i, enchantment);
+		}
+		if(replaced) {
+			mainChest.extractItem(0, Integer.MAX_VALUE, false);
+			mainChest.insertItem(0, stack, false);
 		}
 	}
 	
@@ -182,7 +195,7 @@ public final class FusionContext extends SimpleContainer
 	{
 		if(init) return;
 		Object2IntMap<Enchantment> instances = new Object2IntLinkedOpenHashMap<>();
-		Object2IntMap<Enchantment> totalLevels = new Object2IntLinkedOpenHashMap<>();
+		Object2LongMap<Enchantment> totalLevels = new Object2LongLinkedOpenHashMap<>();
 		countEnchantments(instances, totalLevels);
 		for(Object2IntMap.Entry<Enchantment> ench : instances.object2IntEntrySet()) {
 			int count = ench.getIntValue();
@@ -191,7 +204,7 @@ public final class FusionContext extends SimpleContainer
 				largestEnchantment = ench.getKey();
 			}
 		}
-		largestLevel = totalLevels.getInt(largestEnchantment);
+		largestLevel = totalLevels.getLong(largestEnchantment);
 		init = true;
 	}
 	
@@ -207,7 +220,7 @@ public final class FusionContext extends SimpleContainer
 		return largestCount;
 	}
 	
-	public int getLargestLevel()
+	public long getLargestLevel()
 	{
 		init();
 		return largestLevel;
@@ -221,10 +234,10 @@ public final class FusionContext extends SimpleContainer
 	
 	public int getAchievedLevel(int books)
 	{
-		return (int)(MathCache.LOG10.get(getLargestLevel()) / MathCache.LOG10.get(books));
+		return (int)(Math.log10(getLargestLevel()) / MathCache.LOG10.get(books));
 	}
 	
-	public void countEnchantments(Object2IntMap<Enchantment> instances, Object2IntMap<Enchantment> totalLevels)
+	public void countEnchantments(Object2IntMap<Enchantment> instances, Object2LongMap<Enchantment> totalLevels)
 	{
 		for(int i = 0,m=mainChest.getSlots();i<m;i++)
 		{
@@ -233,7 +246,7 @@ public final class FusionContext extends SimpleContainer
 			for(Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(stack).entrySet())
 			{
 				if(i != 0) ((Object2IntLinkedOpenHashMap<Enchantment>)instances).addTo(entry.getKey(), 1);
-				((Object2IntLinkedOpenHashMap<Enchantment>)totalLevels).addTo(entry.getKey(), (int)Math.min(Math.pow(2, entry.getValue()-1), 65535));
+				((Object2LongLinkedOpenHashMap<Enchantment>)totalLevels).addTo(entry.getKey(), (int)(Math.pow(2, entry.getValue()-1)*stack.getCount()));
 			}
 		}
 	}

@@ -67,6 +67,7 @@ public class FusionUpgradeRecipe implements Recipe<FusionContext>
 	@Override
 	public boolean matches(FusionContext context, Level world)
 	{
+		if(!context.isValidItem()) return false;
 		if(context.getLargestEnchantment() != enchantment) return false;
 		if(!context.containsItem(requestedItems, true)) return false;
 		return true;

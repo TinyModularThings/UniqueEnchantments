@@ -44,6 +44,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.TickingBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -66,6 +67,7 @@ import uniqueapex.UEApex;
 import uniqueapex.enchantments.simple.AbsoluteProtection;
 import uniqueapex.enchantments.simple.Accustomed;
 import uniqueapex.enchantments.simple.BlessedBlade;
+import uniqueapex.enchantments.simple.Pickaxe404;
 import uniqueapex.enchantments.simple.SecondLife;
 import uniqueapex.enchantments.unique.AeonsFragment;
 import uniqueapex.enchantments.unique.AeonsSoul;
@@ -337,10 +339,11 @@ public class ApexHandler
 		Player player = event.getPlayer();
 		if(player == null) return;
 		int level = MiscUtil.getEnchantmentLevel(UEApex.PICKAXE_404, player.getMainHandItem());
-		if(level > 0)
+		if(level > 0 && !Pickaxe404.BLACK_LIST.contains(event.getState().getBlock()))
 		{
 			event.setCanceled(false);
 			event.setExpToDrop(0);
+			Pickaxe404.increaseUsage(player.getMainHandItem(), level);
 		}
 	}
 	
@@ -350,7 +353,7 @@ public class ApexHandler
 		Player player = event.getEntity();
 		if(player == null) return;
 		int level = MiscUtil.getEnchantmentLevel(UEApex.PICKAXE_404, player.getMainHandItem());
-		if(level > 0)
+		if(level > 0 && !Pickaxe404.BLACK_LIST.contains(event.getState().getBlock()))
 		{
 			event.setCanceled(false);
 			event.setNewSpeed(1000000F);
@@ -363,7 +366,7 @@ public class ApexHandler
 		Player player = event.getEntity();
 		if(player == null) return;
 		int level = MiscUtil.getEnchantmentLevel(UEApex.PICKAXE_404, player.getMainHandItem());
-		if(level > 0)
+		if(level > 0 && !Pickaxe404.BLACK_LIST.contains(event.getTargetBlock().getBlock()))
 		{
 			event.setCanHarvest(false);
 		}
@@ -375,12 +378,17 @@ public class ApexHandler
 		Player player = event.getEntity();
 		if(player == null) return;
 		int level = MiscUtil.getEnchantmentLevel(UEApex.PICKAXE_404, player.getMainHandItem());
-		if(level > 0 && event.getLevel().getBlockState(event.getPos()).getDestroySpeed(event.getLevel(), event.getPos()) < 0F)
+		if(level > 0)
 		{
-			event.setCancellationResult(InteractionResult.SUCCESS);
-			event.setCanceled(true);
-			player.swing(InteractionHand.MAIN_HAND);
-			event.getLevel().setBlockAndUpdate(event.getPos(), Blocks.AIR.defaultBlockState());
+			BlockState state = event.getLevel().getBlockState(event.getPos());
+			if(state.getDestroySpeed(event.getLevel(), event.getPos()) < 0F && !Pickaxe404.BLACK_LIST.contains(state.getBlock()))
+			{
+				event.setCancellationResult(InteractionResult.SUCCESS);
+				event.setCanceled(true);
+				player.swing(InteractionHand.MAIN_HAND);
+				event.getLevel().setBlockAndUpdate(event.getPos(), Blocks.AIR.defaultBlockState());
+				Pickaxe404.increaseUsage(player.getMainHandItem(), level);
+			}
 		}
 	}
 	

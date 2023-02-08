@@ -76,8 +76,7 @@ public class EnchantmentHandler
 	int ticker = 0;
 	
 	public void limitEnchantments(ListTag list, ItemStack stack) {
-		if(BaseConfig.TWEAKS.enableLimits.get())
-		{
+		if(BaseConfig.TWEAKS.enableLimits.get()) {
 			IntArrayList toDeleteList = new IntArrayList();
 			double left = BaseConfig.TWEAKS.getComplexityLimit(stack);
 			for(int i = 0,m=list.size();i<m;i++) {
@@ -202,11 +201,12 @@ public class EnchantmentHandler
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	public boolean addEnchantmentInfo(ListTag list, List<Component> tooltip, Item item)
+	public boolean addEnchantmentInfo(ListTag list, List<Component> tooltip, ItemStack stack)
 	{
+		Item item = stack.getItem();
 		if(item != Items.ENCHANTED_BOOK && !Screen.hasShiftDown() && BaseConfig.TOOLTIPS.hideEnchantments.get())
 		{
-			tooltip.add(Component.translatable("unique.base.enchantment.listed"));
+			if(!list.isEmpty()) tooltip.add(Component.translatable("unique.base.enchantment.listed").withStyle(ChatFormatting.GRAY));
 			return true;
 		}
 		boolean hideCurses = BaseConfig.TOOLTIPS.hideCurses.get();
@@ -225,13 +225,29 @@ public class EnchantmentHandler
 			newList.sort(Comparator.comparingInt(this::getEnchantmentPriority).reversed().thenComparing(this::getEnchantmentId, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
 			list = newList;
 		}
+		if(BaseConfig.TWEAKS.enableLimits.get())
+		{
+			double current = 0;
+			for(int i = 0;i < list.size();++i)
+			{
+				CompoundTag compoundnbt = list.getCompound(i);
+				Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(compoundnbt.getString("id")));
+				if(ench == null) continue;
+				current += BaseConfig.TWEAKS.getComplexity(ForgeRegistries.ENCHANTMENTS.getKey(ench), compoundnbt.getInt("lvl"));
+			}
+			tooltip.add(Component.translatable("unique.base.enchantment.power", ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(current), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(BaseConfig.TWEAKS.getComplexityLimit(stack))).withStyle(ChatFormatting.GRAY));
+		}
 		for(int i = 0;i < list.size();++i)
 		{
 			CompoundTag compoundnbt = list.getCompound(i);
 			Enchantment ench = ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryParse(compoundnbt.getString("id")));
 			if(ench == null || (ench.isCurse() && hideCurses && !shiftPressed)) continue;
-			tooltip.add(ench.getFullname(compoundnbt.getInt("lvl")));
-			if(icons) addEnchantment(tooltip, ench, elements, total, cycleTime);
+			if(BaseConfig.TWEAKS.enableLimits.get()) {
+				int lvl = compoundnbt.getInt("lvl");
+				tooltip.add(Component.literal("["+ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(BaseConfig.TWEAKS.getComplexity(ForgeRegistries.ENCHANTMENTS.getKey(ench), lvl))+"] ").withStyle(ChatFormatting.GRAY).append(ench.getFullname(lvl)));
+			}
+			else tooltip.add(ench.getFullname(compoundnbt.getInt("lvl")));
+			if(icons && (item == Items.ENCHANTED_BOOK || tools)) addEnchantment(tooltip, ench, elements, total, cycleTime);
 			if(desciptions && (item == Items.ENCHANTED_BOOK || tools)) addDescriptions(tooltip, ench);
 		}
 		return true;

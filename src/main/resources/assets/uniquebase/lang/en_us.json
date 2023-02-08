@@ -95,6 +95,7 @@
 	"unique.base.jei.very_rare": "Very Rare",
 	"unique.base.enchantment.disabled": " (Disabled)",
 	"unique.base.enchantment.listed": "Hold §d[Shift]§r to see Enchantments",
+	"unique.base.enchantment.power": "[%1$s/%2$s] Enchanting Complexity",
 	"item.uniquebase.aqua_affinity_banner_pattern": "Banner Pattern",
 	"item.uniquebase.aqua_affinity_banner_pattern.desc": "Aqua Affinity",
 	"item.uniquebase.aqua_affinity_color_banner_pattern": "Banner Pattern",

@@ -44,43 +44,6 @@ public class UEBase
 	public static IKeyBind ENCHANTMENT_GUI = IKeyBind.empty();
 	public static IKeyBind ENCHANTMENT_ICONS = IKeyBind.empty();
 	
-//	public static final Object2ObjectMap<ResourceLocation, ColorConfig> COLOR_SETTINGS = new Object2ObjectLinkedOpenHashMap<>();
-//	public static ConfigValue<List<? extends String>> COLOR_CONFIGS;
-//	public static BooleanValue ITEM_COLORING_ENABLED;
-//	public static Object2IntMap<ResourceLocation> ENCHANTMENT_LIMITS = new Object2IntOpenHashMap<>();
-//	public static IdStat<Enchantment> ENCHANTMENT_LIMIT_BLACKLIST = new IdStat<>("enchantment_limit_blacklist", "Allows to Exclude the Enchantments from the Enchantment limit. This has a Performance hit", ForgeRegistries.ENCHANTMENTS);
-//	public static IntValue ENCHANTMENT_LIMIT_DEFAULT;
-//	public static ConfigValue<List<? extends String>> ENCHANTMENT_LIMITS_CONFIGS;
-//	public static Object2IntMap<ResourceLocation> ENCHANTMENT_PRIORITY = new Object2IntOpenHashMap<>();
-//	public static ConfigValue<List<? extends String>> ENCHANTMENT_PRIORITY_CONFIGS;
-//	public static BooleanValue SORT_ENCHANTMENT_TOOLTIP;
-//	
-//	public static IntValue VIEW_COOLDOWN;
-//	public static BooleanValue HIDE_ENCHANTMENTS;
-//	public static BooleanValue ENCHANTED_GLINT;
-//	public static BooleanValue HIDE_CURSES;
-//	public static BooleanValue SHOW_DESCRIPTION;
-//	public static BooleanValue SHOW_NON_BOOKS;
-//	public static IntValue TOOLTIPS_FLAGS;
-//	public static BooleanValue LOG_BROKEN_MODS;
-//	public static final IdStat<Item> ATTRIBUTES = new IdStat<>("attribute_activators", ForgeRegistries.ITEMS, Items.BELL);
-//	
-//	public static BooleanValue ICONS;
-//	public static BooleanValue ICONS_VISIBLE;
-//	public static EnumValue<VisibilityMode> ICON_MODE;
-//	public static IntValue LIMIT_AMOUNT;
-//	public static IntValue ICON_ROWS;
-//	public static IntValue ICON_ROW_ELEMENTS;
-//	public static IntValue ICON_CYCLE_TIME;
-//	
-//	public static BooleanValue XP_OVERRIDE_ENCHANT;
-//	public static DoubleValue XP_MULTIPLIER_ENCHANT;
-//	public static BooleanValue XP_OVERRIDE_ANVIL;
-//	public static DoubleValue XP_MULTIPLIER_ANVIL;
-//	public static DoubleValue PROTECTION_MULTIPLIER;
-//	
-//	public static final IdStat<Item> APPLICABLE_ICON_OVERRIDE = new IdStat<>("overrideIcons", "override that decides which items are used to decide to show in the tooltip display. If Empty all items are used", ForgeRegistries.ITEMS);
-	
 	public static BooleanValue DISABLE_JEI;
 	public static ForgeConfigSpec CONFIG;
 	

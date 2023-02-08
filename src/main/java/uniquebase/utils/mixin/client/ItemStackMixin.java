@@ -38,7 +38,7 @@ public class ItemStackMixin {
 	@Inject(method="appendEnchantmentNames", at=@At("HEAD"), cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private static void overrideEnchantmentTooltips(List<Component> tooltips, ListTag enchantments, CallbackInfo info)
 	{
-		if(EnchantmentHandler.INSTANCE.addEnchantmentInfo(enchantments, tooltips, ACTIVE_STACK.get().getItem()))
+		if(EnchantmentHandler.INSTANCE.addEnchantmentInfo(enchantments, tooltips, ACTIVE_STACK.get()))
 		{
 			info.cancel();
 		}

@@ -104,7 +104,7 @@ public class BaseConfig
 			configs.comment("Defines a small Description shown underneath the Enchantment");
 			showDescription = configs.define("Show Description", true);
 			configs.comment("Defines if Enchantment Descriptions should be also shown on Tools/Weapons/Armor/etc");
-			showOnTools = configs.define("Show on Items", false);
+			showOnTools = configs.define("Show Icons on Items", false);
 			configs.comment("Allows to control which Keybind Tooltips are displayed, 1 => Description, 2 => Icons, 4 => View, they can be added together if wanted.", "This won't disable functionality just hide the keybinding tooltip itself");
 			flags = configs.defineInRange("Visible Tooltips", 7, 0, 7);
 			configs.pop();
@@ -183,10 +183,14 @@ public class BaseConfig
 		public DoubleValue anvilMultiplier;
 		public DoubleValue protectionMultiplier;
 		public BooleanValue enableLimits;
+
+
 		Object2ObjectMap<ResourceLocation, DoubleLevelStats> itemComplexity = new Object2ObjectOpenHashMap<>();
 		Object2ObjectMap<ResourceLocation, DoubleLevelStats> enchantmentComplexity = new Object2ObjectOpenHashMap<>();
 		ConfigValue<List<? extends String>> itemComplexityConfig;
 		ConfigValue<List<? extends String>> enchantmentComplexityConfig;
+		DoubleLevelStats defaultItemCompelxity = new DoubleLevelStats("item complexity default", 10, 0.2D, "Defines the Default Value for Item limits if they are not defined");
+		public DoubleValue defaultEnchantmentComplexity;
 		public IdStat<Item> attribute = new IdStat<>("attribute_activators", ForgeRegistries.ITEMS, Items.BELL);
 		
 		public void load(ForgeConfigSpec.Builder configs, boolean addonsLoaded)
@@ -205,6 +209,7 @@ public class BaseConfig
 			protectionMultiplier = configs.defineInRange("protection_multiplier", 0.003875D, 0D, Double.MAX_VALUE);
 			configs.pop();
 			configs.push("features");
+			defaultItemCompelxity.handleConfig(configs);
 			configs.comment("Enables the Enchantment Limit Feature, which allows you to customize how many enchantments and what tiers of enchantments can be put on items.",
 					"Disabled by default since this is exteremly altering of the Default Experience");
 			enableLimits = configs.define("Enchantment Limits", false);
@@ -213,6 +218,8 @@ public class BaseConfig
 					"Example: minecraft:carrot;15;0.23",
 					"Default: 10+0.2*enchantability");
 			itemComplexityConfig = configs.defineList("Item Complexity Limits", ObjectLists.emptyList(), T -> true);
+			configs.comment("Default value if a Enchantment isn't listed under enchantment Complexity");
+			defaultEnchantmentComplexity = configs.defineInRange("Default Enchantment Complexity", 1D, 0.1D, Double.MAX_VALUE);
 			configs.comment("Defines the Complexity of the Enchantment, read \"Item Complexity Limits\" to understand what that is.",
 					"Format: EnchantmentRegistryName;base;perLevel",
 					"Example: minecraft:protection;1;2.3",
