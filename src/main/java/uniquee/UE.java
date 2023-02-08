@@ -161,6 +161,7 @@ public class UE extends BaseUEMod
 	public static ForgeConfigSpec CONFIG;
 	
 	public static final DamageSource COOKIE = (new DamageSource("cookie")).bypassArmor().bypassInvul().bypassEnchantments();
+	public static final DamageSource PERPETUAL_STRIKE_DAMAGE = (new DamageSource("perpetual_strike_damage")).bypassArmor().bypassMagic();
 
 	public static final SoundEvent ENDER_LIBRARIAN_SOUND = new SoundEvent(new ResourceLocation("uniquee", "ender_librarian"));
 	public static final SoundEvent GRIMOIRE_SOUND = new SoundEvent(new ResourceLocation("uniquee", "grimoire"));
@@ -211,7 +212,7 @@ public class UE extends BaseUEMod
 	    	event.getForgeRegistry().register("pestilences_odium", PESTILENCES_ODIUM_POTION);
 	    	event.getForgeRegistry().register("eternal_flame", ETERNAL_FLAME_POTION);
 	    	event.getForgeRegistry().register("thrombosis", THROMBOSIS);
-	    	event.getForgeRegistry().register("resilienced", RESILIENCE);
+	    	event.getForgeRegistry().register("resilience", RESILIENCE);
 		}
 		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS))
 		{

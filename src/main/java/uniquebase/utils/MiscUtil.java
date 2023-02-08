@@ -2,6 +2,7 @@ package uniquebase.utils;
 
 import java.math.RoundingMode;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -339,6 +340,15 @@ public class MiscUtil
 			}
 		}
 		return null;
+	}
+	
+	public static Set<EquipmentSlot> getEquipWithEnchantment(Enchantment ench, LivingEntity base) 
+	{
+		Set<EquipmentSlot> slots = new HashSet<>();
+		for(ItemStack a:base.getAllSlots()) {
+			if(a.getEnchantmentLevel(ench) > 0) slots.add(a.getEquipmentSlot());
+		}
+		return slots;
 	}
 	
 	public static EquipmentSlot[] getEquipmentSlotsFor(Enchantment ench)

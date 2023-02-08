@@ -189,6 +189,8 @@ public class UEUtils extends BaseUEMod
 
 		registerPattern("uniqueutil", "dreams", "ueudrms", Rarity.RARE);
 		registerPattern("uniqueutil", "dreams_color", "ueudrmsclr", Rarity.EPIC);
+		
+		registerPattern("uniqueutil", "dreams_dreams_skull", "ueudrmsdrmsskll", Rarity.EPIC);
 
 		registerPattern("uniqueutil", "dreams_tall_clear", "ueudrmstllclr", Rarity.RARE);
 		registerPattern("uniqueutil", "dreams_tall_clear_color", "ueudrmstllclrclr", Rarity.EPIC);

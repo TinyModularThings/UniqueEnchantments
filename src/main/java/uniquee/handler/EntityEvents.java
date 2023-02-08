@@ -737,7 +737,18 @@ public class EntityEvents
 				AttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
 				if(attr != null)
 				{
-					event.setAmount(event.getAmount() * (float)Math.log(1.719d + Math.pow((level+0.1D)*0.5D, Math.sqrt(attr.getValue()/1.2))));
+					double val = MiscUtil.getAttackSpeed(base);
+					event.setAmount(event.getAmount() * (float) ((level/(12+2*level))*Math.pow(val-1.2,1/3)+1));
+				}
+			}
+			level = enchantments.getInt(UE.FOCUS_IMPACT);
+			if(level > 0)
+			{
+				AttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
+				if(attr != null)
+				{
+					double val = MiscUtil.getAttackSpeed(base);
+					event.setAmount(event.getAmount() * (float) ((-(level/(8f+level)))*Math.pow(val-1.2f,1f/3f)+1f));
 				}
 			}
 			level = enchantments.getInt(UE.RANGE);
@@ -747,16 +758,6 @@ public class EntityEvents
 				if(value * value < new BlockPos(target.position()).distToCenterSqr(player.position()))
 				{
 					event.setAmount(event.getAmount() * Range.REDUCTION.getLogDevided(level+1));
-				}
-			}
-			level = enchantments.getInt(UE.FOCUS_IMPACT);
-			if(level > 0)
-			{
-				AttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
-				if(attr != null)
-				{
-					double val = Math.max(attr.getValue(), 0.01);
-					event.setAmount(event.getAmount() * (float)Math.log(1.719d + Math.pow((level+0.1D)*0.5D, Math.sqrt(1.2D/val))));
 				}
 			}
 			level = enchantments.getInt(UE.BRITTLING_BLADE);
@@ -826,7 +827,8 @@ public class EntityEvents
 				}
 				double damage = Math.pow((target.getHealth()*PerpetualStrike.PER_HIT_LEVEL.get(count))/MiscUtil.getAttackSpeed(base, 1D), 0.25);
 				double multiplier = PerpetualStrike.SCALING_STATE.get() ? 1 + Math.pow(count * PerpetualStrike.MULTIPLIER.get(), 2)/20 : Math.log10(10+damage*count*PerpetualStrike.MULTIPLIER.get());
-				event.setAmount((float)((event.getAmount()+damage)*multiplier));
+				MiscUtil.doNewDamageInstance(target, UE.PERPETUAL_STRIKE_DAMAGE, (float)(((event.getAmount()+damage)*multiplier)-event.getAmount()));
+//				event.setAmount((float)((event.getAmount()+damage)*multiplier));
 				StackUtils.setInt(stack, PerpetualStrike.HIT_ID, target.getId());
 			}
 			level = MiscUtil.getEnchantmentLevel(UE.ENDER_EYES, target.getItemBySlot(EquipmentSlot.HEAD));
@@ -851,47 +853,8 @@ public class EntityEvents
 			LivingEntity base = (LivingEntity)entity;
 			ItemStack stack = event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : base.getMainHandItem();
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
-			int level = UE.PROTECTION_UPGRADE.getCombinedPoints(target);
-			if(level > 0) 
-			{
-				float val = (float) Math.log10(1+level);
-				event.setAmount(event.getAmount() > val ? event.getAmount() - val : event.getAmount() * (1-(val/100)));
-			}
-			if(target.hasEffect(UE.RESILIENCE)) {
-				MobEffectInstance mei = target.getEffect(UE.RESILIENCE);
-				event.setAmount((float) (event.getAmount() * Math.pow(0.99, mei.getAmplifier()+1)));
-				((PotionMixin)mei).setPotionAmplifier(Math.max(mei.getAmplifier()-1, 0));
-			}
-			level = UE.DEATHS_UPGRADE.getPoints(stack);
-			if(level > 0)
-			{
-				int time = target.invulnerableTime;
-				target.invulnerableTime = 0;
-				target.hurt(DamageSource.MAGIC, (float) (target.getHealth()*Math.log10(1+level)/100));
-				target.invulnerableTime = time;
-			}
-			level = enchantments.getInt(UE.SPARTAN_WEAPON);
-			if(level > 0 && base.getOffhandItem().getItem() instanceof ShieldItem)
-			{
-				if(!event.getSource().isMagic())
-				{
-					event.getSource().setMagic();
-				}			
-				event.setAmount((float)(event.getAmount() * (1D + Math.sqrt(SpartanWeapon.EXTRA_DAMAGE.getFloat(level)))));
-			}
-			level = enchantments.getInt(UE.ENDEST_REAP);
-			if(level > 0)
-			{
-				if(rand.nextDouble() > Math.pow(0.9d, level)) 
-				{
-					target.addEffect(new MobEffectInstance(UE.THROMBOSIS, 100*level, level-1));
-				}
-				int time = target.invulnerableTime;
-				target.invulnerableTime = 0;
-				target.hurt(DamageSource.MAGIC, (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + (float)Math.sqrt(EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE)))));
-				target.invulnerableTime = time;
-			}
-			level = enchantments.getInt(UE.ADV_SHARPNESS);
+
+			int level = enchantments.getInt(UE.ADV_SHARPNESS);
 			if(level > 0 && MiscUtil.isTranscendent(base, stack, UE.ADV_SHARPNESS))
 			{
 				if(stack.getItem() instanceof TieredItem)
@@ -906,12 +869,44 @@ public class EntityEvents
 			level = enchantments.getInt(UE.ADV_SMITE);
 			if(level > 0 && MiscUtil.isTranscendent(base, stack, UE.ADV_SMITE))
 			{
-				event.setAmount(event.getAmount() + (float)(Math.pow(target.getHealth(), AmelioratedSmite.TRANSCENDED_DAMAGE_EXPONENT.get())));
+				MiscUtil.doNewDamageInstance(target, DamageSource.MAGIC.bypassMagic().bypassInvul(), (float)(Math.pow(target.getHealth(), AmelioratedSmite.TRANSCENDED_DAMAGE_EXPONENT.get())));
 			}
 			level = enchantments.getInt(UE.ADV_BANE_OF_ARTHROPODS);
 			if(level > 0 && MiscUtil.isTranscendent(base, stack, UE.ADV_BANE_OF_ARTHROPODS))
 			{
-				event.setAmount(event.getAmount() + (float)(Math.pow(target.getHealth(), AmelioratedBaneOfArthropod.TRANSCENDED_DAMAGE_EXPONENT.get())));
+				MiscUtil.doNewDamageInstance(target, DamageSource.MAGIC.bypassMagic().bypassInvul(), (float)(Math.pow(target.getHealth(), AmelioratedBaneOfArthropod.TRANSCENDED_DAMAGE_EXPONENT.get())));
+			}
+			level = UE.DEATHS_UPGRADE.getPoints(stack);
+			if(level > 0)
+			{
+				MiscUtil.doNewDamageInstance(target, DamageSource.MAGIC, (float) (target.getHealth()*Math.log10(1+level)/100));
+			}
+			level = enchantments.getInt(UE.SPARTAN_WEAPON);
+			if(level > 0 && base.getOffhandItem().getItem() instanceof ShieldItem)
+			{
+				event.getSource().bypassMagic().bypassInvul();
+				event.setAmount((float)(event.getAmount() * (1D + Math.sqrt(SpartanWeapon.EXTRA_DAMAGE.getFloat(level)))));
+			}
+			level = enchantments.getInt(UE.ENDEST_REAP);
+			if(level > 0)
+			{
+				if(rand.nextDouble() > Math.pow(0.9d, level)) 
+				{
+					target.addEffect(new MobEffectInstance(UE.THROMBOSIS, 100*level, level-1));
+				}
+				MiscUtil.doNewDamageInstance(target, DamageSource.MAGIC.bypassMagic(), (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + (float)Math.sqrt(EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE)))));
+			}
+			level = UE.PROTECTION_UPGRADE.getCombinedPoints(target);
+			if(level > 0) 
+			{
+				float val = (float) Math.log10(1+level);
+				event.setAmount(event.getAmount() > val ? event.getAmount() - val : event.getAmount() * (1-(val/100)));
+			}
+			if(target.hasEffect(UE.RESILIENCE)) 
+			{
+				MobEffectInstance mei = target.getEffect(UE.RESILIENCE);
+				event.setAmount((float) (event.getAmount() * Math.pow(0.99, mei.getAmplifier()+1)));
+				((PotionMixin)mei).setPotionAmplifier(Math.max(mei.getAmplifier()-1, 0));
 			}
 		}
 		if(event.getSource() == DamageSource.FLY_INTO_WALL)
