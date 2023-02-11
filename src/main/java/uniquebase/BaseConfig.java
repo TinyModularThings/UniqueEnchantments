@@ -276,7 +276,7 @@ public class BaseConfig
 		public double getComplexity(ResourceLocation id, int level)
 		{
 			DoubleLevelStats stats = enchantmentComplexity.get(id);
-			if(stats == null) return defaultBaseEnchantmentComplexity.get() + defaultLevelEnchantmentComplexity.get() * (enchantmentComplexityConsiderLevel.get() ? level : 1);
+			if(stats == null) return defaultBaseEnchantmentComplexity.get() + defaultLevelEnchantmentComplexity.get() * (enchantmentComplexityConsiderLevel.get() ? level : 0);
 			return stats.getAsDouble(level);
 		}
 	}
