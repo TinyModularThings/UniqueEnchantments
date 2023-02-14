@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Entity.RemovalReason;
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import uniqueapex.UEApex;
 import uniqueapex.handler.FusionHandler;
 import uniqueapex.handler.recipe.FusionContext;
 import uniqueapex.handler.recipe.fusion.FusionRecipe;
@@ -65,6 +67,7 @@ public abstract class BaseTrackedRecipe
 		{
 			basePositions.add(endCrystals.get(i).position());
 		}
+		world.playSound(null, pos, UEApex.APEX_PROCESS_SOUND, SoundSource.BLOCKS, 1f, 1f);
 	}
 	
 	protected void set(Level world, BlockPos pos, FusionContext context, int beaconSize, int currentTick, List<EndCrystal> endCrystals, List<Vec3> basePositions)

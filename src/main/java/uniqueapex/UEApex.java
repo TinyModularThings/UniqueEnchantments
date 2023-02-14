@@ -74,6 +74,7 @@ public class UEApex extends BaseUEMod
 	public static final IdStat<Item> UPGRADING = new IdStat<>("fusion_upgrade_activators", ForgeRegistries.ITEMS, Items.TOTEM_OF_UNDYING);
 	
 	public static final SoundEvent SECOND_LIFE_SOUND = new SoundEvent(new ResourceLocation("uniqueapex", "second_life"));
+	public static final SoundEvent APEX_PROCESS_SOUND = new SoundEvent(new ResourceLocation("uniqueapex", "apex_process_sound"));
 	
 	public UEApex()
 	{
@@ -103,6 +104,7 @@ public class UEApex extends BaseUEMod
 		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.SOUND_EVENTS))
 		{
 			event.getForgeRegistry().register("second_life", SECOND_LIFE_SOUND);
+			event.getForgeRegistry().register("apex_process_sound", APEX_PROCESS_SOUND);
 		}
 	}
 	

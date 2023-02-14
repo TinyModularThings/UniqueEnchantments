@@ -1,0 +1,9 @@
+{
+    "type": "uniqueapex:fusion_upgrade",
+    "ingredients": [
+    ],
+    "target": "minecraft:fortune",
+    "xp": 300, 
+    "books": 2, 
+    "maxLevel": 10 
+}

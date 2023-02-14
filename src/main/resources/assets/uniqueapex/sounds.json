@@ -5,5 +5,12 @@
 		"sounds": [
 			{"name": "uniqueapex:second_life", "stream": true }
 		]
+	},
+	"apex_process_sound": {
+		"category": "blocks",
+		"subtitle": "Apex Process On-going",
+		"sounds": [
+			{"name": "uniqueapex:apex_process_sound", "stream":true}
+		]
 	}
 }
