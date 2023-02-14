@@ -24,7 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -70,7 +69,7 @@ public class FusionHandler
 		if(!UEApex.CRAFTING.contains(item) && !UEApex.UPGRADING.contains(item)) return;
 		Level world = event.getLevel();
 		BlockPos pos = event.getPos();
-		if(world.getBlockState(pos).getBlock() != Blocks.CHEST) return;
+		if(getHandler(world.getBlockEntity(pos), Direction.UP) == null) return;
 		int beaconSize = isValidBeacon(world, pos.below());
 		if(beaconSize == 0) return;
 		FusionContext context = context(world, pos.below());
@@ -260,8 +259,7 @@ public class FusionHandler
 	
 	private IItemHandler getHandler(BlockEntity tile, Direction dir)
 	{
-		if(tile == null || tile.getBlockState().getBlock() != Blocks.CHEST) return null;
-		return tile.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite()).orElse(null);
+		return tile == null ? null : tile.getCapability(ForgeCapabilities.ITEM_HANDLER, dir.getOpposite()).orElse(null);
 	}
 	
 	public int isValidBeacon(Level world, BlockPos pos)

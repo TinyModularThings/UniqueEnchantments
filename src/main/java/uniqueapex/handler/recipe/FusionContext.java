@@ -246,7 +246,7 @@ public final class FusionContext extends SimpleContainer
 			for(Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(stack).entrySet())
 			{
 				if(i != 0) ((Object2IntLinkedOpenHashMap<Enchantment>)instances).addTo(entry.getKey(), 1);
-				((Object2LongLinkedOpenHashMap<Enchantment>)totalLevels).addTo(entry.getKey(), (int)(Math.pow(4, entry.getValue())*stack.getCount()));
+				((Object2LongLinkedOpenHashMap<Enchantment>)totalLevels).addTo(entry.getKey(), (int)(Math.pow(2, entry.getValue())*stack.getCount()));
 			}
 		}
 	}

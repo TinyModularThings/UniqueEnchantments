@@ -84,7 +84,7 @@ public class UEApex extends BaseUEMod
 		MinecraftForge.EVENT_BUS.register(FusionHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(ApexHandler.INSTANCE);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerContent);
-
+		
 		UPGRADE_MULTIPLIERS.defaultReturnValue(1F);
 	}
 	
