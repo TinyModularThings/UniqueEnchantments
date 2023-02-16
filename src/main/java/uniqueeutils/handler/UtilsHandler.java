@@ -969,7 +969,7 @@ public class UtilsHandler
 		{
 			double power = SagesSoul.getEnchantPower(event.getItem(), level);
 			int levels = StackUtils.getInt(event.getItem(), SagesSoul.STORED_XP, 0);
-			event.setDuration((int)(event.getDuration() / (event.getDuration() * Math.log10(10+Math.pow(SagesSoul.DRAW_SPEED.get(power*levels), 0.25)))));
+			event.setDuration((int)(event.getDuration() / Math.log10(10+Math.pow(SagesSoul.DRAW_SPEED.get(power*levels), 0.25))));
 		}
 	}
 	
