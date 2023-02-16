@@ -4,8 +4,10 @@ import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import com.google.common.math.DoubleMath;
 
@@ -49,6 +51,8 @@ import net.minecraft.world.level.block.JigsawBlock;
 import net.minecraft.world.level.block.StructureBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.BaseConfig;
@@ -381,6 +385,30 @@ public class MiscUtil
 			}
 		}
 		return NO_ENCHANTMENT;
+	}
+	
+	public static <T extends Entity> T targetEntities(Class<T> target, Entity source, double maxDistance, Predicate<T> filter)
+	{
+		Level level = source.level;
+		Vec3 sourcePos = source.getEyePosition();
+        Vec3 look = source.getViewVector(1.0F);
+        Vec3 max = sourcePos.add(look.x * maxDistance, look.y * maxDistance, look.z * maxDistance);
+        AABB scanBox = source.getBoundingBox().expandTowards(look.scale(maxDistance)).inflate(1.0D, 1.0D, 1.0D);
+		double closest = Double.MAX_VALUE;
+		T result = null;
+		
+		for(T potentialTarget : level.getEntitiesOfClass(target, scanBox, filter)) {
+			AABB aabb = potentialTarget.getBoundingBox().inflate(0.3D);
+			Optional<Vec3> optional = aabb.clip(sourcePos, max);
+			if (optional.isPresent()) {
+				double distance = sourcePos.distanceToSqr(optional.get());
+				if (distance < closest) {
+					result = potentialTarget;
+					closest = distance;
+				}
+			}
+		}
+		return result;
 	}
 	
 	public static boolean harvestBlock(BreakEvent event, BlockState state, BlockPos pos)
