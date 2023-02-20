@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -21,7 +22,9 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.common.plugins.vanilla.anvil.AnvilRecipe;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -29,14 +32,22 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
+import uniquebase.api.BaseUEMod;
+import uniquebase.utils.IdStat;
 import uniquebase.utils.MiscUtil;
+import uniquee.UE;
+import uniquee.enchantments.unique.NaturesGrace;
 
 @JeiPlugin
 public class JEIView implements IModPlugin
 {
 	public static final RecipeType<WrappedEnchantment> REGISTRY = RecipeType.create("uniquebase", "ue_enchantments", WrappedEnchantment.class);
+	public static final RecipeType<FilterEntry> FILTER = RecipeType.create("uniquebase", "ue_enchantment_filters", FilterEntry.class);
 	
 	@Override
 	public void registerRecipes(IRecipeRegistration registration)
@@ -67,6 +78,7 @@ public class JEIView implements IModPlugin
 			if(net.minecraft.world.item.enchantment.EnchantmentCategory.DIGGER.canEnchant(stack.getItem())) recipes.add(setRepairCost(stack, new ItemStack(Items.HORN_CORAL_BLOCK)));
 		}
 		registration.addRecipes(RecipeTypes.ANVIL, recipes);
+		registration.addRecipes(FILTER, ObjectLists.singleton(new FilterEntry(UE.NATURES_GRACE, this.getValidItems(T -> NaturesGrace.FLOWERS.applyAsInt(T) > 0), Component.literal("NatureBlocksWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"))));
 	}
 	
 	private AnvilRecipe setRepairCost(ItemStack stack, ItemStack item)
@@ -86,6 +98,7 @@ public class JEIView implements IModPlugin
 	{
 		if(UEBase.DISABLE_JEI.get()) return;
 		registry.addRecipeCategories(new EnchantmentCategory(registry.getJeiHelpers().getGuiHelper(), REGISTRY));
+		registry.addRecipeCategories(new FilterCategory(registry.getJeiHelpers().getGuiHelper(), FILTER));
 	}
 
 	@Override
@@ -105,12 +118,14 @@ public class JEIView implements IModPlugin
 			Enchantment en = getFirstEnchantment(T);
 			return en == null || ench.add(en);
 		});
+		for(BaseUEMod mod : BaseUEMod.getAllMods()) {
+			mod.getBannerItems(list::add);
+		}
 		jeiRuntime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, list);
 	}
 	
 	public int getLevel(ItemStack item) {
 		int maxLevel = 0;
-		
 		for(int level : EnchantmentHelper.getEnchantments(item).values()) {
 			maxLevel = Math.max(maxLevel, level);
 		}
@@ -122,4 +137,39 @@ public class JEIView implements IModPlugin
 		return it.hasNext() ? it.next() : null;
 	}
 	
+	public List<ItemStack> getValidEntities(IdStat<EntityType<?>> filter)
+	{
+		List<ItemStack> result = new ObjectArrayList<>();
+		for(EntityType<?> type : ForgeRegistries.ENTITY_TYPES)
+		{
+			if(filter.contains(type)) result.add(new ItemStack(ForgeSpawnEggItem.fromEntityType(type)));
+		}
+		return result;
+	}
+	
+	public List<ItemStack> getValidItems(Predicate<BlockState> validator)
+	{
+		List<ItemStack> result = new ObjectArrayList<>();
+		for(Block block : ForgeRegistries.BLOCKS) {
+			if(validator.test(block.defaultBlockState())) {
+				try {
+					Item item = block.asItem();
+					if(item == null || item == Items.AIR) continue;
+					result.add(new ItemStack(item));
+				}
+				catch(Exception e) {}
+			}
+		}
+		return result;
+	}
+	
+	public List<ItemStack> getValidItems(Predicate<ItemStack> validator, List<ItemStack> itemPool)
+	{
+		List<ItemStack> result = new ObjectArrayList<>();
+		for(int i = 0,m=itemPool.size();i<m;i++) {
+			ItemStack stack = itemPool.get(i);
+			if(validator.test(stack)) result.add(stack);
+		}
+		return result;
+	}
 }

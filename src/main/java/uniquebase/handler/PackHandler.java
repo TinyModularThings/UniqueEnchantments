@@ -50,18 +50,25 @@ public class PackHandler
 		@Override
 		public void loadPacks(Consumer<Pack> acceptor, PackConstructor factory)
 		{
-			acceptor.accept(Pack.create("mod:uepack", false, () -> new DeveloperPack(ModList.get().getModFileById("uniquebase").getFile()), factory, Pack.Position.TOP, PackSource.BUILT_IN));
+			acceptor.accept(Pack.create("mod:uepack", false, () -> new DeveloperPack(ModList.get().getModFileById("uniquebase").getFile(), "mc", "UE Book Resource", "Nicer Enchantment Book Texture"), factory, Pack.Position.TOP, PackSource.BUILT_IN));
+			acceptor.accept(Pack.create("mod:uelightpack", false, () -> new DeveloperPack(ModList.get().getModFileById("uniquebase").getFile(), "lightweight", "UE Book Resource", "Nicer but faster Enchantment Book Texture"), factory, Pack.Position.TOP, PackSource.BUILT_IN));
 		}
 	}
 	
 	public static class DeveloperPack extends AbstractPackResources
 	{
 	    private final IModFile modFile;
-		
-	    public DeveloperPack(IModFile modFile)
+		private final String filePackage;
+		private final String name;
+		private final String description;
+	    
+	    public DeveloperPack(IModFile modFile, String filePackage, String name, String description)
 		{
 			super(new File("dummy"));
 			this.modFile = modFile;
+			this.filePackage = filePackage;
+			this.name = name;
+			this.description = description;
 		}
 	    
 		@Override
@@ -70,13 +77,13 @@ public class PackHandler
 		@Override
 		protected boolean hasResource(String name)
 		{
-	        return Files.exists(modFile.findResource(name.replaceFirst("minecraft", "mc")));
+	        return Files.exists(modFile.findResource(name.replaceFirst("minecraft", filePackage)));
 		}
 		
 		@Override
 		protected InputStream getResource(String name) throws IOException
 		{
-			name = name.replaceFirst("minecraft", "mc");
+			name = name.replaceFirst("minecraft", filePackage);
 	        final Path path = modFile.findResource(name);
 	        if(!Files.exists(path)) throw new FileNotFoundException(name);
 	        return Files.newInputStream(path, StandardOpenOption.READ);		
@@ -86,8 +93,8 @@ public class PackHandler
 		public Collection<ResourceLocation> getResources(PackType type, String namespaceIn, String pathIn, Predicate<ResourceLocation> filterIn)
 		{
 			if(type == PackType.SERVER_DATA) return Collections.emptyList();
-            Path root = modFile.findResource(type.getDirectory(), namespaceIn.replaceFirst("minecraft", "mc")).toAbsolutePath();
-            Path inputPath = root.getFileSystem().getPath(pathIn.replaceFirst("minecraft", "mc"));
+            Path root = modFile.findResource(type.getDirectory(), namespaceIn.replaceFirst("minecraft", filePackage)).toAbsolutePath();
+            Path inputPath = root.getFileSystem().getPath(pathIn.replaceFirst("minecraft", filePackage));
             try { return Files.walk(root).map(path -> root.relativize(path.toAbsolutePath())).filter(path -> !path.toString().endsWith(".mcmeta")).filter(path -> path.startsWith(inputPath)).filter(path -> filterIn.test(new ResourceLocation(namespaceIn, path.getFileName().toString()))).map(path -> new ResourceLocation(namespaceIn, Joiner.on('/').join(path))).collect(Collectors.toList()); }
 			catch(IOException e) { return Collections.emptyList(); }
 		}
@@ -104,7 +111,7 @@ public class PackHandler
 		@Override
 		public String getName()
 		{
-			return "Unique Enchantments nicer Enchanted Book";
+			return name;
 		}
 		
 		@Override
@@ -113,7 +120,7 @@ public class PackHandler
 		{
 			if(deserializer.getMetadataSectionName().equalsIgnoreCase("pack"))
 			{
-				return (T)new PackMetadataSection(Component.literal("UE ResourcePack that adds a nicer Enchanted book texture to the game"), 9);
+				return (T)new PackMetadataSection(Component.literal(description), 9);
 			}
 			return null;
 		}
