@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -17,6 +18,8 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.item.BannerPatternItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -50,6 +53,11 @@ public abstract class BaseUEMod
 	public static boolean containsMod(BaseUEMod mod)
 	{
 		return ALL_MODS.contains(mod);
+	}
+	
+	public static List<BaseUEMod> getAllMods()
+	{
+		return new ObjectArrayList<>(ALL_MODS);
 	}
 	
 	public static void validateConfigFolder() {
@@ -121,6 +129,16 @@ public abstract class BaseUEMod
 	protected void registerPattern(String id, String name, String hash, Item.Properties props)
 	{
 		banners.put(new ResourceLocation(id, name), new Tuple<>(new BannerPattern(hash), props));
+	}
+	
+	public void getBannerItems(Consumer<ItemStack> listener)
+	{
+		for(ResourceLocation id : banners.keySet())
+		{
+			Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(id.getNamespace(), id.getPath()+"_banner_pattern"));
+			if(item == null || item == Items.AIR) continue;
+			listener.accept(new ItemStack(item));
+		}
 	}
 	
 	protected Enchantment register(Enchantment ench)

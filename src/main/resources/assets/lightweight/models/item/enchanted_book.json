@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "minecraft:item/smallbook_base"
+  },
+  "overrides": [
+        { "predicate": { "m:enchantment_attributes": 0.0 }, "model": "item/enchanted_book" },
+        { "predicate": { "ue:enchantment_attributes": 2.0 }, "model": "minecraft:item/enchanted_book_2" },
+        { "predicate": { "ue:enchantment_attributes": 4.0 }, "model": "minecraft:item/enchanted_book_4" },
+        { "predicate": { "ue:enchantment_attributes": 6.0 }, "model": "minecraft:item/enchanted_book_6" }
+    ]
+}

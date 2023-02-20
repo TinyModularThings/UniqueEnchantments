@@ -6,6 +6,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeConfigSpec.Builder;
@@ -33,6 +35,11 @@ public class EnderEyes extends UniqueEnchantment
 		addIncompats(UE.TREASURERS_EYES);
 	}
 	
+	public static TargetingConditions createTarget(LivingEntity man)
+	{
+		return TargetingConditions.forNonCombat().selector(getPlayerFilter(man)).range(MiscUtil.getAttribute(man, Attributes.FOLLOW_RANGE, 16D));
+	}
+	
 	public static Predicate<LivingEntity> getPlayerFilter(Entity living)
 	{
 		return new Predicate<LivingEntity>() {
@@ -46,5 +53,10 @@ public class EnderEyes extends UniqueEnchantment
 		        return d1 > 1.0D - 0.025D / d0 ? input.hasLineOfSight(living) : false;
 			}
 		};
+	}
+	
+	public static boolean isValidEntity(LivingEntity living)
+	{
+		return !living.isSpectator() && living.isPickable();
 	}
 }

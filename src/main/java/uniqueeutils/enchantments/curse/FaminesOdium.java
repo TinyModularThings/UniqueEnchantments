@@ -3,6 +3,7 @@ package uniqueeutils.enchantments.curse;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +22,7 @@ import uniquebase.utils.IntStat;
 
 public class FaminesOdium extends UniqueEnchantment
 {
+	public static final String TAG_INVALID = "NO_FOOD";
 	public static final IntStat DELAY = new IntStat(1200, "delay");
 	public static final DoubleStat DAMAGE = new DoubleStat(0.00625F, "damage");
 	public static final IdStat<Item> FOOD_BLACK_LIST = new IdStat<>("food_black_list", ForgeRegistries.ITEMS);
@@ -46,7 +48,7 @@ public class FaminesOdium extends UniqueEnchantment
 		{
 			ItemStack stack = handler.extractItem(i, 1, true);
 			if(stack.isEmpty()) continue;
-			if(!FOOD_BLACK_LIST.contains(stack.getItem()) && stack.getItem().isEdible())
+			if(!FOOD_BLACK_LIST.contains(stack.getItem()) && stack.getItem().isEdible() && isValidFood(stack))
 			{
 				result.add(new FoodEntry(handler, i));
 			}
@@ -57,6 +59,12 @@ public class FaminesOdium extends UniqueEnchantment
 				getRandomFood(subHandler.orElse(EmptyHandler.INSTANCE), true, result);
 			}
 		}
+	}
+	
+	public static boolean isValidFood(ItemStack stack)
+	{
+		CompoundTag tag = stack.getTag();
+		return tag == null || !tag.getBoolean(TAG_INVALID);
 	}
 	
 	public static class FoodEntry

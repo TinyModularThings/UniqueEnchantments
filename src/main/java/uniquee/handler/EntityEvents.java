@@ -37,7 +37,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
@@ -152,7 +151,7 @@ import uniquee.handler.potion.Thrombosis;
 public class EntityEvents
 {
 	public static final EntityEvents INSTANCE = new EntityEvents();
-	static final ThreadLocal<UUID> ENDER_MEN_TELEPORT = new ThreadLocal<>();
+	static final ThreadLocal<UUID> ENDER_MAN_HIT = new ThreadLocal<>();
 	public static final ThreadLocal<Boolean> BREAKING = ThreadLocal.withInitial(() -> false);
 	public RandomSource rand = RandomSource.create();
 	
@@ -307,6 +306,12 @@ public class EntityEvents
 				{
 					player.getItemBySlot(EquipmentSlot.CHEST).getTag().putBoolean(IcarusAegis.FLYING_TAG, player.isFallFlying());
 				}
+				level = container.getEnchantment(UE.TREASURERS_EYES, EquipmentSlot.HEAD);
+				if(level > 0)
+				{
+					LivingEntity hit = MiscUtil.targetEntities(LivingEntity.class, player, 64, EnderEyes::isValidEntity);
+					if(hit != null) hit.addEffect(new MobEffectInstance(MobEffects.GLOWING, 200));
+				}
 			}
 			if(player.level.getGameTime() % 40 == 0)
 			{
@@ -351,6 +356,12 @@ public class EntityEvents
 					}
 				}	
 				data.remove(DeathsOdium.CURSE_DAMAGE);
+			}
+			int level = container.getEnchantment(UE.ENDER_EYES, EquipmentSlot.HEAD);
+			if(level > 0)
+			{
+				LivingEntity hit = MiscUtil.targetEntities(LivingEntity.class, player, 64, EnderEyes::isValidEntity);
+				if(hit != null) hit.addEffect(new MobEffectInstance(UE.INTERCEPTION, 300));
 			}
 		}
 		int level = container.getEnchantment(UE.CLOUD_WALKER, EquipmentSlot.FEET);
@@ -1274,7 +1285,7 @@ public class EntityEvents
 				Entity entity = hit.getEntity();
 				if(entity instanceof EnderMan)
 				{
-					ENDER_MEN_TELEPORT.set(entity.getUUID());
+					ENDER_MAN_HIT.set(entity.getUUID());
 				}
 			}
 		}
@@ -1283,16 +1294,18 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onEndermenTeleport(EntityTeleportEvent event)
 	{
-		UUID id = ENDER_MEN_TELEPORT.get();
+		UUID id = ENDER_MAN_HIT.get();
 		if(event.getEntity().getUUID().equals(id))
 		{
-			ENDER_MEN_TELEPORT.set(null);
+			ENDER_MAN_HIT.set(null);
 			event.setCanceled(true);
+			return;
 		}
 		Entity entity = event.getEntity();
-		if(entity instanceof EnderMan living && living.getCommandSenderWorld().getNearestPlayer(TargetingConditions.forNonCombat().selector(EnderEyes.getPlayerFilter(living)).range(MiscUtil.getAttribute(living, Attributes.FOLLOW_RANGE, 16D)), living) != null)
+		if(entity instanceof LivingEntity living && living.hasEffect(UE.INTERCEPTION))
 		{
-        	event.setCanceled(true);
+			event.setCanceled(true);
+			return;
 		}
 	}
 	

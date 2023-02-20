@@ -98,6 +98,7 @@ import uniquee.handler.EntityEvents;
 import uniquee.handler.LootModifier;
 import uniquee.handler.potion.AmelioratedStrength;
 import uniquee.handler.potion.EternalFlamePotion;
+import uniquee.handler.potion.InterceptionPotion;
 import uniquee.handler.potion.PestilencesOdiumPotion;
 import uniquee.handler.potion.Resilience;
 import uniquee.handler.potion.Thrombosis;
@@ -157,6 +158,7 @@ public class UE extends BaseUEMod
 	public static MobEffect PESTILENCES_ODIUM_POTION;
 	public static MobEffect THROMBOSIS;
 	public static MobEffect RESILIENCE;
+	public static MobEffect INTERCEPTION;
 
 	public static ForgeConfigSpec CONFIG;
 	
@@ -181,6 +183,7 @@ public class UE extends BaseUEMod
 		ETERNAL_FLAME_POTION = new EternalFlamePotion();
 		PESTILENCES_ODIUM_POTION = new PestilencesOdiumPotion();
 		RESILIENCE = new Resilience();
+		INTERCEPTION = new InterceptionPotion();
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		init(bus, "UE.toml");
 		bus.register(this);
@@ -213,6 +216,7 @@ public class UE extends BaseUEMod
 	    	event.getForgeRegistry().register("eternal_flame", ETERNAL_FLAME_POTION);
 	    	event.getForgeRegistry().register("thrombosis", THROMBOSIS);
 	    	event.getForgeRegistry().register("resilience", RESILIENCE);
+	    	event.getForgeRegistry().register("interception", INTERCEPTION);
 		}
 		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS))
 		{

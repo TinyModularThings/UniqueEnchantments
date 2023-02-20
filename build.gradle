@@ -67,6 +67,8 @@ dependencies {
 	implementation fg.deobf("curse.maven:jei-238222:3944627")
 	implementation fg.deobf("curse.maven:patchouli-306770:4031402")
 	implementation fg.deobf("curse.maven:rubidium-574856:3973894")
+//    implementation fg.deobf("curse.maven:enchantment-descriptions-250419:4277356")
+//	implementation fg.deobf("curse.maven:bookshelf-228525:4354814")
 	
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
