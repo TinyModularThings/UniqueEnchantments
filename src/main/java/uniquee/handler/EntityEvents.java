@@ -98,7 +98,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem
 import net.minecraftforge.event.entity.player.PlayerXpEvent.PickupXp;
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.api.events.ItemDurabilityChangeEvent;
 import uniquebase.handler.MathCache;
@@ -143,7 +142,6 @@ import uniquee.enchantments.unique.Ecological;
 import uniquee.enchantments.unique.EnderMarksmen;
 import uniquee.enchantments.unique.EndestReap;
 import uniquee.enchantments.unique.FastFood;
-import uniquee.enchantments.unique.Grimoire;
 import uniquee.enchantments.unique.IcarusAegis;
 import uniquee.enchantments.unique.NaturesGrace;
 import uniquee.enchantments.unique.PhoenixBlessing;
@@ -296,40 +294,6 @@ public class EntityEvents
 				if(level > 0 && !player.getCombatTracker().isInCombat())
 				{
 					player.heal((float)(Math.log(1+level)/10));
-				}
-			}
-			if(player.level.getGameTime() % 1200 == 0)
-			{
-				EquipmentSlot[] slots = MiscUtil.getEquipmentSlotsFor(UE.GRIMOIRE);
-				for(int i = 0;i<slots.length;i++)
-				{
-					int level = container.getEnchantment(UE.GRIMOIRE, slots[i]);
-					if(level > 0)
-					{
-						if(Grimoire.applyGrimore(player.getItemBySlot(slots[i]), level, player))
-						{
-							player.level.playSound(null, player.blockPosition(), UE.GRIMOIRE_SOUND, SoundSource.AMBIENT, 1F, 1F);
-						}
-					}
-					else
-					{
-						ItemStack stack = player.getItemBySlot(slots[i]);
-						if(stack.hasTag() && stack.getTag().contains(Grimoire.GRIMOIRE_STORAGE))
-						{
-							CompoundTag tag = stack.getTag();
-							tag.put("Enchantments", tag.get(Grimoire.GRIMOIRE_STORAGE));
-							tag.remove(Grimoire.GRIMOIRE_STORAGE);
-							String id = ForgeRegistries.ENCHANTMENTS.getKey(UE.GRIMOIRE).toString();
-							ListTag list = tag.getList("Enchantments", 10);
-							for(int j = 0,m=list.size();j<m;j++) {
-								CompoundTag ench = list.getCompound(j);
-								if(id.equals(ench.getString("id"))) {
-									list.remove(j--);
-									break;
-								}
-							}
-						}
-					}
 				}
 			}
 			if(player.level.getGameTime() % 30 == 0)
@@ -531,6 +495,7 @@ public class EntityEvents
 				event.setNewSpeed(event.getNewSpeed() * Range.REDUCTION.getLogDevided(level+1));
 			}
 		}
+		System.out.println(event.getNewSpeed());
 	}
 	
 	public boolean isMining(Player player)
