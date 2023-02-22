@@ -98,6 +98,11 @@ public class MiscUtil
 		return entity instanceof Player ? ((Player)entity).experienceLevel : defaultValue;
 	}
 	
+	public static int getPlayerExperience(Entity entity, int defaultValue)
+	{
+		return entity instanceof Player ? ((Player)entity).totalExperience : defaultValue;
+	}
+	
 	public static int getTrancendenceLevel(Enchantment enchantment)
 	{
 		return enchantment instanceof IToggleEnchantment ? ((IToggleEnchantment)enchantment).getTranscendedLevel() : 1000;

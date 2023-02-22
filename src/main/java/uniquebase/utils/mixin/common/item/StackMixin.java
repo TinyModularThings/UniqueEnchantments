@@ -13,9 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import uniquebase.api.events.ItemDurabilityChangeEvent;
-import uniquebase.utils.MiscUtil;
-import uniquee.UE;
-import uniquee.enchantments.unique.Grimoire;
+import uniquebase.api.events.SetItemDurabilityEvent;
 
 @Mixin(ItemStack.class)
 public class StackMixin
@@ -25,19 +23,14 @@ public class StackMixin
 	@Inject(method = "hurtAndBreak", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void afterHurt(int damage, LivingEntity living, Consumer<LivingEntity> callback, CallbackInfo info)
 	{
-		MinecraftForge.EVENT_BUS.post(new ItemDurabilityChangeEvent((ItemStack)(Object)this, damage, living));
+		MinecraftForge.EVENT_BUS.post(new ItemDurabilityChangeEvent(stack, damage, living));
 	}
 	
 	@Inject(method = "getMaxDamage", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	public void maxDurability(CallbackInfoReturnable<Integer> info)
 	{
-		int oldDur = info.getReturnValueI();
-		int level = MiscUtil.getEnchantmentLevel(UE.GRIMOIRE, stack);
-		if(level > 0) {
-			int enchantability = stack.getEnchantmentValue();
-			int totalLevel = MiscUtil.getItemLevel(stack);
-			int newDur = (int)Math.ceil((oldDur+Grimoire.FLAT_SCALING.get(totalLevel))*Math.sqrt((100+(totalLevel+enchantability)*Grimoire.LEVEL_SCALING.get(level))/100));
-			info.setReturnValue(newDur);
-		} else info.setReturnValue(oldDur);
+		SetItemDurabilityEvent event = new SetItemDurabilityEvent(stack, info.getReturnValueI());
+		MinecraftForge.EVENT_BUS.post(event);
+		info.setReturnValue(event.getDurability());
 	}
 }

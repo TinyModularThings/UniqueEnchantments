@@ -14,7 +14,6 @@ public class PlayerEntityMixin {
 
 	@ModifyVariable(method = "getDigSpeed", at = @At(value = "STORE", ordinal = 1), remap = false)
     public float overrideEff(float speed) {
-		System.out.println(speed);
 		Player ent = ((Player)(Object)this);
 		int level = 0;
 		ItemStack stack = ent.getMainHandItem();

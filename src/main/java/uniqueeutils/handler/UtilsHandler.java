@@ -951,7 +951,7 @@ public class UtilsHandler
 			event.setNewSpeed(event.getNewSpeed() * (player.isOnGround() ? 1F : 5F) * (inWater && !EnchantmentHelper.hasAquaAffinity(player) ? 5F : 1F));
 			if(inWater || !player.isOnGround())
 			{
-				event.setNewSpeed((float)(event.getNewSpeed() * (1-Math.sqrt(1 / (1 + level * level * Adept.SPEED_SCALE.get())))));
+				event.setNewSpeed((float)(event.getNewSpeed() * (1+(-Math.pow(0.5, Adept.SPEED_SCALE.get(level))))));
 			}
 		}
 		level = ench.getInt(UEUtils.REINFORCED);

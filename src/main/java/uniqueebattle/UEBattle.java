@@ -29,6 +29,7 @@ import uniqueebattle.enchantments.simple.CelestialBlessing;
 import uniqueebattle.enchantments.simple.Fury;
 import uniqueebattle.enchantments.simple.GolemSoul;
 import uniqueebattle.enchantments.simple.IronBird;
+import uniqueebattle.enchantments.simple.SagesGrace;
 import uniqueebattle.enchantments.simple.Snare;
 import uniqueebattle.enchantments.simple.StreakersWill;
 import uniqueebattle.enchantments.upgrades.AresUpgrade;
@@ -56,6 +57,7 @@ public class UEBattle extends BaseUEMod
 	public static Enchantment DEEP_WOUNDS;
 	public static Enchantment WARS_ODIUM;
 	public static Enchantment ARES_GRACE;
+	public static Enchantment SAGES_GRACE;
 	public static Enchantment GRANIS_SOUL;
 	public static Enchantment ARTEMIS_SOUL;
 	public static Enchantment SNARE;
@@ -72,6 +74,7 @@ public class UEBattle extends BaseUEMod
 	public static final SoundEvent WARS_ODIUM_REVIVE_SOUND = new SoundEvent(new ResourceLocation("uniquebattle", "wars_odium_revive"));
 
 	public static final DamageSource ARES_GRACE_DAMAGE = (new DamageSource("ares_grace_damage")).bypassArmor();
+	public static final DamageSource SAGES_GRACE_DAMAGE = (new DamageSource("sages_grace_damage")).bypassMagic().bypassEnchantments();
 	
 	public static final EnchantedUpgrade ARES_UPGRADE = new AresUpgrade();
 	public static final EnchantedUpgrade IFRITS_UPGRADE = new IfritsUpgrade();
@@ -202,6 +205,7 @@ public class UEBattle extends BaseUEMod
 		DEEP_WOUNDS = register(new DeepWounds());
 		WARS_ODIUM = register(new WarsOdium());
 		ARES_GRACE = register(new AresGrace());
+		SAGES_GRACE = register(new SagesGrace());
 		GRANIS_SOUL = register(new GranisSoul());
 		ARTEMIS_SOUL = register(new ArtemisSoul());
 		SNARE = register(new Snare());
