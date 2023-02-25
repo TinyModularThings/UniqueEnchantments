@@ -13,10 +13,11 @@ public class StreakersWill extends UniqueEnchantment
 {
 	public static final DoubleStat LOSS_PER_LEVEL = new DoubleStat(4.25D, "loss");
 	public static final DoubleLevelStats CHANCE = new DoubleLevelStats("chance", 0.1D, 0.15D);
+	public static final String STREAKERS_WILL_NAME = "STREAKING_POWER";
 	
 	public StreakersWill()
 	{
-		super(new DefaultData("streakers_will", Rarity.UNCOMMON, 4, false, false, 12, 4, 15), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
+		super(new DefaultData("streakers_will", Rarity.UNCOMMON, 4, false, false, 12, 4, 15).setTrancendenceLevel(200), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(LOSS_PER_LEVEL, CHANCE);
 	}
 	

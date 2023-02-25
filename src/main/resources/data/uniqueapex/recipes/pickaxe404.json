@@ -36,5 +36,5 @@
 	"lock": true,
 	"max": 4,
     "output": "uniqueapex:pickaxe404",
-    "output_mode": "average" 
+    "output_mode": "mult" 
 }

@@ -3,6 +3,10 @@ package uniquee.enchantments.curse;
 import java.util.UUID;
 
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
@@ -17,8 +21,14 @@ public class ComboStar extends UniqueEnchantment
 	
 	public ComboStar()
 	{
-		super(new DefaultData("combo_star", Rarity.VERY_RARE, 2, false, false, 20, 10, 25).setHardCap(600), EnchantmentCategory.BREAKABLE, EquipmentSlot.values());
+		super(new DefaultData("combo_star", Rarity.VERY_RARE, 4, false, false, 20, 10, 25).setHardCap(600), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
 		addStats(DAMAGE_LOSS, CRIT_DAMAGE, COUNTER_MULTIPLIER);
 		setCurse();
+	}
+	
+	@Override
+	protected boolean canApplyToItem(ItemStack stack)
+	{
+		return stack.getItem() instanceof AxeItem || stack.getItem() instanceof HoeItem || stack.getItem() instanceof TridentItem;
 	}
 }

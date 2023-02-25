@@ -200,10 +200,7 @@ public class ApexHandler
 			level = MiscUtil.getEnchantmentLevel(UEApex.BLESSED_BLADE, stack);
 			if(level > 0)
 			{
-				int time = target.invulnerableTime;
-				target.invulnerableTime = 0;
-				target.hurt(DamageSource.OUT_OF_WORLD, (float)Math.pow(1+(BlessedBlade.LEVEL_SCALE.get(MiscUtil.getPlayerLevel(entity, 200) * level)*MiscUtil.getAttribute(ent, Attributes.ATTACK_DAMAGE)),0.2d));
-				target.invulnerableTime = time;
+				MiscUtil.doNewDamageInstance(target, DamageSource.OUT_OF_WORLD, (float)Math.pow(1+(BlessedBlade.LEVEL_SCALE.get(MiscUtil.getPlayerLevel(entity, 200) * level)*MiscUtil.getAttribute(ent, Attributes.ATTACK_DAMAGE)),0.2d));
 			}
 		}
 	}

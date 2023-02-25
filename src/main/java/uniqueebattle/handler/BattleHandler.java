@@ -65,11 +65,13 @@ import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.Event.Result;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 import net.minecraftforge.registries.ForgeRegistries;
+import uniquebase.api.events.ItemDurabilityChangeEvent;
 import uniquebase.handler.MathCache;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
@@ -220,6 +222,15 @@ public class BattleHandler
 	}
 	
 	@SubscribeEvent
+	public void onItemDamaged(ItemDurabilityChangeEvent event)
+	{
+		if(event.damageDone <= 0) return;
+		if(MiscUtil.isTranscendent(event.entity, event.item, UEBattle.STREAKERS_WILL)) {
+			StackUtils.setInt(event.item, StreakersWill.STREAKERS_WILL_NAME, StackUtils.getInt(event.item, StreakersWill.STREAKERS_WILL_NAME, 0) + event.damageDone);
+		}
+	}
+	
+	@SubscribeEvent
 	public void onCritEvent(CriticalHitEvent event)
 	{
 		LivingEntity source = event.getEntity();
@@ -232,14 +243,14 @@ public class BattleHandler
 			if(level > 0 && source instanceof Player)
 			{
 				Player player = (Player)source;
-				int maxRolls = Mth.floor(Math.sqrt(level*player.experienceLevel)*AresFragment.BASE_ROLL_MULTIPLIER.get()) + AresFragment.BASE_ROLL.get();
-				int posRolls = Math.max(source.level.random.nextInt(Math.max(1, maxRolls)), Mth.floor(Math.sqrt(level)));
+				int maxRolls = (int) (AresFragment.BASE_ROLL_MULTIPLIER.get(Math.pow(MiscUtil.getPlayerLevel(source, 200) * level*level, 0.35))) + AresFragment.BASE_ROLL.get();
+				int posRolls = Math.max(source.level.random.nextInt(maxRolls), Mth.floor(Math.sqrt(level)));
 				int negRolls = maxRolls - posRolls;
 				if(negRolls >= posRolls) return;
 				event.setResult(Result.ALLOW);
 				if(MiscUtil.isTranscendent(source, player.getMainHandItem(), UEBattle.ARES_FRAGMENT))
 				{
-					event.setDamageModifier(event.getDamageModifier() + AresFragment.TRANSCENDED_CRIT_MULTIPLIER.getFloat()*(event.isVanillaCritical() ? 1.0F : 0.0F));
+					event.setDamageModifier(event.getDamageModifier() + AresFragment.TRANSCENDED_CRIT_MULTIPLIER.getFloat());
 				}
 			}
 
@@ -350,16 +361,23 @@ public class BattleHandler
 		}
 	}
 	
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onXPDrop(LivingExperienceDropEvent event)
 	{
 		if(event.getAttackingPlayer() == null) return;
-		Object2IntMap.Entry<EquipmentSlot> entry = MiscUtil.getEnchantedItem(UEBattle.ARTEMIS_SOUL, event.getAttackingPlayer());
+		Player player = event.getAttackingPlayer();
+		Object2IntMap.Entry<EquipmentSlot> entry = MiscUtil.getEnchantedItem(UEBattle.ARTEMIS_SOUL, player);
 		if(entry.getIntValue() > 0)
 		{
 			ItemStack stack = event.getAttackingPlayer().getItemBySlot(entry.getKey());
 			double temp = ArtemisSoul.TEMP_SOUL_SCALE.get(StackUtils.getInt(stack, ArtemisSoul.TEMPORARY_SOUL_COUNT, 0));
 			event.setDroppedExperience(event.getDroppedExperience()*MathCache.LOG10.getInt(100+Mth.ceil(entry.getIntValue()*Math.sqrt((ArtemisSoul.PERM_SOUL_SCALE.get(StackUtils.getInt(stack, ArtemisSoul.PERSISTEN_SOUL_COUNT, 0)))+(temp*temp))))-1);
+		}
+		for(EquipmentSlot slot:MiscUtil.getSlotsFor(UEBattle.SAGES_GRACE)) {
+			ItemStack stack = player.getItemBySlot(slot);
+			int level = player.getItemBySlot(slot).getEnchantmentLevel(UEBattle.SAGES_GRACE);
+			event.setDroppedExperience(event.getDroppedExperience()+level);
+			stack.hurtAndBreak(level * player.getRandom().nextInt(1), player, MiscUtil.get(stack.getEquipmentSlot()));
 		}
 	}
 	
@@ -374,14 +392,13 @@ public class BattleHandler
 			ItemStack stack = event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : source.getMainHandItem();
 			Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(stack);
 			int level = ench.getInt(UEBattle.ARES_FRAGMENT);
-			if(level > 0 && source instanceof Player)
+			if(level > 0 && source instanceof Player player)
 			{
-				Player player = (Player)source;
-				int maxRolls = Mth.floor(Math.sqrt(level*player.experienceLevel)*AresFragment.BASE_ROLL_MULTIPLIER.get()) + AresFragment.BASE_ROLL.get();
-				int posRolls = Math.max(source.level.random.nextInt(Math.max(1, maxRolls)), Mth.floor(Math.sqrt(level)));
+				int maxRolls = (int) (AresFragment.BASE_ROLL_MULTIPLIER.get(Math.pow(MiscUtil.getPlayerLevel(source, 200) * level*level, 0.35))) + AresFragment.BASE_ROLL.get();
+				int posRolls = Math.max(source.level.random.nextInt(maxRolls), Mth.floor(Math.sqrt(level)));
 				int negRolls = maxRolls - posRolls;
 				double speed = MiscUtil.getAttackSpeed(player);
-				float damageFactor = (float)(Math.log(1+Math.sqrt(player.experienceLevel*level*level)*(1+(MiscUtil.getArmorProtection(target))*AresFragment.ARMOR_PERCENTAGE.get())) / (100F*speed));
+				float damageFactor = (float) (Math.log((1+MiscUtil.getArmorProtection(target))*level)/(100*speed));
 				event.setAmount(event.getAmount() * (1F+(damageFactor*posRolls)) / (1F+(damageFactor*negRolls)));
 				stack.hurtAndBreak(Mth.ceil(Math.log(Math.abs(posRolls-Math.sqrt(negRolls)))*(((posRolls-negRolls) != 0 ? posRolls-negRolls : 1)/speed)), source, MiscUtil.get(EquipmentSlot.MAINHAND));
 			}
@@ -399,7 +416,7 @@ public class BattleHandler
 				MobEffectInstance effect = target.getEffect(UEBattle.BLEED);
 				if(effect != null)
 				{
-					event.setAmount(event.getAmount() * MathCache.LOG.getFloat(10+((int) DeepWounds.BLEED_SCALE.get(MiscUtil.getPlayerLevel(source, 70))/100)));
+					event.setAmount(event.getAmount() * MathCache.LOG.getFloat(10+(int) Math.pow(DeepWounds.BLEED_SCALE.get(MiscUtil.getPlayerLevel(source, 70)), 0.35)));
 				}
 				target.addEffect(new MobEffectInstance(UEBattle.BLEED, (int)Math.pow(DeepWounds.DURATION.get(level), 0.4D)*20, effect == null ? 0 : effect.getAmplifier()+1));
 			}
@@ -411,7 +428,9 @@ public class BattleHandler
 				{
 					ItemStack itemStack = enemy.getItemBySlot(targetSlot);
 					if(itemStack.isEmpty()) continue;
-					itemStack.hurtAndBreak((int)Math.ceil(StreakersWill.LOSS_PER_LEVEL.get(level)/MiscUtil.getAttackSpeed(source, 1.6D)), enemy, MiscUtil.get(targetSlot));
+					int num = StackUtils.getInt(stack, StreakersWill.STREAKERS_WILL_NAME, 0);
+					itemStack.hurtAndBreak((int)Math.ceil(StreakersWill.LOSS_PER_LEVEL.get(level)/MiscUtil.getAttackSpeed(source, 1.6D))+ num, enemy, MiscUtil.get(targetSlot));
+					StackUtils.setInt(stack, StreakersWill.STREAKERS_WILL_NAME, 0);
 					break;
 				}
 			}
@@ -420,6 +439,15 @@ public class BattleHandler
 			{
 				MiscUtil.doNewDamageInstance(target, UEBattle.ARES_GRACE_DAMAGE, (float)Math.log(1+Math.sqrt(MiscUtil.getArmorProtection(target)*target.getHealth()*MiscUtil.getPlayerLevel(source, 0)*level)*AresGrace.DAMAGE.get()));
 				stack.hurtAndBreak(Mth.ceil(AresGrace.DURABILITY.get(Math.log(1+level*source.getHealth()))), source, MiscUtil.get(EquipmentSlot.MAINHAND));
+			}
+			level = MiscUtil.getEnchantedItem(UEBattle.SAGES_GRACE, source).getIntValue();
+			if(level > 0)
+			{
+				float amount = (float) Math.log(1+MiscUtil.getPlayerExperience(entity, 250));
+				MiscUtil.doNewDamageInstance(target, UEBattle.SAGES_GRACE_DAMAGE, amount);
+				if(source instanceof Player player && player.totalExperience > 10) {
+					player.giveExperiencePoints((int) (-amount));
+				}
 			}
 			level = ench.getInt(UEBattle.IFRITS_JUDGEMENT);
 			if(level > 0)
