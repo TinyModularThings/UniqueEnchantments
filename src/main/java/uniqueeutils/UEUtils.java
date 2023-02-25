@@ -3,6 +3,7 @@ package uniqueeutils;
 import java.util.List;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -25,6 +26,8 @@ import uniquebase.UEBase;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.EnchantedUpgrade;
 import uniquebase.api.IKeyBind;
+import uniquebase.api.jei.BlockTarget;
+import uniquebase.api.jei.ItemTarget;
 import uniquebase.handler.BaseHandler;
 import uniqueeutils.enchantments.complex.AlchemistsBlessing;
 import uniqueeutils.enchantments.complex.AlchemistsMending;
@@ -115,6 +118,11 @@ public class UEUtils extends BaseUEMod
 		if(FMLEnvironment.dist.isClient()) {
 			FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerOverlay);
 		}
+		addTarget(new BlockTarget(Component.translatable(""), POSEIDONS_SOUL, PoseidonsSoul::isValid));
+		addTarget(new ItemTarget(Component.translatable(""), ALCHEMISTS_BLESSING, T -> AlchemistsBlessing.REDSTONE.applyAsInt(T) > 0));
+		addTarget(new ItemTarget(Component.translatable(""), ALCHEMISTS_BLESSING, T -> AlchemistsBlessing.RECIPES.containsKey(T.getItem())));
+		addTarget(new BlockTarget(Component.translatable(""), THICK_PICK, T -> T.getBlock().defaultDestroyTime() >= 20));
+		addTarget(new ItemTarget(Component.translatable(""), THICK_PICK, T -> ThickPick.VALIDATOR.applyAsInt(T) > 0));
 	}
 	
 	@Override

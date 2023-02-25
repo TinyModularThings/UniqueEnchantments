@@ -83,7 +83,8 @@ public class ClientProxy extends Proxy
 		}, Items.ENCHANTED_BOOK);
 	}
 	
-	private Enchantment getEnchantment(ItemStack stack)
+	@Override
+	public Enchantment getEnchantment(ItemStack stack)
 	{
 		ListTag list = stack.getItem() == Items.ENCHANTED_BOOK ? EnchantedBookItem.getEnchantments(stack) : stack.getEnchantmentTags();
 		if(list.isEmpty()) return null;

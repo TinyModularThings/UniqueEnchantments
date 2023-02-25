@@ -47,9 +47,13 @@ import net.minecraftforge.registries.RegisterEvent;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.EnchantedUpgrade;
 import uniquebase.api.crops.CropHarvestRegistry;
+import uniquebase.api.jei.BlockTarget;
+import uniquebase.api.jei.EntityTarget;
+import uniquebase.api.jei.ItemTarget;
 import uniquebase.handler.BaseHandler;
 import uniquebase.utils.BannerUtils;
 import uniquebase.utils.MiscUtil;
+import uniquebase.utils.StackUtils;
 import uniquee.client.EnchantmentLayer;
 import uniquee.enchantments.complex.EnderMending;
 import uniquee.enchantments.complex.Momentum;
@@ -204,7 +208,14 @@ public class UE extends BaseUEMod
 		BaseHandler.INSTANCE.registerAnvilHelper(MIDAS_BLESSING, MidasBlessing.VALIDATOR, MidasBlessing.GOLD_COUNTER);
 		BaseHandler.INSTANCE.registerAnvilHelper(IFRIDS_GRACE, IfritsGrace.VALIDATOR, IfritsGrace.LAVA_COUNT);
 		BaseHandler.INSTANCE.registerAnvilHelper(ICARUS_AEGIS, IcarusAegis.VALIDATOR, IcarusAegis.FEATHER_TAG);
-		
+		addTarget(new BlockTarget(Component.translatable(""), NATURES_GRACE, T -> NaturesGrace.FLOWERS.applyAsInt(T) > 0));
+		addTarget(new BlockTarget(Component.translatable(""), MIDAS_BLESSING, MidasBlessing.IS_GEM));
+		addTarget(new ItemTarget(Component.translatable(""), MIDAS_BLESSING, T -> MidasBlessing.VALIDATOR.applyAsInt(T) > 0));
+		addTarget(new BlockTarget(Component.translatable(""), IFRIDS_GRACE, StackUtils::isOre));
+		addTarget(new ItemTarget(Component.translatable(""), IFRIDS_GRACE, T -> IfritsGrace.VALIDATOR.applyAsInt(T) > 0));
+		addTarget(new ItemTarget(Component.translatable(""), SAGES_BLESSING, T -> SagesBlessing.VALIDATOR.applyAsInt(T) > 0));
+		addTarget(new EntityTarget(Component.translatable(""), ENDER_EYES, EnderEyes.AFFECTED_ENTITIES));
+		addTarget(new EntityTarget(Component.translatable(""), ENDEST_REAP, EndestReap::isValid));
 	}
 	
 	public void registerContent(RegisterEvent event)

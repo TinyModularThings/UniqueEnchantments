@@ -2,6 +2,7 @@ package uniquebase.api;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -32,6 +33,7 @@ import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
+import uniquebase.api.jei.EnchantmentTarget;
 
 public abstract class BaseUEMod
 {
@@ -42,6 +44,7 @@ public abstract class BaseUEMod
 	List<IToggleEnchantment> enchantments = new ObjectArrayList<>();
 	ObjectList<EnchantedUpgrade> upgrades = new ObjectArrayList<>();
 	Map<ResourceLocation, Tuple<BannerPattern, Item.Properties>> banners = new Object2ObjectLinkedOpenHashMap<>();
+	List<EnchantmentTarget> targets = new ObjectArrayList<>();
 	
 	public ForgeConfigSpec config;
 
@@ -111,6 +114,11 @@ public abstract class BaseUEMod
 	
 	protected void addConfig(ForgeConfigSpec.Builder builder) {}
 	
+	protected void addTarget(EnchantmentTarget target)
+	{
+		this.targets.add(target);
+	}
+	
 	protected void registerUpgrade(EnchantedUpgrade upgrades)
 	{
 		this.upgrades.add(upgrades);
@@ -139,6 +147,11 @@ public abstract class BaseUEMod
 			if(item == null || item == Items.AIR) continue;
 			listener.accept(new ItemStack(item));
 		}
+	}
+	
+	public List<EnchantmentTarget> getTargets()
+	{
+		return Collections.unmodifiableList(targets);
 	}
 	
 	protected Enchantment register(Enchantment ench)

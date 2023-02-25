@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
@@ -57,6 +58,11 @@ public class EndestReap extends UniqueEnchantment
 	public static int isValid(Entity entity)
 	{
 		return VALID_MOBS.getInt(ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()));
+	}
+	
+	public static boolean isValid(EntityType<?> type)
+	{
+		return VALID_MOBS.getInt(ForgeRegistries.ENTITY_TYPES.getKey(type)) > 0;
 	}
 	
 	@Override

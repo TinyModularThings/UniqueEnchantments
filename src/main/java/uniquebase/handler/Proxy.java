@@ -8,6 +8,8 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.eventbus.api.IEventBus;
 import uniquebase.api.IKeyBind;
 
@@ -85,5 +87,10 @@ public class Proxy
 		{
 			return keyNames.getBoolean(name);
 		}
+	}
+
+	public Enchantment getEnchantment(ItemStack stack)
+	{
+		return null;
 	}
 }

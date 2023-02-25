@@ -22,7 +22,6 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import mezz.jei.common.plugins.vanilla.anvil.AnvilRecipe;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.CreativeModeTab;
@@ -38,10 +37,9 @@ import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
 import uniquebase.api.BaseUEMod;
+import uniquebase.api.jei.EnchantmentTarget;
 import uniquebase.utils.IdStat;
 import uniquebase.utils.MiscUtil;
-import uniquee.UE;
-import uniquee.enchantments.unique.NaturesGrace;
 
 @JeiPlugin
 public class JEIView implements IModPlugin
@@ -78,7 +76,15 @@ public class JEIView implements IModPlugin
 			if(net.minecraft.world.item.enchantment.EnchantmentCategory.DIGGER.canEnchant(stack.getItem())) recipes.add(setRepairCost(stack, new ItemStack(Items.HORN_CORAL_BLOCK)));
 		}
 		registration.addRecipes(RecipeTypes.ANVIL, recipes);
-		registration.addRecipes(FILTER, ObjectLists.singleton(new FilterEntry(UE.NATURES_GRACE, this.getValidItems(T -> NaturesGrace.FLOWERS.applyAsInt(T) > 0), Component.literal("NatureBlocksWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"))));
+		List<FilterEntry> filters = new ObjectArrayList<>();
+		for(BaseUEMod mod : BaseUEMod.getAllMods())
+		{
+			for(EnchantmentTarget target : mod.getTargets())
+			{
+				filters.add(new FilterEntry(target.getEnchantment(), target.getItems(items), target.getDescription()));
+			}
+		}
+		registration.addRecipes(FILTER, filters);
 	}
 	
 	private AnvilRecipe setRepairCost(ItemStack stack, ItemStack item)
