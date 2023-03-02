@@ -26,7 +26,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -318,6 +320,9 @@ public class UtilsHandler
 				int rem = (int) Math.max(duration - (a*20), 1);
 				stack.setDamageValue((int) Math.max(damage-(a*factor),0));
 				((PotionMixin)mei).setPotionDuration(rem);
+				if(ent instanceof ServerPlayer player) {
+					player.connection.send(new ClientboundUpdateMobEffectPacket(player.getId(), mei));
+				}
 			}
 		}
 	}

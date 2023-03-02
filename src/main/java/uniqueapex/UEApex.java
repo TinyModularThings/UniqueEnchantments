@@ -23,12 +23,14 @@ import uniqueapex.enchantments.simple.AbsoluteProtection;
 import uniqueapex.enchantments.simple.Accustomed;
 import uniqueapex.enchantments.simple.BlessedBlade;
 import uniqueapex.enchantments.simple.Pickaxe404;
+import uniqueapex.enchantments.simple.SagesFragment;
 import uniqueapex.enchantments.simple.SecondLife;
 import uniqueapex.enchantments.unique.AeonsFragment;
 import uniqueapex.enchantments.unique.AeonsSoul;
 import uniqueapex.enchantments.unique.GaiasFragment;
 import uniqueapex.enchantments.unique.HarbingersOdium;
 import uniqueapex.handler.ApexHandler;
+import uniqueapex.handler.ApexLoot;
 import uniqueapex.handler.FusionHandler;
 import uniqueapex.handler.recipe.fusion.FusionRecipe;
 import uniqueapex.handler.recipe.fusion.FusionRecipeSerializer;
@@ -60,6 +62,7 @@ public class UEApex extends BaseUEMod
 	public static Enchantment SECOND_LIFE;
 	public static Enchantment PICKAXE_404;
 	public static Enchantment ACCUSTOMED;
+	public static Enchantment SAGES_FRAGMENT;
 	
 	//Unique
 	public static Enchantment AEONS_FRAGMENT;
@@ -84,6 +87,7 @@ public class UEApex extends BaseUEMod
 		MinecraftForge.EVENT_BUS.register(FusionHandler.INSTANCE);
 		MinecraftForge.EVENT_BUS.register(ApexHandler.INSTANCE);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerContent);
+		setLootManager(new ApexLoot());
 		
 		UPGRADE_MULTIPLIERS.defaultReturnValue(1F);
 	}
@@ -205,6 +209,7 @@ public class UEApex extends BaseUEMod
 		SECOND_LIFE = register(new SecondLife());
 		PICKAXE_404 = register(new Pickaxe404());
 		ACCUSTOMED = register(new Accustomed());
+		SAGES_FRAGMENT = register(new SagesFragment());
 		
 		AEONS_FRAGMENT = register(new AeonsFragment());
 		AEONS_SOUL = register(new AeonsSoul());

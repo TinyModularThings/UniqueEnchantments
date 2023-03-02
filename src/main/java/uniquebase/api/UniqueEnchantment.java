@@ -280,7 +280,7 @@ public abstract class UniqueEnchantment extends Enchantment implements IToggleEn
 			config.comment("If the Enchantment is Tradeable by Villagers");
 			isTradeable_Config = config.define("tradeable", isTradeable);
 			config.comment("If the Enchantment can be on books");
-			canBeOnBooks_Config = config.define("tradeable", canBeOnBooks);
+			canBeOnBooks_Config = config.define("canBeOnBook", canBeOnBooks);
 			config.comment("Minimum Level for Enchanting");
 			baseCost_Config = config.defineInRange("base_cost", baseCost, 0, Integer.MAX_VALUE);
 			config.comment("Increase of levels per Enchantment Level");

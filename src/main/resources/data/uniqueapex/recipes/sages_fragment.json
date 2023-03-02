@@ -1,0 +1,23 @@
+{
+    "type": "uniqueapex:fusion",
+    "ingredients": [
+        {
+            "input": { "item": "minecraft:experience_bottle" },
+            "amount": 256
+        },
+        {
+            "input": { "tags": "forge:gems/lapis" },
+            "amount": 256
+        }
+    ],
+    "enchantments": [
+        { "type": "uniquee:sages_blessing", "level": 1 },
+        { "type": "minecraft:mending", "level": 1 },
+        { "type": "uniquebattle:artemis_soul", "level": 1 },
+        { "type": "uniqueutil:sages_soul", "level": 1 } 
+    ],
+    "lock": true,
+    "max": 5,
+    "output": "uniqueapex:sages_fragment",
+    "output_mode": "add" 
+}

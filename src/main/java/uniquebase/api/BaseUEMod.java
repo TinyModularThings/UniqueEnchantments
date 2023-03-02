@@ -45,6 +45,7 @@ public abstract class BaseUEMod
 	ObjectList<EnchantedUpgrade> upgrades = new ObjectArrayList<>();
 	Map<ResourceLocation, Tuple<BannerPattern, Item.Properties>> banners = new Object2ObjectLinkedOpenHashMap<>();
 	List<EnchantmentTarget> targets = new ObjectArrayList<>();
+	ILootModifier lootManager;
 	
 	public ForgeConfigSpec config;
 
@@ -113,6 +114,16 @@ public abstract class BaseUEMod
 	protected void loadBanners() {};
 	
 	protected void addConfig(ForgeConfigSpec.Builder builder) {}
+	
+	protected void setLootManager(ILootModifier lootManager)
+	{
+		this.lootManager = lootManager;
+	}
+	
+	public ILootModifier getLootManager()
+	{
+		return lootManager;
+	}
 	
 	protected void addTarget(EnchantmentTarget target)
 	{

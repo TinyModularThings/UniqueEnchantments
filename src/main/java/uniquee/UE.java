@@ -216,6 +216,7 @@ public class UE extends BaseUEMod
 		addTarget(new ItemTarget(Component.translatable(""), SAGES_BLESSING, T -> SagesBlessing.VALIDATOR.applyAsInt(T) > 0));
 		addTarget(new EntityTarget(Component.translatable(""), ENDER_EYES, EnderEyes.AFFECTED_ENTITIES));
 		addTarget(new EntityTarget(Component.translatable(""), ENDEST_REAP, EndestReap::isValid));
+		setLootManager(new LootModifier());
 	}
 	
 	public void registerContent(RegisterEvent event)
@@ -228,10 +229,6 @@ public class UE extends BaseUEMod
 	    	event.getForgeRegistry().register("thrombosis", THROMBOSIS);
 	    	event.getForgeRegistry().register("resilience", RESILIENCE);
 	    	event.getForgeRegistry().register("interception", INTERCEPTION);
-		}
-		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS))
-		{
-	    	event.getForgeRegistry().register("ue_loot", LootModifier.CODEC);
 		}
 		else if(event.getRegistryKey().equals(ForgeRegistries.Keys.SOUND_EVENTS))
 		{

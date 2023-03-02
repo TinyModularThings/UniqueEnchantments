@@ -129,7 +129,7 @@
 	"upgrade.uniquee.durability": "Save Durabilty %s",
 	"upgrade.uniquee.percent_damage": "Health Damage %s",
 	"upgrade.uniquee.potion_reduction": "Potion Reduction %s",
-	"upgrade.uniquee.regen": "Regen %s",
+	"upgrade.uniquee.regen": "Regen: %s",
 	"death.attack.cookie": "Kaleidio smited you from existance",
 	"item.uniquee.alchemists_grace_large_banner_pattern": "Banner Pattern",
 	"item.uniquee.alchemists_grace_large_banner_pattern.desc": "Alchemists Grace Large",

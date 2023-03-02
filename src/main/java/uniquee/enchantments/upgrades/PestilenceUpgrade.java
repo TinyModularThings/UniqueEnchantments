@@ -22,4 +22,9 @@ public class PestilenceUpgrade extends EnchantedUpgrade
 		return EnchantmentCategory.WEAPON.canEnchant(stack.getItem()) || EnchantmentCategory.ARMOR.canEnchant(stack.getItem()) || EnchantmentCategory.DIGGER.canEnchant(stack.getItem());
 	}
 	
+	@Override
+	protected double getFormular(int inputPoints)
+	{
+		return 100/(100+Math.pow(inputPoints, 0.25));
+	}
 }

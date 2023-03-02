@@ -3,6 +3,7 @@ package uniqueeutils.enchantments.upgrades;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.EnchantedUpgrade;
+import uniquebase.handler.MathCache;
 import uniqueeutils.UEUtils;
 
 public class PhanesUpgrade extends EnchantedUpgrade
@@ -20,4 +21,9 @@ public class PhanesUpgrade extends EnchantedUpgrade
 		return EnchantmentCategory.ARMOR.canEnchant(stack.getItem()) || EnchantmentCategory.DIGGER.canEnchant(stack.getItem()) || EnchantmentCategory.WEAPON.canEnchant(stack.getItem());
 	}
 	
+	@Override
+	protected double getFormular(int inputPoints)
+	{
+		return MathCache.LOG.get(inputPoints+1);
+	}
 }

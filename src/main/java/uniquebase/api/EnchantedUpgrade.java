@@ -10,6 +10,8 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.ObjectLists;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -71,6 +73,13 @@ public abstract class EnchantedUpgrade
 	}
 	
 	public abstract boolean isValid(ItemStack stack);
+	protected abstract double getFormular(int inputPoints);
+	
+	public void addToolTip(List<Component> result, ItemStack input)
+	{
+		int points = getPoints(input);
+		if(points > 0) result.add(Component.translatable(name).withStyle(ChatFormatting.GOLD).append(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(getFormular(points))).append(" ["+points+"]"));
+	}
 	
 	public boolean isValidSlot(EquipmentSlot slot)
 	{

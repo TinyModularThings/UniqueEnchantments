@@ -22,4 +22,10 @@ public class AmelioratedUpgrade extends EnchantedUpgrade
 	{
 		return EnchantmentCategory.WEAPON.canEnchant(stack.getItem()) || stack.getItem() instanceof HoeItem;
 	}
+	
+	@Override
+	protected double getFormular(int inputPoints)
+	{
+		return Math.pow(inputPoints, 0.125D);
+	}
 }

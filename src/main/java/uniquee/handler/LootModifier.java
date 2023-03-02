@@ -2,8 +2,6 @@ package uniquee.handler;
 
 import java.util.List;
 
-import com.mojang.serialization.Codec;
-
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.util.Mth;
@@ -21,26 +19,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import uniquebase.api.ILootModifier;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquee.UE;
 import uniquee.enchantments.unique.IfritsGrace;
 import uniquee.enchantments.unique.MidasBlessing;
 
-public class LootModifier implements IGlobalLootModifier
-{
-	public static final Codec<LootModifier> CODEC = Codec.unit(LootModifier::new);
-	
+public class LootModifier implements ILootModifier
+{	
 	@Override
-	public Codec<? extends IGlobalLootModifier> codec()
-	{
-		return CODEC;
-	}
-	
-	@Override
-	public ObjectArrayList<ItemStack> apply(ObjectArrayList<ItemStack> generatedLoot, LootContext context)
+	public void handleLoot(ObjectArrayList<ItemStack> generatedLoot, LootContext context)
 	{
 		if(context.hasParam(LootContextParams.TOOL) && context.hasParam(LootContextParams.BLOCK_STATE))
 		{
@@ -107,7 +97,6 @@ public class LootModifier implements IGlobalLootModifier
 		{
 			generatedLoot.add(EnchantedBookItem.createForEnchantment(new EnchantmentInstance(UE.MIDAS_BLESSING, Mth.nextInt(context.getRandom(), 2, 3))));
 		}
-		return generatedLoot;
 	}
 	
 	private boolean filterItem(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {

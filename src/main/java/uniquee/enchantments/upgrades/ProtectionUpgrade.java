@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantments;
 import uniquebase.api.EnchantedUpgrade;
+import uniquebase.handler.MathCache;
 
 public class ProtectionUpgrade extends EnchantedUpgrade 
 {
@@ -18,5 +19,11 @@ public class ProtectionUpgrade extends EnchantedUpgrade
 	@Override
 	public boolean isValid(ItemStack stack) {
 		return EnchantmentCategory.ARMOR.canEnchant(stack.getItem());
+	}
+
+	@Override
+	protected double getFormular(int inputPoints)
+	{
+		return 1-(MathCache.LOG10.get(inputPoints+1)*0.01D);
 	}
 }

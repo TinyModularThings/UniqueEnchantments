@@ -25,12 +25,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.IKeyBind;
 import uniquebase.api.crops.CropHarvestRegistry;
 import uniquebase.handler.BaseHandler;
 import uniquebase.handler.ClientProxy;
 import uniquebase.handler.EnchantmentHandler;
+import uniquebase.handler.LootManager;
 import uniquebase.handler.PackHandler;
 import uniquebase.handler.Proxy;
 import uniquebase.networking.PacketHandler;
@@ -75,6 +77,7 @@ public class UEBase
 		bus.addListener(this::onLoad);
 		bus.addListener(this::onFileChange);
 		bus.register(this);
+		bus.addListener(this::registerContent);
 		
 		ForgeRegistries.SOUND_EVENTS.register("anvil_stacks", ANVIL_STACK);
 		Path path = FMLPaths.CONFIGDIR.get().resolve("ue").resolve("resourcePack.txt");
@@ -100,6 +103,14 @@ public class UEBase
 	{
 		CropHarvestRegistry.INSTANCE.init();
 		PROXY.init();
+	}
+    
+	public void registerContent(RegisterEvent event)
+	{
+		if(event.getRegistryKey().equals(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS))
+		{
+	    	event.getForgeRegistry().register("ue_loot", LootManager.CODEC);
+		}	
 	}
     
 	protected void reloadConfig()

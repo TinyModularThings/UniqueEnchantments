@@ -269,11 +269,7 @@ public class BaseHandler
 		}
 		for(EnchantedUpgrade upgrade : EnchantedUpgrade.getAllUpgrades())
 		{
-			int points = upgrade.getPoints(stack);
-			if(points > 0)
-			{
-				event.getToolTip().add(Component.translatable(upgrade.getName(), points).withStyle(ChatFormatting.GOLD));
-			}
+			upgrade.addToolTip(event.getToolTip(), stack);
 		}
 		Screen screen = Minecraft.getInstance().screen;
 		if(screen instanceof AbstractContainerScreen && !(screen instanceof EnchantmentGui))

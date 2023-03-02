@@ -22,4 +22,9 @@ public class GrimoiresUpgrade extends EnchantedUpgrade
 		return EnchantmentCategory.BREAKABLE.canEnchant(stack.getItem());
 	}
 	
+	@Override
+	protected double getFormular(int inputPoints)
+	{
+		return 1-Math.pow(0.9D, Math.pow(inputPoints, 0.125D));
+	}
 }
