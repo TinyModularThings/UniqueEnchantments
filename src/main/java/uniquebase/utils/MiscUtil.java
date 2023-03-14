@@ -56,13 +56,16 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.BaseConfig;
+import uniquebase.UEBase;
 import uniquebase.api.ColorConfig;
 import uniquebase.api.IToggleEnchantment;
+import uniquebase.utils.ICurioHelper.CurioSlot;
 import uniquebase.utils.mixin.common.enchantments.EnchantmentMixin;
 
 public class MiscUtil
 {
 	static final Object2IntMap.Entry<EquipmentSlot> NO_ENCHANTMENT = new AbstractObject2IntMap.BasicEntry<>(null, 0);
+	static final Object2IntMap.Entry<ItemStack> NO_ENCH_FOUND = new AbstractObject2IntMap.BasicEntry<>(ItemStack.EMPTY, 0);
 	static final Consumer<LivingEntity>[] SLOT_BASE = createSlots();
 	static final String UPGRADE_TAG = "ue_upgrades";
 	static final String TRANCENDENCE_BLOCK = "block_trancedence";
@@ -354,7 +357,7 @@ public class MiscUtil
 	public static Set<EquipmentSlot> getEquipWithEnchantment(Enchantment ench, LivingEntity base) 
 	{
 		Set<EquipmentSlot> slots = new HashSet<>();
-		for(ItemStack a:base.getAllSlots()) {
+		for(ItemStack a: base.getAllSlots()) {
 			if(a.getEnchantmentLevel(ench) > 0) slots.add(a.getEquipmentSlot());
 		}
 		return slots;
@@ -371,6 +374,17 @@ public class MiscUtil
 		if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) return Collections.emptySet();
 		EquipmentSlot[] slots = getEquipmentSlotsFor(ench);
 		return slots.length <= 0 ? Collections.emptySet() : new ObjectOpenHashSet<EquipmentSlot>(slots);
+	}
+	
+	public static Object2IntMap.Entry<ItemStack> getEquipment(LivingEntity living, Enchantment ench, CurioSlot scan)
+	{
+		for(EquipmentSlot slot : scan.getSlot())
+		{
+			ItemStack stack = living.getItemBySlot(slot);
+			int lvl = MiscUtil.getEnchantmentLevel(ench, stack);
+			if(lvl > 0) return new AbstractObject2IntMap.BasicEntry<>(stack, lvl);
+		}
+		return UEBase.CURIO.findEnchantment(living, ench, scan.getCurio());
 	}
 	
 	public static Object2IntMap.Entry<EquipmentSlot> getEnchantedItem(Enchantment enchantment, LivingEntity base)

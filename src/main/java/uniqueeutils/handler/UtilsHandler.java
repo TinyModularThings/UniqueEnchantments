@@ -2,7 +2,6 @@ package uniqueeutils.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -114,6 +113,7 @@ import uniquebase.api.events.ItemDurabilityChangeEvent;
 import uniquebase.handler.MathCache;
 import uniquebase.networking.EntityPacket;
 import uniquebase.utils.HarvestEntry;
+import uniquebase.utils.ICurioHelper.CurioSlot;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.mixin.common.entity.EntityMixin;
@@ -271,15 +271,23 @@ public class UtilsHandler
 	public void onSleep(PlayerWakeUpEvent event) {
 		if(event.getResult() == Result.DENY) return;
 		Player player = event.getEntity();
-		Set<EquipmentSlot> slots = MiscUtil.getEquipWithEnchantment(UEUtils.DREAMS, player);
-		if(!(slots.size() > 0)) return;
-
+		double multiplier = 1D;
+		int total = 0;
+		for(EquipmentSlot slot : MiscUtil.getEquipmentSlotsFor(UEUtils.DREAMS))
+		{
+			int lvl = MiscUtil.getEnchantmentLevel(UEUtils.DREAMS, player.getItemBySlot(slot));
+			if(lvl == 0) continue;
+			multiplier *= 1-Math.pow(Dreams.DURABILITY_FACTOR.get(), Math.sqrt(lvl));
+			total += lvl;
+		}
+		if(total == 0) return;
 		List<ItemStack> items = new ArrayList<>();
 		IItemHandler handler = player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(EmptyHandler.INSTANCE);
 		filterItem(handler, false, items);
-			
-		for(EquipmentSlot slot :slots) for(ItemStack item : items) 
-				item.setDamageValue((int) (item.getDamageValue()*(1-Math.pow(Dreams.DURABILITY_FACTOR.get(), Math.sqrt(player.getItemBySlot(slot).getEnchantmentLevel(UEUtils.DREAMS))))));
+		for(ItemStack item : items)
+		{
+			item.setDamageValue((int) (item.getDamageValue()*multiplier));
+		}
 	}
 	
 	private static void filterItem(IItemHandler handler, boolean subLayer, List<ItemStack> result) 
@@ -325,6 +333,17 @@ public class UtilsHandler
 				}
 			}
 		}
+		if(damage >= stack.getMaxDamage() - 10) 
+		{
+			int level = MiscUtil.getEnchantmentLevel(UEUtils.REINFORCED, stack);
+			if(level > 0) 
+			{
+				int points = StackUtils.getInt(stack, Reinforced.SHIELD, 0);
+				if(points <= 0) return;
+				stack.setDamageValue(stack.getDamageValue()-points);
+				StackUtils.setInt(stack, Reinforced.SHIELD, 0);
+			}
+		}
 	}
 	
 	private MobEffectInstance getFirstEffect(int min, int max, LivingEntity ent) {
@@ -347,22 +366,20 @@ public class UtilsHandler
 			return;
 		}
 		Player player = event.player;
-		ItemStack armor = player.getItemBySlot(EquipmentSlot.CHEST);
-		if(!armor.isEmpty())
+		Object2IntMap.Entry<ItemStack> armorResult = MiscUtil.getEquipment(player, UEUtils.ANEMOIS_FRAGMENT, CurioSlot.BACK);
+		if(armorResult.getIntValue() > 0 && UEUtils.BOOST_KEY.test(player))
 		{
-			int level = MiscUtil.getEnchantmentLevel(UEUtils.ANEMOIS_FRAGMENT, armor);
-			if(level > 0 && UEUtils.BOOST_KEY.test(player))
+			ItemStack armor = armorResult.getKey();
+			int amount = StackUtils.getInt(armor, AnemoiFragment.STORAGE, 0);
+			if(amount > 0)
 			{
-				int amount = StackUtils.getInt(armor, AnemoiFragment.STORAGE, 0);
-				if(amount > 0)
-				{
-					amount -= (int)(AnemoiFragment.CONSUMPTION.get() / Math.sqrt(AnemoiFragment.CONSUMPTION_SCALE.get(level)));
-					StackUtils.setInt(armor, AnemoiFragment.STORAGE, Math.max(0, amount));
-					player.moveRelative(1F, new Vec3(0F, (float)Math.log10(110 + Math.pow(AnemoiFragment.BOOST.get(level * player.experienceLevel), 0.125)) - 2, 0F));
-				}
+				int lvl = armorResult.getIntValue();
+				amount -= (int)(AnemoiFragment.CONSUMPTION.get() / Math.sqrt(AnemoiFragment.CONSUMPTION_SCALE.get(lvl)));
+				StackUtils.setInt(armor, AnemoiFragment.STORAGE, Math.max(0, amount));
+				player.moveRelative(1F, new Vec3(0F, (float)Math.log10(110 + Math.pow(AnemoiFragment.BOOST.get(lvl * player.experienceLevel), 0.125)) - 2, 0F));
 			}
 		}
-		armor = player.getItemBySlot(EquipmentSlot.LEGS);
+		ItemStack armor = player.getItemBySlot(EquipmentSlot.LEGS);
 		if(!armor.isEmpty())
 		{
 			int level = MiscUtil.getEnchantmentLevel(UEUtils.CLIMBER, armor);
@@ -1009,9 +1026,8 @@ public class UtilsHandler
 		ItemStack stack = event.getItemStack();
 		if(stack.getItem() == Items.FIREWORK_ROCKET && event.getEntity() != null && !event.getEntity().isFallFlying())
 		{
-			ItemStack armor = event.getEntity().getItemBySlot(EquipmentSlot.CHEST);
-			int level = MiscUtil.getEnchantmentLevel(UEUtils.ROCKET_MAN, armor);
-			if(armor.getItem() instanceof ElytraItem && level > 0)
+			Object2IntMap.Entry<ItemStack> result = MiscUtil.getEquipment(event.getEntity(), UEUtils.ROCKET_MAN, CurioSlot.BACK);
+			if(result.getKey().getItem() instanceof ElytraItem && result.getIntValue() > 0)
 			{
 				if(!event.getLevel().isClientSide)
 				{
@@ -1037,19 +1053,16 @@ public class UtilsHandler
 				LivingEntity entity = ((FireworkMixin)rocket).getRidingEntity();
 				if(entity != null)
 				{
-					ItemStack stack = entity.getItemBySlot(EquipmentSlot.CHEST);
-					if(stack.getItem() instanceof ElytraItem)
+					Object2IntMap.Entry<ItemStack> result = MiscUtil.getEquipment(entity, UEUtils.ROCKET_MAN, CurioSlot.BACK);
+					if(result.getKey().getItem() instanceof ElytraItem && result.getIntValue() > 0)
 					{
-						int level = MiscUtil.getEnchantmentLevel(UEUtils.ROCKET_MAN, stack);
-						if(level > 0)
-						{
-							CompoundTag nbt = new CompoundTag();
-							rocket.addAdditionalSaveData(nbt);
-							int time = nbt.getInt("LifeTime");
-							time += time * RocketMan.FLIGHT_TIME.getAsDouble(level) * MathCache.LOG_ADD_MAX.get(level);
-							nbt.putInt("LifeTime", time);
-							rocket.readAdditionalSaveData(nbt);
-						}
+						int lvl = result.getIntValue();
+						CompoundTag nbt = new CompoundTag();
+						rocket.addAdditionalSaveData(nbt);
+						int time = nbt.getInt("LifeTime");
+						time += time * RocketMan.FLIGHT_TIME.getAsDouble(lvl) * MathCache.LOG_ADD_MAX.get(lvl);
+						nbt.putInt("LifeTime", time);
+						rocket.readAdditionalSaveData(nbt);
 					}
 				}
 			}

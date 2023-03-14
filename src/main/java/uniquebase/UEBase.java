@@ -36,6 +36,7 @@ import uniquebase.handler.LootManager;
 import uniquebase.handler.PackHandler;
 import uniquebase.handler.Proxy;
 import uniquebase.networking.PacketHandler;
+import uniquebase.utils.ICurioHelper;
 
 @Mod("uniquebase")
 public class UEBase
@@ -45,6 +46,7 @@ public class UEBase
 	public static final Proxy PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> Proxy::new);
 	public static IKeyBind ENCHANTMENT_GUI = IKeyBind.empty();
 	public static IKeyBind ENCHANTMENT_ICONS = IKeyBind.empty();
+	public static ICurioHelper CURIO = ICurioHelper.dummy();
 	
 	public static BooleanValue DISABLE_JEI;
 	public static ForgeConfigSpec CONFIG;

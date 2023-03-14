@@ -69,6 +69,7 @@ public class FusionUpgradeRecipe implements Recipe<FusionContext>
 	{
 		if(!context.isValidItem()) return false;
 		if(context.getLargestEnchantment() != enchantment) return false;
+		if(!context.canApplyEnchantment(enchantment)) return false;
 		if(!context.containsItem(requestedItems, true)) return false;
 		return true;
 	}

@@ -26,7 +26,7 @@ public class PestilencesOdiumPotion extends MobEffect
 	public void applyEffectTick(LivingEntity entity, int amplifier)
 	{
 		MobEffectInstance effect = entity.getEffect(this);
-		if(effect == null || entity == null || !(entity.getAbsorptionAmount() > 1))
+		if(effect == null || entity == null || entity.getAbsorptionAmount() > 0)
 		{
 			return;
 		}
@@ -45,14 +45,20 @@ public class PestilencesOdiumPotion extends MobEffect
 	{
 		return true;
 	}
-
 	
 	@Override
-	public void addAttributeModifiers(LivingEntity entity, AttributeMap attrMan, int amplifier) {
-		if(!(entity.getAbsorptionAmount() > 1)) return;
+	public void addAttributeModifiers(LivingEntity entity, AttributeMap map, int amplifier) {
+		if(entity.getAbsorptionAmount() > 0) return;
 		Multimap<Attribute, AttributeModifier> mods = HashMultimap.create();
-		mods.put(Attributes.ARMOR, new AttributeModifier(PestilencesOdium.PESTILENCE_ARMOR_MOD, (1/Math.log(3.2+amplifier))-1, Operation.MULTIPLY_TOTAL));
-		mods.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(PestilencesOdium.PESTILENCE_TOUGHNESS_MOD, (1/Math.log(3.2+amplifier))-1, Operation.MULTIPLY_TOTAL));
-		attrMan.addTransientAttributeModifiers(mods);
+		mods.put(Attributes.ARMOR, new AttributeModifier(PestilencesOdium.ARMOR_UUID, PestilencesOdium.PESTILENCE_ARMOR_MOD, (1/Math.log(3.2+amplifier))-1, Operation.MULTIPLY_TOTAL));
+		mods.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(PestilencesOdium.TOUGHNESS_UUID, PestilencesOdium.PESTILENCE_TOUGHNESS_MOD, (1/Math.log(3.2+amplifier))-1, Operation.MULTIPLY_TOTAL));
+		map.addTransientAttributeModifiers(mods);
+	}
+	
+	@Override
+	public void removeAttributeModifiers(LivingEntity entity, AttributeMap map, int amplifier)
+	{
+		map.getInstance(Attributes.ARMOR).removeModifier(PestilencesOdium.ARMOR_UUID);
+		map.getInstance(Attributes.ARMOR_TOUGHNESS).removeModifier(PestilencesOdium.TOUGHNESS_UUID);
 	}
 }

@@ -101,6 +101,7 @@ import uniquebase.api.events.SetItemDurabilityEvent;
 import uniquebase.handler.MathCache;
 import uniquebase.networking.EntityPacket;
 import uniquebase.utils.EnchantmentContainer;
+import uniquebase.utils.ICurioHelper.CurioSlot;
 import uniquebase.utils.MiscUtil;
 import uniquebase.utils.StackUtils;
 import uniquebase.utils.events.EndermenLookEvent;
@@ -278,12 +279,12 @@ public class EntityEvents
 			}
 			if(player.level.getGameTime() % 10 == 0)
 			{
-				int level = container.getEnchantment(UE.ICARUS_AEGIS, EquipmentSlot.CHEST);
-				if(level > 0)
+				Object2IntMap.Entry<ItemStack> result = MiscUtil.getEquipment(player, UE.ICARUS_AEGIS, CurioSlot.BACK);
+				if(result.getIntValue() > 0)
 				{
-					player.getItemBySlot(EquipmentSlot.CHEST).getTag().putBoolean(IcarusAegis.FLYING_TAG, player.isFallFlying());
+					result.getKey().getTag().putBoolean(IcarusAegis.FLYING_TAG, player.isFallFlying());
 				}
-				level = container.getEnchantment(UE.TREASURERS_EYES, EquipmentSlot.HEAD);
+				int level = container.getEnchantment(UE.TREASURERS_EYES, EquipmentSlot.HEAD);
 				if(level > 0)
 				{
 					LivingEntity hit = MiscUtil.targetEntities(LivingEntity.class, player, 64, EnderEyes::isValidEntity);
@@ -877,16 +878,15 @@ public class EntityEvents
 		}
 		if(event.getSource() == DamageSource.FLY_INTO_WALL)
 		{
-			ItemStack stack = event.getEntity().getItemBySlot(EquipmentSlot.CHEST);
-			int level = MiscUtil.getEnchantmentLevel(UE.ICARUS_AEGIS, stack);
-			if(level > 0)
+			Object2IntMap.Entry<ItemStack> result = MiscUtil.getEquipment(target, UE.ICARUS_AEGIS, CurioSlot.BACK);
+			if(result.getIntValue() > 0)
 			{
-				int feathers = StackUtils.getInt(stack, IcarusAegis.FEATHER_TAG, 0);
-				int consume = (int)Math.ceil((double)IcarusAegis.BASE_CONSUMPTION.get() / level);
+				int feathers = StackUtils.getInt(result.getKey(), IcarusAegis.FEATHER_TAG, 0);
+				int consume = (int)Math.ceil((double)IcarusAegis.BASE_CONSUMPTION.get() / result.getIntValue());
 				if(feathers >= consume)
 				{
 					feathers -= consume;
-					StackUtils.setInt(stack, IcarusAegis.FEATHER_TAG, feathers);
+					StackUtils.setInt(result.getKey(), IcarusAegis.FEATHER_TAG, feathers);
 					event.setCanceled(true);
 					return;
 				}
@@ -897,25 +897,29 @@ public class EntityEvents
 			DamageSource source = event.getSource();
 			
 			if(!source.isMagic())
-			aresBlessingLabel: {
-				ItemStack stack = event.getEntity().getItemBySlot(EquipmentSlot.CHEST);
-				int level = MiscUtil.getEnchantmentLevel(UE.ARES_BLESSING, stack);
-				if(level > 0 && stack.isDamageableItem())
+			{
+				aresBlessingLabel: 
 				{
-					if(!MiscUtil.isTranscendent(target, stack, UE.ARES_BLESSING))
+					ItemStack stack = event.getEntity().getItemBySlot(EquipmentSlot.CHEST);
+					int level = MiscUtil.getEnchantmentLevel(UE.ARES_BLESSING, stack);
+					if(level > 0 && stack.isDamageableItem())
 					{
-						if(source == DamageSource.FALL) break aresBlessingLabel;
-					} else 
-					{
-						target.addEffect(new MobEffectInstance(UE.RESILIENCE, 100*level, 1));
+						if(!MiscUtil.isTranscendent(target, stack, UE.ARES_BLESSING))
+						{
+							if(source == DamageSource.FALL) break aresBlessingLabel;
+						} 
+						else 
+						{
+							target.addEffect(new MobEffectInstance(UE.RESILIENCE, 100*level, 1));
+						}
+						float damage = event.getAmount();
+						stack.hurtAndBreak((int)(damage * AresBlessing.BASE_DAMAGE.get() / MathCache.LOG10.get(level+1)), event.getEntity(), MiscUtil.get(EquipmentSlot.CHEST));
+						event.setCanceled(true);
+						return;
 					}
-					float damage = event.getAmount();
-					stack.hurtAndBreak((int)(damage * AresBlessing.BASE_DAMAGE.get() / MathCache.LOG10.get(level+1)), event.getEntity(), MiscUtil.get(EquipmentSlot.CHEST));
-					event.setCanceled(true);
-					return;
-				}	
+				}
 			}
-			Object2IntMap.Entry<EquipmentSlot> slot = MiscUtil.getEnchantedItem(UE.PHOENIX_BLESSING, event.getEntity());
+			Object2IntMap.Entry<ItemStack> slot = MiscUtil.getEquipment(event.getEntity(), UE.PHOENIX_BLESSING, CurioSlot.HAND);
 			if(slot.getIntValue() > 0)
 			{
 				LivingEntity living = event.getEntity();
@@ -929,7 +933,7 @@ public class EntityEvents
                 living.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 600, 1));
                 living.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
                 living.level.broadcastEntityEvent(living, (byte)35);
-                event.getEntity().getItemBySlot(slot.getKey()).shrink(1);
+                slot.getKey().shrink(1);
 				event.setCanceled(true);
 	            for(LivingEntity entry : living.getCommandSenderWorld().getEntitiesOfClass(LivingEntity.class, new AABB(living.blockPosition()).inflate(PhoenixBlessing.RANGE.getAsDouble(slot.getIntValue()))))
 	            {
@@ -970,8 +974,9 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onLivingFall(LivingFallEvent event)
 	{
-		ItemStack stack = event.getEntity().getItemBySlot(EquipmentSlot.CHEST);
-		int level = MiscUtil.getEnchantmentLevel(UE.ICARUS_AEGIS, stack);
+		Object2IntMap.Entry<ItemStack> result = MiscUtil.getEquipment(event.getEntity(), UE.ICARUS_AEGIS, CurioSlot.BACK);
+		ItemStack stack = result.getKey();
+		int level = result.getIntValue();
 		if(level > 0 && stack.getTag().getBoolean(IcarusAegis.FLYING_TAG) && event.getDistance() > 3F)
 		{
 			int feathers = StackUtils.getInt(stack, IcarusAegis.FEATHER_TAG, 0);

@@ -120,6 +120,7 @@ public final class FusionContext extends SimpleContainer
 	{
 		if(!isValidItem()) return false;
 		if(!isValidTool(ench)) return false;
+		if(!canApplyEnchantment(ench)) return false;
 		if(!containsItem(items, true)) return false;
 		Object2IntMap<Enchantment> map = getEnchantmentInputs(new ObjectOpenHashSet<>(Lists.transform(enchantments, Entry::getKey)));
 		for(int i = 0,m=enchantments.size();i<m;i++)
@@ -142,6 +143,11 @@ public final class FusionContext extends SimpleContainer
 	{
 		ItemStack stack = mainChest.getStackInSlot(0);
 		return (!stack.hasTag() || stack.getTag().getByte("fusioned") != 2);
+	}
+	
+	public boolean canApplyEnchantment(Enchantment ench) 
+	{
+		return ench.canEnchant(mainChest.getStackInSlot(0));
 	}
 	
 	public void mergeEnchantments(int bookCount, int maxLevel)
