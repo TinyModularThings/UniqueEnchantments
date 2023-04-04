@@ -691,56 +691,19 @@ public class EntityEvents
 		LivingEntity target = event.getEntity();
 		Entity entity = event.getSource().getEntity();
 		
-		if(entity instanceof LivingEntity)
+		if(entity instanceof LivingEntity base)
 		{
-			LivingEntity base = (LivingEntity)entity;
 			ItemStack stack = event.getSource().getDirectEntity() instanceof ThrownTrident ? ((ArrowMixin)event.getSource().getDirectEntity()).getArrowItem() : base.getMainHandItem();
 			Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
 			
-			int level = enchantments.getInt(UE.PERPETUAL_STRIKE);
-			if(level > 0 && !(event.getSource().getDirectEntity() instanceof ThrownTrident))
-			{
-				int count = StackUtils.getInt(stack, PerpetualStrike.HIT_COUNT, 0);
-				int lastEntity = StackUtils.getInt(stack, PerpetualStrike.HIT_ID, 0);
-				int mercy = StackUtils.getInt(stack, "mercy", PerpetualStrike.TRANSCENDED_MERCY.get());
-				int mercyReset = PerpetualStrike.TRANSCENDED_MERCY.get();
-				if(MiscUtil.isTranscendent(base, stack, UE.PERPETUAL_STRIKE))
-				{
-					if(lastEntity != target.getId())
-					{
-						if(mercy-- > 0)
-						{
-							count = 0;
-							mercy = mercyReset;
-						}
-					}
-					else
-					{
-						mercy = mercyReset;
-					}
-					StackUtils.setInt(stack, "mercy", mercy);
-				}
-				else if(lastEntity != target.getId())
-				{
-					count = 0;
-				}
-				StackUtils.setInt(stack, PerpetualStrike.HIT_COUNT, Math.min(count+1, PerpetualStrike.HIT_CAP.get(level)));
-				if(rand.nextInt(100) <= count) {
-					target.addEffect(new MobEffectInstance(UE.THROMBOSIS, 100*level, level-1));
-				}
-				double damage = Math.pow((target.getHealth()*PerpetualStrike.PER_HIT_LEVEL.get(count))/MiscUtil.getAttackSpeed(base, 1D), 0.25);
-				double multiplier = PerpetualStrike.SCALING_STATE.get() ? 1 + Math.pow(count * PerpetualStrike.MULTIPLIER.get(), 2)/20 : Math.log10(10+damage*count*PerpetualStrike.MULTIPLIER.get());
-				MiscUtil.doNewDamageInstance(target, UE.PERPETUAL_STRIKE_DAMAGE, (float)(((event.getAmount()+damage)*multiplier)-event.getAmount()));
-				StackUtils.setInt(stack, PerpetualStrike.HIT_ID, target.getId());
-			}
-			enchantments.getInt(UE.SWIFT_BLADE);
+			int level = enchantments.getInt(UE.SWIFT_BLADE);
 			if(level > 0)
 			{
 				AttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
 				if(attr != null)
 				{
 					double val = MiscUtil.getAttackSpeed(base);
-					event.setAmount(event.getAmount() * (float) ((level/(12+2*level))*Math.pow(val-1.2,1/3)+1));
+					event.setAmount(event.getAmount() * (float) Math.log(2D+target.getDeltaMovement().length()/val));
 				}
 			}
 			level = enchantments.getInt(UE.FOCUS_IMPACT);
@@ -813,6 +776,42 @@ public class EntityEvents
 			if(level > 0 && EnderEyes.AFFECTED_ENTITIES.contains(base.getType()) && MiscUtil.isTranscendent(target, target.getItemBySlot(EquipmentSlot.HEAD), UE.ENDER_EYES) && rand.nextDouble() < EnderEyes.TRANSCENDED_CHANCE.get()) {
 				base.hurt(DamageSource.OUT_OF_WORLD, (float) Math.sqrt(base.getMaxHealth()));
 			}
+			level = enchantments.getInt(UE.PERPETUAL_STRIKE);
+			if(level > 0 && !(event.getSource().getDirectEntity() instanceof ThrownTrident))
+			{
+				int count = StackUtils.getInt(stack, PerpetualStrike.HIT_COUNT, 0);
+				int lastEntity = StackUtils.getInt(stack, PerpetualStrike.HIT_ID, 0);
+				int mercy = StackUtils.getInt(stack, "mercy", PerpetualStrike.TRANSCENDED_MERCY.get());
+				int mercyReset = PerpetualStrike.TRANSCENDED_MERCY.get();
+				if(MiscUtil.isTranscendent(base, stack, UE.PERPETUAL_STRIKE))
+				{
+					if(lastEntity != target.getId())
+					{
+						if(mercy-- > 0)
+						{
+							count = 0;
+							mercy = mercyReset;
+						}
+					}
+					else
+					{
+						mercy = mercyReset;
+					}
+					StackUtils.setInt(stack, "mercy", mercy);
+				}
+				else if(lastEntity != target.getId())
+				{
+					count = 0;
+				}
+				StackUtils.setInt(stack, PerpetualStrike.HIT_COUNT, Math.min(count+1, PerpetualStrike.HIT_CAP.get(level)));
+				if(rand.nextInt(100) <= count) {
+					target.addEffect(new MobEffectInstance(UE.THROMBOSIS, 100*level, level-1));
+				}
+				double damage = Math.pow((target.getHealth()*PerpetualStrike.PER_HIT_LEVEL.get(count))/MiscUtil.getAttackSpeed(base, 1D), 0.25);
+				double multiplier = PerpetualStrike.SCALING_STATE.get() ? 1 + Math.pow(count * PerpetualStrike.MULTIPLIER.get(), 2)/20 : Math.log10(10+damage*count*PerpetualStrike.MULTIPLIER.get());
+				MiscUtil.doNewDamageInstance(target, UE.PERPETUAL_STRIKE_DAMAGE, (float)(((event.getAmount()+damage)*multiplier)-event.getAmount()));
+				StackUtils.setInt(stack, PerpetualStrike.HIT_ID, target.getId());
+			}
 		}
 	}
 	
@@ -861,7 +860,7 @@ public class EntityEvents
 				{
 					target.addEffect(new MobEffectInstance(UE.THROMBOSIS, 100*level, level-1));
 				}
-				MiscUtil.doNewDamageInstance(target, DamageSource.MAGIC.bypassMagic(), (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + (float)Math.sqrt(EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE)))));
+				MiscUtil.doNewDamageInstance(target, DamageSource.MAGIC.bypassMagic(), (EndestReap.BONUS_DAMAGE_LEVEL.getFloat(level) + (float)Math.log(1+ EndestReap.REAP_MULTIPLIER.getFloat(level * base.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).getInt(EndestReap.REAP_STORAGE)))));
 			}
 			level = UE.PROTECTION_UPGRADE.getCombinedPoints(target);
 			if(level > 0) 

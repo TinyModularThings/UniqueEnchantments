@@ -209,7 +209,7 @@ public class BaseConfig
 			configs.comment("Allows modify the conversion rate from Level to XP points. This can result in consuming more then the player actually has");
 			anvilMultiplier = configs.defineInRange("Anvil XP multiplier", 1D, 0.1D, 1000D);
 			configs.comment("The multiplier for the Protection Tweaks we did, the higher this value the stronger they get");
-			protectionMultiplier = configs.defineInRange("protection_multiplier", 0.003875D, 0D, Double.MAX_VALUE);
+			protectionMultiplier = configs.defineInRange("protection_multiplier", 0.0029296875D, 0D, Double.MAX_VALUE);
 			configs.pop();
 			configs.push("features");
 			configs.comment("Enables the Enchantment Limit Feature, which allows you to customize how many enchantments and what tiers of enchantments can be put on items.",
