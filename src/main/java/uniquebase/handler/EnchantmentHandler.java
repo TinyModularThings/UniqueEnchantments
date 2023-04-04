@@ -219,6 +219,7 @@ public class EnchantmentHandler
 		int elements = BaseConfig.ICONS.visibleColumn.get();
 		int total = BaseConfig.ICONS.visibleRows.get() * elements;
 		int cycleTime = BaseConfig.ICONS.cycleTime.get();
+		boolean jei = (stack.getTag().getInt("HideFlags") & ItemStack.TooltipPart.ENCHANTMENTS.getMask()) != 0;
 		if(BaseConfig.TOOLTIPS.sortEnchantments.get())
 		{
 			ListTag newList = new ListTag();
@@ -253,8 +254,8 @@ public class EnchantmentHandler
 				tooltip.add(comp.append(ench.getFullname(lvl)));
 			}
 			else tooltip.add(ench.getFullname(compoundnbt.getInt("lvl")));
-			if(icons && (item == Items.ENCHANTED_BOOK || tools)) addEnchantment(tooltip, ench, elements, total, cycleTime);
-			if(desciptions && (item == Items.ENCHANTED_BOOK || tools)) addDescriptions(tooltip, ench);
+			if(icons && !jei && (item == Items.ENCHANTED_BOOK || tools)) addEnchantment(tooltip, ench, elements, total, cycleTime);
+			if(desciptions && (item == Items.ENCHANTED_BOOK || tools)) addDescriptions(tooltip, ench, jei);
 		}
 		return true;
 	}
@@ -278,9 +279,9 @@ public class EnchantmentHandler
 	}
 	
 	@OnlyIn(Dist.CLIENT)
-	private void addDescriptions(List<Component> list, Enchantment ench)
+	private void addDescriptions(List<Component> list, Enchantment ench, boolean jei)
 	{
-		if(!Screen.hasShiftDown()) return;
+		if(!Screen.hasShiftDown() && !jei) return;
 		String s = ench.getDescriptionId() + ".desc";
 		if(I18n.exists(s)) list.add(Component.translatable(s).withStyle(ChatFormatting.DARK_AQUA));
 		else list.add(Component.translatable("unique.base.jei.no.description"));

@@ -1,5 +1,6 @@
 package uniqueapex.handler.recipe;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,8 +11,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.ListTag;
@@ -38,7 +39,7 @@ public final class FusionContext extends SimpleContainer
 	IItemHandler mainChest;
 	boolean init = false;
 	Enchantment largestEnchantment;
-	long largestLevel;
+	BigInteger largestLevel;
 	int largestCount;
 	
 	
@@ -147,7 +148,8 @@ public final class FusionContext extends SimpleContainer
 	
 	public boolean canApplyEnchantment(Enchantment ench) 
 	{
-		return ench.canEnchant(mainChest.getStackInSlot(0));
+		ItemStack stack = mainChest.getStackInSlot(0);
+		return (stack.is(Items.ENCHANTED_BOOK) || stack.is(Items.BOOK)) ? ench.isAllowedOnBooks() : ench.canEnchant(stack);
 	}
 	
 	public void mergeEnchantments(int bookCount, int maxLevel)
@@ -201,7 +203,7 @@ public final class FusionContext extends SimpleContainer
 	{
 		if(init) return;
 		Object2IntMap<Enchantment> instances = new Object2IntLinkedOpenHashMap<>();
-		Object2LongMap<Enchantment> totalLevels = new Object2LongLinkedOpenHashMap<>();
+		Object2ObjectMap<Enchantment, BigInteger> totalLevels = new Object2ObjectLinkedOpenHashMap<>();
 		countEnchantments(instances, totalLevels);
 		for(Object2IntMap.Entry<Enchantment> ench : instances.object2IntEntrySet()) {
 			int count = ench.getIntValue();
@@ -210,7 +212,7 @@ public final class FusionContext extends SimpleContainer
 				largestEnchantment = ench.getKey();
 			}
 		}
-		largestLevel = totalLevels.getLong(largestEnchantment);
+		largestLevel = totalLevels.get(largestEnchantment);
 		init = true;
 	}
 	
@@ -226,7 +228,7 @@ public final class FusionContext extends SimpleContainer
 		return largestCount;
 	}
 	
-	public long getLargestLevel()
+	public BigInteger getLargestLevel()
 	{
 		init();
 		return largestLevel;
@@ -240,10 +242,11 @@ public final class FusionContext extends SimpleContainer
 	
 	public int getAchievedLevel(int books)
 	{
-		return (int)(Math.log10(getLargestLevel()) / MathCache.LOG10.get(books));
+		double original = getLargestLevel().doubleValue();
+		return (int)(Math.log10(Double.isInfinite(original) ? 1 : original) / MathCache.LOG10.get(books));
 	}
 	
-	public void countEnchantments(Object2IntMap<Enchantment> instances, Object2LongMap<Enchantment> totalLevels)
+	public void countEnchantments(Object2IntMap<Enchantment> instances, Object2ObjectMap<Enchantment, BigInteger> totalLevels)
 	{
 		for(int i = 0,m=mainChest.getSlots();i<m;i++)
 		{
@@ -252,7 +255,7 @@ public final class FusionContext extends SimpleContainer
 			for(Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(stack).entrySet())
 			{
 				if(i != 0) ((Object2IntLinkedOpenHashMap<Enchantment>)instances).addTo(entry.getKey(), 1);
-				((Object2LongLinkedOpenHashMap<Enchantment>)totalLevels).addTo(entry.getKey(), (int)(Math.pow(2, entry.getValue())*stack.getCount()));
+				totalLevels.merge(entry.getKey(), BigInteger.valueOf(entry.getValue()), (O, N) -> O == null ? N : N.add(O));
 			}
 		}
 	}

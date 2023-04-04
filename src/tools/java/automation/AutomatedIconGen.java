@@ -40,7 +40,7 @@ public class AutomatedIconGen
 				map.put(path.toString(), langMap);
 			}
 			JsonArray icons = JsonParser.parseReader(reader).getAsJsonObject().getAsJsonArray("icons");
-			for(int i = 0,m=icons.size();i<m;i++) {
+			for(int i = 0,j=1,m=icons.size();i<m;i++,j++) {
 				String s = icons.get(i).getAsString();
 				if(s.isEmpty()) continue;
 				boolean found = false;
@@ -50,7 +50,7 @@ public class AutomatedIconGen
 					if(file == null) {
 						continue;
 					}
-					file.addLangEntry(s+".icon", i+1);
+					file.addLangEntry(s+".icon", j);
 					found = true;
 				}
 				if(!found) {
