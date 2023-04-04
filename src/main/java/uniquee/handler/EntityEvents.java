@@ -321,16 +321,9 @@ public class EntityEvents
 				int total = (int) Math.pow(data.getFloat(DeathsOdium.CURSE_DAMAGE) * rand.nextDouble(), 0.25d);
 				if(total > 0)
 				{
-					AttributeInstance instance = event.player.getAttribute(Attributes.MAX_HEALTH);
-					AttributeModifier mod = instance.getModifier(DeathsOdium.REMOVE_UUID);
-					if(mod != null)
+					for(int i = 0;i<total;i++) 
 					{
-						double newValue = Math.max(0D, mod.getAmount() - total);
-						instance.removeModifier(mod);
-						if(newValue > 0)
-						{
-							instance.addTransientModifier(new AttributeModifier(DeathsOdium.REMOVE_UUID, "odiums_curse", newValue, Operation.ADDITION));
-						}
+						DeathsOdium.applyStackBonus(event.player);
 					}
 				}	
 				data.remove(DeathsOdium.CURSE_DAMAGE);
@@ -1055,32 +1048,8 @@ public class EntityEvents
 			else
 			{
 				LivingEntity ent = event.getEntity();
-				int maxLevel = MiscUtil.getCombinedEnchantmentLevel(UE.DEATHS_ODIUM, ent);
-				if(maxLevel > 0)
+				if(DeathsOdium.applyStackBonus(ent))
 				{
-					int lowest = Integer.MAX_VALUE;
-					EquipmentSlot lowestSlot = null;
-					int max = maxLevel+10;
-					for(EquipmentSlot slot : EquipmentSlot.values())
-					{
-						ItemStack stack = ent.getItemBySlot(slot);
-						if(MiscUtil.getEnchantmentLevel(UE.DEATHS_ODIUM, stack) > 0)
-						{
-							int value = StackUtils.getInt(stack, DeathsOdium.CURSE_COUNTER, 0);
-							int newValue = Math.min(value + 1, max);
-							if(value == newValue) continue;
-							if(lowest > value)
-							{
-								lowest = value;
-								lowestSlot = slot;
-							}
-						}
-					}
-					if(lowestSlot != null) {
-						ItemStack stack = ent.getItemBySlot(lowestSlot);
-						StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
-						StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(ent.getMaxHealth()) * 0.3F * rand.nextFloat()));
-					}
 					nbt.putInt(DeathsOdium.CURSE_STORAGE, (nbt.getInt(DeathsOdium.CURSE_STORAGE)+1));
 				}
 			}

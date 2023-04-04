@@ -54,6 +54,7 @@ import uniqueeutils.enchantments.upgrades.FaminesUpgrade;
 import uniqueeutils.enchantments.upgrades.PhanesUpgrade;
 import uniqueeutils.enchantments.upgrades.RocketUpgrade;
 import uniqueeutils.enchantments.upgrades.ThickUpgrade;
+import uniqueeutils.handler.LootManager;
 import uniqueeutils.handler.UtilsHandler;
 import uniqueeutils.misc.HighlightPacket;
 import uniqueeutils.potion.SaturationEffect;
@@ -123,6 +124,7 @@ public class UEUtils extends BaseUEMod
 		addTarget(new ItemTarget(Component.translatable(""), ALCHEMISTS_BLESSING, T -> AlchemistsBlessing.RECIPES.containsKey(T.getItem())));
 		addTarget(new BlockTarget(Component.translatable(""), THICK_PICK, T -> T.getBlock().defaultDestroyTime() >= 20));
 		addTarget(new ItemTarget(Component.translatable(""), THICK_PICK, T -> ThickPick.VALIDATOR.applyAsInt(T) > 0));
+		setLootManager(new LootManager());
 	}
 	
 	@Override

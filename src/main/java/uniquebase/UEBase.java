@@ -118,6 +118,10 @@ public class UEBase
 	protected void reloadConfig()
     {
 		EnchantmentHandler.INSTANCE.cleanCache();
+		BaseConfig.TWEAKS.onConfigChanged();
+		BaseConfig.BOOKS.onConfigsChanged();
+		BaseConfig.ICONS.onConfigsChanged();
+		BaseConfig.TOOLTIPS.onConfigsChanged();
     }
     
     public void onLoad(ModConfigEvent.Loading configEvent) 

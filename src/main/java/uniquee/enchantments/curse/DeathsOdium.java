@@ -3,13 +3,17 @@ package uniquee.enchantments.curse;
 import java.util.UUID;
 
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import uniquebase.api.BaseUEMod;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IntStat;
+import uniquebase.utils.MiscUtil;
 import uniquebase.utils.SlotUUID;
+import uniquebase.utils.StackUtils;
+import uniquee.UE;
 
 public class DeathsOdium extends UniqueEnchantment
 {
@@ -39,5 +43,38 @@ public class DeathsOdium extends UniqueEnchantment
 	protected boolean canApplyToItem(ItemStack stack)
 	{
 		return stack.getItem() == Items.COOKIE;
+	}
+	
+	public static boolean applyStackBonus(LivingEntity entity)
+	{
+		int maxLevel = MiscUtil.getCombinedEnchantmentLevel(UE.DEATHS_ODIUM, entity);
+		if(maxLevel > 0)
+		{
+			int lowest = Integer.MAX_VALUE;
+			EquipmentSlot lowestSlot = null;
+			int max = maxLevel+10;
+			for(EquipmentSlot slot : EquipmentSlot.values())
+			{
+				ItemStack stack = entity.getItemBySlot(slot);
+				if(MiscUtil.getEnchantmentLevel(UE.DEATHS_ODIUM, stack) > 0)
+				{
+					int value = StackUtils.getInt(stack, DeathsOdium.CURSE_COUNTER, 0);
+					int newValue = Math.min(value + 1, max);
+					if(value == newValue) continue;
+					if(lowest > value)
+					{
+						lowest = value;
+						lowestSlot = slot;
+					}
+				}
+			}
+			if(lowestSlot != null) {
+				ItemStack stack = entity.getItemBySlot(lowestSlot);
+				StackUtils.setInt(stack, DeathsOdium.CURSE_COUNTER, lowest+1);
+				StackUtils.setFloat(stack, DeathsOdium.CURSE_STORAGE, StackUtils.getFloat(stack, DeathsOdium.CURSE_STORAGE, 0F) + ((float)Math.sqrt(entity.getMaxHealth()) * 0.3F * entity.getRandom().nextFloat()));
+			}
+			return true;
+		}
+		return false;
 	}
 }

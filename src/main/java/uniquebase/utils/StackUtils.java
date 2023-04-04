@@ -80,6 +80,17 @@ public class StackUtils
 		nbt.put("Lore", list);
 	}
 	
+	public static void addTooltips(ItemStack stack, List<Component> add)
+	{
+		CompoundTag nbt = stack.getOrCreateTagElement("display");
+		ListTag list = nbt.getList("Lore", 8);
+		for(Component entry : add)
+		{
+			list.add(StringTag.valueOf(Component.Serializer.toJson(entry)));
+		}
+		nbt.put("Lore", list);
+	}
+	
 	public static ItemStack getArrowStack(AbstractArrow arrow)
 	{
 		try

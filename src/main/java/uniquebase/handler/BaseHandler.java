@@ -249,6 +249,11 @@ public class BaseHandler
 	{
 		ItemStack stack = event.getItemStack();
 		int flags = BaseConfig.TOOLTIPS.flags.get();
+		//JEI Detection
+		if(stack.hasTag() && (stack.getTag().getInt("HideFlags") & ItemStack.TooltipPart.ENCHANTMENTS.getMask()) != 0)
+		{
+			return;
+		}
 		Object2IntMap<Enchantment> enchantments = MiscUtil.getEnchantments(stack);
 		boolean hasEnchantments = (stack.getItem() == Items.ENCHANTED_BOOK || BaseConfig.TOOLTIPS.showOnTools.get()) && EnchantmentHelper.getEnchantments(stack).size() > 0;
 		if((flags & 1) != 0 && hasEnchantments && BaseConfig.TOOLTIPS.showDescription.get() && !Screen.hasShiftDown())
