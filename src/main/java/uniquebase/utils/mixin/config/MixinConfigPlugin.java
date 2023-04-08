@@ -58,7 +58,22 @@ public class MixinConfigPlugin implements IMixinConfigPlugin
 		if(!mixinClassName.startsWith(mixinPath)) {
 			throw new IllegalStateException("I am pretty sure we don't own that mixin (UE)");
 		}
+		if((mixinClassName.endsWith("EnchantmentHelperMixin") || mixinClassName.endsWith("CombatRulesMixin")) && isClassLoaded()) return false;
+		else if(mixinClassName.endsWith("RealHelperMixin") && !isClassLoaded()) return false;
+		
 		return config.isMixinEnabled(mixinClassName.substring(mixinPath.length()));
+	}
+	
+	private boolean isClassLoaded() {
+		try
+		{
+			Class<?> clz = Class.forName("shadows.apotheosis.util.Weighted");
+			return clz != null;
+		}
+		catch(ClassNotFoundException e)
+		{
+			return false;
+		}
 	}
 	
 	@Override

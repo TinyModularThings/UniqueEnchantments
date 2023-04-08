@@ -67,7 +67,7 @@ dependencies {
 	implementation fg.deobf("curse.maven:jei-238222:4434397")
 	implementation fg.deobf("curse.maven:patchouli-306770:4031402")
 	implementation fg.deobf("curse.maven:rubidium-574856:3973894")
-    implementation fg.deobf("curse.maven:enchantment-descriptions-250419:4277356")
+//    implementation fg.deobf("curse.maven:enchantment-descriptions-250419:4277356")
 //    implementation fg.deobf("curse.maven:apotheosis-313970:4453685")
 //    implementation fg.deobf("curse.maven:placebo-283644:4452975")
 //    implementation fg.deobf("curse.maven:bookshelf-228525:4354814")
