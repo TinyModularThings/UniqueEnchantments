@@ -6,7 +6,7 @@
             "amount": 256
         },
         {
-            "input": { "tags": "forge:gems/lapis" },
+            "input": { "tag": "forge:gems/lapis" },
             "amount": 256
         }
     ],

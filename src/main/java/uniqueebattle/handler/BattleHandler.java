@@ -1,9 +1,12 @@
 package uniqueebattle.handler;
 
+import java.util.List;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
@@ -557,13 +560,14 @@ public class BattleHandler
 				}
 			}
 			int level = MiscUtil.getCombinedEnchantmentLevel(UEBattle.WARS_ODIUM, source);
-			if(level > 0 && !(event.getEntity() instanceof Player) && !WarsOdium.BLACKLIST.contains(event.getEntity().getType()))
+			if(level > 0 && !(event.getEntity() instanceof Player) && !WarsOdium.BLACKLIST.contains(event.getEntity().getType()) && !event.getEntity().getTags().contains(WarsOdium.IGNORE))
 			{
 				CompoundTag nbt = MiscUtil.getPersistentData(source);
 				boolean isBoss = WarsOdium.BOSS_LIST.contains(event.getEntity().getType());
 				nbt.remove(WarsOdium.HIT_COUNTER);
 				int limit = 1+Math.min(9, isBoss ? 0 : MiscUtil.getPlayerLevel(source, 0)/100);
 				double chance = (1-Math.pow((isBoss ? WarsOdium.BOSS_CHANCE : WarsOdium.SPAWN_CHANCE).get(), Math.sqrt(nbt.getInt(WarsOdium.HIT_COUNTER)+level))) / limit;
+				List<Mob> toFilter = new ObjectArrayList<>();
 				for(int j = 0;j<limit;j++)
 				{
 					double random = source.level.random.nextDouble();
@@ -574,7 +578,7 @@ public class BattleHandler
 						if(value > 0)
 						{
 							double extraHealth = WarsOdium.HEALTH_BUFF.getAsDouble(spawnMod);
-							SpawnGroupData data = null;//IDEA implement group data support so the curse gets really mean
+							SpawnGroupData data = null;
 							EntityType<?> location = event.getEntity().getType();
 							Vec3 pos = event.getEntity().position();
 							if(location != null)
@@ -585,6 +589,7 @@ public class BattleHandler
 									if(toSpawn instanceof Mob)
 									{
 										Mob base = (Mob)toSpawn;
+										toFilter.add(base);
 										base.moveTo(pos.x, pos.y, pos.z, Mth.wrapDegrees(event.getEntity().level.random.nextFloat() * 360.0F), 0.0F);
 										base.yRotO = base.getYRot();
 										base.xRotO = base.getXRot();
@@ -604,6 +609,11 @@ public class BattleHandler
 								}
 							}
 						}
+					}
+				}
+				if(toFilter.size() > 1) {
+					for(int i = 1;i<toFilter.size();i++) {
+						toFilter.get(i).addTag(WarsOdium.IGNORE);
 					}
 				}
 			}

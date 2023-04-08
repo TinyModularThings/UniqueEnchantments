@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -39,13 +40,18 @@ public class EnchantmentContainer extends AbstractContainerMenu
 		Map<Enchantment, Integer> presentEnchantments = EnchantmentHelper.getEnchantments(stack);
 		for(Entry<Enchantment, Integer> entry : presentEnchantments.entrySet())
 		{
-			ItemStack item = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(entry.getKey(), entry.getValue()));
-			addToolTip(item, ChatFormatting.DARK_AQUA.toString()+I18n.get("unique.base.jei.max_level", ChatFormatting.WHITE.toString()+entry.getKey().getMaxLevel()));
-			addToolTip(item, ChatFormatting.GOLD.toString()+I18n.get("unique.base.jei.treasure")+(entry.getKey().isTreasureOnly() ? ChatFormatting.GREEN.toString()+"Yes" : ChatFormatting.RED.toString()+"No"));
-			addToolTip(item, ChatFormatting.DARK_RED.toString()+I18n.get("unique.base.jei.curse")+(entry.getKey().isCurse() ? ChatFormatting.RED.toString()+"Yes" : ChatFormatting.GREEN.toString()+"No"));
-			addToolTip(item, ChatFormatting.DARK_PURPLE.toString()+I18n.get("unique.base.jei.rarity", MiscUtil.getFormatting(entry.getKey().getRarity())+I18n.get("unique.base.jei."+entry.getKey().getRarity().name().toLowerCase())));
+			Enchantment ench = entry.getKey();
+			ItemStack item = EnchantedBookItem.createForEnchantment(new EnchantmentInstance(ench, entry.getValue()));
+			addToolTip(item, ChatFormatting.DARK_AQUA.toString()+I18n.get("unique.base.jei.max_level", ChatFormatting.WHITE.toString()+ench.getMaxLevel()));
+			addToolTip(item, ChatFormatting.GOLD.toString()+I18n.get("unique.base.jei.treasure", ench.isTreasureOnly() ? ChatFormatting.GREEN.toString()+"Yes" : ChatFormatting.RED.toString()+"No"));
+			addToolTip(item, ChatFormatting.DARK_RED.toString()+I18n.get("unique.base.jei.curse", ench.isCurse() ? ChatFormatting.RED.toString()+"Yes" : ChatFormatting.GREEN.toString()+"No"));
+			addToolTip(item, ChatFormatting.DARK_PURPLE.toString()+I18n.get("unique.base.jei.rarity", MiscUtil.getFormatting(ench.getRarity())+I18n.get("unique.base.jei."+ench.getRarity().name().toLowerCase())));
+			addToolTip(item, Component.translatable("unique.base.jei.tradeable", Component.translatable(ench.isTradeable() ? "unique.base.jei.yes" : "unique.base.jei.no").withStyle(ChatFormatting.WHITE)).withStyle(createColor(0xC98414)));
+			addToolTip(item, Component.translatable("unique.base.jei.discover", Component.translatable(ench.isDiscoverable() ? "unique.base.jei.yes" : "unique.base.jei.no").withStyle(ChatFormatting.WHITE)).withStyle(createColor(0xBA910D)));
+			addToolTip(item, Component.translatable("unique.base.jei.books", Component.translatable(ench.isAllowedOnBooks() ? "unique.base.jei.yes" : "unique.base.jei.no").withStyle(ChatFormatting.WHITE)).withStyle(createColor(0xBA910D)));
 			enchantments.add(item);
 		}
+		addToolTip(stack, ChatFormatting.BLUE+I18n.get("unique.base.jei.enchantability", ChatFormatting.DARK_PURPLE.toString()+stack.getEnchantmentValue()));
 		for(Enchantment ench : ForgeRegistries.ENCHANTMENTS)
 		{
 			if(ench.canEnchant(stack) && EnchantmentHelper.isEnchantmentCompatible(presentEnchantments.keySet(), ench))
@@ -66,6 +72,11 @@ public class EnchantmentContainer extends AbstractContainerMenu
 			int y = i / 8;
 			addSlot(new LockedSlot(inventory, i+1, 17+x*18, 52+y*18));
 		}
+	}
+	
+	private Style createColor(int color)
+	{
+		return Style.EMPTY.withColor(color).withItalic(false);
 	}
 	
 	public void toggle(boolean applied)
@@ -130,6 +141,14 @@ public class EnchantmentContainer extends AbstractContainerMenu
 		CompoundTag nbt = stack.getOrCreateTagElement("display");
 		ListTag list = nbt.getList("Lore", 8);
 		list.add(StringTag.valueOf(Component.Serializer.toJson(Component.literal(text))));
+		nbt.put("Lore", list);
+	}
+	
+	public static void addToolTip(ItemStack stack, Component text)
+	{
+		CompoundTag nbt = stack.getOrCreateTagElement("display");
+		ListTag list = nbt.getList("Lore", 8);
+		list.add(StringTag.valueOf(Component.Serializer.toJson(text)));
 		nbt.put("Lore", list);
 	}
 	

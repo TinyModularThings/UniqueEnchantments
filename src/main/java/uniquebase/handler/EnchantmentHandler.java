@@ -104,7 +104,7 @@ public class EnchantmentHandler
 			for(int i = 0,m=list.size();i<m;i++) {
 				EnchantmentInstance instance = list.get(i);
 				double required = BaseConfig.TWEAKS.getComplexity(ForgeRegistries.ENCHANTMENTS.getKey(instance.enchantment), instance.level);
-				if(left >= required)
+				if(left >= required) 
 				{
 					left -= required;
 					continue;

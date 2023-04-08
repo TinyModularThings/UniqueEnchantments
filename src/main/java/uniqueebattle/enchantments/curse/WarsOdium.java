@@ -14,6 +14,7 @@ import uniquebase.utils.IdStat;
 public class WarsOdium extends UniqueEnchantment
 {
 	public static final String HIT_COUNTER = "war_counter";
+	public static final String IGNORE = "war_ignore";
 	public static final UUID HEALTH_MOD = UUID.fromString("4c1a8dd9-8468-4285-bb79-11112996a3c2");
 	public static final DoubleStat SPAWN_CHANCE = new DoubleStat(0.95D, "hit");
 	public static final DoubleStat BOSS_CHANCE = new DoubleStat(0.93, "boss_hit");

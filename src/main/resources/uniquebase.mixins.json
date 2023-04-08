@@ -9,6 +9,8 @@
 		"common.enchantments.CombatRulesMixin",
 		"common.enchantments.EnchantmentMixin",
 		"common.enchantments.EnchantmentsMixin",
+		"common.enchantments.FishingLuckMixin",
+		"common.enchantments.RealHelperMixin",
 		"common.enchantments.EnchantmentHelperMixin",
 		"common.enchantments.ThornsEnchantmentMixin",
 		"common.enchantments.UnbreakingEnchantmentMixin",
