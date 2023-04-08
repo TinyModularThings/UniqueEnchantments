@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.HoeItem;
@@ -18,6 +19,7 @@ import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleStat;
 import uniquebase.utils.IdStat;
 import uniquebase.utils.IntStat;
+import uniquebase.utils.StackUtils;
 
 public class ArtemisSoul extends UniqueEnchantment
 {
@@ -38,7 +40,8 @@ public class ArtemisSoul extends UniqueEnchantment
 	public static final DoubleStat DROP_SOUL_SCALE = new DoubleStat(1D, "drop_scale");
 	public static final DoubleStat TEMP_SOUL_SCALE = new DoubleStat(1D, "temp_soul_scale");
 	public static final DoubleStat PERM_SOUL_SCALE = new DoubleStat(1D, "perm_soul_scale");
-	public static final DoubleStat TRANSCENDED_REAP_MULTIPLIER = new DoubleStat(2.0D, "transcended_reap_scaling");
+	public static final String TRANSCENDED_MOD = "m_soul";
+	public static final DoubleStat TRANSCENDED_REAP_MULTIPLIER = new DoubleStat(0.01D, "transcended_reap_multiplier");
 	
 	
 	public ArtemisSoul()
@@ -57,5 +60,10 @@ public class ArtemisSoul extends UniqueEnchantment
 	protected boolean canApplyToItem(ItemStack stack)
 	{
 		return stack.getItem() instanceof BowItem && stack.getItem() instanceof DiggerItem && stack.getItem() instanceof HoeItem || stack.getItem() instanceof TridentItem;
+	}
+	
+	@Override
+	public float getDamageBonus(int level, MobType mobType, ItemStack enchantedItem) {
+		return StackUtils.getFloat(enchantedItem, TRANSCENDED_MOD, 0);
 	}
 }

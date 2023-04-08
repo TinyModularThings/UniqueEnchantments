@@ -59,9 +59,13 @@ import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.enchantment.MendingEnchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -79,6 +83,7 @@ import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
@@ -957,6 +962,10 @@ public class UtilsHandler
 			if(amount > 0)
 			{
 				event.setNewSpeed(event.getNewSpeed() * ThickPick.MINING_SPEED.getAsFloat(level));
+				if(held.getItem() instanceof Tier tier && held.isCorrectToolForDrops(event.getState()) && MiscUtil.isTranscendent(player, held, UEUtils.THICK_PICK)) 
+				{
+					event.setNewSpeed((float) (event.getNewSpeed() * Math.sqrt(1+tier.getLevel())));
+				}
 			}
 		}
 		level = ench.getInt(UEUtils.SAGES_SOUL);

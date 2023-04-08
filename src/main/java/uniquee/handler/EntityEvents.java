@@ -94,6 +94,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem;
 import net.minecraftforge.event.entity.player.PlayerXpEvent.PickupXp;
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
+import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniquebase.UEBase;
 import uniquebase.api.events.ItemDurabilityChangeEvent;
@@ -128,7 +129,6 @@ import uniquee.enchantments.simple.Berserk;
 import uniquee.enchantments.simple.BoneCrusher;
 import uniquee.enchantments.simple.BrittlingBlade;
 import uniquee.enchantments.simple.EnderEyes;
-import uniquee.enchantments.simple.FocusedImpact;
 import uniquee.enchantments.simple.Range;
 import uniquee.enchantments.simple.SagesBlessing;
 import uniquee.enchantments.simple.Swift;
@@ -176,6 +176,17 @@ public class EntityEvents
 			{
 				((PotionMixin)instance).setPotionDuration((int)(instance.getDuration() * (100/(100+Math.pow(points, 0.25)))));
 			}
+		}
+	}
+	
+
+	@SubscribeEvent
+	public void onPotionApplicable(MobEffectEvent.Applicable event) {
+		LivingEntity ent = event.getEntity();
+		if(event.getEffectInstance().getEffect() == MobEffects.MOVEMENT_SLOWDOWN && MiscUtil.isTranscendent(ent, event.getEntity().getItemBySlot(MiscUtil.getEnchantedItem(UE.CLIMATE_TRANQUILITY, ent).getKey()), UE.CLIMATE_TRANQUILITY) && ent.level.getBiome(ent.blockPosition()).containsTag(Tags.Biomes.IS_COLD)) 
+		{
+			event.setResult(Result.DENY);
+			event.setCanceled(true);
 		}
 	}
 	
@@ -474,7 +485,7 @@ public class EntityEvents
 			double value = MiscUtil.getBaseAttribute(player, ForgeMod.REACH_DISTANCE.get());
 			if(value * value < event.getPosition().orElse(BlockPos.ZERO).distToCenterSqr(player.position()))
 			{
-				event.setNewSpeed(event.getNewSpeed() * Range.REDUCTION.getLogDevided(level+1));
+				event.setNewSpeed(event.getNewSpeed() * Range.REDUCTION.getDevided(level+1));
 			}
 		}
 	}
@@ -692,12 +703,10 @@ public class EntityEvents
 			int level = enchantments.getInt(UE.SWIFT_BLADE);
 			if(level > 0)
 			{
-				AttributeInstance attr = base.getAttribute(Attributes.ATTACK_SPEED);
-				if(attr != null)
-				{
-					double val = MiscUtil.getAttackSpeed(base);
-					event.setAmount(event.getAmount() * (float) Math.log(2D+target.getDeltaMovement().length()/val));
+				if(MiscUtil.isTranscendent(base, stack, UE.SWIFT_BLADE) ) {
+					event.setAmount( (event.getAmount() + (float) Math.min(target.getAttribute(Attributes.ATTACK_SPEED) != null ? target.getAttributeValue(Attributes.ATTACK_SPEED) : 0, SwiftBlade.ATTACK_SPEED_CAP.get())));
 				}
+				event.setAmount(event.getAmount() * (float) Math.log(2+Math.pow(1+5*target.getDeltaMovement().horizontalDistance(),-2)*level));
 			}
 			level = enchantments.getInt(UE.FOCUS_IMPACT);
 			if(level > 0)
@@ -757,7 +766,7 @@ public class EntityEvents
 				double value = MiscUtil.getBaseAttribute(player, ForgeMod.ATTACK_RANGE.get());
 				if(value * value < new BlockPos(target.position()).distToCenterSqr(player.position()))
 				{
-					event.setAmount(event.getAmount() * Range.REDUCTION.getLogDevided(level+1));
+					event.setAmount(event.getAmount() * Range.REDUCTION.getDevided(level+1));
 				}
 			}
 			level = MiscUtil.getCombinedEnchantmentLevel(UE.COMBO_STAR, base);
@@ -883,6 +892,8 @@ public class EntityEvents
 					return;
 				}
 			}
+		} else if((event.getSource() == DamageSource.IN_FIRE || event.getSource() == DamageSource.ON_FIRE || event.getSource() == DamageSource.LAVA || event.getSource() == DamageSource.HOT_FLOOR) && MiscUtil.isTranscendent(target, target.getItemBySlot(MiscUtil.getEnchantedItem(UE.CLIMATE_TRANQUILITY, target).getKey()), UE.CLIMATE_TRANQUILITY)) {
+			event.setAmount(event.getAmount() * ClimateTranquility.TRANSCENDED_BURN_DAMAGE.getFloat());
 		}
 		if(event.getAmount() >= event.getEntity().getHealth())
 		{
@@ -948,18 +959,29 @@ public class EntityEvents
 	public void onCrit(CriticalHitEvent event)
 	{
 		if(event.getEntity() == null) return;
-		int level = MiscUtil.getCombinedEnchantmentLevel(UE.COMBO_STAR, event.getEntity());
+		ItemStack stack = event.getEntity().getMainHandItem();
+		Object2IntMap<Enchantment> ench = MiscUtil.getEnchantments(stack);
+		int level = ench.getInt(UE.COMBO_STAR);
 		if(level > 0)
 		{
 			CompoundTag nbt = MiscUtil.getPersistentData(event.getEntity());
 			if(event.isVanillaCritical()) nbt.putInt(ComboStar.COMBO_NAME, Math.min(nbt.getInt(ComboStar.COMBO_NAME)+1, 100));
-			else nbt.remove(ComboStar.COMBO_NAME);
+			else {
+				int num = nbt.getInt(ComboStar.COMBO_NAME);
+				stack.setDamageValue(stack.getDamageValue() - num);
+				nbt.remove(ComboStar.COMBO_NAME);
+			}
 			
 			int combo = nbt.getInt(ComboStar.COMBO_NAME);
 			
 			double damage = Math.pow(ComboStar.DAMAGE_LOSS.get(), Math.sqrt(level));
-			double crit = Math.pow(1D/ComboStar.CRIT_DAMAGE.get(damage), 2.8+combo);
-			event.setDamageModifier((float) (event.getDamageModifier()*crit));
+			double crit = Math.pow(1D/ComboStar.CRIT_DAMAGE.get(damage), Math.log(2.8+combo));
+			event.setDamageModifier((float)(event.getDamageModifier() * crit));
+		}
+		level = ench.getInt(UE.FOCUS_IMPACT);
+		if(level > 0 && event.getEntity().getDeltaMovement().length() == 0.0d) 
+		{
+			event.setResult(Result.ALLOW);
 		}
 	}
 	
@@ -1297,7 +1319,7 @@ public class EntityEvents
 		int level = enchantments.getInt(UE.VITAE);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.VITAE).contains(slot))
 		{
-			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD.getId(slot), "Vitae", Math.log(1+ level*(Vitae.BASE_BOOST.get()+Vitae.SCALE_BOOST.get(MiscUtil.getPlayerLevel(living, 200)))), Operation.ADDITION));
+			mods.put(Attributes.MAX_HEALTH, new AttributeModifier(Vitae.HEALTH_MOD.getId(slot), "Vitae", Vitae.ALT_FORMULA.get() ? Vitae.BASE_BOOST.get()+Vitae.SCALE_BOOST.get(level) : Math.log(1+ level*(Vitae.BASE_BOOST.get()+Vitae.SCALE_BOOST.get(MiscUtil.getPlayerLevel(living, 200)))), Operation.ADDITION));
 		}
 		level = enchantments.getInt(UE.SWIFT);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT).contains(slot))
@@ -1307,8 +1329,9 @@ public class EntityEvents
 		level = enchantments.getInt(UE.RANGE);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.RANGE).contains(slot))
 		{
-			mods.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(Range.RANGE_MOD, "Reach Boost", Range.RANGE.getAsFloat(level), Operation.ADDITION));
-			mods.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(Range.RANGE_MOD, "Combat Range Boost", Range.RANGE.getAsFloat(level)/2, Operation.ADDITION));
+			float num = Range.RANGE.getAsFloat(level);
+			mods.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(Range.RANGE_MOD, "Reach Boost", num, Operation.ADDITION));
+			mods.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(Range.RANGE_MOD, "Combat Range Boost", num*Range.COMBAT.get(), Operation.ADDITION));
 		}
 		level = enchantments.getInt(UE.DEATHS_ODIUM);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.DEATHS_ODIUM).contains(slot))
@@ -1318,16 +1341,6 @@ public class EntityEvents
 			{
 				mods.put(Attributes.MAX_HEALTH, new AttributeModifier(DeathsOdium.GENERAL_MOD.getId(slot), "Death Odiums Restore", value/100f, Operation.MULTIPLY_TOTAL));
 			}
-		}
-		level = enchantments.getInt(UE.FOCUS_IMPACT);
-		if(level > 0 && MiscUtil.getSlotsFor(UE.FOCUS_IMPACT).contains(slot) && (remove || MiscUtil.isTranscendent(living, stack, UE.FOCUS_IMPACT)))
-		{
-			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(FocusedImpact.IMPACT_MOD, "Focus Impact", FocusedImpact.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
-		}
-		level = enchantments.getInt(UE.SWIFT_BLADE);
-		if(level > 0 && MiscUtil.getSlotsFor(UE.SWIFT_BLADE).contains(slot) && (remove || MiscUtil.isTranscendent(living, stack, UE.SWIFT_BLADE)))
-		{
-			mods.put(Attributes.ATTACK_SPEED, new AttributeModifier(SwiftBlade.SWIFT_MOD, "Swift Blade", SwiftBlade.TRANSCENDED_ATTACK_SPEED_MULTIPLIER.get()-1, Operation.MULTIPLY_TOTAL));
 		}
 		level = UE.AMELIORATED_UPGRADE.isValid(stack) ? UE.AMELIORATED_UPGRADE.getPoints(stack) : 0;
 		if(level > 0 && UE.AMELIORATED_UPGRADE.isValidSlot(slot))

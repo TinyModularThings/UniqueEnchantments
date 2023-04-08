@@ -24,7 +24,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,6 +39,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -66,7 +66,6 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import uniqueapex.UEApex;
 import uniqueapex.enchantments.simple.AbsoluteProtection;
 import uniqueapex.enchantments.simple.Accustomed;
-import uniqueapex.enchantments.simple.BlessedBlade;
 import uniqueapex.enchantments.simple.Pickaxe404;
 import uniqueapex.enchantments.simple.SecondLife;
 import uniqueapex.enchantments.unique.AeonsFragment;
@@ -200,7 +199,7 @@ public class ApexHandler
 			level = MiscUtil.getEnchantmentLevel(UEApex.BLESSED_BLADE, stack);
 			if(level > 0)
 			{
-				MiscUtil.doNewDamageInstance(target, DamageSource.OUT_OF_WORLD, (float)Math.pow(1+(BlessedBlade.LEVEL_SCALE.get(MiscUtil.getPlayerLevel(entity, 200) * level)*MiscUtil.getAttribute(ent, Attributes.ATTACK_DAMAGE)),0.2d));
+				event.setAmount((float) (event.getAmount() / (1+Math.pow(AbsoluteProtection.SCALE.get(level), 0.5+(AbsoluteProtection.PROT_MULT.get(MiscUtil.getCombinedEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION, target)))))));
 			}
 		}
 	}

@@ -21,6 +21,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.common.Tags;
 import uniquebase.api.UniqueEnchantment;
 import uniquebase.utils.DoubleLevelStats;
+import uniquebase.utils.DoubleStat;
 import uniquebase.utils.EnchantmentContainer;
 import uniquebase.utils.IntStat;
 import uniquee.UE;
@@ -34,11 +35,13 @@ public class ClimateTranquility extends UniqueEnchantment
 	public static final UUID ATTACK_UUID = UUID.fromString("b47bd399-5ad0-4f1d-a0eb-0a9146ff1734");
 	public static final DoubleLevelStats ATTACK_BONUS = new DoubleLevelStats("attack_bonus", 0.1D, 0.03D);
 	public static final IntStat BURN_TIME = new IntStat(1, "burn_time");
+
+	public static final DoubleStat TRANSCENDED_BURN_DAMAGE = new DoubleStat(0.5D, "transcended_burn_damage");
 	
 	public ClimateTranquility()
 	{
-		super(new DefaultData("climate_tranquility", Rarity.RARE, 5, false, true, 10, 5, 30), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
-		addStats(SPEED_BONUS, SLOW_TIME, ATTACK_BONUS, BURN_TIME);
+		super(new DefaultData("climate_tranquility", Rarity.RARE, 5, false, true, 10, 5, 30).setTrancendenceLevel(500), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
+		addStats(SPEED_BONUS, SLOW_TIME, ATTACK_BONUS, BURN_TIME, TRANSCENDED_BURN_DAMAGE);
 	}
 	
 	@Override

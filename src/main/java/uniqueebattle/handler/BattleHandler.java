@@ -527,7 +527,8 @@ public class BattleHandler
 	public void onEntityDeath(LivingDeathEvent event)
 	{
 		Entity entity = event.getSource().getEntity();
-		if(entity instanceof LivingEntity source)
+		Entity deadEntity = event.getEntity();
+		if(entity instanceof LivingEntity source && deadEntity instanceof LivingEntity dead)
 		{
 			Object2IntMap.Entry<EquipmentSlot> found = MiscUtil.getEnchantedItem(UEBattle.IFRITS_JUDGEMENT, source);
 			if(found.getIntValue() > 0)
@@ -575,26 +576,26 @@ public class BattleHandler
 						{
 							double extraHealth = WarsOdium.HEALTH_BUFF.getAsDouble(spawnMod);
 							SpawnGroupData data = null;//IDEA implement group data support so the curse gets really mean
-							EntityType<?> location = event.getEntity().getType();
-							Vec3 pos = event.getEntity().position();
+							EntityType<?> location = dead.getType();
+							Vec3 pos = dead.position();
 							if(location != null)
 							{
 								for(int i = 0;i<value;i++)
 								{
-									Entity toSpawn = location.create(event.getEntity().level);
+									Entity toSpawn = location.create(dead.level);
 									if(toSpawn instanceof Mob)
 									{
 										Mob base = (Mob)toSpawn;
-										base.moveTo(pos.x, pos.y, pos.z, Mth.wrapDegrees(event.getEntity().level.random.nextFloat() * 360.0F), 0.0F);
+										base.moveTo(pos.x, pos.y, pos.z, Mth.wrapDegrees(dead.level.random.nextFloat() * 360.0F), 0.0F);
 										base.yRotO = base.getYRot();
 										base.xRotO = base.getXRot();
-										data = base.finalizeSpawn((ServerLevelAccessor)event.getEntity().level, event.getEntity().level.getCurrentDifficultyAt(toSpawn.blockPosition()), MobSpawnType.COMMAND, data, null);
+										data = base.finalizeSpawn((ServerLevelAccessor)dead.level, dead.level.getCurrentDifficultyAt(toSpawn.blockPosition()), MobSpawnType.COMMAND, data, null);
 										base.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(WarsOdium.HEALTH_MOD, "wars_spawn_buff", extraHealth, Operation.MULTIPLY_TOTAL));
 										base.setHealth(base.getMaxHealth());
-										event.getEntity().level.addFreshEntity(toSpawn);
+										dead.level.addFreshEntity(toSpawn);
 										toSpawn.level.playSound(null, toSpawn.blockPosition(), UEBattle.WARS_ODIUM_REVIVE_SOUND, SoundSource.AMBIENT, 1F, 1F);
 										base.playAmbientSound();
-										Level world = event.getEntity().level;
+										Level world = dead.level;
 										if(base instanceof EnderDragon && world instanceof ServerLevel)
 										{
 											EndDragonFight manager = ((ServerLevel)world).dragonFight();
@@ -607,16 +608,18 @@ public class BattleHandler
 					}
 				}
 			}
-			Object2IntMap.Entry<EquipmentSlot> entry = MiscUtil.getEnchantedItem(UEBattle.ARTEMIS_SOUL, source);
-			level = entry.getIntValue();
+			ItemStack stack = event.getSource().getDirectEntity() instanceof ThrownTrident trident ? ((ArrowMixin)trident).getArrowItem() : source.getMainHandItem();
+			level = MiscUtil.getEnchantmentLevel(UEBattle.ARTEMIS_SOUL, stack);
 			if(level > 0 && !(event.getEntity() instanceof AgeableMob))
 			{
-				ItemStack stack = source.getItemBySlot(entry.getKey());
 				String key = ArtemisSoul.isValidSpecialMob(event.getEntity()) ? ArtemisSoul.PERSISTEN_SOUL_COUNT : ArtemisSoul.TEMPORARY_SOUL_COUNT;
 				int playerLevel = MiscUtil.getPlayerLevel(source, 70);
 				int max = (int)Math.max(Math.sqrt(playerLevel*ArtemisSoul.CAP_SCALE.get())*ArtemisSoul.CAP_FACTOR.get(), ArtemisSoul.CAP_BASE.get());
 				int gain = MathCache.LOG10.getInt((int)(10+(entity.level.random.nextInt(MiscUtil.getEnchantmentLevel(Enchantments.MOB_LOOTING, stack)+1)+1)*level*ArtemisSoul.REAP_SCALE.get()*playerLevel));
-				gain = MiscUtil.isTranscendent(entity, stack, UEBattle.ARTEMIS_SOUL) ? (int) (gain * ArtemisSoul.TRANSCENDED_REAP_MULTIPLIER.getFloat()) : gain;
+				if(MiscUtil.isTranscendent(entity, stack, UEBattle.ARTEMIS_SOUL)) {
+					float num = (float) Math.max(Math.sqrt(ArtemisSoul.TRANSCENDED_REAP_MULTIPLIER.get(dead.getMaxHealth())), StackUtils.getFloat(stack, ArtemisSoul.TRANSCENDED_MOD, 0));
+					StackUtils.setFloat(stack, ArtemisSoul.TRANSCENDED_MOD, num);
+				}
 				StackUtils.setInt(stack, key, Math.min(StackUtils.getInt(stack, key, 0)+gain, max));
 			}
 			int points = UEBattle.WARS_UPGRADE.getPoints(source.getMainHandItem());
