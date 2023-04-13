@@ -62,7 +62,7 @@ public class BaseConfig
 			configs.comment("Defines how many columns for the Enchantment Icons exist");
 			visibleColumn = configs.defineInRange("Enchantment Icon Columns", 18, 1, 100);
 			configs.comment("Defines how many ticks should pass to cycle icons, if there is to many icons to display at once");
-			cycleTime = configs.defineInRange("Cycle Time", 40, 5, 10000);
+			cycleTime = configs.defineInRange("Cycle Time", 20, 5, 10000);
 			iconOverride.handleConfig(configs);
 			configs.pop();
 		}
@@ -223,7 +223,7 @@ public class BaseConfig
 			configs.comment("Default value of Complexity, for items that are not in the list");
 			defaultItemCompelxity.handleConfig(configs);
 			configs.comment("Should enchantability increase the maximum complexity of the item");
-			itemConsiderEnchantability = configs.define("itemConsiderEnchantability", false);
+			itemConsiderEnchantability = configs.define("itemConsiderEnchantability", true);
 			configs.comment("Defines the Complexity of the Enchantment, read \"Item Complexity Limits\" to understand what that is.",
 					"Format: EnchantmentRegistryName;base;perLevel",
 					"Example: minecraft:protection;1;2.3",
@@ -234,7 +234,7 @@ public class BaseConfig
 			configs.comment("Default level value of Enchantments that arent listed under enchantment Complexity");
 			defaultLevelEnchantmentComplexity = configs.defineInRange("Default Level Enchantment Complexity", 1D, 0.1D, Double.MAX_VALUE);
 			configs.comment("Should higher levels increase the cost");
-			enchantmentComplexityConsiderLevel = configs.define("enchantmentComplexityConsiderLevel", false);
+			enchantmentComplexityConsiderLevel = configs.define("enchantmentComplexityConsiderLevel", true);
 			attribute.handleConfig(configs);
 			configs.pop(2);
 		}

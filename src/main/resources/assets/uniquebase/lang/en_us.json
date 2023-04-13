@@ -2460,6 +2460,7 @@
 	"unique.base.icon": "Press §d[%s§d]§r to show Valid Item Icons",
 	"unique.base.jei.common": "Common",
 	"unique.base.jei.curse": "Curse: %s",
+	"unique.base.jei.enchantability": "Enchantability: %s",
 	"unique.base.jei.incompats": "Incompatible With: ",
 	"unique.base.jei.max_level": "Max Level: %s",
 	"unique.base.jei.name": "UE Enchantment View",

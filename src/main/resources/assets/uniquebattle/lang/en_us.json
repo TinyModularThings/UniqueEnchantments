@@ -707,6 +707,8 @@
 	"enchantment.uniquebattle.lunatic_despair": "Lunatic Despair",
 	"enchantment.uniquebattle.lunatic_despair.desc": "Deal more damage, but also hurt yourself",
 	"enchantment.uniquebattle.lunatic_despair.icon": "=",
+	"enchantment.uniquebattle.sages_grace": "Sage's Grace",
+	"enchantment.uniquebattle.sages_grace.desc": "Deals extra damage based on experience. Increases Experience gain, but consumes durability each time",
 	"enchantment.uniquebattle.snare": "Snare",
 	"enchantment.uniquebattle.snare.desc": "Hitting an Entity will snare it",
 	"enchantment.uniquebattle.snare.icon": "^",

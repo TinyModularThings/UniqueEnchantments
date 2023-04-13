@@ -183,7 +183,7 @@ public class EntityEvents
 	@SubscribeEvent
 	public void onPotionApplicable(MobEffectEvent.Applicable event) {
 		LivingEntity ent = event.getEntity();
-		if(event.getEffectInstance().getEffect() == MobEffects.MOVEMENT_SLOWDOWN && MiscUtil.isTranscendent(ent, event.getEntity().getItemBySlot(MiscUtil.getEnchantedItem(UE.CLIMATE_TRANQUILITY, ent).getKey()), UE.CLIMATE_TRANQUILITY) && ent.level.getBiome(ent.blockPosition()).containsTag(Tags.Biomes.IS_COLD)) 
+		if(event.getEffectInstance().getEffect() == MobEffects.MOVEMENT_SLOWDOWN && MiscUtil.isTranscendent(ent, event.getEntity().getMainHandItem(), UE.CLIMATE_TRANQUILITY) && ent.level.getBiome(ent.blockPosition()).containsTag(Tags.Biomes.IS_COLD)) 
 		{
 			event.setResult(Result.DENY);
 			event.setCanceled(true);
@@ -892,7 +892,7 @@ public class EntityEvents
 					return;
 				}
 			}
-		} else if((event.getSource() == DamageSource.IN_FIRE || event.getSource() == DamageSource.ON_FIRE || event.getSource() == DamageSource.LAVA || event.getSource() == DamageSource.HOT_FLOOR) && MiscUtil.isTranscendent(target, target.getItemBySlot(MiscUtil.getEnchantedItem(UE.CLIMATE_TRANQUILITY, target).getKey()), UE.CLIMATE_TRANQUILITY)) {
+		} else if(target instanceof LivingEntity && (event.getSource() == DamageSource.IN_FIRE || event.getSource() == DamageSource.ON_FIRE || event.getSource() == DamageSource.LAVA || event.getSource() == DamageSource.HOT_FLOOR) && MiscUtil.isTranscendent(target, target.getMainHandItem(), UE.CLIMATE_TRANQUILITY)) {
 			event.setAmount(event.getAmount() * ClimateTranquility.TRANSCENDED_BURN_DAMAGE.getFloat());
 		}
 		if(event.getAmount() >= event.getEntity().getHealth())

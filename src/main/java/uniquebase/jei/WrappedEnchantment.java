@@ -73,6 +73,7 @@ public class WrappedEnchantment implements Comparable<WrappedEnchantment>
 			default: return ChatFormatting.OBFUSCATED;
 		}
 	}
+	
 	@OnlyIn(Dist.CLIENT)
 	public List<FormattedCharSequence> getIncompats(Font font)
 	{

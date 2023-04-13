@@ -50,7 +50,7 @@ public class PackHandler
 		@Override
 		public void loadPacks(Consumer<Pack> acceptor, PackConstructor factory)
 		{
-			acceptor.accept(Pack.create("mod:uepack", false, () -> new DeveloperPack(ModList.get().getModFileById("uniquebase").getFile(), "mc", "UE Book Resource", "Nicer Enchantment Book Texture"), factory, Pack.Position.TOP, PackSource.BUILT_IN));
+			acceptor.accept(Pack.create("mod:uepack", true, () -> new DeveloperPack(ModList.get().getModFileById("uniquebase").getFile(), "mc", "UE Book Resource", "Nicer Enchantment Book Texture"), factory, Pack.Position.TOP, PackSource.BUILT_IN));
 			acceptor.accept(Pack.create("mod:uelightpack", false, () -> new DeveloperPack(ModList.get().getModFileById("uniquebase").getFile(), "lightweight", "UE Book Resource", "Nicer but faster Enchantment Book Texture"), factory, Pack.Position.TOP, PackSource.BUILT_IN));
 		}
 	}

@@ -69,6 +69,7 @@ import uniquee.enchantments.simple.AmelioratedSharpness;
 import uniquee.enchantments.simple.AmelioratedSmite;
 import uniquee.enchantments.simple.Berserk;
 import uniquee.enchantments.simple.BoneCrusher;
+import uniquee.enchantments.simple.BrittlingBlade;
 import uniquee.enchantments.simple.EnderEyes;
 import uniquee.enchantments.simple.FocusedImpact;
 import uniquee.enchantments.simple.Range;
@@ -617,6 +618,7 @@ public class UE extends BaseUEMod
 		ADV_SHARPNESS = register(new AmelioratedSharpness());
 		ADV_SMITE = register(new AmelioratedSmite());
 		ADV_BANE_OF_ARTHROPODS = register(new AmelioratedBaneOfArthropod());
+		BRITTLING_BLADE = register(new BrittlingBlade());
 		VITAE = register(new Vitae());
 		SWIFT = register(new Swift());
 		SAGES_BLESSING = register(new SagesBlessing());
