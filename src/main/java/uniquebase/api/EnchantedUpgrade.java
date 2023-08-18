@@ -98,6 +98,6 @@ public abstract class EnchantedUpgrade
 	
 	public void storePoints(ItemStack stack, int amount)
 	{
-		MiscUtil.storePoints(stack, tag, amount);
+		MiscUtil.storePoints(stack, tag, Math.min(Integer.MAX_VALUE, amount));
 	}
 }

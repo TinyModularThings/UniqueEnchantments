@@ -3,7 +3,6 @@ package uniqueeutils.enchantments.upgrades;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.EnchantedUpgrade;
-import uniquebase.handler.MathCache;
 import uniqueeutils.UEUtils;
 
 public class ThickUpgrade extends EnchantedUpgrade
@@ -22,6 +21,6 @@ public class ThickUpgrade extends EnchantedUpgrade
 	@Override
 	protected double getFormular(int inputPoints)
 	{
-		return MathCache.LOG.get(inputPoints+1);
+		return Math.log(1+inputPoints);
 	}
 }

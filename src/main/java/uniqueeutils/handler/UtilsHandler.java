@@ -59,7 +59,6 @@ import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -952,15 +951,19 @@ public class UtilsHandler
 			event.setNewSpeed(event.getNewSpeed() + (float)Math.log(1+level));
 		}
 		level = ench.getInt(UEUtils.THICK_PICK);
-		if(level > 0 && event.getState().getDestroySpeed(player.level, event.getPosition().orElse(BlockPos.ZERO)) >= 20)
+		if(level > 0 && held.isCorrectToolForDrops(event.getState()))
 		{
 			int amount = StackUtils.getInt(held, ThickPick.TAG, 0);
 			if(amount > 0)
 			{
-				event.setNewSpeed(event.getNewSpeed() * ThickPick.MINING_SPEED.getAsFloat(level));
-				if(held.getItem() instanceof Tier tier && held.isCorrectToolForDrops(event.getState()) && MiscUtil.isTranscendent(player, held, UEUtils.THICK_PICK)) 
+				float hard = event.getState().getDestroySpeed(player.level, event.getPosition().orElse(BlockPos.ZERO));
+				if(MiscUtil.isTranscendent(player, held, UEUtils.THICK_PICK)) 
 				{
-					event.setNewSpeed((float) (event.getNewSpeed() * Math.sqrt(1+tier.getLevel())));
+					System.out.println(hard);
+					event.setNewSpeed((float) (event.getNewSpeed() + Math.sqrt(hard)));
+				}
+				if(hard >= 20) {
+					event.setNewSpeed(event.getNewSpeed() * ThickPick.MINING_SPEED.getAsFloat(level));
 				}
 			}
 		}

@@ -95,6 +95,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickItem
 import net.minecraftforge.event.entity.player.PlayerXpEvent.PickupXp;
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import uniquebase.UEBase;
 import uniquebase.api.events.ItemDurabilityChangeEvent;
@@ -817,6 +818,11 @@ public class EntityEvents
 		}
 	}
 	
+	@SubscribeEvent(priority = EventPriority.LOWEST)
+	public void damage(BreakSpeed event) {
+		System.out.println("speed is: " + event.getNewSpeed());
+	}
+	
 	@SubscribeEvent
 	public void onEntityDamage(LivingDamageEvent event)
 	{
@@ -892,7 +898,7 @@ public class EntityEvents
 					return;
 				}
 			}
-		} else if(target instanceof LivingEntity && (event.getSource() == DamageSource.IN_FIRE || event.getSource() == DamageSource.ON_FIRE || event.getSource() == DamageSource.LAVA || event.getSource() == DamageSource.HOT_FLOOR) && MiscUtil.isTranscendent(target, target.getMainHandItem(), UE.CLIMATE_TRANQUILITY)) {
+		} else if((event.getSource() == DamageSource.IN_FIRE || event.getSource() == DamageSource.ON_FIRE || event.getSource() == DamageSource.LAVA || event.getSource() == DamageSource.HOT_FLOOR) && (MiscUtil.getEnchantmentLevel(UE.CLIMATE_TRANQUILITY, target.getMainHandItem()) > 0 && MiscUtil.isTranscendent(target, target.getMainHandItem(), UE.CLIMATE_TRANQUILITY))) {
 			event.setAmount(event.getAmount() * ClimateTranquility.TRANSCENDED_BURN_DAMAGE.getFloat());
 		}
 		if(event.getAmount() >= event.getEntity().getHealth())
