@@ -23,6 +23,7 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
@@ -43,7 +44,7 @@ public class UEBase
 {
 	public static Logger LOGGER = LogManager.getLogger("UE");
 	public static final PacketHandler NETWORKING = new PacketHandler();
-	public static final Proxy PROXY = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> Proxy::new);
+	public static final Proxy PROXY = DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> Proxy::new);
 	public static IKeyBind ENCHANTMENT_GUI = IKeyBind.empty();
 	public static IKeyBind ENCHANTMENT_ICONS = IKeyBind.empty();
 	public static ICurioHelper CURIO = ICurioHelper.dummy();
@@ -97,7 +98,9 @@ public class UEBase
 				e.printStackTrace();
 			}
 		}
-		PackHandler.loaded();
+		if(FMLEnvironment.dist.isClient()) {
+			PackHandler.loaded();
+		}
 	}
 	
     @SubscribeEvent
