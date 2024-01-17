@@ -10,7 +10,8 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import uniquebase.api.UniqueEnchantment;
 
 public class SagesGrace extends UniqueEnchantment {
-
+	public static final String STORED_XP = "sages_xp";
+	
 	public SagesGrace()
 	{
 		super(new DefaultData("sages_grace", Rarity.COMMON, 5, false, true, 10, 10, 50), EnchantmentCategory.WEAPON, EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);

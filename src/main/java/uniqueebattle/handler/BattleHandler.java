@@ -43,7 +43,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -66,12 +66,9 @@ import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LootingLevelEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.events.ItemDurabilityChangeEvent;
@@ -95,6 +92,7 @@ import uniqueebattle.enchantments.simple.CelestialBlessing;
 import uniqueebattle.enchantments.simple.Fury;
 import uniqueebattle.enchantments.simple.GolemSoul;
 import uniqueebattle.enchantments.simple.IronBird;
+import uniqueebattle.enchantments.simple.SagesGrace;
 import uniqueebattle.enchantments.simple.Snare;
 import uniqueebattle.enchantments.simple.StreakersWill;
 
@@ -199,27 +197,6 @@ public class BattleHandler
 				{
 					instance.removeModifier(GranisSoul.DASH_ID);	
 				}
-			}
-		}
-	}
-	
-	@SubscribeEvent
-	public void onBlockClick(RightClickBlock event)
-	{
-		if(event.getLevel() instanceof ServerLevel)
-		{
-			int count = event.getEntity().getPersistentData().getCompound(Player.PERSISTED_NBT_TAG).getInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT);
-			if(count > 0)
-			{
-				BlockEntity tile = event.getLevel().getBlockEntity(event.getPos());
-				if(tile == null) return;
-				IItemHandler handler = tile.getCapability(ForgeCapabilities.ITEM_HANDLER, event.getFace()).orElse(EmptyHandler.INSTANCE);
-				if(handler.getSlots() < 9) return;
-				LootTable table = ((ServerLevel)event.getLevel()).getServer().getLootTables().get(IfritsJudgement.JUDGEMENT_LOOT);
-				LootContext.Builder builder = (new LootContext.Builder((ServerLevel)event.getLevel())).withRandom(event.getLevel().getRandom()).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(event.getPos())).withLuck(event.getEntity().getLuck()).withParameter(LootContextParams.THIS_ENTITY, event.getEntity());
-				table.getRandomItemsRaw(builder.create(LootContextParamSets.CHEST), T -> ItemHandlerHelper.insertItem(handler, T, false));
-				MiscUtil.getPersistentData(event.getEntity()).putInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT, count-1);
-				if(event.getEntity().isShiftKeyDown()) event.setCanceled(true);
 			}
 		}
 	}
@@ -443,13 +420,14 @@ public class BattleHandler
 				MiscUtil.doNewDamageInstance(target, UEBattle.ARES_GRACE_DAMAGE, (float)Math.log(1+Math.sqrt(MiscUtil.getArmorProtection(target)*target.getHealth()*MiscUtil.getPlayerLevel(source, 0)*level)*AresGrace.DAMAGE.get()));
 				stack.hurtAndBreak(Mth.ceil(AresGrace.DURABILITY.get(Math.log(1+level*source.getHealth()))), source, MiscUtil.get(EquipmentSlot.MAINHAND));
 			}
-			level = MiscUtil.getEnchantedItem(UEBattle.SAGES_GRACE, source).getIntValue();
+			level = ench.getInt(UEBattle.SAGES_GRACE);
 			if(level > 0)
 			{
-				float amount = (float) Math.log(1+MiscUtil.getPlayerExperience(entity, 250));
+				int value = StackUtils.getInt(stack, SagesGrace.STORED_XP, 0);
+				float amount = (float) Math.log(1+value);
 				MiscUtil.doNewDamageInstance(target, UEBattle.SAGES_GRACE_DAMAGE, amount);
-				if(source instanceof Player player && player.totalExperience > 10) {
-					player.giveExperiencePoints((int) (-amount));
+				if(source instanceof Player player && player.totalExperience > 10 && player.experienceLevel > 0) {
+					StackUtils.setInt(stack, SagesGrace.STORED_XP, value + MiscUtil.drainExperience(player, player.experienceLevel));
 				}
 			}
 			level = ench.getInt(UEBattle.IFRITS_JUDGEMENT);
@@ -496,8 +474,9 @@ public class BattleHandler
 			int level = MiscUtil.getCombinedEnchantmentLevel(UEBattle.LUNATIC_DESPAIR, source);
 			if(level > 0)
 			{
-				event.setAmount(event.getAmount() * (1F + LunaticDespair.BONUS_DAMAGE.getFloat(MathCache.LOG_ADD.getFloat(level))));
-				MiscUtil.doNewDamageInstance(source, DamageSource.MAGIC, (float)Math.pow(event.getAmount()*level, 0.25)-1);
+				event.setAmount(event.getAmount() * (1F + LunaticDespair.BONUS_DAMAGE.getFloat() + (float)Math.sqrt(level)/10F));
+				boolean transcent = MiscUtil.isTranscendent(source, source.getItemBySlot(MiscUtil.getEnchantedItem(UEBattle.LUNATIC_DESPAIR, source).getKey()), UEBattle.LUNATIC_DESPAIR);
+				MiscUtil.doNewDamageInstance(source, transcent ? DamageSource.MAGIC : DamageSource.OUT_OF_WORLD, event.getAmount()*(float)Math.sqrt(level/1000D));
 			}
 			level = MiscUtil.getCombinedEnchantmentLevel(UEBattle.WARS_ODIUM, source);
 			if(level > 0)
@@ -544,20 +523,20 @@ public class BattleHandler
 				}
 				if(max > IfritsJudgement.LAVA_HITS.get())
 				{
+					CompoundTag compound = MiscUtil.getPersistentData(source);
+					int totalSuccess = compound.getInt(IfritsJudgement.FLAG_JUDGEMENT_SUCCESS)+1;
 					int combined = MiscUtil.getCombinedEnchantmentLevel(UEBattle.IFRITS_JUDGEMENT, source);
-					MiscUtil.doNewDamageInstance(source, DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
+					MiscUtil.doNewDamageInstance(source, DamageSource.LAVA, IfritsJudgement.LAVA_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)) * totalSuccess);
 					entity.setSecondsOnFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));
-				}
-				else if(max > IfritsJudgement.FIRE_HITS.get())
-				{
-					int combined = MiscUtil.getCombinedEnchantmentLevel(UEBattle.IFRITS_JUDGEMENT, source);
-					MiscUtil.doNewDamageInstance(source, DamageSource.IN_FIRE, IfritsJudgement.FIRE_DAMAGE.getAsFloat(found.getIntValue() * MathCache.LOG_MUL_MAX.getFloat(combined)));
-					entity.setSecondsOnFire(Math.max(1, IfritsJudgement.DURATION.get(found.getIntValue()) / 20));					
+					compound.putInt(IfritsJudgement.FLAG_JUDGEMENT_SUCCESS, 0);
 				}
 				else if(max > 0)
 				{
 					CompoundTag compound = MiscUtil.getPersistentData(source);
-					compound.putInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT, compound.getInt(IfritsJudgement.FLAG_JUDGEMENT_LOOT)+1);
+					compound.putInt(IfritsJudgement.FLAG_JUDGEMENT_SUCCESS, compound.getInt(IfritsJudgement.FLAG_JUDGEMENT_SUCCESS)+1);
+					LootTable table = ((ServerLevel)entity.getLevel()).getServer().getLootTables().get(IfritsJudgement.JUDGEMENT_LOOT);
+					LootContext.Builder builder = (new LootContext.Builder((ServerLevel)entity.getLevel())).withRandom(entity.getLevel().getRandom()).withLuck(MiscUtil.getLuck(entity, 2F)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(deadEntity.blockPosition())).withParameter(LootContextParams.THIS_ENTITY, entity);
+					table.getRandomItemsRaw(builder.create(LootContextParamSets.CHEST), T -> Block.popResource(entity.getLevel(), deadEntity.blockPosition(), T));
 				}
 			}
 			int level = MiscUtil.getCombinedEnchantmentLevel(UEBattle.WARS_ODIUM, source);
