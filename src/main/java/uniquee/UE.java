@@ -218,6 +218,7 @@ public class UE extends BaseUEMod
 		addTarget(new EntityTarget(Component.translatable(""), ENDER_EYES, EnderEyes.AFFECTED_ENTITIES));
 		addTarget(new EntityTarget(Component.translatable(""), ENDEST_REAP, EndestReap::isValid));
 		setLootManager(new LootModifier());
+		
 	}
 	
 	public void registerContent(RegisterEvent event)

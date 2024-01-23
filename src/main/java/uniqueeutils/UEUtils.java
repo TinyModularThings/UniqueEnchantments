@@ -136,6 +136,11 @@ public class UEUtils extends BaseUEMod
 		RENDER_SHIELD_HUD = builder.define("render_shield_hud", true);
 	}
 	
+//	SPEIGERS TUTORIAL ON HOW TO ADD CUSTOM BUTTONS TO ANY GUI TODO
+//	public void init(ScreenEvent.Init guiOpenEvent) {
+//		guiOpenEvent.addListener();
+//	}
+	
 	public void registerContent(RegisterEvent event)
 	{
 		if(event.getRegistryKey().equals(ForgeRegistries.Keys.MOB_EFFECTS))

@@ -409,6 +409,15 @@ public class UtilsHandler
 		}
 		if(event.side.isClient())
 			return;
+//		TUTORIAL BY SPEIGER ON HOW TO OPEN AN ENDERCHEST FROM ANYWHERE TODO
+//		if(UEUtils.BOOST_KEY.test(player) && player.inventoryMenu == player.containerMenu) {
+//			PlayerEnderChestContainer container = player.getEnderChestInventory();
+//			player.openMenu(new SimpleMenuProvider((p_53124_, p_53125_, p_53126_) -> {
+//                return ChestMenu.threeRows(p_53124_, p_53125_, container);
+//             }, Component.literal("My FUCKING TEST")));
+//			return;
+//		}
+		
 		long time = player.level.getGameTime();
 		if(time % 20 == 0)
 		{
