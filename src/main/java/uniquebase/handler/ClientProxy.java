@@ -72,15 +72,33 @@ public class ClientProxy extends Proxy
 	private void registerColor(RegisterColorHandlersEvent.Item event)
 	{
 		event.register((I, T) -> {
-			if(!BaseConfig.BOOKS.enableItemColoring.get()) return -1;
-			if(T == 0) return BaseConfig.BOOKS.getEnchantmentColor(getEnchantment(I)).getTextColor();
-			if(T == 1)
-			{
-				Enchantment ench = getEnchantment(I);
-				if(ench != null) return MiscUtil.getFormatting(ench.getRarity()).getColor() | 0xFF000000;
+			switch(BaseConfig.BOOKS.enableItemColoring.get()) {
+				case DISABLED: return -1;
+				case CYCLING: {
+					if(T == 0) return BaseConfig.BOOKS.getEnchantmentColor(getEnchantment(I)).getTextColor();
+					if(T == 1) {
+						Enchantment ench = getEnchantment(I);
+						if(ench != null) return MiscUtil.getFormatting(ench.getRarity()).getColor() | 0xFF000000;
+					}
+				}
+				case FIRST_ONLY: {
+					if(T == 0) return BaseConfig.BOOKS.getEnchantmentColor(getFirstEnchantment(I)).getTextColor();
+					if(T == 1) {
+						Enchantment ench = getFirstEnchantment(I);
+						if(ench != null) return MiscUtil.getFormatting(ench.getRarity()).getColor() | 0xFF000000;
+					}
+				}
 			}
 			return -1;
 		}, Items.ENCHANTED_BOOK);
+	}
+	
+	public Enchantment getFirstEnchantment(ItemStack stack) {
+		if(stack.getItem() == Items.ENCHANTED_BOOK) {
+			ListTag list = EnchantedBookItem.getEnchantments(stack);
+			if(list.size() >= 1) return ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(list.getCompound(0).getString("id")));
+		}
+		return null;
 	}
 	
 	@Override
@@ -118,6 +136,12 @@ public class ClientProxy extends Proxy
 	public IKeyBind registerKey(String name, int keyBinding)
 	{
 		return keys.computeIfAbsent(name, T -> new ClientPlayerKey(T, keyBinding));
+	}
+	
+	public static enum EnchantmentColorMode {
+		DISABLED,
+		FIRST_ONLY,
+		CYCLING;
 	}
 	
 	public class ClientPlayerKey implements IKeyBind
