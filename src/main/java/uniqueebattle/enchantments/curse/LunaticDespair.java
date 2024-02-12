@@ -9,7 +9,7 @@ import uniquebase.utils.DoubleStat;
 
 public class LunaticDespair extends UniqueEnchantment
 {
-	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(0.2D, "bonus_damage");
+	public static final DoubleStat BONUS_DAMAGE = new DoubleStat(0.1D, "bonus_damage");
 	
 	public LunaticDespair()
 	{

@@ -46,18 +46,9 @@ public class LootModifier implements ILootModifier
 			if(midas > 0 && MidasBlessing.BLACK_LIST.contains(state.getBlock()))
 			{
 				int gold = StackUtils.getInt(stack, MidasBlessing.GOLD_COUNTER, 0);
-				if(gold > 0 && MidasBlessing.IS_GEM.test(state) && !filterItem(generatedLoot, context))
+				if(gold > 0)
 				{
-					gold -= (int)(Math.pow(MidasBlessing.GOLD_COST.getAsDouble(midas), 2)/midas);
-					StackUtils.setInt(stack, MidasBlessing.GOLD_COUNTER, Math.max(0, gold));
-					int multiplier = 1 + midas;
-					List<ItemStack> newDrops = new ObjectArrayList<ItemStack>();
-					for(ItemStack drop : generatedLoot)
-					{
-						StackUtils.growStack(drop, drop.getCount() * multiplier, newDrops);
-					}
-					generatedLoot.clear();
-					generatedLoot.addAll(newDrops);
+					StackUtils.setInt(stack, MidasBlessing.GOLD_COUNTER, Math.max(0, gold-1));
 				}
 			}
 			int level = enchs.getInt(UE.IFRIDS_GRACE);
@@ -99,10 +90,4 @@ public class LootModifier implements ILootModifier
 		}
 	}
 	
-	private boolean filterItem(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-		for(ItemStack a:generatedLoot) {
-			return a.getItem().equals(context.getParamOrNull(LootContextParams.BLOCK_STATE).getBlock().asItem());
-		}
-		return false;
-	}
 }

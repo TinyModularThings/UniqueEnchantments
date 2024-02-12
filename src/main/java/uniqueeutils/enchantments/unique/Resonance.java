@@ -6,10 +6,16 @@ import java.util.Map;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import uniquebase.UEBase;
 import uniquebase.api.UniqueEnchantment;
@@ -37,9 +43,9 @@ public class Resonance extends UniqueEnchantment
 		setCategory("utils");
 	}
 	
-	public static void addResonance(Level world, BlockPos pos, int radius)
+	public static void addResonance(Level world, BlockPos pos, int radius, Player player, InteractionHand hand, boolean trancended)
 	{
-		INSTANCES.computeIfAbsent(world, T -> new ObjectArrayList<>()).add(new ResonanceInstance(pos, radius));
+		INSTANCES.computeIfAbsent(world, T -> new ObjectArrayList<>()).add(new ResonanceInstance(pos, radius, player, hand, trancended));
 	}
 	
 	public static void tick(Level world)
@@ -59,9 +65,17 @@ public class Resonance extends UniqueEnchantment
 	{
 		List<BlockPos> positionsToCheck = new ObjectArrayList<>();
 		int currentIndex = 0;
+		Player player;
+		InteractionHand hand;
+		ItemStack reference;
+		boolean trancended;
 		
-		public ResonanceInstance(BlockPos start, int targetRadius)
+		public ResonanceInstance(BlockPos start, int targetRadius, Player player, InteractionHand hand, boolean trancended)
 		{
+			this.player = player;
+			this.hand = hand;
+			this.reference = player.getItemInHand(hand);
+			this.trancended = trancended;
 			add(start);
 	        int radius = 1;
 	        while (radius <= targetRadius)
@@ -92,14 +106,21 @@ public class Resonance extends UniqueEnchantment
 		
 		public boolean tick(Level world)
 		{
+			if(!player.isAlive() || reference != player.getItemInHand(hand)) return false;
 			int max = AMOUNT.get();
 			for(int i = 0;i < max && currentIndex < positionsToCheck.size();i++)
 			{
 				BlockPos pos = positionsToCheck.get(currentIndex);
-				if(StackUtils.isOre(world.getBlockState(pos)))
+				BlockState state = world.getBlockState(pos);
+				if(StackUtils.isOre(state))
 				{
 					world.playSound(null, pos.getX()+0.5D, pos.getY()+0.5D, pos.getZ()+0.5D, UEUtils.RESONANCE_SOUND, SoundSource.BLOCKS, 1F, 1F);
 					UEBase.NETWORKING.sendToAllChunkWatchers((LevelChunk)world.getChunk(pos), new HighlightPacket(pos));
+					if(trancended && world instanceof ServerLevel) {
+						List<ItemStack> drops = Block.getDrops(state, (ServerLevel)world, pos, world.getBlockEntity(pos), player, reference);
+						world.removeBlock(pos, false);
+						StackUtils.addOrDrop(player, drops);
+					}
 				}
 				currentIndex++;
 			}

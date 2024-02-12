@@ -21,6 +21,7 @@ import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
 import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.api.ColorConfig;
+import uniquebase.handler.ClientProxy.EnchantmentColorMode;
 import uniquebase.utils.DoubleLevelStats;
 import uniquebase.utils.IdStat;
 import uniquebase.utils.VisibilityMode;
@@ -134,7 +135,7 @@ public class BaseConfig
 	
 	public static class UEBooks
 	{
-		public BooleanValue enableItemColoring;
+		public EnumValue<EnchantmentColorMode> enableItemColoring;
 		public BooleanValue enableEnchantmentGlint;
 		ConfigValue<List<? extends String>> colorConfigs;
 		Object2ObjectMap<ResourceLocation, ColorConfig> colors = new Object2ObjectLinkedOpenHashMap<>();
@@ -144,7 +145,7 @@ public class BaseConfig
 			configs.comment("Useful tool can be found here https://hugabor.github.io/color-picker/ for help with colors. Name uses RGB hex, Tooltip uses RGBA hex");
 			configs.push("Book Textures");
 			configs.comment("Toggle for Item Overlay Coloring of Enchanted Books so if the texture is disabled you can turn this optioanlly of too so we don't ruin your texture");
-			enableItemColoring = configs.define("Enable Item Coloring", true);
+			enableItemColoring = configs.defineEnum("Enable Item Coloring", EnchantmentColorMode.CYCLING);
 			configs.comment("Allows to override colors of Enchantment Text, Tooltip Border/Background of each individual Enchantment", 
 					"Format: EnchantmentRegistryId;TextColor;BackgroundColor;BorderColorTop;BorderColorBottom",
 					"Supports RGBA and expects a # or 0x at the beginning of the color string");

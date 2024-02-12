@@ -1,6 +1,8 @@
 package uniquebase.utils;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
 import net.minecraft.core.BlockPos;
@@ -23,6 +25,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.EmptyHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.utils.mixin.common.entity.ArrowMixin;
 
@@ -125,6 +131,21 @@ public class StackUtils
 		return ForgeRegistries.ITEMS.tags().getTag(Tags.Items.ORES).contains(state.getBlock().asItem());
 	}
 	
+	public static void addOrDrop(Player player, List<ItemStack> stacks) 
+	{
+		for(ItemStack stack : stacks) 
+		{
+			addOrDrop(player, stack);
+		}
+	}
+	
+	public static void addOrDrop(Player player, ItemStack stack)
+	{
+		if(stack.isEmpty()) return;
+		if(!player.addItem(stack)) player.drop(stack, false);
+		else player.containerMenu.broadcastChanges();
+	}
+	
 	public static int evenDistribute(int xpPoints, RandomSource rand, List<ItemStack> items, ObjIntFunction<ItemStack> consumer)
 	{
 		int left = xpPoints;
@@ -151,6 +172,25 @@ public class StackUtils
 			}
 		}
 		return xpPoints - left;
+	}
+	
+	public static void scanInventory(IItemHandler handler, boolean recursion, Predicate<ItemStack> filter, Consumer<ItemStack> action) 
+	{
+		for(int i = 0,m=handler.getSlots();i<m;i++)
+		{
+			ItemStack stack = handler.extractItem(i, 1, true);
+			if(stack.isEmpty()) continue;
+			if(filter.test(stack))
+			{
+				action.accept(stack);
+			}
+			else if(recursion)
+			{
+				LazyOptional<IItemHandler> subHandler = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
+				if(!subHandler.isPresent()) continue;
+				scanInventory(subHandler.orElse(EmptyHandler.INSTANCE), false, filter, action);
+			}
+		}
 	}
 	
 	public static int consumeItems(Player player, ToIntFunction<ItemStack> validator, int limit)

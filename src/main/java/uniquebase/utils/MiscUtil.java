@@ -96,6 +96,11 @@ public class MiscUtil
 		return ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled();
 	}
 	
+	public static float getLuck(Entity entity, float defaultValue) 
+	{
+		return entity instanceof Player ? ((Player)entity).getLuck() : defaultValue;
+	}
+	
 	public static int getPlayerLevel(Entity entity, int defaultValue)
 	{
 		return entity instanceof Player ? ((Player)entity).experienceLevel : defaultValue;
@@ -275,10 +280,9 @@ public class MiscUtil
 	public static int getItemLevel(ItemStack stack)
 	{
 		int totalLevel = 0;
-		for(Entry<Enchantment, Integer> ench : MiscUtil.getEnchantments(stack).object2IntEntrySet()) 
+		for(int ench : MiscUtil.getEnchantments(stack).values()) 
 		{
-			if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) continue;
-			totalLevel += ench.getValue();
+			totalLevel += ench;
 		}
 		return totalLevel;
 	}
@@ -288,7 +292,6 @@ public class MiscUtil
 		int totalLevel = 0;
 		for(Entry<Enchantment, Integer> ench : MiscUtil.getEnchantments(stack).object2IntEntrySet()) 
 		{
-			if(ench instanceof IToggleEnchantment && !((IToggleEnchantment)ench).isEnabled()) continue;
 			totalLevel += ench.getKey().isCurse() ? ench.getValue() : 0;
 		}
 		return totalLevel;
@@ -316,7 +319,7 @@ public class MiscUtil
 		// EmptyMap is faster then creating a new map. More Performance in
 		// checks.
 		if(list.isEmpty()) return Object2IntMaps.emptyMap();
-		Object2IntMap<Enchantment> map = new Object2IntOpenHashMap<Enchantment>();
+		Object2IntMap<Enchantment> map = new Object2IntOpenHashMap<>();
 		for(int i = 0, m = list.size();i < m;i++)
 		{
 			CompoundTag tag = list.getCompound(i);

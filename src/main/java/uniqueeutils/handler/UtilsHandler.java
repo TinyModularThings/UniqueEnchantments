@@ -1,6 +1,5 @@
 package uniqueeutils.handler;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.collect.HashMultimap;
@@ -30,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -80,7 +80,6 @@ import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -104,7 +103,6 @@ import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.event.level.BlockEvent.BreakEvent;
 import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 import uniquebase.UEBase;
@@ -201,6 +199,7 @@ public class UtilsHandler
 		buffer.begin(Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR);
 		PoseStack matrix = event.getPoseStack();
 		matrix.pushPose();
+		matrix.setIdentity();
 		Vec3 playerPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
 		matrix.translate(-playerPos.x(), -playerPos.y(), -playerPos.z());
 		Matrix4f transform = matrix.last().pose();
@@ -281,32 +280,9 @@ public class UtilsHandler
 			total += lvl;
 		}
 		if(total == 0) return;
-		List<ItemStack> items = new ArrayList<>();
-		IItemHandler handler = player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(EmptyHandler.INSTANCE);
-		filterItem(handler, false, items);
-		for(ItemStack item : items)
-		{
-			item.setDamageValue((int) (item.getDamageValue()*multiplier));
-		}
-	}
-	
-	private static void filterItem(IItemHandler handler, boolean subLayer, List<ItemStack> result) 
-	{
-		for(int i = 0,m=handler.getSlots();i<m;i++)
-		{
-			ItemStack stack = handler.extractItem(i, 1, true);
-			if(stack.isEmpty()) continue;
-			if(stack.isDamageableItem() && stack.isDamaged())
-			{
-				result.add(stack);
-			}
-			else if(!subLayer)
-			{
-				LazyOptional<IItemHandler> subHandler = stack.getCapability(ForgeCapabilities.ITEM_HANDLER);
-				if(!subHandler.isPresent()) continue;
-				filterItem(subHandler.orElse(EmptyHandler.INSTANCE), true, result);
-			}
-		}
+		player.awardStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST), -(24000 * total));
+		double finalMultiplier = multiplier;
+		StackUtils.scanInventory(player.getCapability(ForgeCapabilities.ITEM_HANDLER).orElse(EmptyHandler.INSTANCE), true, ItemStack::isDamaged, T -> T.setDamageValue((int) (T.getDamageValue()*finalMultiplier)));
 	}
 	
 	@SubscribeEvent
@@ -433,6 +409,15 @@ public class UtilsHandler
 		}
 		if(event.side.isClient())
 			return;
+//		TUTORIAL BY SPEIGER ON HOW TO OPEN AN ENDERCHEST FROM ANYWHERE TODO
+//		if(UEUtils.BOOST_KEY.test(player) && player.inventoryMenu == player.containerMenu) {
+//			PlayerEnderChestContainer container = player.getEnderChestInventory();
+//			player.openMenu(new SimpleMenuProvider((p_53124_, p_53125_, p_53126_) -> {
+//                return ChestMenu.threeRows(p_53124_, p_53125_, container);
+//             }, Component.literal("My FUCKING TEST")));
+//			return;
+//		}
+		
 		long time = player.level.getGameTime();
 		if(time % 20 == 0)
 		{
@@ -477,6 +462,20 @@ public class UtilsHandler
 							attri.removeModifier(SleipnirsGrace.SPEED_MOD);
 						}
 					}
+				}
+			}
+			ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
+			int level = MiscUtil.getEnchantmentLevel(UEUtils.POSEIDONS_SOUL, helmet);
+			if(level > 0 && player.getAirSupply() < player.getMaxAirSupply() - 20)
+			{
+				int charges = StackUtils.getInt(helmet, PoseidonsSoul.CHARGES, 0);
+				if(charges > 0) 
+				{
+					float multiplier = 1F/level;
+					int toCharge = Math.min(player.getMaxAirSupply() - player.getAirSupply(), Mth.ceil(charges/multiplier));
+					charges -= Math.max(1, Mth.floor(toCharge*multiplier));
+					player.setAirSupply(player.getAirSupply() + toCharge);
+					StackUtils.setInt(helmet, PoseidonsSoul.CHARGES, charges);
 				}
 			}
 		}
@@ -629,19 +628,26 @@ public class UtilsHandler
 	{
 		if(event.getAmount() >= 1F)
 		{
-			if(PHANES_REGRET_ACTIVE.get())
-				return;
-			PHANES_REGRET_ACTIVE.set(true);
-			int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.PHANES_REGRET, event.getEntity());
-			if(level > 0)
-			{
-				if(event.getEntity() instanceof Player)
+			if(!PHANES_REGRET_ACTIVE.get()) {
+				PHANES_REGRET_ACTIVE.set(true);
+				int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.PHANES_REGRET, event.getEntity());
+				if(level > 0)
 				{
-					MiscUtil.drainExperience((Player)event.getEntity(), Mth.ceil(event.getAmount()));
+					if(event.getEntity() instanceof Player)
+					{
+						MiscUtil.drainExperience((Player)event.getEntity(), Mth.ceil(event.getAmount()));
+					}
+					event.getEntity().heal(event.getAmount() * (1F - (1F / MathCache.LOG_ADD.getFloat(level))));
 				}
-				event.getEntity().heal(event.getAmount() * (1F - (1F / MathCache.LOG_ADD.getFloat(level))));
+				PHANES_REGRET_ACTIVE.set(false);
 			}
-			PHANES_REGRET_ACTIVE.set(false);
+			Entity entity = event.getSource().getDirectEntity();
+			if(entity != null && event.getEntity() instanceof Player && Dreams.VALID_TARGETS.contains(entity.getType())) {
+				int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.DREAMS, event.getEntity());
+				if(level > 0) {
+					entity.hurt(DamageSource.playerAttack((Player)event.getEntity()), level);
+				}
+			}
 		}
 		if(event.getSource().isMagic())
 		{
@@ -672,7 +678,8 @@ public class UtilsHandler
 			int level = MiscUtil.getCombinedEnchantmentLevel(UEUtils.PHANES_REGRET, event.getEntity());
 			if(level > 0)
 			{
-				event.getEntity().hurt(DamageSource.MAGIC, event.getAmount() * (1F - (1F / MathCache.LOG_ADD.getFloat(level))));
+				event.getEntity().setHealth(event.getEntity().getHealth() - event.getAmount() * (1F - (1F / MathCache.LOG_ADD.getFloat(level))));
+				event.setCanceled(true);
 			}
 		}
 		PHANES_REGRET_ACTIVE.set(false);
@@ -712,7 +719,7 @@ public class UtilsHandler
 			ItemStack stack = new ItemStack(Items.DIAMOND_PICKAXE);
 			stack.enchant(Enchantments.SILK_TOUCH, 1);
 			Block.popResource(world, ray.getBlockPos(), new ItemStack(state.getBlock(), level * (world.random.nextInt(enchs.getInt(Enchantments.BLOCK_FORTUNE) + 1) + 1)));
-			MiscUtil.drainExperience(player, (int)Math.log10(10 + Math.pow(PoseidonsSoul.BASE_CONSUMTION.get() + level, level)));
+			MiscUtil.drainExperience(player, level+1);
 		}
 	}
 	
@@ -739,7 +746,8 @@ public class UtilsHandler
 				}
 				else
 				{
-					Resonance.addResonance(event.getLevel(), event.getPos(), (int)(Resonance.RANGE.getSqrt(level * Math.sqrt(player.experienceLevel))));
+					boolean transended = MiscUtil.isTranscendent(player, stack, UEUtils.RESONANCE);
+					Resonance.addResonance(event.getLevel(), event.getPos(), (int)(Resonance.RANGE.getSqrt(level * Math.sqrt(player.experienceLevel)) + MiscUtil.getAttribute(player, ForgeMod.REACH_DISTANCE.get())) * (transended ? 3 : 1), player, event.getHand(), transended);
 					nbt.putLong(Resonance.COOLDOWN_TAG, event.getLevel().getGameTime() + Resonance.COOLDOWN.get());
 					nbt.putInt(Resonance.OVERUSED_TAG, 1);
 				}

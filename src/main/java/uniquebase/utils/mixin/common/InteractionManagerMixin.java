@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayerGameMode;
 @Mixin(ServerPlayerGameMode.class)
 public interface InteractionManagerMixin
 {
+	//TODO DELETE ME
 	@Accessor("isDestroyingBlock")
 	public boolean isMiningBlock();
 }

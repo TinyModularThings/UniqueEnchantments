@@ -57,8 +57,9 @@ public class AlchemistsGrace extends UniqueEnchantment
 			Object2IntMap.Entry<EquipmentSlot> slot = MiscUtil.getEnchantedItem(UE.ALCHEMISTS_GRACE, base);
 			if(slot.getIntValue() > 0)
 			{
+				boolean trancended = MiscUtil.isTranscendent(entity, base.getItemBySlot(slot.getKey()), UE.ALCHEMISTS_GRACE);
 				int level = slot.getIntValue();
-				Set<MobEffect> potions = new ObjectOpenHashSet<MobEffect>();
+				Set<MobEffect> potions = new ObjectOpenHashSet<>();
 				for(int i = level;i>=0;i--)
 				{
 					if(EFFECTS.size() <= i)
@@ -69,7 +70,7 @@ public class AlchemistsGrace extends UniqueEnchantment
 					{
 						if(plan.isValid(mining)) 
 						{
-							MobEffectInstance effect = plan.createEffect(level, hitScalar);
+							MobEffectInstance effect = plan.createEffect(level + (trancended ? 1 : 0), hitScalar);
 							if(potions.add(effect.getEffect())) base.addEffect(effect);
 						}
 					}

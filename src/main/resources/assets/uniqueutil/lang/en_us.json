@@ -1209,6 +1209,7 @@
 	"tooltip.uniqueutil.stored.repair.name": "Stored Gems %s",
 	"tooltip.uniqueutil.stored.shield.name": "%s Stored Durability left",
 	"tooltip.uniqueutil.stored.soul.name": "Item Soul Level %s",
+	"tooltip.uniqueutil.stored.charges.name": "Charges %s",
 	"upgrade.uniqueutil.give_effect": "Give Effect %s",
 	"upgrade.uniqueutil.mining_speed": "Mining Speed %s",
 	"upgrade.uniqueutil.shield": "Magic Shield",

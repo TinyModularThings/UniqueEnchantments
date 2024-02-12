@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 buildscript {
     repositories {
 		maven { url = 'https://maven.minecraftforge.net' }
@@ -223,4 +224,231 @@ publishing {
             url "file:///${project.projectDir}/mcmodsrepo"
         }
     }
+=======
+buildscript {
+    repositories {
+		maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/maven' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: "org.spongepowered.mixin"
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
+version = "1.19.2-"+new Date().format("dd")+"-"+Math.abs(new Random().nextInt())
+group = "uniquee"
+archivesBaseName = "Unique Enchantments"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+repositories {
+    maven {
+        url = "https://www.cursemaven.com"
+    }
+}
+
+minecraft {
+    mappings channel: 'official', version: '1.19.2'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            arg "-mixin.config=uniquebase.mixins.json"
+        }
+
+        server {
+            workingDirectory project.file('run')
+            arg "-mixin.config=uniquebase.mixins.json"
+        }
+
+        data {
+            workingDirectory project.file('run')
+            arg "-mixin.config=uniquebase.mixins.json"
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+sourceSets {
+	tools {
+		java {
+    		compileClasspath += main.output
+        	runtimeClasspath += main.output
+    	}
+   	}
+}
+
+configurations {
+    toolsImplementation.extendsFrom implementation;
+}
+
+dependencies {
+	minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
+	implementation fg.deobf("curse.maven:carbon-config-898104:4952985")
+	implementation fg.deobf("curse.maven:jei-238222:4434397")
+	implementation fg.deobf("curse.maven:patchouli-306770:4031402")
+	implementation fg.deobf("curse.maven:embeddium-908741:4984830")
+//   implementation fg.deobf("curse.maven:enchantment-descriptions-250419:4277356")
+//   implementation fg.deobf("curse.maven:apotheosis-313970:4453685")
+//   implementation fg.deobf("curse.maven:placebo-283644:4452975")
+//   implementation fg.deobf("curse.maven:bookshelf-228525:4354814")
+	implementation fg.deobf("curse.maven:curios-309927:4418021")
+	
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+mixin {
+    add sourceSets.main, "mixins.uniquebase.refmap.json"
+}
+
+task runAutomatedIconGen(type: JavaExec) {
+	group = 'internal'
+	description = 'Generates the Icon Uniquecodes automatically'
+    classpath = sourceSets.tools.runtimeClasspath
+    main = 'automation.AutomatedIconGen'
+    args file('src/main/resources').absolutePath, file('src/tools/resources/icons.json')
+}
+
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "uniquee",
+            "Specification-Vendor": "uniquee",
+            "Specification-Version": "1",
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" :"uniquee",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "MixinConfigs": "uniquebase.mixins.json"
+        ])
+    }
+    includeEmptyDirs = false
+}
+jar.finalizedBy('reobfJar') 
+
+task baseJar(type: Jar, dependsOn: reobf) {
+  baseName = 'Unique Enchantments Base'
+  version = minecraft_version+"-"+unique_base_version
+  from(zipTree(jar.archivePath)) {
+    include 'META_INF/MANIFEST.MF'
+    include '**/uniquebase/**/*'
+    include '**/assets/uniquebase/**/*'
+    include '**/assets/mc/**/*'
+    include 'pack.mcmeta'
+    include 'uniquebase.mixins.json'
+    include 'mixins.uniquebase.refmap.json'
+  }
+  manifest {
+       attributes([
+           "MixinConfigs": "uniquebase.mixins.json"
+      ])
+  }
+  from(zipTree(jar.archivePath)) {
+    	include 'META-INF/unique_base_mods.toml'
+    	rename 'unique_base_mods.toml', 'mods.toml'
+   		expand 'version': unique_base_version
+  }
+  includeEmptyDirs = false
+}
+
+task mainJar(type: Jar, dependsOn: reobf) {
+  baseName = 'Unique Enchantments'
+  version = minecraft_version+"-"+uniquee_version
+  from(zipTree(jar.archivePath)) {
+    include 'META_INF/MANIFEST.MF'
+    include '**/uniquee/**/*'
+    include '**/assets/uniquee/**/*'
+    include '**/data/uniquee/**/*'
+    include '**/data/forge/**/*'
+    include 'pack.mcmeta'
+  }
+  from(zipTree(jar.archivePath)) {
+    	include 'META-INF/uniquee_mods.toml'
+   		rename 'uniquee_mods.toml', 'mods.toml'
+   		expand 'version': uniquee_version, 'base_version': unique_base_version
+  }
+  includeEmptyDirs = false
+}
+
+task utilsJar(type: Jar, dependsOn: reobf) {
+  baseName = 'Unique Enchantments Utils'
+  version = minecraft_version+"-"+unique_utils_version
+  from(zipTree(jar.archivePath)) {
+    include 'META_INF/MANIFEST.MF'
+    include '**/uniqueeutils/**/*'
+    include '**/assets/uniqueutil/**/*'
+    include 'pack.mcmeta'
+  }
+  from(zipTree(jar.archivePath)) {
+    	include 'META-INF/unique_utils_mods.toml'
+   		rename 'unique_utils_mods.toml', 'mods.toml'
+   		expand 'version': unique_utils_version, 'base_version': unique_base_version
+  }
+  includeEmptyDirs = false
+}
+
+task battleJar(type: Jar, dependsOn: reobf) {
+  baseName = 'Unique Enchantments Battle'
+  version = minecraft_version+"-"+unique_battle_version
+  from(zipTree(jar.archivePath)) {
+    include 'META_INF/MANIFEST.MF'
+    include '**/uniqueebattle/**/*'
+    include '**/assets/uniquebattle/**/*'
+    include '**/data/uniquebattle/**/*'
+    include 'pack.mcmeta'
+  }
+  from(zipTree(jar.archivePath)) {
+    	include 'META-INF/unique_battle_mods.toml'
+   		rename 'unique_battle_mods.toml', 'mods.toml'
+   		expand 'version': unique_battle_version, 'base_version': unique_base_version
+  }
+  includeEmptyDirs = false
+}
+
+task apexJar(type: Jar, dependsOn: reobf) {
+  baseName = 'Unique Enchantments Apex'
+  version = minecraft_version+"-"+unique_apex_version
+  from(zipTree(jar.archivePath)) {
+    include 'META_INF/MANIFEST.MF'
+    include '**/uniqueapex/**/*'
+    include '**/assets/uniqueapex/**/*'
+    include '**/data/uniqueapex/**/*'
+    include 'pack.mcmeta'
+  }
+  from(zipTree(jar.archivePath)) {
+    	include 'META-INF/unique_apex_mods.toml'
+   		rename 'unique_apex_mods.toml', 'mods.toml'
+   		expand 'version': unique_apex_version, 'base_version': unique_base_version
+  }
+  includeEmptyDirs = false
+}
+
+
+artifacts {
+    archives baseJar
+    archives mainJar
+    archives utilsJar
+    archives battleJar
+    archives apexJar
+}
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
+    }
+>>>>>>> branch '1.19' of https://git.speiger.com/Speiger/UniqueEnchantments.git
 }
