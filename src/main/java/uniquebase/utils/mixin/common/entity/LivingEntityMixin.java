@@ -17,6 +17,6 @@ public class LivingEntityMixin {
 		
 		int i = ent.getEffect(MobEffects.DAMAGE_RESISTANCE).getAmplifier();
 		System.out.println(1/(Math.max( (float)Math.pow(0.9, i) * 0.8f, 0.01f)));
-        return 5/(Math.max( (float)Math.pow(0.9, i) * 0.8f, 0.01f));
+        return 0.2f*(Math.max( (float)Math.pow(0.9, i) * 0.8f, 0.01f));
     }
 }

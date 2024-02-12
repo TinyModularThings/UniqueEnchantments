@@ -63,14 +63,14 @@ configurations {
 
 dependencies {
 	minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
-    implementation fg.deobf("curse.maven:configured-457570:4011355")
+	implementation fg.deobf("curse.maven:carbon-config-898104:4952985")
 	implementation fg.deobf("curse.maven:jei-238222:4434397")
 	implementation fg.deobf("curse.maven:patchouli-306770:4031402")
-	implementation fg.deobf("curse.maven:rubidium-574856:3973894")
- //   implementation fg.deobf("curse.maven:enchantment-descriptions-250419:4277356")
- //   implementation fg.deobf("curse.maven:apotheosis-313970:4453685")
- //   implementation fg.deobf("curse.maven:placebo-283644:4452975")
- //   implementation fg.deobf("curse.maven:bookshelf-228525:4354814")
+	implementation fg.deobf("curse.maven:embeddium-908741:4984830")
+    //implementation fg.deobf("curse.maven:enchantment-descriptions-250419:4277356")
+    //implementation fg.deobf("curse.maven:apotheosis-313970:4453685")
+    //implementation fg.deobf("curse.maven:placebo-283644:4452975")
+    //implementation fg.deobf("curse.maven:bookshelf-228525:4354814")
 	implementation fg.deobf("curse.maven:curios-309927:4418021")
 	
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
