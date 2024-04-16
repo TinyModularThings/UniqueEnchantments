@@ -3,6 +3,7 @@ package uniquebase.handler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.function.ToIntFunction;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -77,6 +78,7 @@ public class BaseHandler
 	List<TrackedAbsorber> activeAbsorbers = new ArrayList<>(); //Using non FastUtil list due to FastUtils removeIf implementation being slower then Javas ArrayList
 	int tooltipCounter = 0;
 	int globalAbsorber = 0;
+	Random rand = new Random();
 	
 	public void registerStorageTooltip(Enchantment ench, String translation, String tag)
 	{
@@ -175,6 +177,17 @@ public class BaseHandler
 					break impalingLabel;
 				}
 				event.setAmount(event.getAmount()+1.5f*level);
+			}
+		}
+	}
+	
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void onEntityHurt(ProjectileImpactEvent event) {
+		if(event.getEntity() instanceof LivingEntity entity) {
+			int enchantmentLevel = MiscUtil.getCombinedEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION, entity);
+			if(enchantmentLevel > 0 && rand.nextDouble() < (1-Math.pow(0.9, enchantmentLevel))) {
+				event.setCanceled(true);
+				event.getProjectile().getDeltaMovement().scale(-1d);
 			}
 		}
 	}

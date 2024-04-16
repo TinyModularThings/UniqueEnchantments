@@ -2,6 +2,7 @@ package uniqueebattle.enchantments.complex;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.HoeItem;
@@ -48,4 +49,8 @@ public class AresFragment extends UniqueEnchantment
 		return !stack.isDamageableItem();
 	}
 	
+	@Override
+	public float getDamageBonus(int p_44682_, MobType p_44683_) {
+		return 0.3f*p_44682_;
+	}
 }

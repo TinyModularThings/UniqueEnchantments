@@ -2,25 +2,140 @@
   "pools": [
     {
       "rolls": 1,
-      "bonus_rolls": {
-        "min": 0,
-        "max": 0.5
-      },
       "entries": [
         {
-          "type": "item",
+          "type": "minecraft:item",
+          "name": "minecraft:coal",
+          "weight": 5950,
+          "quality": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 3
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:firework_star",
+          "weight": 3600,
+          "quality": 10,
+          "functions": [
+            {
+              "function": "minecraft:looting_enchant",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
           "name": "minecraft:obsidian",
-          "weight": 1
+          "weight": 1000,
+          "quality": 10,
+          "functions": [
+            {
+              "function": "minecraft:looting_enchant",
+              "count": 1
+            }
+          ]
         },
         {
-          "type": "item",
-          "name": "minecraft:magma_cream",
-          "weight": 2
+          "type": "minecraft:item",
+          "name": "minecraft:blaze_powder",
+          "weight": 300,
+          "quality": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 3
+              }
+            },
+            {
+              "function": "minecraft:looting_enchant",
+              "count": 1
+            }
+          ]
         },
         {
-          "type": "item",
-          "name": "minecraft:firework_rocket",
-          "weight": 10
+          "type": "minecraft:group",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "minecraft:enchanted_book",
+              "weight": 90,
+              "quality": 5,
+              "functions": [
+                {
+                  "function": "minecraft:set_nbt",
+                  "tag": "StoredEnchantments:[{lvl:5,id:fire_protection}]"
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "minecraft:enchanted_book",
+              "weight": 90,
+              "quality": 5,
+              "functions": [
+                {
+                  "function": "minecraft:set_nbt",
+                  "tag": "StoredEnchantments:[{lvl:3,id:fire_aspect}]"
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "minecraft:enchanted_book",
+              "weight": 90,
+              "quality": 5,
+              "functions": [
+                {
+                  "function": "minecraft:set_nbt",
+                  "tag": "StoredEnchantments:[{lvl:6,id:\"uniqueebattle:ifrits_blessing\"}]"
+                }
+              ]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "minecraft:enchanted_book",
+              "weight": 90,
+              "quality": 5,
+              "functions": [
+                {
+                  "function": "minecraft:set_nbt",
+                  "tag": "StoredEnchantments:[{lvl:4,id:\"uniqueebattle:ifrits_grace\"}]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:ancient_debris",
+          "weight": 58,
+          "quality": 10,
+          "functions": [
+            {
+              "function": "minecraft:looting_enchant",
+              "count": 1,
+              "limit": 1
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:coal_block",
+          "weight": 2,
+          "quality": 10
         }
       ]
     }

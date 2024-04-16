@@ -353,45 +353,78 @@ public class EntityEvents
 		if(level > 0)
 		{
 			CompoundTag nbt = player.getPersistentData();
-			if(player.isShiftKeyDown() && !nbt.getBoolean(Cloudwalker.TRIGGER) && (!player.isOnGround() || nbt.getBoolean(Cloudwalker.ENABLED)))
-			{
-				nbt.putBoolean(Cloudwalker.ENABLED, !nbt.getBoolean(Cloudwalker.ENABLED));
+			int y = (int)player.position().y();
+			int py = nbt.getInt(Cloudwalker.HEIGHT);
+			if(!player.isOnGround() && player.isShiftKeyDown() && !nbt.getBoolean(Cloudwalker.ENABLED)) {
+				nbt.putBoolean(Cloudwalker.ENABLED, true);
 				nbt.putBoolean(Cloudwalker.TRIGGER, true);
+				nbt.putInt(Cloudwalker.HEIGHT, y);
+				nbt.putInt(Cloudwalker.TIMER, 200+100*level);
 			}
-			else if(!player.isShiftKeyDown())
-			{
-				nbt.putBoolean(Cloudwalker.TRIGGER, false);
-			}
+			
+			int value = nbt.getInt(Cloudwalker.TIMER);
 			ItemStack stack = player.getItemBySlot(EquipmentSlot.FEET);
-			if(nbt.getBoolean(Cloudwalker.ENABLED))
+			Vec3 vec = player.getDeltaMovement();
+
+			if(value < 0)
 			{
-				int value = StackUtils.getInt(stack, Cloudwalker.TIMER, Cloudwalker.TICKS.get(level) * 5);
-				if(value <= 0)
-				{
-					nbt.putBoolean(Cloudwalker.ENABLED, false);
-					return;
-				}
-				Vec3 vec = player.getDeltaMovement();
-				player.setDeltaMovement(vec.x, 0D, vec.z);
-				player.causeFallDamage(player.fallDistance, 1F, DamageSource.FALL);
-				player.fallDistance = 0F;
-				player.setOnGround(true);
-				if(!player.isCreative())
-				{
-					boolean levi = player.hasEffect(MobEffects.LEVITATION);
-					int leviLevel = levi ? player.getEffect(MobEffects.LEVITATION).getAmplifier()+1 : 0;
-					StackUtils.setInt(stack, Cloudwalker.TIMER, value-Math.max(1, 5 - (leviLevel * 2)));
-					int time = Math.max(1, (int)Math.pow(20 * (Math.sqrt(level) / (leviLevel+1)), Cloudwalker.TRANSCENDED_EXPONENT.get()));
-					if(player.level.getGameTime() % time == 0)
-					{
-						stack.hurtAndBreak(1, player, MiscUtil.get(EquipmentSlot.FEET));
+				nbt.putBoolean(Cloudwalker.ENABLED, false);
+				stack.hurtAndBreak(((1+level)*(1+level))/(1+MiscUtil.getEnchantmentLevel(Enchantments.FALL_PROTECTION, stack)), player, MiscUtil.get(EquipmentSlot.FEET));
+				nbt.putInt(Cloudwalker.TIMER, 0);
+				return;
+			}
+			
+			if(nbt.getBoolean(Cloudwalker.ENABLED) && player.totalExperience >= 2) {
+				if(y < py) {
+					if(!MiscUtil.isTranscendent(player, stack, UE.CLOUD_WALKER)) {
+						player.causeFallDamage(player.fallDistance, 1F, DamageSource.FALL);
+						player.fallDistance = 0F;
 					}
+					player.setDeltaMovement(vec.x, Math.max(0,vec.y + player.getAttributeValue(ForgeMod.ENTITY_GRAVITY.get())), vec.z);
+					player.setOnGround(true);
+					player.giveExperiencePoints(-1);
 				}
+				nbt.putInt(Cloudwalker.TIMER, --value);
 			}
-			else
-			{
-				StackUtils.setInt(stack, Cloudwalker.TIMER, Cloudwalker.TICKS.get(level) * 5);
-			}
+//			if(player.isShiftKeyDown() && !nbt.getBoolean(Cloudwalker.TRIGGER) && (!player.isOnGround() || nbt.getBoolean(Cloudwalker.ENABLED)))
+//			{
+//				nbt.putBoolean(Cloudwalker.ENABLED, !nbt.getBoolean(Cloudwalker.ENABLED));
+//				nbt.putBoolean(Cloudwalker.TRIGGER, true);
+//			}
+//			else if(!player.isShiftKeyDown())
+//			{
+//				nbt.putBoolean(Cloudwalker.TRIGGER, false);
+//			}
+//			ItemStack stack = player.getItemBySlot(EquipmentSlot.FEET);
+//			if(nbt.getBoolean(Cloudwalker.ENABLED))
+//			{
+//				int value = StackUtils.getInt(stack, Cloudwalker.TIMER, Cloudwalker.TICKS.get(level) * 5);
+//				if(value <= 0)
+//				{
+//					nbt.putBoolean(Cloudwalker.ENABLED, false);
+//					return;
+//				}
+//				Vec3 vec = player.getDeltaMovement();
+//				player.setDeltaMovement(vec.x, 0D, vec.z);
+//				player.causeFallDamage(player.fallDistance, 1F, DamageSource.FALL);
+//				player.fallDistance = 0F;
+//				player.setOnGround(true);
+//				if(!player.isCreative())
+//				{
+//					boolean levi = player.hasEffect(MobEffects.LEVITATION);
+//					int leviLevel = levi ? player.getEffect(MobEffects.LEVITATION).getAmplifier()+1 : 0;
+//					StackUtils.setInt(stack, Cloudwalker.TIMER, value-Math.max(1, 5 - (leviLevel * 2)));
+//					int time = Math.max(1, (int)Math.pow(20 * (Math.sqrt(level) / (leviLevel+1)), Cloudwalker.TRANSCENDED_EXPONENT.get()));
+//					if(player.level.getGameTime() % time == 0)
+//					{
+//						stack.hurtAndBreak(1, player, MiscUtil.get(EquipmentSlot.FEET));
+//					}
+//				}
+//			}
+//			else
+//			{
+//				StackUtils.setInt(stack, Cloudwalker.TIMER, Cloudwalker.TICKS.get(level) * 5);
+//			}
 		}
 		level = container.getEnchantment(UE.SWIFT, EquipmentSlot.LEGS);
 		if(level > 0 && player.onClimbable() && player.zza != 0F && player.getDeltaMovement().y() > 0 && player.getDeltaMovement().y() <= 0.2 && !player.isShiftKeyDown())
@@ -1125,6 +1158,9 @@ public class EntityEvents
 		{
 			MiscUtil.spawnDrops(deadEntity, UE.ENDEST_REAP, Mth.nextInt(rand, 2, 4));
 		}
+		if(!(((CombatTrackerMixin)deadEntity.getCombatTracker()).getCombatEntries().size() > 1)) {
+			MiscUtil.spawnDrops(deadEntity, UE.DEATHS_ODIUM, Mth.nextInt(rand, 1, 3));
+		}
 	}
 	
 	@SubscribeEvent
@@ -1332,7 +1368,7 @@ public class EntityEvents
 		if(level > 0)
 		{
 			int totalLevel = MiscUtil.getCombinedEnchantmentLevel(UE.SWIFT, living);
-			mods.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(Swift.SPEED_MOD, "Swift Boost", Math.sqrt(totalLevel/100), Operation.MULTIPLY_TOTAL));
+			mods.put(Attributes.MOVEMENT_SPEED, new AttributeModifier(Swift.SPEED_MOD, "Swift Boost", Math.sqrt(totalLevel/100.d), Operation.MULTIPLY_TOTAL));
 		}
 		level = enchantments.getInt(UE.RANGE);
 		if(level > 0 && MiscUtil.getSlotsFor(UE.RANGE).contains(slot))

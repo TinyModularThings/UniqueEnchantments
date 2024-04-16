@@ -63,7 +63,7 @@ public class AlchemistsBlessing extends UniqueEnchantment
 	public void loadData(Builder config)
 	{
 		config.comment("Conversion map that decides which Items convert into what. Format: \"InputItem, OutputItem, OutputAmount\"");
-		EFFECT_CONFIG = config.defineList("conversionMap", ObjectArrayList.wrap(new String[]{"minecraft:iron_ingot, minecraft:gold_nugget, 1", "minecraft:sugar, minecraft:gunpowder, 1", "minecraft:wheat, minecraft:string, 2"}), (T) -> true);
+		EFFECT_CONFIG = config.defineList("conversionMap", ObjectArrayList.wrap(new String[]{"minecraft:iron_ingot, minecraft:gold_nugget, 1", "minecraft:sugar, minecraft:gunpowder, 1", "minecraft:wheat, minecraft:string, 2", "minecraft:spider_eye, minecraft:slime_ball, 1", "minecraft:flint, minecraft:amethyst_shard, 1", "minecraft:rotten_flesh, minecraft:honey, 1"}), (T) -> true);
 	}
 	
 	@Override
