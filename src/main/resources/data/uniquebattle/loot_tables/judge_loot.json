@@ -76,7 +76,7 @@
               "functions": [
                 {
                   "function": "minecraft:set_nbt",
-                  "tag": "StoredEnchantments:[{lvl:5,id:fire_protection}]"
+                  "tag": "{StoredEnchantments:[{lvl:5,id:fire_protection}]}"
                 }
               ]
             },
@@ -88,7 +88,7 @@
               "functions": [
                 {
                   "function": "minecraft:set_nbt",
-                  "tag": "StoredEnchantments:[{lvl:3,id:fire_aspect}]"
+                  "tag": "{StoredEnchantments:[{lvl:3,id:fire_aspect}]}"
                 }
               ]
             },
@@ -100,7 +100,7 @@
               "functions": [
                 {
                   "function": "minecraft:set_nbt",
-                  "tag": "StoredEnchantments:[{lvl:6,id:\"uniqueebattle:ifrits_blessing\"}]"
+                  "tag": "{StoredEnchantments:[{lvl:6,id:\"uniqueebattle:ifrits_blessing\"}]}"
                 }
               ]
             },
@@ -112,7 +112,7 @@
               "functions": [
                 {
                   "function": "minecraft:set_nbt",
-                  "tag": "StoredEnchantments:[{lvl:4,id:\"uniqueebattle:ifrits_grace\"}]"
+                  "tag": "{StoredEnchantments:[{lvl:4,id:\"uniqueebattle:ifrits_grace\"}]}"
                 }
               ]
             }
