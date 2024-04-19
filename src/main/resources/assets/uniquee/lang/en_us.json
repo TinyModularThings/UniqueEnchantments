@@ -1688,6 +1688,8 @@
 	"enchantment.uniquee.berserker": "Berserker",
 	"enchantment.uniquee.berserker.desc": "The lower your Health, the higher your Damage",
 	"enchantment.uniquee.berserker.icon": "\r",
+	"enchantment.uniquee.brittling_blade": "Brittling Blade",
+	"enchantment.uniquee.brittling_blade.desc": "Deals more damage the lower the Durability.",
 	"enchantment.uniquee.bone_crusher": "Bone Crusher",
 	"enchantment.uniquee.bone_crusher.desc": "Increased Damage and Looting against bare-chested Skeletons",
 	"enchantment.uniquee.bone_crusher.icon": "\u0010",
