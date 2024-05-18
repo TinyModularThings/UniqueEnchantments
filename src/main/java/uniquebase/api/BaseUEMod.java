@@ -28,9 +28,13 @@ import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ConfigTracker;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.gametest.ForgeGameTestHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import uniquebase.api.jei.EnchantmentTarget;
@@ -107,6 +111,10 @@ public abstract class BaseUEMod
 		config = builder.build();
 		validateConfigFolder();
 		ModLoadingContext.get().registerConfig(Type.COMMON, config, "ue/"+name);
+		if(!FMLEnvironment.production && ForgeGameTestHooks.isGametestEnabled()) {
+			ModConfig config = ConfigTracker.INSTANCE.fileMap().get("ue/"+name);
+			this.config.setConfig(config.getHandler().reader(FMLPaths.CONFIGDIR.get()).apply(config));
+		}
 	}
 	
 	protected abstract void loadEnchantments();

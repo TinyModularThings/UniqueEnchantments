@@ -58,12 +58,12 @@ public final class UEMixinConfig
 		
 		public Builder addDependency(String name, String dependency)
 		{
-			return add(name, "", false);
+			return addDependency(name, null, "", false);
 		}
 		
 		public Builder addDependency(String name, String dependency, String comment)
 		{
-			return add(name, comment, false);
+			return addDependency(name, dependency, comment, false);
 		}
 		
 		public Builder addDependency(String name, String dependency, String comment, boolean required)
@@ -76,6 +76,7 @@ public final class UEMixinConfig
 		
 		private void loadMixins(Path path)
 		{
+			System.out.println("Loading Mixins: "+path+", "+Files.exists(path));
 			Properties props = new Properties();
 			try(InputStream stream = Files.newInputStream(path)) {
 				props.load(stream);
@@ -91,10 +92,14 @@ public final class UEMixinConfig
 			for(Entry entry : config.entries.values()) {
 				entry.validateDependency(config.entries);
 			}
+			for(Entry entry : config.entries.values()) {
+				if(!entry.isEnabled()) System.out.println("Disabled Mixin Config: "+entry.getName());
+			}
 		}
 		
 		private void saveMixins(Path path)
 		{
+			System.out.println("Saving Mixins: "+path+", "+Files.exists(path));
 			try(BufferedWriter writer = Files.newBufferedWriter(path))
 			{
 				for(Entry entry : config.entries.values()) {

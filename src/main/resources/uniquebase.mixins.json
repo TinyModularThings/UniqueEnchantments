@@ -31,8 +31,7 @@
 		"common.tile.AnvilMixin",
 		"common.tile.BeaconMixin",
 		"common.tile.ChunkMixin",
-		"common.tile.EnchTableMixin",
-		"common.InteractionManagerMixin"
+		"common.tile.EnchTableMixin"
 	],
 	"client": [
 		"client.FontMixin",
