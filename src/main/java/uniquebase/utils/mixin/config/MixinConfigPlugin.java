@@ -64,6 +64,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin
 		if(LoadingModList.get().getModFileById("apotheosis") != null) {
 			config.getEntry("common.enchantments.EnchantmentHelperMixin").setConfig(false);
 			config.getEntry("common.enchantments.CombatRulesMixin").setConfig(false);
+			config.getEntry("common.entity.LivingEntityMixin").setConfig(false);
 			config.getEntry("common.tile.AnvilMixin").setConfig(false);
 			config.getEntry("common.tile.EnchTableMixin").setConfig(false);
 		}
