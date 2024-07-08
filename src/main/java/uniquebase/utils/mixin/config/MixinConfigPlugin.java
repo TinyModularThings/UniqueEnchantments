@@ -47,7 +47,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin
 				.addDependency("common.entity.EntityMixin", "common.entity", "Accessor Mixin that makes the Rocket man more consistent")
 				.addDependency("common.entity.EntityMixinP", "common.entity", "Mixin that is enabling Protection specific features on items, also required to make common.enchantment.ThornsEnchantmentMixin work")
 				.addDependency("common.entity.FireworkMixin", "common.entity", "Accessor Mixin that makes Rocketmans fireworks lifetime expansion possible")
-				.addDependency("common.entity.LivingEntityMixin", "common.entity", "Mixin that rebalances the Resistance Potion Effect")
 				.addDependency("common.entity.PiglinMixin", "common.entity", "Mixin that makes the Piglin neutral on you when Treasurers Eyes is applied")
 				.addDependency("common.entity.PlayerEntityMixin", "common.entity", "Mixin that rebalances the Efficiency Enchantment")
 				.addDependency("common.entity.PotionMixin", "common.entity", "Mixin that makes certain Enchantments possible")
@@ -64,7 +63,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin
 		if(LoadingModList.get().getModFileById("apotheosis") != null) {
 			config.getEntry("common.enchantments.EnchantmentHelperMixin").setConfig(false);
 			config.getEntry("common.enchantments.CombatRulesMixin").setConfig(false);
-			config.getEntry("common.entity.LivingEntityMixin").setConfig(false);
 			config.getEntry("common.tile.AnvilMixin").setConfig(false);
 			config.getEntry("common.tile.EnchTableMixin").setConfig(false);
 		}

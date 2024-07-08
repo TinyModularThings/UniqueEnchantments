@@ -1158,7 +1158,7 @@ public class EntityEvents
 		{
 			MiscUtil.spawnDrops(deadEntity, UE.ENDEST_REAP, Mth.nextInt(rand, 2, 4));
 		}
-		if((((CombatTrackerMixin)deadEntity.getCombatTracker()).getCombatEntries().size() = 1)  && rand.nextInt(100) < 2) {
+		if(((CombatTrackerMixin)deadEntity.getCombatTracker()).getCombatEntries().size() == 1 && rand.nextInt(100) < 2) {
 			MiscUtil.spawnDrops(deadEntity, UE.DEATHS_ODIUM, Mth.nextInt(rand, 1, 3));
 		}
 	}
