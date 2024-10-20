@@ -645,12 +645,15 @@ public class BattleHandler
 			if(MiscUtil.isTranscendent(entity, stack, UEBattle.GOLEM_SOUL))
 			{
 				int level = MiscUtil.getEnchantmentLevel(UEBattle.GOLEM_SOUL, stack);
-				for(Entity ent : entity.level.getEntities(entity, new AABB(entity.blockPosition()).inflate(Math.min(distance, 16)))) 
+				if(level > 0) 
 				{
-					if(ent instanceof LivingEntity enti)
+					for(Entity ent : entity.level.getEntities(entity, new AABB(entity.blockPosition()).inflate(Math.min(distance, 16)))) 
 					{
-						enti.hurt(DamageSource.DRAGON_BREATH, (float) Math.sqrt(distance));
-						enti.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, GolemSoul.TRANSCENDED_SLOW_TIME.get(level), Math.min(level-1,5)));
+						if(ent instanceof LivingEntity enti)
+						{
+							enti.hurt(DamageSource.DRAGON_BREATH, (float) Math.sqrt(distance));
+							enti.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, GolemSoul.TRANSCENDED_SLOW_TIME.get(level), Math.min(level-1,5)));
+						}
 					}
 				}
 			}
