@@ -195,7 +195,6 @@ task apexJar(type: Jar, dependsOn: reobf) {
   includeEmptyDirs = false
 }
 
-
 artifacts {
     archives baseJar
     archives mainJar
@@ -218,13 +217,17 @@ publishing {
     }
 }
 
+def props = new Properties()
+file("publish.cfg").withInputStream { props.load(it) }
+System.out.println("Props: "+props);
+
 task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) { 
 	mustRunAfter assemble
 	dependsOn assemble
 	group 'publishing'
 	description 'Publishes the mod to Curseforge'
 	apiToken = System.getenv("Curseforge_API_Token")
-	if(PUBLISH_BASE) {
+	if(Boolean.parseBoolean(props.get("BASE"))) {
 		def mainFile = upload(515658, baseJar)
 		mainFile.releaseType = RELEASE_TYPE
 		mainFile.displayName = BASE_NAME+"-"+MC_VERSION+"-"+BASE_VERSION
@@ -236,7 +239,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 		mainFile.addJavaVersion('Java 17')
 	}
 	
-	if(PUBLISH_UE) {
+	if(Boolean.parseBoolean(props.get("UE"))) {
 		def mainFile = upload(348891, mainJar)
 		mainFile.releaseType = RELEASE_TYPE
 		mainFile.displayName = UE_NAME+"-"+MC_VERSION+"-"+UE_VERSION
@@ -249,7 +252,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 		mainFile.addRequirement('unique-enchantments-base')
 	}
 	
-	if(PUBLISH_UTILS) {
+	if(Boolean.parseBoolean(props.get("UTILS"))) {
 		def mainFile = upload(382138, utilsJar)
 		mainFile.releaseType = RELEASE_TYPE
 		mainFile.displayName = UTILS_NAME+"-"+MC_VERSION+"-"+UTILS_VERSION
@@ -262,7 +265,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 		mainFile.addRequirement('unique-enchantments-base')
 	}
 	
-	if(PUBLISH_BATTLE) {
+	if(Boolean.parseBoolean(props.get("BATTLE"))) {
 		def mainFile = upload(491806, battleJar)
 		mainFile.releaseType = RELEASE_TYPE
 		mainFile.displayName = BATTLE_NAME+"-"+MC_VERSION+"-"+BATTLE_VERSION
@@ -275,7 +278,7 @@ task curseforge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
 		mainFile.addRequirement('unique-enchantments-base')
 	}
 	
-	if(PUBLISH_APEX) {
+	if(Boolean.parseBoolean(props.get("APEX"))) {
 		def mainFile = upload(596310, apexJar)
 		mainFile.releaseType = RELEASE_TYPE
 		mainFile.displayName = APEX_NAME+"-"+MC_VERSION+"-"+APEX_VERSION
